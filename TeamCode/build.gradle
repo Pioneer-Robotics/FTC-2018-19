@@ -24,5 +24,5 @@ allprojects
 
 dependencies
         {
-            compile 'org.tensorflow:tensorflow-android:+'
+            api 'org.tensorflow:tensorflow-android:+'
         }
