@@ -19,11 +19,6 @@ public class Teleop extends LinearOpMode
     static final double     WHEEL_DIAMETER_CM   = 4.0*2.54 ;
     static final double     COUNTS_PER_INCH         = (TETRIX_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_CM * 3.1415);
-    //double          clawOffset      = 0;
-    //final double    CLAW_SPEED      = 0.02 ;
-    // Servo Lunch box: 0.8 = straight up, 0.55 = dropped #2 - A
-    // Servo rgtLatch: 0.95 = up, 0.63 = down #0 - up and down on D pad
-    // Servo lftLatch; 0.06 = up, 0.36 = down #1 - up and down on D pad
     @Override
     public void runOpMode()
     {
@@ -32,19 +27,8 @@ public class Teleop extends LinearOpMode
         double drive;
         double turn;
         double max;
-        double linear_up;
-        double linear_down;
         double arm;
         double armMax;
-        double interval = 0.1;
-        /*
-        lunchBox.MAX_POSITION = 0.8;
-        lunchBox.MIN_POSITION = 0.55;
-        rgtLatch.MAX_POSITION = 0.95;
-        rgtLatch.MIN_POSITION = 0.63;
-        lftLatch.MAX_POSITION = 0.06;
-        lftLatch.MAX_POSITION = 0.36;
-        */
 
         robot.init(hardwareMap);
 
@@ -71,8 +55,6 @@ public class Teleop extends LinearOpMode
             }
 
             // Output the safe vales to the motor drives.
-
-
             if (robot.linearSwitch.getState())
             {
                 robot.linearArm.setPower(-arm);
@@ -88,63 +70,6 @@ public class Teleop extends LinearOpMode
                 robot.linearArm.setPower(0);
                 telemetry.addData("Switch","is pressed");
             }
-
-            //robot.linearArm.setPower(linear_up);
-            //robot.linearArm.setPower(-linear_down);
-
-            /* Gradual implementation of latch
-            if (gamepad1.dpad_up && (rgtLatch.getPosition() < rgtLatch.MAX_POSITION) && (lftLatch.getPosition() < lftLatch.MAX_POSITION)
-            {
-                rgtLatch.setPosition(rgtLatch.getPosition() + 0.05);
-                lftLatch.setPosition(lftLatch.getPostition() + 0.05);
-            }
-            */
-            /*
-            if (gamepad1.dpad_up && (left < 1) && (left > -1) && (right < 1) && (right > -1))
-            {
-
-                if (left < 0)
-                {
-                    left += interval;
-                }
-                else
-                {
-                    left -= interval;
-                }
-                if (right < 0)
-                {
-                    right += interval;
-                }
-                else
-                {
-                    right -= interval;
-                }
-                robot.motorLeft.setPower(-left);
-                robot.motorRight.setPower(-right);
-            }
-            if (gamepad1.dpad_down && (left < 1) && (left > -1) && (right < 1) && (right > -1))
-            {
-                if (left < 0)
-                {
-                    left -= interval;
-                }
-                else
-                {
-                    left += interval;
-                }
-                if (right < 0)
-                {
-                    right -= interval;
-                }
-                else
-                {
-                    right += interval;
-                }
-                robot.motorLeft.setPower(-left);
-                robot.motorRight.setPower(-right);
-            }
-            */
-            // Changes direction of movement (easier for driving backwards for scaling lander) and decreases power for more precise movement
 
             //blended motion
             left  = drive + turn;
@@ -191,27 +116,8 @@ public class Teleop extends LinearOpMode
                 sleep(1000);
                 robot.lunchBox.setPosition(HardwareLL5156.lunchBoxMAX_POSITION);
             }
-            // Use gamepad left & right Bumpers to open and close the claw
-            /*if (gamepad1.right_bumper)
-                clawOffset += CLAW_SPEED;
-            else if (gamepad1.left_bumper)
-                clawOffset -= CLAW_SPEED;*/
-
-            // Move both servos to new position.  Assume servos are mirror image of each other.
-            /*clawOffset = Range.clip(clawOffset, -0.5, 0.5);
-            robot.leftClaw.setPosition(robot.MID_SERVO + clawOffset);
-            robot.rightClaw.setPosition(robot.MID_SERVO - clawOffset);*/
-
-            // Use gamepad buttons to move arm up (Y) and down (A)
-            /*if (gamepad1.y)
-                robot.linearArm.setPower(robot.ARM_UP_POWER);
-            else if (gamepad1.a)
-                robot.linearArm.setPower(robot.ARM_DOWN_POWER);
-            else
-                robot.linearArm.setPower(0.0);*/
 
             // Send telemetry message to signify robot running;
-            //telemetry.addData("claw",  "Offset = %.2f", clawOffset);
             telemetry.addData("left",  "%.2f", left);
             telemetry.addData("right", "%.2f", right);
             telemetry.addData("Motor Encoder", "%d",robot.linearArm.getCurrentPosition());
@@ -221,27 +127,4 @@ public class Teleop extends LinearOpMode
             //sleep(50);
         }
     }
-
-    /*public void encoderArmSet()
-    {
-        if (gamepad2.left_trigger == 1) //linear arm down
-        {
-            robot.linearArm.setTargetPosition(4000); //test actual values
-            robot.linearArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-
-            robot.linearArm.setPower(0);
-            robot.linearArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
-
-        if (gamepad2.right_trigger == 1) //linear arm up
-        {
-            robot.linearArm.setTargetPosition(0); //test actual values
-            robot.linearArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-
-            robot.linearArm.setPower(0);
-            robot.linearArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
-    }*/
 }
