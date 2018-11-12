@@ -13,3 +13,16 @@
 
 // Include common definitions from above.
 apply from: '../build.common.gradle'
+
+allprojects
+        {
+            repositories
+                    {
+                        jcenter()
+                    }
+        }
+
+dependencies
+        {
+            compile 'org.tensorflow:tensorflow-android:+'
+        }

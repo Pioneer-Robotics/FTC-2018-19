@@ -116,6 +116,7 @@
     <orderEntry type="library" name="Gradle: Blocks-release:@aar" level="project" />
     <orderEntry type="library" name="Gradle: RobotCore-release:@aar" level="project" />
     <orderEntry type="library" name="Gradle: Inspection-release:@aar" level="project" />
+    <orderEntry type="library" name="Gradle: org.tensorflow:tensorflow-android-1.12.0" level="project" />
     <orderEntry type="library" name="Gradle: WirelessP2p-release:@aar" level="project" />
     <orderEntry type="library" name="Gradle: Hardware-release:@aar" level="project" />
     <orderEntry type="module" module-name="FtcRobotController" />

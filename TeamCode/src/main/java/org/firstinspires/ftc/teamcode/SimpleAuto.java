@@ -83,22 +83,16 @@ public class SimpleAuto extends LinearOpMode
 
 
         //ACTUAL MOVEMENT
-        encoderDrive(DRIVE_SPEED,20,20,5.0);
-        encoderDrive(TURN_SPEED,-16,16,5.0);
-        //NEED TO TEST MORE, (16,-16) is close to 90 degrees left
+        encoderDrive(DRIVE_SPEED,-20,-20,5.0);
+        encoderDrive(TURN_SPEED,16,-16,5.0);
+        //NEED TO TEST MORE, (16,-16) is close to 90 degrees
         //encoderDrive(DRIVE_SPEED,24,24,4.0);
         sleep(250);
         telemetry.addData("Drop","Start");
         telemetry.update();
-        robot.servoDrop.setPosition(0.0);
+        robot.lunchBox.setPosition(0.0);
         telemetry.addData("Drop","Finish");
         telemetry.update();
-
-
-
-
-
-
 
 
 
@@ -116,7 +110,7 @@ public class SimpleAuto extends LinearOpMode
         telemetry.update();
     }
 
-    public void encoderDrive(double speed,double leftCM*-1, double rightCM*-1,double timeoutS)
+    public void encoderDrive(double speed,double leftCM, double rightCM,double timeoutS )
     {
         int newLeftTarget;
         int newRightTarget;
@@ -124,7 +118,7 @@ public class SimpleAuto extends LinearOpMode
         if (opModeIsActive())
         {
             newLeftTarget = robot.motorLeft.getCurrentPosition() + (int)(leftCM*COUNTS_PER_INCH);
-            newRightTarget = robot.motorRight.getCurrentPosition() + (int)(rightCM*COUNTS_PER_INCH);
+            newRightTarget = robot.motorLeft.getCurrentPosition() + (int)(rightCM*COUNTS_PER_INCH);
             robot.motorLeft.setTargetPosition(newLeftTarget);
             robot.motorRight.setTargetPosition(newRightTarget);
 

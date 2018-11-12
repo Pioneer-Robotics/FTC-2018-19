@@ -4,6 +4,7 @@ ADDED from C:\Users\jcwan\Downloads\CodeWriteFTC\ftc_app-4.0\TeamCode\src\main\A
 INJECTED from C:\Users\jcwan\Downloads\CodeWriteFTC\ftc_app-4.0\TeamCode\src\main\AndroidManifest.xml:8:1-12:12
 INJECTED from C:\Users\jcwan\Downloads\CodeWriteFTC\ftc_app-4.0\TeamCode\src\main\AndroidManifest.xml:8:1-12:12
 INJECTED from C:\Users\jcwan\Downloads\CodeWriteFTC\ftc_app-4.0\TeamCode\src\main\AndroidManifest.xml:8:1-12:12
+MERGED from [org.tensorflow:tensorflow-android:1.12.0] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\tensorflow-android-1.12.0.aar\ad2839bfb2ffc6959f9d2ee0feda5397\AndroidManifest.xml:2:1-8:12
 MERGED from [:FtcRobotController] C:\Users\jcwan\Downloads\CodeWriteFTC\ftc_app-4.0\FtcRobotController\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:2:1-47:12
 MERGED from [:RobotCore-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\RobotCore-release.aar\1b2ccfffd3b699f3df9d2ef53ac204ae\AndroidManifest.xml:2:1-98:12
 MERGED from [:Hardware-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\Hardware-release.aar\a644d60e06fa2552243d5cc217004785\AndroidManifest.xml:2:1-11:12
@@ -30,6 +31,8 @@ INJECTED from C:\Users\jcwan\Downloads\CodeWriteFTC\ftc_app-4.0\TeamCode\src\mai
 		ADDED from C:\Users\jcwan\Downloads\CodeWriteFTC\ftc_app-4.0\TeamCode\src\main\AndroidManifest.xml:10:5-63
 application
 ADDED from C:\Users\jcwan\Downloads\CodeWriteFTC\ftc_app-4.0\TeamCode\src\main\AndroidManifest.xml:11:5-19
+MERGED from [org.tensorflow:tensorflow-android:1.12.0] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\tensorflow-android-1.12.0.aar\ad2839bfb2ffc6959f9d2ee0feda5397\AndroidManifest.xml:5:5-6:19
+MERGED from [org.tensorflow:tensorflow-android:1.12.0] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\tensorflow-android-1.12.0.aar\ad2839bfb2ffc6959f9d2ee0feda5397\AndroidManifest.xml:5:5-6:19
 MERGED from [:FtcRobotController] C:\Users\jcwan\Downloads\CodeWriteFTC\ftc_app-4.0\FtcRobotController\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:14:5-45:19
 MERGED from [:FtcRobotController] C:\Users\jcwan\Downloads\CodeWriteFTC\ftc_app-4.0\FtcRobotController\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:14:5-45:19
 MERGED from [:RobotCore-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\RobotCore-release.aar\1b2ccfffd3b699f3df9d2ef53ac204ae\AndroidManifest.xml:77:5-96:19
@@ -80,6 +83,28 @@ INJECTED from C:\Users\jcwan\Downloads\CodeWriteFTC\ftc_app-4.0\TeamCode\src\mai
 		INJECTED from C:\Users\jcwan\Downloads\CodeWriteFTC\ftc_app-4.0\TeamCode\src\main\AndroidManifest.xml
 		ADDED from C:\Users\jcwan\Downloads\CodeWriteFTC\ftc_app-4.0\TeamCode\src\main\AndroidManifest.xml
 		INJECTED from C:\Users\jcwan\Downloads\CodeWriteFTC\ftc_app-4.0\TeamCode\src\main\AndroidManifest.xml
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+IMPLIED from C:\Users\jcwan\Downloads\CodeWriteFTC\ftc_app-4.0\TeamCode\src\main\AndroidManifest.xml:8:1-12:12 reason: tensorflow.contrib.android has a targetSdkVersion < 4
+MERGED from [:RobotCore-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\RobotCore-release.aar\1b2ccfffd3b699f3df9d2ef53ac204ae\AndroidManifest.xml:27:5-29:35
+MERGED from [:RobotCore-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\RobotCore-release.aar\1b2ccfffd3b699f3df9d2ef53ac204ae\AndroidManifest.xml:27:5-29:35
+MERGED from [:FtcCommon-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\FtcCommon-release.aar\d0cd8200def29ea05e6b18cab6d1db22\AndroidManifest.xml:13:5-15:35
+MERGED from [:FtcCommon-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\FtcCommon-release.aar\d0cd8200def29ea05e6b18cab6d1db22\AndroidManifest.xml:13:5-15:35
+MERGED from [:Blocks-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\Blocks-release.aar\43295e2fb4a67d971c6924a04f81d967\AndroidManifest.xml:11:5-13:35
+MERGED from [:Blocks-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\Blocks-release.aar\43295e2fb4a67d971c6924a04f81d967\AndroidManifest.xml:11:5-13:35
+	android:required
+		ADDED from [:RobotCore-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\RobotCore-release.aar\1b2ccfffd3b699f3df9d2ef53ac204ae\AndroidManifest.xml:29:9-32
+uses-permission#android.permission.READ_PHONE_STATE
+IMPLIED from C:\Users\jcwan\Downloads\CodeWriteFTC\ftc_app-4.0\TeamCode\src\main\AndroidManifest.xml:8:1-12:12 reason: tensorflow.contrib.android has a targetSdkVersion < 4
+uses-permission#android.permission.READ_EXTERNAL_STORAGE
+IMPLIED from C:\Users\jcwan\Downloads\CodeWriteFTC\ftc_app-4.0\TeamCode\src\main\AndroidManifest.xml:8:1-12:12 reason: tensorflow.contrib.android requested WRITE_EXTERNAL_STORAGE
+MERGED from [:RobotCore-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\RobotCore-release.aar\1b2ccfffd3b699f3df9d2ef53ac204ae\AndroidManifest.xml:30:5-32:35
+MERGED from [:RobotCore-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\RobotCore-release.aar\1b2ccfffd3b699f3df9d2ef53ac204ae\AndroidManifest.xml:30:5-32:35
+MERGED from [:FtcCommon-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\FtcCommon-release.aar\d0cd8200def29ea05e6b18cab6d1db22\AndroidManifest.xml:16:5-18:35
+MERGED from [:FtcCommon-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\FtcCommon-release.aar\d0cd8200def29ea05e6b18cab6d1db22\AndroidManifest.xml:16:5-18:35
+MERGED from [:Blocks-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\Blocks-release.aar\43295e2fb4a67d971c6924a04f81d967\AndroidManifest.xml:14:5-16:35
+MERGED from [:Blocks-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\Blocks-release.aar\43295e2fb4a67d971c6924a04f81d967\AndroidManifest.xml:14:5-16:35
+	android:required
+		ADDED from [:RobotCore-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\RobotCore-release.aar\1b2ccfffd3b699f3df9d2ef53ac204ae\AndroidManifest.xml:32:9-32
 uses-permission#android.permission.RECEIVE_BOOT_COMPLETED
 ADDED from [:FtcRobotController] C:\Users\jcwan\Downloads\CodeWriteFTC\ftc_app-4.0\FtcRobotController\build\intermediates\merged_manifests\debug\processDebugManifest\merged\AndroidManifest.xml:12:5-81
 	android:name
@@ -172,26 +197,6 @@ MERGED from [:Inspection-release:] C:\Users\jcwan\.gradle\caches\transforms-1\fi
 		ADDED from [:RobotCore-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\RobotCore-release.aar\1b2ccfffd3b699f3df9d2ef53ac204ae\AndroidManifest.xml:26:9-32
 	android:name
 		ADDED from [:RobotCore-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\RobotCore-release.aar\1b2ccfffd3b699f3df9d2ef53ac204ae\AndroidManifest.xml:25:9-51
-uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
-ADDED from [:RobotCore-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\RobotCore-release.aar\1b2ccfffd3b699f3df9d2ef53ac204ae\AndroidManifest.xml:27:5-29:35
-MERGED from [:FtcCommon-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\FtcCommon-release.aar\d0cd8200def29ea05e6b18cab6d1db22\AndroidManifest.xml:13:5-15:35
-MERGED from [:FtcCommon-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\FtcCommon-release.aar\d0cd8200def29ea05e6b18cab6d1db22\AndroidManifest.xml:13:5-15:35
-MERGED from [:Blocks-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\Blocks-release.aar\43295e2fb4a67d971c6924a04f81d967\AndroidManifest.xml:11:5-13:35
-MERGED from [:Blocks-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\Blocks-release.aar\43295e2fb4a67d971c6924a04f81d967\AndroidManifest.xml:11:5-13:35
-	android:required
-		ADDED from [:RobotCore-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\RobotCore-release.aar\1b2ccfffd3b699f3df9d2ef53ac204ae\AndroidManifest.xml:29:9-32
-	android:name
-		ADDED from [:RobotCore-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\RobotCore-release.aar\1b2ccfffd3b699f3df9d2ef53ac204ae\AndroidManifest.xml:28:9-65
-uses-permission#android.permission.READ_EXTERNAL_STORAGE
-ADDED from [:RobotCore-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\RobotCore-release.aar\1b2ccfffd3b699f3df9d2ef53ac204ae\AndroidManifest.xml:30:5-32:35
-MERGED from [:FtcCommon-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\FtcCommon-release.aar\d0cd8200def29ea05e6b18cab6d1db22\AndroidManifest.xml:16:5-18:35
-MERGED from [:FtcCommon-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\FtcCommon-release.aar\d0cd8200def29ea05e6b18cab6d1db22\AndroidManifest.xml:16:5-18:35
-MERGED from [:Blocks-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\Blocks-release.aar\43295e2fb4a67d971c6924a04f81d967\AndroidManifest.xml:14:5-16:35
-MERGED from [:Blocks-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\Blocks-release.aar\43295e2fb4a67d971c6924a04f81d967\AndroidManifest.xml:14:5-16:35
-	android:required
-		ADDED from [:RobotCore-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\RobotCore-release.aar\1b2ccfffd3b699f3df9d2ef53ac204ae\AndroidManifest.xml:32:9-32
-	android:name
-		ADDED from [:RobotCore-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\RobotCore-release.aar\1b2ccfffd3b699f3df9d2ef53ac204ae\AndroidManifest.xml:31:9-64
 uses-permission#android.permission.WRITE_SETTINGS
 ADDED from [:RobotCore-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\RobotCore-release.aar\1b2ccfffd3b699f3df9d2ef53ac204ae\AndroidManifest.xml:33:5-35:35
 MERGED from [:FtcCommon-release:] C:\Users\jcwan\.gradle\caches\transforms-1\files-1.1\FtcCommon-release.aar\d0cd8200def29ea05e6b18cab6d1db22\AndroidManifest.xml:19:5-21:35
