@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\Users\\jcwan\\Downloads\\Android-TensorFlow-Lite-Example-master\\FTC\\TeamCode\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v11\\values-v11.xml",
+            "outputFile": "C:\\Users\\jcwan\\Downloads\\FTC\\TeamCode\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v11\\values-v11.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\jcwan\\.gradle\\caches\\transforms-1\\files-1.1\\RobotCore-release.aar\\a675aa4f3219e835634825d1ede0a72a\\res\\values-v11\\values-v11.xml",
+                    "source": "C:\\Users\\jcwan\\.gradle\\caches\\transforms-1\\files-1.1\\RobotCore-release.aar\\3fcde28651bc6f65c0fd34e6374f49b8\\res\\values-v11\\values-v11.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

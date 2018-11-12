@@ -1,4 +1,4 @@
-#Mon Nov 12 12:00:33 MST 2018
-base.0=C\:\\Users\\jcwan\\Downloads\\Android-TensorFlow-Lite-Example-master\\FTC\\TeamCode\\build\\intermediates\\transforms\\dexMerger\\debug\\0
+#Mon Nov 12 13:30:25 MST 2018
+base.0=C\:\\Users\\jcwan\\Downloads\\FTC\\TeamCode\\build\\intermediates\\transforms\\dexMerger\\debug\\0
 path.0=classes.dex
 renamed.0=classes.dex

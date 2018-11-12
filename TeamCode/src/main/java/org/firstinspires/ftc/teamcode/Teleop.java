@@ -10,8 +10,8 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
 @TeleOp(name="LL5156:POV", group="LL5156")
-public class Teleop extends LinearOpMode {
-
+public class Teleop extends LinearOpMode
+{
     /* Declare OpMode members. */
     HardwareLL5156 robot           = new HardwareLL5156();
     static final double     TETRIX_TICKS_PER_REV    = 1440;
@@ -25,7 +25,8 @@ public class Teleop extends LinearOpMode {
     // Servo rgtLatch: 0.95 = up, 0.63 = down #0 - up and down on D pad
     // Servo lftLatch; 0.06 = up, 0.36 = down #1 - up and down on D pad
     @Override
-    public void runOpMode() {
+    public void runOpMode()
+    {
         double left;
         double right;
         double drive;
@@ -83,14 +84,20 @@ public class Teleop extends LinearOpMode {
             robot.motorLeft.setPower(-left);
             robot.motorRight.setPower(-right);
 
-            if (!robot.linearSwitch.getState())
+            if (robot.linearSwitch.getState())
+            {
+                robot.linearArm.setPower(-arm);
+                telemetry.addData("Switch","is not pressed");
+            }
+            else if (!robot.linearSwitch.getState() && arm <= 0)
             {
                 robot.linearArm.setPower(-arm);
                 telemetry.addData("Switch","is pressed");
             }
-            else
+            else if (!robot.linearSwitch.getState() && arm > 0)
             {
-                telemetry.addData("Switch","is not pressed");
+                robot.linearArm.setPower(0);
+                telemetry.addData("Switch","is pressed");
             }
 
             //robot.linearArm.setPower(linear_up);
@@ -151,10 +158,10 @@ public class Teleop extends LinearOpMode {
             // Changes direction of movement (easier for driving backwards for scaling lander) and decreases power for more precise movement
             if (gamepad1.y)
             {
-                left *= -0.25;
-                right *= -0.25;
-                robot.motorLeft.setPower(-right);
-                robot.motorRight.setPower(-left);
+                left *= 1/3;
+                right *= 1/3;
+                robot.motorLeft.setPower(-left);
+                robot.motorRight.setPower(-right);
             }
             // Controls latching servos on linear actuator
             if (gamepad2.dpad_up)
@@ -199,6 +206,7 @@ public class Teleop extends LinearOpMode {
             //telemetry.addData("claw",  "Offset = %.2f", clawOffset);
             telemetry.addData("left",  "%.2f", left);
             telemetry.addData("right", "%.2f", right);
+            telemetry.addData("Motor Encoder", "%d",robot.linearArm.getCurrentPosition());
             telemetry.update();
 
             // Pace this loop so jaw action is reasonable speed.
