@@ -48,6 +48,7 @@ public class Teleop extends LinearOpMode
             turn  =  gamepad1.left_stick_x;
             arm = gamepad2.right_stick_y;
 
+            //normalization of arm value
             armMax = Math.abs(arm);
             if (armMax > 1.0)
             {
@@ -89,25 +90,30 @@ public class Teleop extends LinearOpMode
                 right *= -0.25;
                 robot.motorLeft.setPower(-right);
                 robot.motorRight.setPower(-left);
+                telemetry.addData("Reverse","Activated");
             }
             else
             {
                 robot.motorLeft.setPower(-left);
                 robot.motorRight.setPower(-right);
+                telemetry.addData("Reverse", "Deactivated");
             }
+
+
+
 
             // Controls latching servos on linear actuator
             if (gamepad2.dpad_up)
             {
                 robot.rgtLatch.setPosition(HardwareLL5156.rgtLatchMAX_POSITION);
-
                 robot.lftLatch.setPosition(HardwareLL5156.lftLatchMAX_POSITION);
+                telemetry.addData("Latches","Max");
             }
             if (gamepad2.dpad_down)
             {
                 robot.rgtLatch.setPosition(HardwareLL5156.rgtLatchMIN_POSITION);
-
                 robot.lftLatch.setPosition(HardwareLL5156.lftLatchMIN_POSITION);
+                telemetry.addData("Latches","Min");
             }
             // Drops team marker with servo
             if (gamepad2.x)
@@ -115,11 +121,13 @@ public class Teleop extends LinearOpMode
                 robot.lunchBox.setPosition(HardwareLL5156.lunchBoxMIN_POSITION);
                 sleep(1000);
                 robot.lunchBox.setPosition(HardwareLL5156.lunchBoxMAX_POSITION);
+                telemetry.addLine("Team Marker Dropped");
             }
 
             // Send telemetry message to signify robot running;
             telemetry.addData("left",  "%.2f", left);
             telemetry.addData("right", "%.2f", right);
+            telemetry.addData("arm","%.2f", arm);
             telemetry.addData("Motor Encoder", "%d",robot.linearArm.getCurrentPosition());
             telemetry.update();
 
