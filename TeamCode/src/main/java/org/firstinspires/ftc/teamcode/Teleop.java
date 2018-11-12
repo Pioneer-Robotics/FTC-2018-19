@@ -63,26 +63,15 @@ public class Teleop extends LinearOpMode
             drive = -gamepad1.left_stick_y;
             turn  =  gamepad1.left_stick_x;
             arm = gamepad2.right_stick_y;
-            //linear_up = gamepad2.left_trigger;
-            //linear_down = gamepad2.right_trigger;
 
-            // Combine drive and turn for blended motion.
-            left  = drive + turn;
-            right = drive - turn;
-
-            // Normalize the values so neither exceed +/- 1.0
-            max = (Math.max(Math.abs(left), Math.abs(right)))/2;
             armMax = Math.abs(arm);
-            if (max > 1.0 || armMax > 1.0)
+            if (armMax > 1.0)
             {
-                left /= max;
-                right /= max;
                 arm /= armMax;
             }
 
             // Output the safe vales to the motor drives.
-            robot.motorLeft.setPower(-left);
-            robot.motorRight.setPower(-right);
+
 
             if (robot.linearSwitch.getState())
             {
@@ -156,13 +145,32 @@ public class Teleop extends LinearOpMode
             }
             */
             // Changes direction of movement (easier for driving backwards for scaling lander) and decreases power for more precise movement
+
+            //blended motion
+            left  = drive + turn;
+            right = drive - turn;
+
+            // Normalize the values so neither exceed +/- 1.0
+            max = (Math.max(Math.abs(left), Math.abs(right)))/2;
+            if (max > 1.0)
+            {
+                left /= max;
+                right /= max;
+            }
+
             if (gamepad1.y)
             {
-                left *= 1/3;
-                right *= 1/3;
+                left *= -0.25;
+                right *= -0.25;
+                robot.motorLeft.setPower(-right);
+                robot.motorRight.setPower(-left);
+            }
+            else
+            {
                 robot.motorLeft.setPower(-left);
                 robot.motorRight.setPower(-right);
             }
+
             // Controls latching servos on linear actuator
             if (gamepad2.dpad_up)
             {
