@@ -35,7 +35,7 @@ public class SimpleAuto extends LinearOpMode
     static final double     DRIVE_SPEED             = 0.5;
     static final double     TURN_SPEED              = 0.4;
     static double           LINEAR_ZERO;
-    static final double     CHANGE_IN_LINEAR        = 0;
+    static final double     CHANGE_IN_LINEAR        = 0; // change value to diff
     /*public double Rotations(double Rotation)
     {
         return Rotation*TETRIX_TICKS_PER_REV;
@@ -97,13 +97,17 @@ public class SimpleAuto extends LinearOpMode
 
 
         //test
+
+
         //ACTUAL MOVEMENT
 
-        if (robot.linearArm.getCurrentPosition() >= robot.linearArm.getCurrentPosition() + CHANGE_IN_LINEAR) // encoder value at limit switch) //change value
+        while (robot.linearArm.getCurrentPosition() < LINEAR_ZERO + CHANGE_IN_LINEAR) // encoder value at top) //change value
         {
             //postive= up
+            robot.linearArm.setPower(1);
 
         }
+        robot.linearArm.setPower(0);
 
 
 
