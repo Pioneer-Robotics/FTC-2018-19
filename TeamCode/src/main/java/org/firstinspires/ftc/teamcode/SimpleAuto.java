@@ -96,7 +96,7 @@ public class SimpleAuto extends LinearOpMode
         }
 
 
-
+        //test
         //ACTUAL MOVEMENT
 
         if (robot.linearArm.getCurrentPosition() >= robot.linearArm.getCurrentPosition() + CHANGE_IN_LINEAR) // encoder value at limit switch) //change value
