@@ -103,7 +103,7 @@ public class SimpleAuto extends LinearOpMode
 
         while (robot.linearArm.getCurrentPosition() < LINEAR_ZERO + CHANGE_IN_LINEAR) // encoder value at top) //change value
         {
-            //postive= up
+            //positive= up
             robot.linearArm.setPower(1);
 
         }
