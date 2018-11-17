@@ -34,6 +34,7 @@ public class SimpleAuto extends LinearOpMode
             (WHEEL_DIAMETER_CM * 3.1415);
     static final double     DRIVE_SPEED             = 0.5;
     static final double     TURN_SPEED              = 0.4;
+    static double           LINEAR_ZERO;
 
     /*public double Rotations(double Rotation)
     {
@@ -56,9 +57,11 @@ public class SimpleAuto extends LinearOpMode
 
         robot.motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.motorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.linearArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         robot.motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.linearArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -76,13 +79,41 @@ public class SimpleAuto extends LinearOpMode
 
 
 
+        if (robot.linearSwitch.getState())
+        {
+            robot.linearArm.setPower(-0,75);
+            telemetry.addData("Switch","is calibrating");
+            telemetry.update();
 
+        }
+        else if (!robot.linearSwitch.getState())
+        {
+            robot.linearArm.setPower(0);
+            LINEAR_ZERO = robot.linearArm.getCurrentPosition();
+            telemetry.addData("Switch","is calibrated");
+            telemetry.update();
 
-
+        }
 
 
 
         //ACTUAL MOVEMENT
+
+        if (robot.linearArm.getCurrentPosition() > robot.linearArm.getCurrentPosition() +) // encoder value at limit switch) //change value
+        {
+            //postive= up
+
+        }
+
+
+
+
+
+
+
+
+
+
         encoderDrive(DRIVE_SPEED,-20,-20,5.0);
         encoderDrive(TURN_SPEED,16,-16,5.0);
         //NEED TO TEST MORE, (16,-16) is close to 90 degrees
@@ -103,6 +134,7 @@ public class SimpleAuto extends LinearOpMode
             telemetry.addData("Rotations L",robot.motorLeft.getCurrentPosition()/TETRIX_TICKS_PER_REV);
             telemetry.addData("Rotations R",robot.motorLeft.getCurrentPosition()/TETRIX_TICKS_PER_REV);
             telemetry.addData("Status", "Running");
+            telemetry.addData("Linear Encoder", robot.linearArm.getCurrentPosition());
             telemetry.update();
         }
         //Tank(0,0);
