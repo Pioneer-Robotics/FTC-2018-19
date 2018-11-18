@@ -14,18 +14,19 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class Config {
     HardwareLL5156 robot = new HardwareLL5156();
 
-    public static double     LINEAR_ZERO;
-    public static double     CHANGE_IN_LINEAR        = 0; // change value to diff
-    public static double     MAX_RGT_LATCH           = 0;
-    public static double     MIN_RGT_LATCH           = 0;
-    public static double     MAX_LFT_LATCH           = 0;
-    public static double     MIN_LFT_LATCH           = 0;
+    public static double           LINEAR_ZERO;
+    public static final double     CHANGE_IN_LINEAR        = 5000; // change value to diff
+    public static double           MAX_RGT_LATCH           = 0;
+    public static double           MIN_RGT_LATCH           = 0;
+    public static double           MAX_LFT_LATCH           = 0;
+    public static double           MIN_LFT_LATCH           = 0;
 
 
     @Override
     public void runOpMode() {
 
         robot.init(hardwareMap);
+        robot.linearSwitch.setMode(DigitalChannel.Mode.INPUT);
 
 
 
@@ -121,7 +122,7 @@ public class Config {
 
 
         }
-        //set to max/min
+        //set left to max/min
         if (gamepad2.left_bumper && gamepad2.dpad_down){
             robot.lftLatch.setPosition(MIN_LFT_LATCH);
         }
@@ -130,7 +131,7 @@ public class Config {
         }
 
 
-
+        //set right to max/min
         if (gamepad2.right_bumper && gamepad2.dpad_down){
             robot.rgtLatch.setPosition(MIN_RGT_LATCH);
         }

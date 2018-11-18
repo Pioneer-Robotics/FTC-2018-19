@@ -73,22 +73,30 @@ public class SimpleAuto extends LinearOpMode
         telemetry.update();
 
 
-
-
-
-        //test
-
-
         //ACTUAL MOVEMENT
 
-        while (robot.linearArm.getCurrentPosition() < Config.LINEAR_ZERO + Config.CHANGE_IN_LINEAR) // encoder value at top) //change value
+        //Drop down off lander
+        while (robot.linearArm.getCurrentPosition() < (Config.LINEAR_ZERO + Config.CHANGE_IN_LINEAR /* encoder value at top */ - 0 /* Most effective detachment point might not be at the top*/) )
         {
             //positive= up
+            telemetry.addData("Status: ", "Lowering");
+            telemetry.update();
             robot.linearArm.setPower(1);
 
         }
         robot.linearArm.setPower(0);
 
+        telemetry.addData("Status: ", "Disengaging From Lander");
+        telemetry.update();
+        robot.lftLatch.setPosition(Config.MIN_LFT_LATCH);
+        robot.rgtLatch.setPosition(Config.MIN_RGT_LATCH);
+
+        //drive away
+        encoderDrive(DRIVE_SPEED,-10,-10,5.0);
+
+        //Run Google Tensor Flow to detect object.....
+        telemetry.addData("Status: ", "Detecting Gold Sample");
+        telemetry.update();
 
 
 
@@ -98,16 +106,21 @@ public class SimpleAuto extends LinearOpMode
 
 
 
-        encoderDrive(DRIVE_SPEED,-20,-20,5.0);
+
+
         encoderDrive(TURN_SPEED,16,-16,5.0);
         //NEED TO TEST MORE, (16,-16) is close to 90 degrees
         //encoderDrive(DRIVE_SPEED,24,24,4.0);
         sleep(250);
-        telemetry.addData("Drop","Start");
+
+        //Drop Team Marker
+        telemetry.addData("Status: ","Dropping Team Marker");
         telemetry.update();
-        robot.lunchBox.setPosition(0.0);
-        telemetry.addData("Drop","Finish");
+        robot.lunchBox.setPosition(HardwareLL5156.lunchBoxMIN_POSITION);
+        telemetry.addData("Status: ","Dropped Team Marker");
         telemetry.update();
+        sleep(500);
+        robot.lunchBox.setPosition(HardwareLL5156.lunchBoxMAX_POSITION);
 
 
 
@@ -117,12 +130,11 @@ public class SimpleAuto extends LinearOpMode
             telemetry.addData("Power R", robot.motorRight.getPower());
             telemetry.addData("Rotations L",robot.motorLeft.getCurrentPosition()/TETRIX_TICKS_PER_REV);
             telemetry.addData("Rotations R",robot.motorLeft.getCurrentPosition()/TETRIX_TICKS_PER_REV);
-            telemetry.addData("Status", "Running");
             telemetry.addData("Linear Encoder", robot.linearArm.getCurrentPosition());
             telemetry.update();
         }
         //Tank(0,0);
-        telemetry.addData("Status","Finished");
+        telemetry.addData("Status: ","Finished");
         telemetry.update();
     }
 
