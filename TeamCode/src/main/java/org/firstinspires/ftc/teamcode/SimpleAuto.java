@@ -34,8 +34,6 @@ public class SimpleAuto extends LinearOpMode
             (WHEEL_DIAMETER_CM * 3.1415);
     static final double     DRIVE_SPEED             = 0.5;
     static final double     TURN_SPEED              = 0.4;
-    static double           LINEAR_ZERO;
-    static final double     CHANGE_IN_LINEAR        = 0; // change value to diff
     /*public double Rotations(double Rotation)
     {
         return Rotation*TETRIX_TICKS_PER_REV;
@@ -78,30 +76,12 @@ public class SimpleAuto extends LinearOpMode
 
 
 
-
-        if (robot.linearSwitch.getState())
-        {
-            robot.linearArm.setPower(0.75);
-            telemetry.addData("Switch","is calibrating");
-            telemetry.update();
-
-        }
-        else if (!robot.linearSwitch.getState())
-        {
-            robot.linearArm.setPower(0);
-            LINEAR_ZERO = robot.linearArm.getCurrentPosition();
-            telemetry.addData("Switch","is calibrated");
-            telemetry.update();
-
-        }
-
-
         //test
 
 
         //ACTUAL MOVEMENT
 
-        while (robot.linearArm.getCurrentPosition() < LINEAR_ZERO + CHANGE_IN_LINEAR) // encoder value at top) //change value
+        while (robot.linearArm.getCurrentPosition() < Config.LINEAR_ZERO + Config.CHANGE_IN_LINEAR) // encoder value at top) //change value
         {
             //positive= up
             robot.linearArm.setPower(1);
