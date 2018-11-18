@@ -81,7 +81,7 @@ public class SimpleAuto extends LinearOpMode
 
         if (robot.linearSwitch.getState())
         {
-            robot.linearArm.setPower(-0,75);
+            robot.linearArm.setPower(0.75);
             telemetry.addData("Switch","is calibrating");
             telemetry.update();
 
