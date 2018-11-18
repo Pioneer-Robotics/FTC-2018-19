@@ -70,10 +70,10 @@ public class Config {
 
 
                 if (gamepad2.right_trigger && gamepad2.dpad_down){
-                    robot.rgtLatch.getCurrentPosition() = MAX_RGT_LATCH;
+                    robot.rgtLatch.getCurrentPosition() = MIN_RGT_LATCH;
                 }
                 if (gamepad2.right_trigger && gamepad2.dpad_up){
-                    robot.rgtLatch.getCurrentPosition() = MIN_RGT_LATCH;
+                    robot.rgtLatch.getCurrentPosition() = MAX_RGT_LATCH;
                 }
 
                 /*----------------------------------------------END--------------------------------------------------------------------------------*/
@@ -93,10 +93,10 @@ public class Config {
 
 
                 if (gamepad2.left_trigger && gamepad2.dpad_down){
-                    robot.lftLatch.getCurrentPosition() = MAX_LFT_LATCH;
+                    robot.lftLatch.getCurrentPosition() = MIN_LFT_LATCH;
                 }
                 if (gamepad2.left_trigger && gamepad2.dpad_up){
-                    robot.lftLatch.getCurrentPosition() = MIN_LFT_LATCH;
+                    robot.lftLatch.getCurrentPosition() = MAX_LFT_LATCH;
                 }
                 /*----------------------------------------------END--------------------------------------------------------------------------------*/
                 /*----------------------------------------------Telemetry Start--------------------------------------------------------------------*/
@@ -121,6 +121,23 @@ public class Config {
 
 
         }
+        //set to max/min
+        if (gamepad2.left_bumper && gamepad2.dpad_down){
+            robot.lftLatch.setPosition(MIN_LFT_LATCH);
+        }
+        if (gamepad2.left_bumper && gamepad2.dpad_up){
+            robot.lftLatch.setPosition(MAX_LFT_LATCH);
+        }
+
+
+
+        if (gamepad2.right_bumper && gamepad2.dpad_down){
+            robot.rgtLatch.setPosition(MIN_RGT_LATCH);
+        }
+        if (gamepad2.right_bumper && gamepad2.dpad_up){
+            robot.rgtLatch.setPosition(MAX_RGT_LATCH);
+        }
+
 
 
 
