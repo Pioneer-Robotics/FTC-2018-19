@@ -25,9 +25,6 @@ public class HardwareLL5156
 
     //public Servo    rightClaw   = null;
 
-    public static final double MID_SERVO       =  0.5 ;
-    public static final double ARM_UP_POWER    =  0.45 ;
-    public static final double ARM_DOWN_POWER  = -0.45 ;
     public static final double lunchBoxMAX_POSITION = 0.875;
     public static final double lunchBoxMIN_POSITION = 0.55;
     public static final double LatchMAX_POSITION = 0.95;

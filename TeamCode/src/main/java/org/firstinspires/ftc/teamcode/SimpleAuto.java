@@ -88,8 +88,7 @@ public class SimpleAuto extends LinearOpMode
 
         telemetry.addData("Status: ", "Disengaging From Lander");
         telemetry.update();
-        robot.lftLatch.setPosition(Config.MIN_LFT_LATCH);
-        robot.rgtLatch.setPosition(Config.MIN_RGT_LATCH);
+        robot.Latch.setPosition(Config.MIN_RGT_LATCH);
 
         //drive away
         encoderDrive(DRIVE_SPEED,-10,-10,5.0);

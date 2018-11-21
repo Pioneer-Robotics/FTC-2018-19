@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -11,7 +12,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp (name="armConfig", group="LL5156")
 
-public class Config {
+public class Config extends LinearOpMode
+{
     HardwareLL5156 robot = new HardwareLL5156();
 
     public static double           LINEAR_ZERO;
@@ -56,30 +58,30 @@ public class Config {
             while (!gamepad2.start){
 
                 /*----------------------------------------------rgtLatch_Config Start--------------------------------------------------------------------*/
-                if ((-gampad2.right_stick_y) > 0){
-                    robot.rgtLatch.setPosition(robot.rgtLatch.getCurrentPosition() + ((-gampad2.right_stick_y) * 0.1) );
+                if ((-gamepad2.right_stick_y) > 0){
+                    robot.Latch.setPosition(robot.Latch.getPosition() + ((-gamepad2.right_stick_y) * 0.1) );
                     telemetry.addData("Right Latch: ", "is calibrating");
                     telemetry.update();
                 }
 
 
-                if ((-gampad2.right_stick_y) < 0){
-                    robot.rgtLatch.setPosition(robot.rgtLatch.getCurrentPosition() - ((-gampad2.right_stick_y) * 0.1) );
+                if ((-gamepad2.right_stick_y) < 0){
+                    robot.Latch.setPosition(robot.Latch.getPosition() - ((-gamepad2.right_stick_y) * 0.1) );
                     telemetry.addData("Right Latch: ", "is calibrating");
                     telemetry.update();
                 }
 
-
-                if (gamepad2.right_trigger && gamepad2.dpad_down){
-                    robot.rgtLatch.getCurrentPosition() = MIN_RGT_LATCH;
+                //BIG PROBLEMS HEREEEEEEEEEE
+                if (gamepad2.right_trigger == 1 && gamepad2.dpad_down){
+                     MIN_RGT_LATCH = robot.Latch.getPosition();
                 }
-                if (gamepad2.right_trigger && gamepad2.dpad_up){
-                    robot.rgtLatch.getCurrentPosition() = MAX_RGT_LATCH;
+                if (gamepad2.right_trigger == 1 && gamepad2.dpad_up){
+                    MAX_RGT_LATCH = robot.Latch.getPosition();
                 }
 
                 /*----------------------------------------------END--------------------------------------------------------------------------------*/
                 /*----------------------------------------------lftLatch_Config Start--------------------------------------------------------------------*/
-                if ((-gampad2.right_stick_y) > 0){
+                /*if ((-gampad2.right_stick_y) > 0){
                     robot.lftLatch.setPosition(robot.lftLatch.getCurrentPosition() + ((-gampad2.left_stick_y) * 0.1) );
                     telemetry.addData("Left Latch: ", "is calibrating");
                     telemetry.update();
@@ -98,7 +100,7 @@ public class Config {
                 }
                 if (gamepad2.left_trigger && gamepad2.dpad_up){
                     robot.lftLatch.getCurrentPosition() = MAX_LFT_LATCH;
-                }
+                }*/
                 /*----------------------------------------------END--------------------------------------------------------------------------------*/
                 /*----------------------------------------------Telemetry Start--------------------------------------------------------------------*/
                 if (MIN_LFT_LATCH != 0){
@@ -123,20 +125,20 @@ public class Config {
 
         }
         //set left to max/min
-        if (gamepad2.left_bumper && gamepad2.dpad_down){
+        /*if (gamepad2.left_bumper && gamepad2.dpad_down){
             robot.lftLatch.setPosition(MIN_LFT_LATCH);
         }
         if (gamepad2.left_bumper && gamepad2.dpad_up){
             robot.lftLatch.setPosition(MAX_LFT_LATCH);
-        }
+        }*/
 
 
         //set right to max/min
         if (gamepad2.right_bumper && gamepad2.dpad_down){
-            robot.rgtLatch.setPosition(MIN_RGT_LATCH);
+            robot.Latch.setPosition(MIN_RGT_LATCH);
         }
         if (gamepad2.right_bumper && gamepad2.dpad_up){
-            robot.rgtLatch.setPosition(MAX_RGT_LATCH);
+            robot.Latch.setPosition(MAX_RGT_LATCH);
         }
 
 
