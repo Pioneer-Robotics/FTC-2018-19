@@ -27,8 +27,8 @@ public class HardwareLL5156
 
     public static final double lunchBoxMAX_POSITION = 0.875;
     public static final double lunchBoxMIN_POSITION = 0.55;
-    public static final double LatchMAX_POSITION = 0.95;
-    public static final double LatchMIN_POSITION = 0.67;
+    public static final double LatchMAX_POSITION = 0.87;
+    public static final double LatchMIN_POSITION = 0;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
