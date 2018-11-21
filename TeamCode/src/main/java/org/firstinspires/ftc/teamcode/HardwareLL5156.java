@@ -20,8 +20,7 @@ public class HardwareLL5156
     public DcMotor  motorRight  = null;
     public DcMotor  linearArm   = null;
     public Servo lunchBox   = null;
-    public Servo rgtLatch   = null;
-    public Servo lftLatch   = null;
+    public Servo Latch   = null;
     public DigitalChannel linearSwitch = null;
 
     //public Servo    rightClaw   = null;
@@ -31,10 +30,9 @@ public class HardwareLL5156
     public static final double ARM_DOWN_POWER  = -0.45 ;
     public static final double lunchBoxMAX_POSITION = 0.875;
     public static final double lunchBoxMIN_POSITION = 0.55;
-    public static final double rgtLatchMAX_POSITION = 0.95;
-    public static final double rgtLatchMIN_POSITION = 0.67;
-    public static final double lftLatchMAX_POSITION = 0.00;
-    public static final double lftLatchMIN_POSITION = 0.28;
+    public static final double LatchMAX_POSITION = 0.95;
+    public static final double LatchMIN_POSITION = 0.67;
+
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
     private ElapsedTime period  = new ElapsedTime();
@@ -71,12 +69,11 @@ public class HardwareLL5156
 
         // Define and initialize ALL installed servos.
         lunchBox  = hwMap.get(Servo.class, "lunchBox");
-        rgtLatch  = hwMap.get(Servo.class, "rgtLatch");
-        lftLatch  = hwMap.get(Servo.class, "lftLatch");
+        Latch  = hwMap.get(Servo.class, "Latch");
+
 
         lunchBox.setPosition(lunchBoxMAX_POSITION);
-        rgtLatch.setPosition(rgtLatchMAX_POSITION);
-        lftLatch.setPosition(lftLatchMAX_POSITION);
+        Latch.setPosition(LatchMAX_POSITION);
 
     }
 }

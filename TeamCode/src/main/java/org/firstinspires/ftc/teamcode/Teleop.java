@@ -105,14 +105,12 @@ public class Teleop extends LinearOpMode
             // Controls latching servos on linear actuator
             if (gamepad2.dpad_up)
             {
-                robot.rgtLatch.setPosition(HardwareLL5156.rgtLatchMAX_POSITION);
-                robot.lftLatch.setPosition(HardwareLL5156.lftLatchMAX_POSITION);
+                robot.Latch.setPosition(HardwareLL5156.LatchMAX_POSITION);
                 telemetry.addData("Latches","Max");
             }
             if (gamepad2.dpad_down)
             {
-                robot.rgtLatch.setPosition(HardwareLL5156.rgtLatchMIN_POSITION);
-                robot.lftLatch.setPosition(HardwareLL5156.lftLatchMIN_POSITION);
+                robot.Latch.setPosition(HardwareLL5156.LatchMIN_POSITION);
                 telemetry.addData("Latches","Min");
             }
             // Drops team marker with servo
