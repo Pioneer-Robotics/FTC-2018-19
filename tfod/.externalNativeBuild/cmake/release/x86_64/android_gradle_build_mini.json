@@ -1,0 +1,22 @@
+{
+  "buildFiles": [
+    "C:\\Users\\Charlotte\\Documents\\ftc\\FTC\\tfod\\CMakeLists.txt"
+  ],
+  "cleanCommands": [
+    "C:\\Users\\Charlotte\\AppData\\Local\\Android\\Sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build C:\\Users\\Charlotte\\Documents\\ftc\\FTC\\tfod\\.externalNativeBuild\\cmake\\release\\x86_64 --target clean"
+  ],
+  "libraries": {
+    "object_tracking-Release-x86_64": {
+      "artifactName": "object_tracking",
+      "buildCommand": "C:\\Users\\Charlotte\\AppData\\Local\\Android\\Sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build C:\\Users\\Charlotte\\Documents\\ftc\\FTC\\tfod\\.externalNativeBuild\\cmake\\release\\x86_64 --target object_tracking",
+      "abi": "x86_64",
+      "output": "C:\\Users\\Charlotte\\Documents\\ftc\\FTC\\tfod\\build\\intermediates\\cmake\\release\\obj\\x86_64\\libobject_tracking.so"
+    },
+    "image_utils-Release-x86_64": {
+      "artifactName": "image_utils",
+      "buildCommand": "C:\\Users\\Charlotte\\AppData\\Local\\Android\\Sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build C:\\Users\\Charlotte\\Documents\\ftc\\FTC\\tfod\\.externalNativeBuild\\cmake\\release\\x86_64 --target image_utils",
+      "abi": "x86_64",
+      "output": "C:\\Users\\Charlotte\\Documents\\ftc\\FTC\\tfod\\build\\intermediates\\cmake\\release\\obj\\x86_64\\libimage_utils.so"
+    }
+  }
+}

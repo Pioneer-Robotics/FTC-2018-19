@@ -1,0 +1,4 @@
+C:/Users/Charlotte/Documents/ftc/FTC/tfod/.externalNativeBuild/cmake/debug/x86_64/CMakeFiles/edit_cache.dir
+C:/Users/Charlotte/Documents/ftc/FTC/tfod/.externalNativeBuild/cmake/debug/x86_64/CMakeFiles/image_utils.dir
+C:/Users/Charlotte/Documents/ftc/FTC/tfod/.externalNativeBuild/cmake/debug/x86_64/CMakeFiles/object_tracking.dir
+C:/Users/Charlotte/Documents/ftc/FTC/tfod/.externalNativeBuild/cmake/debug/x86_64/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,22 @@
+{
+  "buildFiles": [
+    "C:\\Users\\Charlotte\\Documents\\ftc\\FTC\\tfod\\CMakeLists.txt"
+  ],
+  "cleanCommands": [
+    "C:\\Users\\Charlotte\\AppData\\Local\\Android\\Sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build C:\\Users\\Charlotte\\Documents\\ftc\\FTC\\tfod\\.externalNativeBuild\\cmake\\release\\arm64-v8a --target clean"
+  ],
+  "libraries": {
+    "image_utils-Release-arm64-v8a": {
+      "artifactName": "image_utils",
+      "buildCommand": "C:\\Users\\Charlotte\\AppData\\Local\\Android\\Sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build C:\\Users\\Charlotte\\Documents\\ftc\\FTC\\tfod\\.externalNativeBuild\\cmake\\release\\arm64-v8a --target image_utils",
+      "abi": "arm64-v8a",
+      "output": "C:\\Users\\Charlotte\\Documents\\ftc\\FTC\\tfod\\build\\intermediates\\cmake\\release\\obj\\arm64-v8a\\libimage_utils.so"
+    },
+    "object_tracking-Release-arm64-v8a": {
+      "artifactName": "object_tracking",
+      "buildCommand": "C:\\Users\\Charlotte\\AppData\\Local\\Android\\Sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build C:\\Users\\Charlotte\\Documents\\ftc\\FTC\\tfod\\.externalNativeBuild\\cmake\\release\\arm64-v8a --target object_tracking",
+      "abi": "arm64-v8a",
+      "output": "C:\\Users\\Charlotte\\Documents\\ftc\\FTC\\tfod\\build\\intermediates\\cmake\\release\\obj\\arm64-v8a\\libobject_tracking.so"
+    }
+  }
+}
