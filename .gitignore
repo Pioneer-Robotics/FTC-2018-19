@@ -24,7 +24,9 @@ Thumbs.db
 .gradle
 build/
 TeamCode/build/
-FtcRobotController/Build/
+FtcRobotController/build/
+tfod/build
+tfod/.externalNativeBuild
 
 *ASUS_PC_01*
 
