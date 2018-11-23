@@ -22,17 +22,17 @@ public class Config extends LinearOpMode
     public void runOpMode() {
 
         robot.init(hardwareMap);
-        robot.linearSwitch.setMode(DigitalChannel.Mode.INPUT);
+        robot.botSwitch.setMode(DigitalChannel.Mode.INPUT);
 
 
 
         //linear arm to bottom to record "0" value
-        if (robot.linearSwitch.getState()) {
+        if (robot.botSwitch.getState()) {
             robot.linearArm.setPower(0.75);
             telemetry.addData("Switch ", "is calibrating");
             telemetry.update();
 
-        } else if (!robot.linearSwitch.getState()) {
+        } else if (!robot.botSwitch.getState()) {
             robot.linearArm.setPower(0);
             LINEAR_ZERO = robot.linearArm.getCurrentPosition();
             telemetry.addData("Switch ", "is calibrated");

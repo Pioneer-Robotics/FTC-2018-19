@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.widget.Switch;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -29,7 +31,7 @@ public class Teleop extends LinearOpMode
 
         telemetry.addData("Teleop", "Initiate");    //
         telemetry.update();
-        robot.linearSwitch.setMode(DigitalChannel.Mode.INPUT);
+        robot.botSwitch.setMode(DigitalChannel.Mode.INPUT);
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
@@ -49,19 +51,29 @@ public class Teleop extends LinearOpMode
             {
                 arm /= armMax;
             }
-
+            telemetry.addData("Trigger is", robot.trigger.isPressed() ? "Pressed" : "not Pressed");
             // Output the safe vales to the motor drives.
-            if (robot.linearSwitch.getState())
+            if ((robot.botSwitch.getState() && (robot.topSwitch.getState() && !robot.trigger.isPressed())))
             {
                 robot.linearArm.setPower(-arm);
                 telemetry.addData("Switch","is not pressed");
             }
-            else if (!robot.linearSwitch.getState() && arm <= 0)
+            else if (!robot.botSwitch.getState() && arm < 0)
             {
                 robot.linearArm.setPower(-arm);
                 telemetry.addData("Switch","is pressed");
             }
-            else if (!robot.linearSwitch.getState() && arm > 0)
+            else if (!robot.botSwitch.getState() && arm >= 0)
+            {
+                robot.linearArm.setPower(0);
+                telemetry.addData("Switch","is pressed");
+            }
+            else if (arm > 0)
+            {
+                robot.linearArm.setPower(-arm);
+                telemetry.addData("Switch","is pressed");
+            }
+            else if ((!robot.topSwitch.getState() || robot.trigger.isPressed()) && arm <= 0)
             {
                 robot.linearArm.setPower(0);
                 telemetry.addData("Switch","is pressed");

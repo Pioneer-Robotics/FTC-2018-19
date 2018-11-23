@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -21,7 +22,9 @@ public class HardwareLL5156
     public DcMotor  linearArm   = null;
     public Servo lunchBox   = null;
     public Servo Latch   = null;
-    public DigitalChannel linearSwitch = null;
+    public DigitalChannel botSwitch = null;
+    public DigitalChannel topSwitch = null;
+    public TouchSensor trigger = null;
 
     //public Servo    rightClaw   = null;
 
@@ -51,7 +54,9 @@ public class HardwareLL5156
         linearArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorLeft.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         motorRight.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
-        linearSwitch = hwMap.get(DigitalChannel.class, "linearSwitch");
+        botSwitch = hwMap.get(DigitalChannel.class, "botSwitch");
+        topSwitch = hwMap.get(DigitalChannel.class, "topSwitch");
+        trigger = hwMap.get(TouchSensor.class, "trigger");
 
         // Set all motors to zero power
         motorLeft.setPower(0);
