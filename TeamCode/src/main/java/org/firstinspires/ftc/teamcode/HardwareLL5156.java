@@ -28,8 +28,8 @@ public class HardwareLL5156
 
     //public Servo    rightClaw   = null;
 
-    public static final double lunchBoxMAX_POSITION = 0.875;
-    public static final double lunchBoxMIN_POSITION = 0.55;
+    public static final double lunchBoxMAX_POSITION = 0.35;
+    public static final double lunchBoxMIN_POSITION = 0.875;
     public static final double LatchMAX_POSITION = 0.87;
     public static final double LatchMIN_POSITION = 0;
 
