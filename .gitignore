@@ -22,7 +22,6 @@ Thumbs.db
 *.iml
 .idea
 .gradle
-local.properties
 build/
 
 *ASUS_PC_01*
