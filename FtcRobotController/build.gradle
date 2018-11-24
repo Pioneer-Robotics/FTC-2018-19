@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         minSdkVersion 19
-        targetSdkVersion 26
+        targetSdkVersion 19
     }
 
     compileSdkVersion 23
@@ -23,8 +23,5 @@ repositories {
         dirs '../libs'
     }
 }
-dependencies
-        {
-            api 'org.tensorflow:tensorflow-android:+'
-        }
+
 apply from: 'build.release.gradle'
