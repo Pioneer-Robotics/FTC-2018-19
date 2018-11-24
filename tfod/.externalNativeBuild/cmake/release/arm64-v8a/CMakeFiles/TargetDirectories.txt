@@ -1,4 +1,0 @@
-C:/Users/Charlotte/Documents/ftc/FTC/tfod/.externalNativeBuild/cmake/release/arm64-v8a/CMakeFiles/edit_cache.dir
-C:/Users/Charlotte/Documents/ftc/FTC/tfod/.externalNativeBuild/cmake/release/arm64-v8a/CMakeFiles/image_utils.dir
-C:/Users/Charlotte/Documents/ftc/FTC/tfod/.externalNativeBuild/cmake/release/arm64-v8a/CMakeFiles/object_tracking.dir
-C:/Users/Charlotte/Documents/ftc/FTC/tfod/.externalNativeBuild/cmake/release/arm64-v8a/CMakeFiles/rebuild_cache.dir
