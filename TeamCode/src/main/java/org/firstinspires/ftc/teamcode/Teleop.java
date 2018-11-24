@@ -26,6 +26,7 @@ public class Teleop extends LinearOpMode
         double max;
         double arm;
         double armMax;
+        double cam;
 
         robot.init(hardwareMap);
 
@@ -44,6 +45,7 @@ public class Teleop extends LinearOpMode
             drive = -gamepad1.left_stick_y;
             turn  =  gamepad1.left_stick_x;
             arm = gamepad2.right_stick_y;
+            cam = gamepad2.left_stick_x;
 
             //normalization of arm value
             armMax = Math.abs(arm);
@@ -102,8 +104,11 @@ public class Teleop extends LinearOpMode
                 robot.motorRight.setPower(-right);
                 telemetry.addData("Reverse", "Deactivated");
             }
+            if (gamepad1.x) {
 
-
+            }
+            robot.Camera.setPosition((-turn+1)/2);
+            telemetry.addData("Camera:", "%.3f",turn);
 
 
             // Controls latching servos on linear actuator

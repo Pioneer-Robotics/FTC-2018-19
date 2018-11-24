@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -57,7 +58,12 @@ import java.util.List;
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
-
+    HardwareLL5156 robot           = new HardwareLL5156();
+    static final double     TETRIX_TICKS_PER_REV    = 1440;
+    static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;
+    static final double     WHEEL_DIAMETER_CM   = 4.0*2.54 ;
+    static final double     COUNTS_PER_INCH         = (TETRIX_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_CM * 3.1415);
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
      * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
@@ -88,6 +94,15 @@ import java.util.List;
     public void runOpMode() {
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
+        double left;
+        double right;
+        double drive;
+        double turn;
+        double max;
+        double arm;
+        double armMax;
+
+        robot.init(hardwareMap);
         initVuforia();
 
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
@@ -108,6 +123,51 @@ import java.util.List;
             }
 
             while (opModeIsActive()) {
+                drive = -gamepad1.left_stick_y;
+                turn  =  gamepad1.left_stick_x;
+                arm = gamepad2.right_stick_y;
+
+                //normalization of arm value
+                armMax = Math.abs(arm);
+                if (armMax > 1.0)
+                {
+                    arm /= armMax;
+                }
+                if ((robot.botSwitch.getState() && robot.topSwitch.getState() && !robot.trigger.isPressed()))
+                {
+                    robot.linearArm.setPower(-arm);
+                }
+                else if ((!robot.botSwitch.getState() || robot.trigger.isPressed()) && arm < 0)
+                {
+                    robot.linearArm.setPower(-arm);
+                }
+                else if ((!robot.botSwitch.getState() || robot.trigger.isPressed()) && arm >= 0)
+                {
+                    robot.linearArm.setPower(0);
+                }
+                else if (arm > 0)
+                {
+                    robot.linearArm.setPower(-arm);
+                }
+                else if (!robot.topSwitch.getState() && arm <= 0)
+                {
+                    robot.linearArm.setPower(0);
+                }
+
+                //blended motion
+                left  = drive + turn;
+                right = drive - turn;
+
+                // Normalize the values so neither exceed +/- 1.0
+                max = (Math.max(Math.abs(left), Math.abs(right)))/2;
+                if (max > 1.0)
+                {
+                    left /= max;
+                    right /= max;
+                }
+                robot.motorLeft.setPower(-left);
+                robot.motorRight.setPower(-right);
+
                 if (tfod != null) {
                     // getUpdatedRecognitions() will return null if no new information is available since
                     // the last time that call was made.

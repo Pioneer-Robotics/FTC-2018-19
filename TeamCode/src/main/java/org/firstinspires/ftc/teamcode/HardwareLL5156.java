@@ -22,6 +22,7 @@ public class HardwareLL5156
     public DcMotor  linearArm;
     public Servo lunchBox;
     public Servo Latch;
+    public Servo Camera;
     public DigitalChannel botSwitch;
     public DigitalChannel topSwitch;
     public TouchSensor trigger;
@@ -72,6 +73,7 @@ public class HardwareLL5156
         // Define and initialize ALL installed servos.
         lunchBox  = hwMap.get(Servo.class, "lunchBox");
         Latch  = hwMap.get(Servo.class, "Latch");
+        Camera = hwMap.get(Servo.class, "Camera");
 
 
         lunchBox.setPosition(lunchBoxMAX_POSITION);
