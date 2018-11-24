@@ -105,7 +105,7 @@ public class Teleop extends LinearOpMode
                 robot.motorRight.setPower(-right);
                 telemetry.addData("Reverse", "Deactivated");
             }
-            if (gamepad1.x) {
+            if (gamepad2.a) {
                 if (activate_suq == 0)
                 {
                     robot.Collector.setPosition(0);
@@ -116,6 +116,10 @@ public class Teleop extends LinearOpMode
                     activate_suq = -activate_suq;
                 }
             }
+            if (gamepad2.left_bumper) {
+                activate_suq = 0;
+            }
+
             robot.Succq.setPower(activate_suq);
 
             robot.Camera.setPosition((-turn+0.9)/2);
