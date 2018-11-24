@@ -62,10 +62,10 @@ public class SimpleAuto extends LinearOpMode
 
         //ACTUAL MOVEMENT
 
-        //Drop down off lander
-        while (robot.linearArm.getCurrentPosition() < (Config.LINEAR_ZERO + Config.CHANGE_IN_LINEAR /* encoder value at top */ - 0 /* Most effective detachment point might not be at the top*/) )
+        //Drop down off lander - lowering robot
+        while (robot.topSwitch.getState())  /* Most effective detachment point might not be at the top*/
         {
-            //positive= up
+            //positive = up
             telemetry.addData("Status: ", "Lowering");
             telemetry.update();
             robot.linearArm.setPower(1);
@@ -73,23 +73,18 @@ public class SimpleAuto extends LinearOpMode
         }
         robot.linearArm.setPower(0);
 
+        // Detach from lander
+        robot.Latch.setPosition(HardwareLL5156.LatchMAX_POSITION);
+        telemetry.addData("Latches","Max");
         telemetry.addData("Status: ", "Disengaging From Lander");
         telemetry.update();
-        robot.Latch.setPosition(Config.MIN_RGT_LATCH);
 
-        //drive away
+        //Drive away
         encoderDrive(DRIVE_SPEED,-10,-10,5.0);
 
         //Run Google Tensor Flow to detect object.....
         telemetry.addData("Status: ", "Detecting Gold Sample");
         telemetry.update();
-
-
-
-
-
-
-
 
 
 
@@ -124,7 +119,7 @@ public class SimpleAuto extends LinearOpMode
         telemetry.update();
     }
 
-    public void encoderDrive(double speed,double leftCM, double rightCM,double timeoutS )
+    public void encoderDrive(double speed, double leftCM, double rightCM, double timeoutS )
     {
         int newLeftTarget;
         int newRightTarget;

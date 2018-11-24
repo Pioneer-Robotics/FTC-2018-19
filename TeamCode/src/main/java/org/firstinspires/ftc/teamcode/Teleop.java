@@ -112,11 +112,13 @@ public class Teleop extends LinearOpMode
 
 
             // Controls latching servos on linear actuator
+            // Latch open
             if (gamepad2.dpad_up)
             {
                 robot.Latch.setPosition(HardwareLL5156.LatchMAX_POSITION);
                 telemetry.addData("Latches","Max");
             }
+            // Latch closed
             if (gamepad2.dpad_down)
             {
                 robot.Latch.setPosition(HardwareLL5156.LatchMIN_POSITION);
