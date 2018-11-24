@@ -52,31 +52,28 @@ public class Teleop extends LinearOpMode
                 arm /= armMax;
             }
             telemetry.addData("Trigger is", robot.trigger.isPressed() ? "Pressed" : "not Pressed");
+            telemetry.addData("Bottom is", !robot.botSwitch.getState() ? "Pressed" : "not Pressed");
+            telemetry.addData("Top is", !robot.topSwitch.getState() ? "Pressed" : "not Pressed");
             // Output the safe vales to the motor drives.
-            if ((robot.botSwitch.getState() && (robot.topSwitch.getState() && !robot.trigger.isPressed())))
+            if ((robot.botSwitch.getState() && robot.topSwitch.getState() && !robot.trigger.isPressed()))
             {
                 robot.linearArm.setPower(-arm);
-                telemetry.addData("Switch","is not pressed");
             }
-            else if (!robot.botSwitch.getState() && arm < 0)
+            else if ((!robot.botSwitch.getState() || robot.trigger.isPressed()) && arm < 0)
             {
                 robot.linearArm.setPower(-arm);
-                telemetry.addData("Switch","is pressed");
             }
-            else if (!robot.botSwitch.getState() && arm >= 0)
+            else if ((!robot.botSwitch.getState() || robot.trigger.isPressed()) && arm >= 0)
             {
                 robot.linearArm.setPower(0);
-                telemetry.addData("Switch","is pressed");
             }
             else if (arm > 0)
             {
                 robot.linearArm.setPower(-arm);
-                telemetry.addData("Switch","is pressed");
             }
-            else if ((!robot.topSwitch.getState() || robot.trigger.isPressed()) && arm <= 0)
+            else if (!robot.topSwitch.getState() && arm <= 0)
             {
                 robot.linearArm.setPower(0);
-                telemetry.addData("Switch","is pressed");
             }
 
             //blended motion

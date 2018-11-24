@@ -17,14 +17,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class HardwareLL5156
 {
     /* Public OpMode members. */
-    public DcMotor  motorLeft   = null;
-    public DcMotor  motorRight  = null;
-    public DcMotor  linearArm   = null;
-    public Servo lunchBox   = null;
-    public Servo Latch   = null;
-    public DigitalChannel botSwitch = null;
-    public DigitalChannel topSwitch = null;
-    public TouchSensor trigger = null;
+    public DcMotor  motorLeft;
+    public DcMotor  motorRight;
+    public DcMotor  linearArm;
+    public Servo lunchBox;
+    public Servo Latch;
+    public DigitalChannel botSwitch;
+    public DigitalChannel topSwitch;
+    public TouchSensor trigger;
 
     //public Servo    rightClaw   = null;
 
@@ -34,7 +34,7 @@ public class HardwareLL5156
     public static final double LatchMIN_POSITION = 0;
 
     /* local OpMode members. */
-    HardwareMap hwMap           =  null;
+    HardwareMap hwMap;
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
