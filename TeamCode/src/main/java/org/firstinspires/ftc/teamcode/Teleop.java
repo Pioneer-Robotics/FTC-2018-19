@@ -107,7 +107,7 @@ public class Teleop extends LinearOpMode
             if (gamepad1.x) {
 
             }
-            robot.Camera.setPosition((-turn+1)/2);
+            robot.Camera.setPosition((-turn+0.9)/2);
             telemetry.addData("Camera:", "%.3f",turn);
 
 
