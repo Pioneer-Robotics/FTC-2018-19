@@ -20,9 +20,11 @@ public class HardwareLL5156
     public DcMotor  motorLeft;
     public DcMotor  motorRight;
     public DcMotor  linearArm;
+    public DcMotor Succq;
     public Servo lunchBox;
     public Servo Latch;
     public Servo Camera;
+    public Servo Collector;
     public DigitalChannel botSwitch;
     public DigitalChannel topSwitch;
     public TouchSensor trigger;
@@ -52,6 +54,7 @@ public class HardwareLL5156
         motorLeft  = hwMap.get(DcMotor.class, "motorLeft");
         motorRight = hwMap.get(DcMotor.class, "motorRight");
         linearArm  = hwMap.get(DcMotor.class, "linearArm");
+        Succq = hwMap.get(DcMotor.class, "succq");
         linearArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorLeft.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         motorRight.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
@@ -69,15 +72,18 @@ public class HardwareLL5156
         motorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         linearArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Succq.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Define and initialize ALL installed servos.
         lunchBox  = hwMap.get(Servo.class, "lunchBox");
         Latch  = hwMap.get(Servo.class, "Latch");
         Camera = hwMap.get(Servo.class, "Camera");
+        Collector = hwMap.get(Servo.class, "collector");
 
 
         lunchBox.setPosition(lunchBoxMAX_POSITION);
         Latch.setPosition(LatchMAX_POSITION);
+        Collector.setPosition(0.5);
 
     }
 }

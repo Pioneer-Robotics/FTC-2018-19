@@ -27,6 +27,7 @@ public class Teleop extends LinearOpMode
         double arm;
         double armMax;
         double cam;
+        int activate_suq = 0;
 
         robot.init(hardwareMap);
 
@@ -79,8 +80,8 @@ public class Teleop extends LinearOpMode
             }
 
             //blended motion
-            left  = drive + turn;
-            right = drive - turn;
+            left  = drive + turn/2;
+            right = drive - turn/2;
 
             // Normalize the values so neither exceed +/- 1.0
             max = (Math.max(Math.abs(left), Math.abs(right)))/2;
@@ -105,8 +106,18 @@ public class Teleop extends LinearOpMode
                 telemetry.addData("Reverse", "Deactivated");
             }
             if (gamepad1.x) {
-
+                if (activate_suq == 0)
+                {
+                    robot.Collector.setPosition(0);
+                    activate_suq = 1;
+                }
+                else
+                {
+                    activate_suq = -activate_suq;
+                }
             }
+            robot.Succq.setPower(activate_suq);
+
             robot.Camera.setPosition((-turn+0.9)/2);
             telemetry.addData("Camera:", "%.3f",turn);
 

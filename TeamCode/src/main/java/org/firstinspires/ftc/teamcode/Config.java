@@ -23,6 +23,7 @@ public class Config extends LinearOpMode
 
         robot.init(hardwareMap);
         robot.botSwitch.setMode(DigitalChannel.Mode.INPUT);
+        robot.topSwitch.setMode(DigitalChannel.Mode.INPUT);
 
 
 
