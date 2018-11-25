@@ -115,6 +115,7 @@ public class Teleop extends LinearOpMode
                 {
                     activate_suq = -activate_suq;
                 }
+                sleep(50);
             }
             if (gamepad2.left_bumper) {
                 activate_suq = 0;
