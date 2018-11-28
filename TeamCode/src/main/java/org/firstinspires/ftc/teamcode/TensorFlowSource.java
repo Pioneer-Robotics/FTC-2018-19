@@ -50,8 +50,7 @@ import java.util.List;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-    HardwareLL5156 robot           = new HardwareLL5156();
-    robot.init(hardwareMap);
+
 
 
     public class TensorFlowSource extends Thread {

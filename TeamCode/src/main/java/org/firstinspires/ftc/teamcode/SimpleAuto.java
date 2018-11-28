@@ -43,19 +43,13 @@ public class SimpleAuto extends LinearOpMode
     Orientation angles;
     Acceleration gravity;
 
-    BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-    parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-    parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-    parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-    parameters.loggingEnabled      = true;
-    parameters.loggingTag          = "IMU";
-    parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
+
 
     // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
     // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
     // and named "imu".
-    imu = hardwareMap.get(BNO055IMU.class, "imu");
-    imu.initialize(parameters);
+
 
     /*public double Rotations(double Rotation)
     {
@@ -70,8 +64,16 @@ public class SimpleAuto extends LinearOpMode
     @Override
     public void runOpMode()
     {
+        BNO055IMU.Parameters IParameters = new BNO055IMU.Parameters();
         robot.init(hardwareMap);
-
+        IParameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        IParameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        IParameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        IParameters.loggingEnabled      = true;
+        IParameters.loggingTag          = "IMU";
+        IParameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(IParameters);
         /*imu = hardwareMap.get(Gyroscope.class, "imu");
         motorRight = hardwareMap.get(DcMotor.class, "motorRight");
         motorLeft = hardwareMap.get(DcMotor.class, "motorLeft");*/
@@ -138,7 +140,7 @@ public class SimpleAuto extends LinearOpMode
             robot.motorLeft.setPower(0.75);
             robot.motorRight.setPower(-0.75);
 
-            while (angles.firstAngle !=< 50){
+            while (!(angles.firstAngle <= 50)){
                 robot.motorLeft.setPower(0);
                 robot.motorRight.setPower(0);
             }
