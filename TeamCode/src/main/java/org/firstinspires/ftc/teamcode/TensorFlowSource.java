@@ -33,6 +33,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
@@ -53,7 +54,7 @@ import java.util.List;
 
 
 
-    public class TensorFlowSource extends Thread {
+public class TensorFlowSource extends Thread {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
@@ -86,13 +87,13 @@ import java.util.List;
      */
     private TFObjectDetector tfod;
 
-    public void init(HardwareDevice cam, int hw) {
+    public void init(CameraName cam, int hw) {
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
 
 
-        initVuforia(cam);
-        initTfod(hw);
+        this.initVuforia(cam);
+        this.initTfod(hw);
         Status = 100;
     }
         /** Wait for the game to begin */
@@ -145,6 +146,7 @@ import java.util.List;
             }
 
         }
+        return -4;
     }
 
 
@@ -156,12 +158,11 @@ import java.util.List;
         }
     }
 
-}
 
     /**
      * Initialize the Vuforia localization engine.
      */
-    private void initVuforia(HardwareDevice cam) {
+    private void initVuforia(CameraName cam) {
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
          */
