@@ -74,9 +74,12 @@ public class SimpleAuto extends LinearOpMode
         IParameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(IParameters);
+        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
         /*imu = hardwareMap.get(Gyroscope.class, "imu");
         motorRight = hardwareMap.get(DcMotor.class, "motorRight");
         motorLeft = hardwareMap.get(DcMotor.class, "motorLeft");*/
+        angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        gravity  = imu.getGravity();
 
         robot.motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.motorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -105,9 +108,7 @@ public class SimpleAuto extends LinearOpMode
         telemetry.addData("Path0", "Starting at %7d:%7d",
                 robot.motorLeft.getCurrentPosition(),robot.motorRight.getCurrentPosition());
         telemetry.update();
-
-
-
+        
 
         //ACTUAL MOVEMENT
 

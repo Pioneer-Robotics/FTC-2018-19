@@ -30,11 +30,9 @@
 package org.firstinspires.ftc.teamcode;
 
 
-import com.qualcomm.robotcore.hardware.HardwareDevice;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
@@ -154,7 +152,10 @@ public class TensorFlowSource extends Thread {
 
     public void run() {
         while (true){
-            Status = this.checkThree();
+            int st = this.checkThree();
+            if (st != -1) {
+                this.Status = st;
+            }
         }
     }
 
