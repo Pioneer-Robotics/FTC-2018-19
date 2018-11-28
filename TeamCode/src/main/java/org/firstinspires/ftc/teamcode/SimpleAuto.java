@@ -1,9 +1,24 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.Func;
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import java.util.Locale;
+
 
 @Autonomous (name="LL5156: Auto Drive by Encoder", group="LL5156")
 public class SimpleAuto extends LinearOpMode
@@ -17,10 +32,31 @@ public class SimpleAuto extends LinearOpMode
     static final double     TETRIX_TICKS_PER_REV    = 1440;
     static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_CM   = 4.0*2.54 ;     // For figuring circumference
-    static final double     COUNTS_PER_INCH         = (TETRIX_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) /
-            (WHEEL_DIAMETER_CM * 3.1415);
+    static final double     COUNTS_PER_INCH         = (TETRIX_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_CM * 3.1415);
     static final double     DRIVE_SPEED             = 0.5;
     static final double     TURN_SPEED              = 0.4;
+
+
+    BNO055IMU imu;
+
+    // State used for updating telemetry
+    Orientation angles;
+    Acceleration gravity;
+
+    BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+    parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+    parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+    parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+    parameters.loggingEnabled      = true;
+    parameters.loggingTag          = "IMU";
+    parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
+    // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+    // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+    // and named "imu".
+    imu = hardwareMap.get(BNO055IMU.class, "imu");
+    imu.initialize(parameters);
+
     /*public double Rotations(double Rotation)
     {
         return Rotation*TETRIX_TICKS_PER_REV;
@@ -48,6 +84,15 @@ public class SimpleAuto extends LinearOpMode
         robot.motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.linearArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+
+        TensorFlowSource tFlow = new TensorFlowSource();
+        tFlow.init(hardwareMap.get(WebcamName.class, "Webcam 1"), hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+
+        tFlow.start();
+
+
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         // Wait for the game to start (driver presses PLAY)
@@ -58,6 +103,8 @@ public class SimpleAuto extends LinearOpMode
         telemetry.addData("Path0", "Starting at %7d:%7d",
                 robot.motorLeft.getCurrentPosition(),robot.motorRight.getCurrentPosition());
         telemetry.update();
+
+
 
 
         //ACTUAL MOVEMENT
@@ -85,6 +132,20 @@ public class SimpleAuto extends LinearOpMode
         //Run Google Tensor Flow to detect object.....
         telemetry.addData("Status: ", "Detecting Gold Sample");
         telemetry.update();
+
+        if (tFlow.Status == 1){
+            //left
+            robot.motorLeft.setPower(0.75);
+            robot.motorRight.setPower(-0.75);
+
+            while (angles.firstAngle !=< 50){
+                robot.motorLeft.setPower(0);
+                robot.motorRight.setPower(0);
+            }
+
+        }
+
+
 
 
 
