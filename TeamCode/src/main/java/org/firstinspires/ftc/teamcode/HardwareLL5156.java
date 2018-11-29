@@ -22,7 +22,6 @@ public class HardwareLL5156
     public DcMotor  linearArm;
     public DcMotor Succq;
     public Servo lunchBox;
-    public Servo swivelCam;
     public Servo Latch;
     public Servo Camera;
     public Servo Collector;
@@ -80,13 +79,12 @@ public class HardwareLL5156
         Latch  = hwMap.get(Servo.class, "Latch");
         Camera = hwMap.get(Servo.class, "Camera");
         Collector = hwMap.get(Servo.class, "collector");
-        swivelCam = hwMap.get(Servo.class, "swivelCam");
 
 
         lunchBox.setPosition(lunchBoxMAX_POSITION);
         Latch.setPosition(LatchMAX_POSITION);
         Collector.setPosition(0.5);
-        swivelCam.setPosition(0.5);
+        Camera.setPosition(0.5);
 
     }
 }

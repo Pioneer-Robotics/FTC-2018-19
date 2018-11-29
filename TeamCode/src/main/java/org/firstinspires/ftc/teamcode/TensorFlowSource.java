@@ -172,30 +172,6 @@ public class TensorFlowSource extends Thread {
         }
     }
 
-
-
-    //a calibration of the imu needs to be put at the start of the Simple Auto
-    public int camVision {
-        //im just going to create the funtion to have a relation between heading and the servo but the angles stuff jackson recently added to SimpleAuto prob needs to be added here as well
-        if (angles.firstAngle >= -90  && angles.firstAngle < 0 ) {
-            robot.swivelCam.setPosition((Math.abs(angles.firstAngle * (0.5/90)))   +    0.5);
-            //robot is turned to the right, cam stays center with objects
-        }
-
-        if (angles.firstAngle > 0  && angles.firstAngle <= 90 ) {
-            robot.swivelCam.setPosition((Math.abs(angles.firstAngle * (0.5/90)))   -    0.5);
-            //robot is turned to the left, cam stays center with objects
-        }
-
-        else{
-            robot.swivelCam.setPosition(0.5);
-            //robot is either center or past 90 degrees in either direction, cam moves to center
-        }
-
-    }
-
-
-
     /**
      * Initialize the Vuforia localization engine.
      */
