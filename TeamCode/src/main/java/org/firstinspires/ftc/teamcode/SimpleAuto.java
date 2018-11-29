@@ -174,7 +174,7 @@ public class SimpleAuto extends LinearOpMode {
         if (opModeIsActive()) {
             angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             targetAngle = angle+angles.firstAngle;
-            while (imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle != targetAngle) {
+            while (imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle > targetAngle+0.01 || imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle < targetAngle-0.01) {
                 if (imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle > targetAngle) {
                     robot.motorLeft.setPower(Math.abs(speed));
                     robot.motorRight.setPower(-Math.abs(speed));
@@ -188,6 +188,7 @@ public class SimpleAuto extends LinearOpMode {
     public void encoderDrive(double speed, double leftCM, double rightCM, double timeoutS) {
         int newLeftTarget;
         int newRightTarget;
+        double initAng = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
 
         if (opModeIsActive()) {
             newLeftTarget = robot.motorLeft.getCurrentPosition() + (int) (leftCM * COUNTS_PER_INCH);
@@ -209,6 +210,9 @@ public class SimpleAuto extends LinearOpMode {
                 telemetry.addData("Path2", "Running at %7d :%7d",
                         robot.motorLeft.getCurrentPosition(),
                         robot.motorRight.getCurrentPosition());
+                if (imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle > initAng+0.01 || imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle < initAng-0.01) {
+                    angleTurn(1, initAng);
+                }
                 telemetry.update();
             }
 
