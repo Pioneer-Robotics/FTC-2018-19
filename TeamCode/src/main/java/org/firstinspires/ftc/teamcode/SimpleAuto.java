@@ -211,7 +211,11 @@ public class SimpleAuto extends LinearOpMode {
                         robot.motorLeft.getCurrentPosition(),
                         robot.motorRight.getCurrentPosition());
                 if (imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle > initAng+0.01 || imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle < initAng-0.01) {
+                    int mLt = robot.motorLeft.getCurrentPosition();
+                    int mRt = robot.motorRight.getCurrentPosition();
                     angleTurn(1, initAng);
+                    robot.motorLeft.setTargetPosition(newLeftTarget+(robot.motorLeft.getCurrentPosition()-mLt));
+                    robot.motorRight.setTargetPosition(newRightTarget+(robot.motorRight.getCurrentPosition()-mRt));
                 }
                 telemetry.update();
             }

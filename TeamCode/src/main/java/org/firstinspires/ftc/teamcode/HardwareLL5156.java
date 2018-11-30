@@ -56,6 +56,8 @@ public class HardwareLL5156
         linearArm  = hwMap.get(DcMotor.class, "linearArm");
         Succq = hwMap.get(DcMotor.class, "succq");
         linearArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorLeft.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         motorRight.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         botSwitch = hwMap.get(DigitalChannel.class, "botSwitch");

@@ -115,8 +115,6 @@ public class TensorFlowSource extends Thread {
         /** Activate Tensor Flow Object Detection. */
         if (tfod != null) {
             tfod.activate();
-
-
             // getUpdatedRecognitions() will return null if no new information is available since
             // the last time that call was made.
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
@@ -149,10 +147,47 @@ public class TensorFlowSource extends Thread {
                             return 2; //center
                         }
                     }
+                } else {
+                    tfod.shutdown();
+                    return -2;
                 }
 
             }
-            else{
+            else {
+                return -1;
+            }
+
+        }
+        return -4;
+    }
+    public int findGold() {
+        if (tfod != null) {
+            tfod.activate();
+            // getUpdatedRecognitions() will return null if no new information is available since
+            // the last time that call was made.
+            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+            if (updatedRecognitions != null) {
+                // # of objects
+                updatedRecognitions.size();
+                int[] goldMineralXs = [];
+                float[] goldMineralCs = [];
+                float maxC = 0;
+                float goldX = 0;
+                for (Recognition recognition : updatedRecognitions) {
+                    if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                        goldMineralXs[goldMineralXs.length] = (int) recognition.getLeft();
+                        goldMineralCs[goldMineralCs.length] = recognition.getConfidence();
+                    }
+                }
+                for (int i = 0; i <= goldMineralCs.length; i++) {
+                    if (goldMineralCs[i] > maxC) {
+                        maxC = goldMineralCs[i];
+                        goldX = goldMineralXs[i];
+                    }
+                }
+
+            }
+            else {
                 return -1;
             }
 
@@ -160,14 +195,13 @@ public class TensorFlowSource extends Thread {
         return -4;
     }
 
-
-
-
     public void run() {
         while (true){
             int st = this.checkThree();
-            if (st != -1) {
+            if (st != -1 && st != -2) {
                 this.Status = st;
+            } else {
+                this.Status = findGold();
             }
         }
     }

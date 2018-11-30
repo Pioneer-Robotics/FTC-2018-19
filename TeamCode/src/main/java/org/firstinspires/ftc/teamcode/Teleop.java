@@ -27,6 +27,7 @@ public class Teleop extends LinearOpMode
         double arm;
         double armMax;
         double cam;
+        boolean flipster = false;
         int activate_suq = 0;
 
         robot.init(hardwareMap);
@@ -106,16 +107,17 @@ public class Teleop extends LinearOpMode
                 telemetry.addData("Reverse", "Deactivated");
             }
             if (gamepad2.a) {
-                if (activate_suq == 0)
-                {
-                    robot.Collector.setPosition(0);
-                    activate_suq = 1;
+                if (!flipster) {
+                    if (activate_suq == 0) {
+                        robot.Collector.setPosition(0);
+                        activate_suq = 1;
+                    } else {
+                        activate_suq = -activate_suq;
+                    }
+                    flipster = true;
                 }
-                else
-                {
-                    activate_suq = -activate_suq;
-                }
-                sleep(50);
+            } else {
+                flipster = false;
             }
             if (gamepad2.left_bumper) {
                 activate_suq = 0;
