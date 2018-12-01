@@ -169,8 +169,8 @@ public class TensorFlowSource extends Thread {
             if (updatedRecognitions != null) {
                 // # of objects
                 updatedRecognitions.size();
-                int[] goldMineralXs = [];
-                float[] goldMineralCs = [];
+                int[] goldMineralXs = {};
+                float[] goldMineralCs = {};
                 float maxC = 0;
                 float goldX = 0;
                 for (Recognition recognition : updatedRecognitions) {

@@ -83,13 +83,12 @@ public class SimpleAuto extends LinearOpMode {
         robot.motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.linearArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-
         TensorFlowSource tFlow = new TensorFlowSource();
         tFlow.init(hardwareMap.get(WebcamName.class, "Webcam 1"), hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
 
         tFlow.start();
-
+        camVision(angles.firstAngle);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -133,10 +132,11 @@ public class SimpleAuto extends LinearOpMode {
             robot.motorLeft.setPower(0.75);
             robot.motorRight.setPower(-0.75);
 
-            while (!(angles.firstAngle <= 50)) {
+            while (!(angles.firstAngle <= 45 /* add angular # */)) {
                 robot.motorLeft.setPower(0);
                 robot.motorRight.setPower(0);
             }
+
 
         }
         formatAngle(angles.angleUnit, angles.firstAngle);
@@ -230,15 +230,17 @@ public class SimpleAuto extends LinearOpMode {
         }
     }
     //a calibration of the imu needs to be put at the start of the Simple Auto
-    public void camVision() {
+    public void camVision(float calibration)
+    {
         angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+                  float  angleZero      =  calibration;
         //im just going to create the funtion to have a relation between heading and the servo but the angles stuff jackson recently added to SimpleAuto prob needs to be added here as well
-        if (angles.firstAngle >= -90  && angles.firstAngle < 0 ) {
+        if (angles.firstAngle >= (angleZero + -90)  && angles.firstAngle < angleZero ) {
             robot.Camera.setPosition((Math.abs(angles.firstAngle * (0.5/90)))   +    0.5);
             //robot is turned to the right, cam stays center with objects
         }
 
-        if (angles.firstAngle > 0  && angles.firstAngle <= 90 ) {
+        if (angles.firstAngle > angleZero  && angles.firstAngle <= (angleZero + 90) ) {
             robot.Camera.setPosition((Math.abs(angles.firstAngle * (0.5/90)))   -    0.5);
             //robot is turned to the left, cam stays center with objects
         }

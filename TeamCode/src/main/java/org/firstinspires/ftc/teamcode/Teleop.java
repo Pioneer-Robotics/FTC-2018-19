@@ -2,9 +2,16 @@ package org.firstinspires.ftc.teamcode;
 
 import android.widget.Switch;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
+
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 @TeleOp(name="LL5156:POV", group="LL5156")
 public class Teleop extends LinearOpMode
@@ -16,6 +23,15 @@ public class Teleop extends LinearOpMode
     static final double     WHEEL_DIAMETER_CM   = 4.0*2.54 ;
     static final double     COUNTS_PER_INCH         = (TETRIX_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_CM * 3.1415);
+    BNO055IMU imu;
+
+    // State used for updating telemetry
+    Orientation angles;
+    Acceleration gravity;
+
+    BNO055IMU.Parameters IParameters = new BNO055IMU.Parameters();
+
+
     @Override
     public void runOpMode()
     {
@@ -29,6 +45,19 @@ public class Teleop extends LinearOpMode
         double cam;
         boolean flipster = false;
         int activate_suq = 0;
+
+        IParameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        IParameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        IParameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        IParameters.loggingEnabled = true;
+        IParameters.loggingTag = "IMU";
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(IParameters);
+        /*imu = hardwareMap.get(Gyroscope.class, "imu");
+        motorRight = hardwareMap.get(DcMotor.class, "motorRight");
+        motorLeft = hardwareMap.get(DcMotor.class, "motorLeft");*/
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        gravity = imu.getGravity();
 
         robot.init(hardwareMap);
 
@@ -56,18 +85,18 @@ public class Teleop extends LinearOpMode
                 arm /= armMax;
             }
             telemetry.addData("Trigger is", robot.trigger.isPressed() ? "Pressed" : "not Pressed");
-            telemetry.addData("Bottom is", !robot.botSwitch.getState() ? "Pressed" : "not Pressed");
-            telemetry.addData("Top is", !robot.topSwitch.getState() ? "Pressed" : "not Pressed");
+            telemetry.addData("Bottom is", robot.botSwitch.getState() ? "Pressed" : "not Pressed");
+            telemetry.addData("Top is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
             // Output the safe vales to the motor drives.
-            if ((robot.botSwitch.getState() && robot.topSwitch.getState() && !robot.trigger.isPressed()))
+            if ((!robot.botSwitch.getState() && !robot.topSwitch.getState() && !robot.trigger.isPressed()))
             {
                 robot.linearArm.setPower(-arm);
             }
-            else if ((!robot.botSwitch.getState() || robot.trigger.isPressed()) && arm < 0)
+            else if ((robot.botSwitch.getState() || robot.trigger.isPressed()) && arm < 0)
             {
                 robot.linearArm.setPower(-arm);
             }
-            else if ((!robot.botSwitch.getState() || robot.trigger.isPressed()) && arm >= 0)
+            else if ((robot.botSwitch.getState() || robot.trigger.isPressed()) && arm >= 0)
             {
                 robot.linearArm.setPower(0);
             }
@@ -75,7 +104,7 @@ public class Teleop extends LinearOpMode
             {
                 robot.linearArm.setPower(-arm);
             }
-            else if (!robot.topSwitch.getState() && arm <= 0)
+            else if (robot.topSwitch.getState() && arm <= 0)
             {
                 robot.linearArm.setPower(0);
             }
@@ -122,13 +151,17 @@ public class Teleop extends LinearOpMode
             if (gamepad2.left_bumper) {
                 activate_suq = 0;
             }
-
             robot.Succq.setPower(activate_suq);
-
+            telemetry.addData("IMU Heading:", "%.5f", imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
             robot.Camera.setPosition((-turn+0.9)/2);
             telemetry.addData("Camera:", "%.3f",turn);
 
-
+            if (gamepad1.dpad_left) {
+                angleTurn(1,-90);
+            }
+            if (gamepad1.dpad_right) {
+                angleTurn(1,90);
+            }
             // Controls latching servos on linear actuator
             // Latch open
             if (gamepad2.dpad_up)
@@ -160,6 +193,22 @@ public class Teleop extends LinearOpMode
 
             // Pace this loop so jaw action is reasonable speed.
             //sleep(50);
+        }
+    }
+    public void angleTurn(double speed, double angle) {
+        double targetAngle;
+        if (opModeIsActive()) {
+            angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            targetAngle = angle+angles.firstAngle;
+            while (imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle > targetAngle+1 || imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle < targetAngle-1) {
+                if (imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle > targetAngle) {
+                    robot.motorLeft.setPower(Math.abs(speed));
+                    robot.motorRight.setPower(-Math.abs(speed));
+                } else {
+                    robot.motorLeft.setPower(-Math.abs(speed));
+                    robot.motorRight.setPower(Math.abs(speed));
+                }
+            }
         }
     }
 }
