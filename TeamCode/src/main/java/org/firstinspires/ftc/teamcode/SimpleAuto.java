@@ -69,9 +69,6 @@ public class SimpleAuto extends LinearOpMode {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(IParameters);
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
-        /*imu = hardwareMap.get(Gyroscope.class, "imu");
-        motorRight = hardwareMap.get(DcMotor.class, "motorRight");
-        motorLeft = hardwareMap.get(DcMotor.class, "motorLeft");*/
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         gravity = imu.getGravity();
 
@@ -107,7 +104,7 @@ public class SimpleAuto extends LinearOpMode {
         //Drop down off lander - lowering robot
         while (!robot.topSwitch.getState())  /* Most effective detachment point might not be at the top*/ {
             //positive = up
-            telemetry.addData("Status: ", "Lowering");
+            telemetry.addData("Status: ", "Lowering robot");
             telemetry.update();
             robot.linearArm.setPower(1);
 
@@ -127,20 +124,19 @@ public class SimpleAuto extends LinearOpMode {
         telemetry.addData("Status: ", "Detecting Gold Sample");
         telemetry.update();
 
-        if (tFlow.Status == 1) {
+        if (tFlow.Status == 1)
+        {
             //left
             robot.motorLeft.setPower(0.75);
             robot.motorRight.setPower(-0.75);
 
-            while (!(angles.firstAngle <= 45 /* add angular # */)) {
+            while (!(angles.firstAngle <= 45 /* add angular # */))
+            {
                 robot.motorLeft.setPower(0);
                 robot.motorRight.setPower(0);
             }
-
-
         }
         formatAngle(angles.angleUnit, angles.firstAngle);
-
 
         encoderDrive(TURN_SPEED, 16, -16, 5.0);
         //NEED TO TEST MORE, (16,-16) is close to 90 degrees
@@ -157,7 +153,8 @@ public class SimpleAuto extends LinearOpMode {
         robot.lunchBox.setPosition(HardwareLL5156.lunchBoxMAX_POSITION);
 
 
-        while (opModeIsActive()) {
+        while (opModeIsActive())
+        {
             telemetry.addData("Power L", robot.motorLeft.getPower());
             telemetry.addData("Power R", robot.motorRight.getPower());
             telemetry.addData("Rotations L", robot.motorLeft.getCurrentPosition() / TETRIX_TICKS_PER_REV);
@@ -205,7 +202,8 @@ public class SimpleAuto extends LinearOpMode {
 
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
-                    (robot.motorLeft.isBusy() && robot.motorRight.isBusy())) {
+                    (robot.motorLeft.isBusy() && robot.motorRight.isBusy()))
+            {
                 telemetry.addData("Path1", "Running to %7d :%7d", newLeftTarget, newRightTarget);
                 telemetry.addData("Path2", "Running at %7d :%7d",
                         robot.motorLeft.getCurrentPosition(),
@@ -239,16 +237,17 @@ public class SimpleAuto extends LinearOpMode {
              angleZero      =  calibration;
         }
 
-        if (angles.firstAngle >= (angleZero - 90)  && angles.firstAngle <= (angleZero + 90) ) {
+
+        if (angles.firstAngle >= (angleZero - 90) && angles.firstAngle <= (angleZero + 90) )
+        {
             robot.Camera.setPosition((Math.abs(angles.firstAngle * (0.5/90)))   -    0.5);
             //robot is turned to the left, cam stays center with objects
         }
-
-        else{
+        else
+        {
             robot.Camera.setPosition(0.5);
             //robot is past 90 degrees in either direction, cam moves to center
         }
-
     }
     String formatAngle(AngleUnit angleUnit, double angle) {
         return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
