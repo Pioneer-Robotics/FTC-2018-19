@@ -157,10 +157,10 @@ public class Teleop extends LinearOpMode
             telemetry.addData("Camera:", "%.3f",turn);
 
             if (gamepad1.dpad_left) {
-                angleTurn(1,-90);
+                angleTurn(0.5,-90);
             }
             if (gamepad1.dpad_right) {
-                angleTurn(1,90);
+                angleTurn(0.5,90);
             }
             // Controls latching servos on linear actuator
             // Latch open
@@ -200,14 +200,18 @@ public class Teleop extends LinearOpMode
         if (opModeIsActive()) {
             angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             targetAngle = angle+angles.firstAngle;
-            while (imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle > targetAngle+1 || imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle < targetAngle-1) {
-                if (imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle > targetAngle) {
+            while (angles.firstAngle+180 > (targetAngle+180+20*speed)%360 || angles.firstAngle < (targetAngle+180-20*speed)%360) {
+                angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+                if (angles.firstAngle+180 > targetAngle%360) {
                     robot.motorLeft.setPower(Math.abs(speed));
                     robot.motorRight.setPower(-Math.abs(speed));
                 } else {
                     robot.motorLeft.setPower(-Math.abs(speed));
                     robot.motorRight.setPower(Math.abs(speed));
                 }
+                telemetry.addData("IMU Heading:", "%.5f", imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle+180);
+                telemetry.addData("target:","%.5f",targetAngle+180);
+                telemetry.update();
             }
         }
     }
