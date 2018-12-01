@@ -85,7 +85,7 @@ public class SimpleAuto extends LinearOpMode {
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
 
         tFlow.start();
-        camVision(angles.firstAngle, 1);
+        camVision(angles.firstAngle);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -171,14 +171,18 @@ public class SimpleAuto extends LinearOpMode {
         if (opModeIsActive()) {
             angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             targetAngle = angle+angles.firstAngle;
-            while (imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle > targetAngle+0.01 || imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle < targetAngle-0.01) {
-                if (imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle > targetAngle) {
+            while (angles.firstAngle+180 > (targetAngle+180+50*speed)%360 || angles.firstAngle < (targetAngle+180-50*speed)%360) {
+                angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+                if (angles.firstAngle+180 > targetAngle%360) {
                     robot.motorLeft.setPower(Math.abs(speed));
                     robot.motorRight.setPower(-Math.abs(speed));
                 } else {
                     robot.motorLeft.setPower(-Math.abs(speed));
                     robot.motorRight.setPower(Math.abs(speed));
                 }
+                telemetry.addData("IMU Heading:", "%.5f", imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle+180);
+                telemetry.addData("target:","%.5f",targetAngle+180);
+                telemetry.update();
             }
         }
     }
@@ -208,7 +212,11 @@ public class SimpleAuto extends LinearOpMode {
                 telemetry.addData("Path2", "Running at %7d :%7d",
                         robot.motorLeft.getCurrentPosition(),
                         robot.motorRight.getCurrentPosition());
-                if (imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle > initAng+0.01 || imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle < initAng-0.01) {
+                if (imu.getAngularOrientation(AxesReference.INTRINSIC,
+                        AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle > initAng+0.01
+                        || imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX,
+                        AngleUnit.DEGREES).firstAngle < initAng-0.01) {
+
                     int mLt = robot.motorLeft.getCurrentPosition();
                     int mRt = robot.motorRight.getCurrentPosition();
                     angleTurn(1, initAng);
@@ -228,17 +236,15 @@ public class SimpleAuto extends LinearOpMode {
         }
     }
     //a calibration of the imu needs to be put at the start of the Simple Auto
-    public void camVision(float calibration, int save)
+    /*NOTE by Jeremy 11/30/18: This should work, if the rest of Michael's code is good. What I did was set the calibration angle
+    angleZero as the input in a final float format, so it can't change. We always input with angles.firstAngle.
+    Then, angles.firstAngle is again repeatedly sensed, but since angleZero is a final value, it should be a reference point.
+    Thus, the camera should move as intended, provided the camera movement code is correct.*/
+    public void camVision(final float angleZero)
     {
         angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        float angleZero = 0;
-        if (save == 1)
-        {
-             angleZero      =  calibration;
-        }
 
-
-        if (angles.firstAngle >= (angleZero - 90) && angles.firstAngle <= (angleZero + 90) )
+        if (angles.firstAngle > (angleZero - 90) && angles.firstAngle < (angleZero + 90) )
         {
             robot.Camera.setPosition((Math.abs(angles.firstAngle * (0.5/90)))   -    0.5);
             //robot is turned to the left, cam stays center with objects
