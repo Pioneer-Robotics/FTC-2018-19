@@ -180,8 +180,9 @@ public class SimpleAuto extends LinearOpMode {
                     robot.motorLeft.setPower(-Math.abs(speed));
                     robot.motorRight.setPower(Math.abs(speed));
                 }
-                telemetry.addData("IMU Heading:", "%.5f", imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle+180);
-                telemetry.addData("target:","%.5f",targetAngle+180);
+                telemetry.addData("IMU Heading:", "%.5f", angles.firstAngle+180);
+                telemetry.addData("min:","%.5f",targetAngle+180-50*speed);
+                telemetry.addData("max:","%.5f",targetAngle+180+50*speed);
                 telemetry.update();
             }
         }
