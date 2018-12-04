@@ -39,6 +39,8 @@ public class SimpleAuto extends LinearOpMode {
     // State used for updating telemetry
     Orientation angles;
     Acceleration gravity;
+    CamManager CamM;
+    TensorFlowSource tFlow;
 
 
     // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
@@ -80,12 +82,13 @@ public class SimpleAuto extends LinearOpMode {
         robot.motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.linearArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        TensorFlowSource tFlow = new TensorFlowSource();
+        tFlow = new TensorFlowSource();
         tFlow.init(hardwareMap.get(WebcamName.class, "Webcam 1"), hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
-
+        CamM.init(imu,robot);
+        CamM.start();
         tFlow.start();
-        camVision(angles.firstAngle);
+        CamM.reference = angles.firstAngle;
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -186,6 +189,8 @@ public class SimpleAuto extends LinearOpMode {
         //Tank(0,0);
         telemetry.addData("Status: ", "Finished");
         telemetry.update();
+        tFlow.go = false;
+        CamM.go = false;
     }
     public void angleTurn(double speed, double angle) {
         double targetAngle;
@@ -193,7 +198,6 @@ public class SimpleAuto extends LinearOpMode {
             angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             targetAngle = angle+angles.firstAngle;
             while (angles.firstAngle+180 > (targetAngle+180+50*speed)%360 || angles.firstAngle < (targetAngle+180-50*speed)%360) {
-                angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
                 if (angles.firstAngle+180 > targetAngle%360) {
                     robot.motorLeft.setPower(Math.abs(speed));
                     robot.motorRight.setPower(-Math.abs(speed));
@@ -205,6 +209,7 @@ public class SimpleAuto extends LinearOpMode {
                 telemetry.addData("min:","%.5f",targetAngle+180-50*speed);
                 telemetry.addData("max:","%.5f",targetAngle+180+50*speed);
                 telemetry.update();
+                angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             }
         }
     }
@@ -257,26 +262,7 @@ public class SimpleAuto extends LinearOpMode {
             sleep(250);
         }
     }
-    //a calibration of the imu needs to be put at the start of the Simple Auto
-    /*NOTE by Jeremy 11/30/18: This should work, if the rest of Michael's code is good. What I did was set the calibration angle
-    angleZero as the input in a final float format, so it can't change. We always input with angles.firstAngle.
-    Then, angles.firstAngle is again repeatedly sensed, but since angleZero is a final value, it should be a reference point.
-    Thus, the camera should move as intended, provided the camera movement code is correct.*/
-    public void camVision(final float angleZero)
-    {
-        angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
-        if (angles.firstAngle > (angleZero - 90) && angles.firstAngle < (angleZero + 90) )
-        {
-            robot.Camera.setPosition((Math.abs(angles.firstAngle * (0.5/90)))   -    0.5);
-            //robot is turned to the left, cam stays center with objects
-        }
-        else
-        {
-            robot.Camera.setPosition(0.5);
-            //robot is past 90 degrees in either direction, cam moves to center
-        }
-    }
     String formatAngle(AngleUnit angleUnit, double angle) {
         return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
     }

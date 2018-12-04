@@ -201,7 +201,6 @@ public class Teleop extends LinearOpMode
             angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             targetAngle = angle+angles.firstAngle;
             while (angles.firstAngle+180 > (targetAngle+180+50*speed)%360 || angles.firstAngle < (targetAngle+180-50*speed)%360) {
-                angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
                 if (angles.firstAngle+180 > targetAngle%360) {
                     robot.motorLeft.setPower(Math.abs(speed));
                     robot.motorRight.setPower(-Math.abs(speed));
@@ -213,6 +212,7 @@ public class Teleop extends LinearOpMode
                 telemetry.addData("min:","%.5f",targetAngle+180-50*speed);
                 telemetry.addData("max:","%.5f",targetAngle+180+50*speed);
                 telemetry.update();
+                angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             }
         }
     }
