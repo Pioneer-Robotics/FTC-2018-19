@@ -28,10 +28,15 @@ public class CamManager extends Thread {
     public void camVision(final float angleZero) {
         angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
-        if (angles.firstAngle > (angleZero - 90) && angles.firstAngle < (angleZero + 90) ) {
+        float angleDiff = ( angles.firstAngle - angleZero );
+
+        if ((angles.firstAngle + angleDiff) > (angleZero - 90) && angles.firstAngle < (angleZero + 90) )
+        {
             robot.Camera.setPosition((Math.abs(angles.firstAngle * (0.5/90)))   -    0.5);
             //robot is turned to the left, cam stays center with objects
-        } else {
+        }
+        else
+        {
             robot.Camera.setPosition(0.5);
             //robot is past 90 degrees in either direction, cam moves to center
         }
