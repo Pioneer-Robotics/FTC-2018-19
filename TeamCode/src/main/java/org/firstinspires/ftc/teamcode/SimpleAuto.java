@@ -124,18 +124,39 @@ public class SimpleAuto extends LinearOpMode {
         telemetry.addData("Status: ", "Detecting Gold Sample");
         telemetry.update();
 
-        if (tFlow.Status == 1)
-        {
-            //left
-            robot.motorLeft.setPower(0.75);
-            robot.motorRight.setPower(-0.75);
+        switch (tFlow.Status) {
+            case 1:
+                //left
+                robot.motorLeft.setPower(0.75);
+                robot.motorRight.setPower(-0.75);
 
-            while (!(angles.firstAngle <= 45 /* add angular # */))
-            {
-                robot.motorLeft.setPower(0);
-                robot.motorRight.setPower(0);
-            }
+                while (!(angles.firstAngle <= 45 /* add angular # */))
+                {
+                    robot.motorLeft.setPower(0);
+                    robot.motorRight.setPower(0);
+                }
+                telemetry.addData("TFlow says: ", "%d",tFlow.Status);
+                break;
+            case 2:
+                //middle
+                telemetry.addData("TFlow says: ", "%d",tFlow.Status);
+                break;
+            case 3:
+                //right
+                telemetry.addData("TFlow says: ", "%d",tFlow.Status);
+                break;
+            case -3:
+                //this is the manual mode
+                telemetry.addData("TFlow says: ", "%d",tFlow.Status);
+                telemetry.addData("TFlow says: ", "%.5f",tFlow.mineralX);
+                break;
+            default:
+                //error happened with TensorFlow
+                telemetry.addData("TFlow says: ", "%d",tFlow.Status);
+                break;
         }
+        telemetry.update();
+
         formatAngle(angles.angleUnit, angles.firstAngle);
 
         encoderDrive(TURN_SPEED, 16, -16, 5.0);

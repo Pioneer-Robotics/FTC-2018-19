@@ -69,7 +69,9 @@ public class TensorFlowSource extends Thread {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
-    public int                      Status          = 0 ;
+    public float mineralX = 0;
+    public boolean go = true;
+    public int                      Status          = 0;
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -114,7 +116,6 @@ public class TensorFlowSource extends Thread {
     public int checkThree() {
         /** Activate Tensor Flow Object Detection. */
         if (tfod != null) {
-            tfod.activate();
             // getUpdatedRecognitions() will return null if no new information is available since
             // the last time that call was made.
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
@@ -136,19 +137,14 @@ public class TensorFlowSource extends Thread {
                     }
                     if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
                         if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
-
-                            tfod.shutdown();
                             return 1;  //left
                         } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
-                            tfod.shutdown();
                             return 3; //right
                         } else {
-                            tfod.shutdown();
                             return 2; //center
                         }
                     }
                 } else {
-                    tfod.shutdown();
                     return -2;
                 }
 
@@ -160,49 +156,42 @@ public class TensorFlowSource extends Thread {
         }
         return -4;
     }
-    public int findGold() {
+    public float findGold() {
         if (tfod != null) {
             tfod.activate();
             // getUpdatedRecognitions() will return null if no new information is available since
             // the last time that call was made.
-            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-            if (updatedRecognitions != null) {
-                // # of objects
-                updatedRecognitions.size();
-                int[] goldMineralXs = {};
-                float[] goldMineralCs = {};
-                float maxC = 0;
-                float goldX = 0;
-                for (Recognition recognition : updatedRecognitions) {
-                    if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                        goldMineralXs[goldMineralXs.length] = (int) recognition.getLeft();
-                        goldMineralCs[goldMineralCs.length] = recognition.getConfidence();
+            List<Recognition> updatedRecognitions = tfod.getRecognitions();
+            // # of objects
+            updatedRecognitions.size();
+            float maxC = 0;
+            float goldX = 0;
+            for (Recognition recognition : updatedRecognitions) {
+                if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                    if (recognition.getConfidence() > maxC) {
+                        goldX = recognition.getLeft();
                     }
                 }
-                for (int i = 0; i <= goldMineralCs.length; i++) {
-                    if (goldMineralCs[i] > maxC) {
-                        maxC = goldMineralCs[i];
-                        goldX = goldMineralXs[i];
-                    }
-                }
-
             }
-            else {
-                return -1;
-            }
+            return goldX;
 
         }
         return -4;
     }
 
     public void run() {
-        while (true){
-            int st = this.checkThree();
-            if (st != -1 && st != -2) {
-                this.Status = st;
-            } else {
-                this.Status = findGold();
+        if (tfod != null) {
+            tfod.activate();
+            while (go) {
+                int st = this.checkThree();
+                if (st != -1 && st != -2) {
+                    this.Status = st;
+                } else if (st == -2) {
+                    this.mineralX = findGold();
+                    this.Status = -3;
+                }
             }
+            tfod.shutdown();
         }
     }
 
