@@ -138,14 +138,29 @@ public class SimpleAuto extends LinearOpMode {
                     robot.motorLeft.setPower(0);
                     robot.motorRight.setPower(0);
                 }
+                encoderDrive(DRIVE_SPEED, -15, -15, 5);
+                angleTurn(0.5, 90);
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 break;
             case 2:
                 //middle
+                //theoretically no movement is necessary
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
+                encoderDrive(DRIVE_SPEED, -13, -13, 5);
+                angleTurn(0.5, 90);
                 break;
             case 3:
                 //right
+                robot.motorLeft.setPower(-0.75);
+                robot.motorRight.setPower(0.75);
+
+                while (!(angles.firstAngle >= -45 /* add angular # */))
+                {
+                    robot.motorLeft.setPower(0);
+                    robot.motorRight.setPower(0);
+                }
+                encoderDrive(DRIVE_SPEED, -15, -15, 5);
+                angleTurn(0.5, 90);
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 break;
             case -3:
@@ -156,6 +171,9 @@ public class SimpleAuto extends LinearOpMode {
             default:
                 //error happened with TensorFlow
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
+               // if tensor flow doesn't function, the robot will default to moving to the middle position
+                encoderDrive(DRIVE_SPEED, -13, -13, 5);
+                angleTurn(0.5, 90);
                 break;
         }
         telemetry.update();
