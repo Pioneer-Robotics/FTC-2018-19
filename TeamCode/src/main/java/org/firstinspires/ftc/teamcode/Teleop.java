@@ -43,7 +43,7 @@ public class Teleop extends LinearOpMode
         double max;
         double arm;
         double armMax;
-        float pre_suq;
+        double pre_suq = 0;
         boolean flipster = false;
         int activate_suq = 0;
 
@@ -158,7 +158,12 @@ public class Teleop extends LinearOpMode
                 activate_suq = 0;
                 robot.Collector.setPosition(0.6);
             }
+            //if the Succq isn't moving then stop it to save the motor
+            if ((activate_suq!=0) && (pre_suq == robot.Succq.getCurrentPosition())) {
+                activate_suq = 0;
+            }
             robot.Succq.setPower(activate_suq);
+            pre_suq = robot.Succq.getCurrentPosition();
             telemetry.addData("IMU Heading:", "%.5f", imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle+180);
             telemetry.addData("Camera:", "%.3f",turn);
 
