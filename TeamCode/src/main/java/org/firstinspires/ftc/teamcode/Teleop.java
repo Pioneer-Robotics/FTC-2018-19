@@ -141,7 +141,7 @@ public class Teleop extends LinearOpMode
                 robot.motorRight.setPower(-right);
                 telemetry.addData("Reverse", "Deactivated");
             }
-            if (gamepad2.a) {
+            if (gamepad2.right_bumper) {
                 if (!flipster) {
                     if (activate_suq == 0) {
                         robot.Collector.setPosition(1);
