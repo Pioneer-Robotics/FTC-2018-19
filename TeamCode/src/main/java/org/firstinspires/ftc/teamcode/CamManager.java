@@ -21,17 +21,21 @@ public class CamManager extends Thread {
 
     }
     //a calibration of the imu needs to be put at the start of the Simple Auto
-    /*NOTE by Jeremy 11/30/18: This should work, if the rest of Michael's code is good. What I did was set the calibration angle
+    /**NOTE by Jeremy 11/30/18: This should work, if the rest of Michael's code is good. What I did was set the calibration angle
     angleZero as the input in a final float format, so it can't change. We always input with angles.firstAngle.
     Then, angles.firstAngle is again repeatedly sensed, but since angleZero is a final value, it should be a reference point.
-    Thus, the camera should move as intended, provided the camera movement code is correct.*/
+    Thus, the camera should move as intended, provided the camera movement code is correct.**/
     public void camVision(final float angleZero) {
         angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
         float angleDiff = ( angles.firstAngle - angleZero );
 
-        if ((angles.firstAngle + angleDiff) > (angleZero - 90) && angles.firstAngle < (angleZero + 90) )
-        {
+        if ((angles.firstAngle + angleDiff) >= (angleZero - 90)  && (angles.firstAngle + angleDiff) < angleZero ) {
+            robot.Camera.setPosition((Math.abs(angles.firstAngle * (0.5/90)))   +    0.5);
+            //robot is turned to the right, cam stays center with objects
+        }
+
+        if ((angles.firstAngle + angleDiff) > angleZero  && (angles.firstAngle + angleDiff) <= (angleZero + 90) ) {
             robot.Camera.setPosition((Math.abs(angles.firstAngle * (0.5/90)))   -    0.5);
             //robot is turned to the left, cam stays center with objects
         }

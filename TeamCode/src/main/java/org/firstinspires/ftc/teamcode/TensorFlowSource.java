@@ -34,6 +34,7 @@ package org.firstinspires.ftc.teamcode;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
@@ -215,6 +216,10 @@ public class TensorFlowSource extends Thread {
             return null;
         }
     }
+    public double[] extractPos(OpenGLMatrix loc) {
+        double arrDir[] = {loc.getTranslation().get(0), loc.getTranslation().get(1)};
+        return arrDir;
+    }
 
     public void run() {
         if (tfod != null) {
@@ -268,11 +273,10 @@ public class TensorFlowSource extends Thread {
         allTrackables = new ArrayList<VuforiaTrackable>();
         allTrackables.addAll(targetsRoverRuckus);
 
-        /**
-         * To place the BlueRover target in the middle of the blue perimeter wall:
-         * - First we rotate it 90 around the field's X axis to flip it upright.
-         * - Then, we translate it along the Y axis to the blue perimeter wall.
-         */
+        /**  To place the BlueRover target in the middle of the blue perimeter wall:
+          - First we rotate it 90 around the field's X axis to flip it upright.
+          - Then, we translate it along the Y axis to the blue perimeter wall. **/
+
         OpenGLMatrix blueRoverLocationOnField = OpenGLMatrix
                 .translation(0, mmFTCFieldWidth, mmTargetHeight)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0));

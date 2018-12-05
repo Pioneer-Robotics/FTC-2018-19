@@ -102,10 +102,15 @@ public class SimpleAuto extends LinearOpMode {
                 robot.motorLeft.getCurrentPosition(), robot.motorRight.getCurrentPosition());
         telemetry.update();
 
-
-        //ACTUAL MOVEMENT
-
+        // x tFlow.extractPos(tFlow.location)[0]
+        // y tFlow.extractPos(tFlow.location)[1]
         //Drop down off lander - lowering robot
+
+
+
+        /*     ACTUAL MOVEMENT--------------------------------------------------------------*/
+
+
         while (!robot.topSwitch.getState())  /* Most effective detachment point might not be at the top*/ {
             //positive = up
             telemetry.addData("Status: ", "Lowering robot");
@@ -220,8 +225,13 @@ public class SimpleAuto extends LinearOpMode {
         double targetAngle;
         if (opModeIsActive()) {
             angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-            targetAngle = angle+angles.firstAngle;
-            while (angles.firstAngle+180 > (targetAngle+180+50*speed)%360 || angles.firstAngle < (targetAngle+180-50*speed)%360) {
+            targetAngle = (angle+angles.firstAngle+180)%360;
+            telemetry.update();
+            telemetry.addData("IMU Heading:", "%.5f", angles.firstAngle+180);
+            telemetry.addData("min:","%.5f",targetAngle-50*speed);
+            telemetry.addData("max:","%.5f",targetAngle+50*speed);
+            telemetry.update();
+            while (!((angles.firstAngle+180 > (targetAngle-50*speed)%360) && (angles.firstAngle < (targetAngle+50*speed)%360))) {
                 if (angles.firstAngle+180 > targetAngle%360) {
                     robot.motorLeft.setPower(Math.abs(speed));
                     robot.motorRight.setPower(-Math.abs(speed));

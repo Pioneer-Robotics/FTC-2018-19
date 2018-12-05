@@ -216,7 +216,7 @@ public class Teleop extends LinearOpMode
             telemetry.addData("min:","%.5f",targetAngle-50*speed);
             telemetry.addData("max:","%.5f",targetAngle+50*speed);
             telemetry.update();
-            while ((angles.firstAngle+180 > (targetAngle-50*speed)%360) && (angles.firstAngle < (targetAngle+50*speed)%360)) {
+            while (!((angles.firstAngle+180 > (targetAngle-50*speed)%360) && (angles.firstAngle < (targetAngle+50*speed)%360))) {
                 if (angles.firstAngle+180 > targetAngle%360) {
                     robot.motorLeft.setPower(Math.abs(speed));
                     robot.motorRight.setPower(-Math.abs(speed));
