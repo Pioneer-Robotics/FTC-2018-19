@@ -83,12 +83,13 @@ public class SimpleAuto extends LinearOpMode {
         robot.linearArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         tFlow = new TensorFlowSource();
+        CamM = new CamManager();
         tFlow.init(hardwareMap.get(WebcamName.class, "Webcam 1"), hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         CamM.init(imu,robot);
+        CamM.reference = angles.firstAngle;
         CamM.start();
         tFlow.start();
-        CamM.reference = angles.firstAngle;
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -121,7 +122,7 @@ public class SimpleAuto extends LinearOpMode {
         telemetry.update();
 
         //Drive away
-        encoderDrive(DRIVE_SPEED, -10, -10, 5.0);
+        encoderDrive(DRIVE_SPEED, -10, -10, 3.0);
 
         //Run Google Tensor Flow to detect object.....
         telemetry.addData("Status: ", "Detecting Gold Sample");
@@ -133,12 +134,14 @@ public class SimpleAuto extends LinearOpMode {
                 robot.motorLeft.setPower(0.75);
                 robot.motorRight.setPower(-0.75);
 
-                while (!(angles.firstAngle <= 45 /* add angular # */))
+                while (!(angles.firstAngle <= 38.8))
                 {
-                    robot.motorLeft.setPower(0);
-                    robot.motorRight.setPower(0);
+                    robot.motorLeft.setPower(0.75);
+                    robot.motorRight.setPower(-0.75);
                 }
-                encoderDrive(DRIVE_SPEED, -15, -15, 5);
+                robot.motorLeft.setPower(0);
+                robot.motorRight.setPower(0);
+                encoderDrive(DRIVE_SPEED, -61.51, -61.51, 5);
                 angleTurn(0.5, 90);
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 break;
@@ -146,7 +149,7 @@ public class SimpleAuto extends LinearOpMode {
                 //middle
                 //theoretically no movement is necessary
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                encoderDrive(DRIVE_SPEED, -13, -13, 5);
+                encoderDrive(DRIVE_SPEED, -49.26, -49.26, 5);
                 angleTurn(0.5, 90);
                 break;
             case 3:
@@ -154,12 +157,15 @@ public class SimpleAuto extends LinearOpMode {
                 robot.motorLeft.setPower(-0.75);
                 robot.motorRight.setPower(0.75);
 
-                while (!(angles.firstAngle >= -45 /* add angular # */))
+                while (!(angles.firstAngle >= -36.8))
                 {
-                    robot.motorLeft.setPower(0);
-                    robot.motorRight.setPower(0);
+                    robot.motorLeft.setPower(-0.75);
+                    robot.motorRight.setPower(0.75);
+
                 }
-                encoderDrive(DRIVE_SPEED, -15, -15, 5);
+                robot.motorLeft.setPower(0);
+                robot.motorRight.setPower(0);
+                encoderDrive(DRIVE_SPEED, -61.51, -61.51, 5);
                 angleTurn(0.5, 90);
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 break;

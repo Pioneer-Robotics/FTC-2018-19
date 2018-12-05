@@ -15,9 +15,9 @@ public class CamManager extends Thread {
     float reference;
 
 
-    public void init(BNO055IMU imu, HardwareLL5156 rob) {
+    public void init(BNO055IMU imu, HardwareLL5156 robo_t) {
         this.imu = imu;
-        this.robot = rob;
+        this.robot = robo_t;
 
     }
     //a calibration of the imu needs to be put at the start of the Simple Auto

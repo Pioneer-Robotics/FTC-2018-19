@@ -85,7 +85,7 @@ public class HardwareLL5156
 
         lunchBox.setPosition(lunchBoxMAX_POSITION);
         Latch.setPosition(LatchMAX_POSITION);
-        Collector.setPosition(0.5);
+        Collector.setPosition(0.6);
         Camera.setPosition(0.5);
 
     }

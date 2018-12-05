@@ -30,6 +30,7 @@ public class Teleop extends LinearOpMode
     Acceleration gravity;
 
     BNO055IMU.Parameters IParameters = new BNO055IMU.Parameters();
+    CamManager CamM;
 
 
     @Override
@@ -42,10 +43,11 @@ public class Teleop extends LinearOpMode
         double max;
         double arm;
         double armMax;
-        double cam;
+        float pre_suq;
         boolean flipster = false;
         int activate_suq = 0;
 
+        CamM = new CamManager();
         IParameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         IParameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         IParameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
@@ -61,11 +63,16 @@ public class Teleop extends LinearOpMode
 
         robot.init(hardwareMap);
 
+
         telemetry.addData("Teleop", "Initiate");    //
         telemetry.update();
         robot.botSwitch.setMode(DigitalChannel.Mode.INPUT);
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+        CamM.init(imu,robot);
+        CamM.reference = angles.firstAngle;
+        CamM.start();
+
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive())
@@ -76,7 +83,6 @@ public class Teleop extends LinearOpMode
             drive = -gamepad1.left_stick_y;
             turn  =  gamepad1.left_stick_x;
             arm = gamepad2.right_stick_y;
-            cam = gamepad2.left_stick_x;
 
             //normalization of arm value
             armMax = Math.abs(arm);
@@ -138,7 +144,7 @@ public class Teleop extends LinearOpMode
             if (gamepad2.a) {
                 if (!flipster) {
                     if (activate_suq == 0) {
-                        robot.Collector.setPosition(0);
+                        robot.Collector.setPosition(1);
                         activate_suq = 1;
                     } else {
                         activate_suq = -activate_suq;
@@ -150,17 +156,17 @@ public class Teleop extends LinearOpMode
             }
             if (gamepad2.left_bumper) {
                 activate_suq = 0;
+                robot.Collector.setPosition(0.6);
             }
             robot.Succq.setPower(activate_suq);
-            telemetry.addData("IMU Heading:", "%.5f", imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
-            robot.Camera.setPosition((-turn+0.9)/2);
+            telemetry.addData("IMU Heading:", "%.5f", imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle+180);
             telemetry.addData("Camera:", "%.3f",turn);
 
             if (gamepad1.dpad_left) {
-                angleTurn(0.5,-90);
+                angleTurn(0.3,-90);
             }
             if (gamepad1.dpad_right) {
-                angleTurn(0.5,90);
+                angleTurn(0.3,50);
             }
             // Controls latching servos on linear actuator
             // Latch open
@@ -199,8 +205,13 @@ public class Teleop extends LinearOpMode
         double targetAngle;
         if (opModeIsActive()) {
             angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-            targetAngle = angle+angles.firstAngle;
-            while (angles.firstAngle+180 > (targetAngle+180+50*speed)%360 || angles.firstAngle < (targetAngle+180-50*speed)%360) {
+            targetAngle = (angle+angles.firstAngle+180)%360;
+            telemetry.update();
+            telemetry.addData("IMU Heading:", "%.5f", angles.firstAngle+180);
+            telemetry.addData("min:","%.5f",targetAngle-50*speed);
+            telemetry.addData("max:","%.5f",targetAngle+50*speed);
+            telemetry.update();
+            while ((angles.firstAngle+180 > (targetAngle-50*speed)%360) && (angles.firstAngle < (targetAngle+50*speed)%360)) {
                 if (angles.firstAngle+180 > targetAngle%360) {
                     robot.motorLeft.setPower(Math.abs(speed));
                     robot.motorRight.setPower(-Math.abs(speed));
