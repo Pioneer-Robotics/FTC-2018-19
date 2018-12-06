@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
-import com.qualcomm.robotcore.util.ElapsedTime;
+//import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * Motor channel:  Left  drive motor:        "motorLeft"
@@ -17,36 +17,36 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class HardwareInfinity
 {
     /* Public OpMode members. */
-    public DcMotor  motorLeft;
-    public DcMotor  motorRight;
-    public DcMotor  linearArm;
-    public DcMotor Succq;
-    public Servo lunchBox;
-    public Servo Latch;
-    public Servo Camera;
-    public Servo Collector;
-    public DigitalChannel botSwitch;
-    public DigitalChannel topSwitch;
-    public TouchSensor trigger;
+    DcMotor  motorLeft;
+    DcMotor  motorRight;
+    DcMotor  linearArm;
+    DcMotor Succq;
+    Servo lunchBox;
+    Servo Latch;
+    Servo Camera;
+    Servo Collector;
+    DigitalChannel botSwitch;
+    DigitalChannel topSwitch;
+    TouchSensor trigger;
 
     //public Servo    rightClaw   = null;
 
-    public static final double lunchBoxMAX_POSITION = 0.35;
-    public static final double lunchBoxMIN_POSITION = 0.875;
-    public static final double LatchMAX_POSITION = 0.87;
-    public static final double LatchMIN_POSITION = 0;
+    static final double lunchBoxMAX_POSITION = 0.35;
+    static final double lunchBoxMIN_POSITION = 0.875;
+    static final double LatchMAX_POSITION = 0.87;
+    static final double LatchMIN_POSITION = 0;
 
     /* local OpMode members. */
     HardwareMap hwMap;
-    private ElapsedTime period  = new ElapsedTime();
+    //private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
-    public HardwareInfinity(){
+    HardwareInfinity(){
 
     }
 
     /* Initialize standard Hardware interfaces */
-    public void init(HardwareMap ahwMap) {
+    void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
         hwMap = ahwMap;
 
