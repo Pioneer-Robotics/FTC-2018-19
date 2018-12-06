@@ -7,23 +7,25 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-@TeleOp(name="LL5156:POV", group="LL5156")
+@TeleOp(name="TeleOp", group="FTCPio")
 public class Teleop extends LinearOpMode
 {
     /* Declare OpMode members. */
-    HardwareLL5156 robot           = new HardwareLL5156();
+    HardwareInfinity robot           = new HardwareInfinity();
     static final double     TETRIX_TICKS_PER_REV    = 1440;
     static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;
     static final double     WHEEL_DIAMETER_CM   = 4.0*2.54 ;
     static final double     COUNTS_PER_INCH         = (TETRIX_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_CM * 3.1415);
     BNO055IMU imu;
+    TensorFlowSource tFlow;
 
     // State used for updating telemetry
     Orientation angles;
@@ -45,6 +47,7 @@ public class Teleop extends LinearOpMode
         double armMax;
         double pre_suq = 0;
         boolean flipster = false;
+        boolean flipster1 = false;
         int activate_suq = 0;
 
         CamM = new CamManager();
@@ -60,10 +63,12 @@ public class Teleop extends LinearOpMode
         motorLeft = hardwareMap.get(DcMotor.class, "motorLeft");*/
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         gravity = imu.getGravity();
+        tFlow = new TensorFlowSource();
 
         robot.init(hardwareMap);
 
-
+        tFlow.init(hardwareMap.get(WebcamName.class, "Webcam 1"), hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         telemetry.addData("Teleop", "Initiate");    //
         telemetry.update();
         robot.botSwitch.setMode(DigitalChannel.Mode.INPUT);
@@ -72,6 +77,7 @@ public class Teleop extends LinearOpMode
         CamM.init(imu,robot);
         CamM.reference = angles.firstAngle;
         CamM.start();
+        tFlow.start();
 
 
         // run until the end of the match (driver presses STOP)
@@ -83,6 +89,9 @@ public class Teleop extends LinearOpMode
             drive = -gamepad1.left_stick_y;
             turn  =  gamepad1.left_stick_x;
             arm = gamepad2.right_stick_y;
+
+            telemetry.addData("TFlow says: ", "%d",tFlow.Status);
+            telemetry.addData("TFlow saysX: ", "%.5f",tFlow.mineralX);
 
             //normalization of arm value
             armMax = Math.abs(arm);
@@ -146,8 +155,10 @@ public class Teleop extends LinearOpMode
                     if (activate_suq == 0) {
                         robot.Collector.setPosition(1);
                         activate_suq = 1;
+                        robot.Succq.setPower(activate_suq);
+                        sleep(20);
                     } else {
-                        activate_suq = -activate_suq;
+                        activate_suq = 0;
                     }
                     flipster = true;
                 }
@@ -155,8 +166,12 @@ public class Teleop extends LinearOpMode
                 flipster = false;
             }
             if (gamepad2.left_bumper) {
-                activate_suq = 0;
-                robot.Collector.setPosition(0.6);
+                if (!flipster1) {
+                    activate_suq = -activate_suq;
+                }
+                flipster1 = true;
+            } else {
+                flipster1 = false;
             }
             //if the Succq isn't moving then stop it to save the motor
             if ((activate_suq!=0) && (pre_suq == robot.Succq.getCurrentPosition())) {
@@ -171,27 +186,27 @@ public class Teleop extends LinearOpMode
                 angleTurn(0.3,-90);
             }
             if (gamepad1.dpad_right) {
-                angleTurn(0.3,50);
+                angleTurn(0.3,90);
             }
             // Controls latching servos on linear actuator
             // Latch open
             if (gamepad2.dpad_up)
             {
-                robot.Latch.setPosition(HardwareLL5156.LatchMAX_POSITION);
+                robot.Latch.setPosition(HardwareInfinity.LatchMAX_POSITION);
                 telemetry.addData("Latches","Max");
             }
             // Latch closed
             if (gamepad2.dpad_down)
             {
-                robot.Latch.setPosition(HardwareLL5156.LatchMIN_POSITION);
+                robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);
                 telemetry.addData("Latches","Min");
             }
             // Drops team marker with servo
             if (gamepad2.x)
             {
-                robot.lunchBox.setPosition(HardwareLL5156.lunchBoxMIN_POSITION);
+                robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMIN_POSITION);
                 sleep(1000);
-                robot.lunchBox.setPosition(HardwareLL5156.lunchBoxMAX_POSITION);
+                robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
                 telemetry.addLine("Team Marker Dropped");
             }
 
@@ -211,7 +226,6 @@ public class Teleop extends LinearOpMode
         if (opModeIsActive()) {
             angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             targetAngle = (angle+angles.firstAngle+180)%360;
-            telemetry.update();
             telemetry.addData("IMU Heading:", "%.5f", angles.firstAngle+180);
             telemetry.addData("min:","%.5f",targetAngle-50*speed);
             telemetry.addData("max:","%.5f",targetAngle+50*speed);

@@ -10,12 +10,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 public class CamManager extends Thread {
     private BNO055IMU imu;
     private Orientation angles;
-    private HardwareLL5156 robot;
+    private HardwareInfinity robot;
     boolean go;
     float reference;
 
 
-    public void init(BNO055IMU imu, HardwareLL5156 robo_t) {
+    public void init(BNO055IMU imu, HardwareInfinity robo_t) {
         this.imu = imu;
         this.robot = robo_t;
 

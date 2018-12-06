@@ -1,14 +1,15 @@
 package org.firstinspires.ftc.teamcode;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
 @TeleOp (name="armConfig", group="LL5156")
-
+@Disabled
 public class Config extends LinearOpMode
 {
-    HardwareLL5156 robot = new HardwareLL5156();
+    HardwareInfinity robot = new HardwareInfinity();
 
     public static double           LINEAR_ZERO;
     public static final double     CHANGE_IN_LINEAR        = 5000; // change value to diff

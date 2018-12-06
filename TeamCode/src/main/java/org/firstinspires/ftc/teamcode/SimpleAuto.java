@@ -18,9 +18,9 @@ import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import java.util.Locale;
 
 
-@Autonomous (name="LL5156: Auto Drive by Encoder", group="LL5156")
+@Autonomous (name="TensorAuto", group="FTCPio")
 public class SimpleAuto extends LinearOpMode {
-    HardwareLL5156 robot = new HardwareLL5156();
+    HardwareInfinity robot = new HardwareInfinity();
     private ElapsedTime runtime = new ElapsedTime();
     //private Gyroscope imu;
     //private DcMotor motorLeft;
@@ -111,7 +111,7 @@ public class SimpleAuto extends LinearOpMode {
         /*     ACTUAL MOVEMENT--------------------------------------------------------------*/
 
 
-        while (!robot.topSwitch.getState())  /* Most effective detachment point might not be at the top*/ {
+        while (robot.linearArm.getCurrentPosition()<= 14916)  /* Most effective detachment point might not be at the top*/ {
             //positive = up
             telemetry.addData("Status: ", "Lowering robot");
             telemetry.update();
@@ -121,17 +121,25 @@ public class SimpleAuto extends LinearOpMode {
         robot.linearArm.setPower(0);
 
         // Detach from lander
-        robot.Latch.setPosition(HardwareLL5156.LatchMAX_POSITION);
+        robot.Latch.setPosition(HardwareInfinity.LatchMAX_POSITION);
         telemetry.addData("Latches", "Max");
         telemetry.addData("Status: ", "Disengaging From Lander");
         telemetry.update();
 
         //Drive away
-        encoderDrive(DRIVE_SPEED, -10, -10, 3.0);
+        encoderDrive(1, -30, -30, 10.0);
 
         //Run Google Tensor Flow to detect object.....
         telemetry.addData("Status: ", "Detecting Gold Sample");
+
+        telemetry.addData("TFlow says: ", "%d",tFlow.Status);
+        telemetry.addData("TFlow says: ", "%.5f",tFlow.mineralX);
         telemetry.update();
+        sleep(2500);
+        telemetry.addData("TFlow says: ", "%d",tFlow.Status);
+        telemetry.addData("TFlow says: ", "%.5f",tFlow.mineralX);
+        telemetry.update();
+        sleep(2500);
 
         switch (tFlow.Status) {
             case 1:
@@ -178,6 +186,8 @@ public class SimpleAuto extends LinearOpMode {
                 //this is the manual mode
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 telemetry.addData("TFlow says: ", "%.5f",tFlow.mineralX);
+                telemetry.update();
+                sleep(5000);
                 break;
             default:
                 //error happened with TensorFlow
@@ -199,11 +209,11 @@ public class SimpleAuto extends LinearOpMode {
         //Drop Team Marker
         telemetry.addData("Status: ", "Dropping Team Marker");
         telemetry.update();
-        robot.lunchBox.setPosition(HardwareLL5156.lunchBoxMIN_POSITION);
+        robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMIN_POSITION);
         telemetry.addData("Status: ", "Dropped Team Marker");
         telemetry.update();
         sleep(500);
-        robot.lunchBox.setPosition(HardwareLL5156.lunchBoxMAX_POSITION);
+        robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
 
 
         while (opModeIsActive())
@@ -273,7 +283,7 @@ public class SimpleAuto extends LinearOpMode {
                 telemetry.addData("Path2", "Running at %7d :%7d",
                         robot.motorLeft.getCurrentPosition(),
                         robot.motorRight.getCurrentPosition());
-                if (imu.getAngularOrientation(AxesReference.INTRINSIC,
+                /**if (imu.getAngularOrientation(AxesReference.INTRINSIC,
                         AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle > initAng+0.01
                         || imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX,
                         AngleUnit.DEGREES).firstAngle < initAng-0.01) {
@@ -283,7 +293,7 @@ public class SimpleAuto extends LinearOpMode {
                     angleTurn(1, initAng);
                     robot.motorLeft.setTargetPosition(newLeftTarget+(robot.motorLeft.getCurrentPosition()-mLt));
                     robot.motorRight.setTargetPosition(newRightTarget+(robot.motorRight.getCurrentPosition()-mRt));
-                }
+                }**/
                 telemetry.update();
             }
 

@@ -174,12 +174,10 @@ public class TensorFlowSource extends Thread {
     }
     public float findGold() {
         if (tfod != null) {
-            tfod.activate();
             // getUpdatedRecognitions() will return null if no new information is available since
             // the last time that call was made.
             List<Recognition> updatedRecognitions = tfod.getRecognitions();
             // # of objects
-            updatedRecognitions.size();
             float maxC = 0;
             float goldX = 0;
             for (Recognition recognition : updatedRecognitions) {
@@ -228,7 +226,6 @@ public class TensorFlowSource extends Thread {
                 int st = this.checkThree();
                 if (st != -1 && st != -2) {
                     this.Status = st;
-                    this.go = false;
                 } else if (st == -2) {
                     this.mineralX = findGold();
                     this.Status = -3;

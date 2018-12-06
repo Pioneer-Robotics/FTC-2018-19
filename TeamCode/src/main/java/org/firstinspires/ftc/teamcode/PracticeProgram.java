@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import android.hardware.Sensor;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -14,11 +15,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.internal.android.dx.util.Hex;
-import org.firstinspires.ftc.teamcode.HardwareLL5156;
+import org.firstinspires.ftc.teamcode.HardwareInfinity;
 
 @TeleOp
+@Disabled
 public class PracticeProgram extends LinearOpMode {
-    HardwareLL5156 robot = new HardwareLL5156 ();
+    HardwareInfinity robot = new HardwareInfinity ();
     //private Gyroscope imu;
     private DcMotor motorRight;
     private DcMotor motorLeft;
