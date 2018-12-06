@@ -34,34 +34,21 @@ package org.firstinspires.ftc.teamcode;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.Position;
-import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
-import com.qualcomm.hardware.bosch.BNO055IMU;
-
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
-import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.FRONT;
 
 /**
  * This 2018-2019 OpMode illustrates the basics of using the TensorFlow Object Detection API to
@@ -83,11 +70,11 @@ public class CVManager extends Thread {
     private static final float mmPerInch        = 25.4f;
     private static final float mmFTCFieldWidth  = (12*6) * mmPerInch;       // the width of the FTC field (from the center point to the outer panels)
     private static final float mmTargetHeight   = (6) * mmPerInch;// the height of the center of the target image above the floor
-    private List<VuforiaTrackable> allTrackables;
-    public OpenGLMatrix location;
-    public float mineralX = 0;
-    public boolean go = true;
-    public int                      Status          = 0;
+    private List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
+    protected OpenGLMatrix location;
+    float mineralX = 0;
+    boolean go = true;
+    int Status = 0;
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -104,19 +91,19 @@ public class CVManager extends Thread {
 
     private static final String VUFORIA_KEY = "AQMfl/L/////AAABmTblKFiFfUXdnoB7Ocz4UQNgHjSNJaBwlaDm9EpX0UI5ISx2EH+5IoEmxxd/FG8c31He17kM5vtS0jyAoD2ev5mXBiITmx4N8AduU/iAw/XMC5MiEB1YBgw5oSO1qd4jvCOgbzy/HcOpN3KoVVnYqKhTLc8n6/IIFGy+qyF7b8WkzscJpybOSAT5wtaZumdBu0K3lHV6n+fqGJDMvkQ5xrCS6HiBtpZScAoekd7iP3IxUik2rMFq5hqMsOYW+qlxKp0cj+x4K9CIOYEP4xZsCBt66UxtDSiNqaiC1DyONtFz4oHJf/4J5aYRjMNwC2BpsVJ/R91WIcC0H0dpP9gtL/09J0bIMjm3plo+ac+OM0H3";
 
-    /**
+    /*
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
      * localization engine.
      */
     private VuforiaLocalizer vuforia;
 
-    /**
+    /*
      * {@link #tfod} is the variable we will use to store our instance of the Tensor Flow Object
      * Detection engine.
      */
     private TFObjectDetector tfod;
 
-    public void init(CameraName cam, int hw) {
+    void init(CameraName cam, int hw) {
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
 
@@ -125,12 +112,8 @@ public class CVManager extends Thread {
         this.initTfod(hw);
         Status = 100;
     }
-        /** Wait for the game to begin */
-
-
-
-    public int checkThree() {
-        /** Activate Tensor Flow Object Detection. */
+    private int checkThree() {
+        // Activate Tensor Flow Object Detection.
         if (tfod != null) {
             // getUpdatedRecognitions() will return null if no new information is available since
             // the last time that call was made.
@@ -172,7 +155,8 @@ public class CVManager extends Thread {
         }
         return -4;
     }
-    public float findGold() {
+
+    private float findGold() {
         if (tfod != null) {
             // getUpdatedRecognitions() will return null if no new information is available since
             // the last time that call was made.
@@ -192,7 +176,8 @@ public class CVManager extends Thread {
         }
         return -4;
     }
-    public OpenGLMatrix getVuforiaPosition() {
+
+    private OpenGLMatrix getVuforiaPosition() {
         boolean targetVisible = false;
         OpenGLMatrix lastLocation = null;
         for (VuforiaTrackable trackable : allTrackables) {
@@ -215,8 +200,7 @@ public class CVManager extends Thread {
         }
     }
     public double[] extractPos(OpenGLMatrix loc) {
-        double arrDir[] = {loc.getTranslation().get(0), loc.getTranslation().get(1)};
-        return arrDir;
+        return new double[]{loc.getTranslation().get(0), loc.getTranslation().get(1)};
     }
 
     public void run() {
@@ -267,10 +251,9 @@ public class CVManager extends Thread {
         backSpace.setName("Back-Space");
 
         // For convenience, gather together all the trackable objects in one easily-iterable collection */
-        allTrackables = new ArrayList<VuforiaTrackable>();
         allTrackables.addAll(targetsRoverRuckus);
 
-        /**  To place the BlueRover target in the middle of the blue perimeter wall:
+        /*  To place the BlueRover target in the middle of the blue perimeter wall:
           - First we rotate it 90 around the field's X axis to flip it upright.
           - Then, we translate it along the Y axis to the blue perimeter wall. **/
 
@@ -279,7 +262,7 @@ public class CVManager extends Thread {
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 0));
         blueRover.setLocation(blueRoverLocationOnField);
 
-        /**
+        /*
          * To place the RedFootprint target in the middle of the red perimeter wall:
          * - First we rotate it 90 around the field's X axis to flip it upright.
          * - Second, we rotate it 180 around the field's Z axis so the image is flat against the red perimeter wall
@@ -291,7 +274,7 @@ public class CVManager extends Thread {
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, 180));
         redFootprint.setLocation(redFootprintLocationOnField);
 
-        /**
+        /*
          * To place the FrontCraters target in the middle of the front perimeter wall:
          * - First we rotate it 90 around the field's X axis to flip it upright.
          * - Second, we rotate it 90 around the field's Z axis so the image is flat against the front wall
@@ -303,7 +286,7 @@ public class CVManager extends Thread {
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0 , 90));
         frontCraters.setLocation(frontCratersLocationOnField);
 
-        /**
+        /*
          * To place the BackSpace target in the middle of the back perimeter wall:
          * - First we rotate it 90 around the field's X axis to flip it upright.
          * - Second, we rotate it -90 around the field's Z axis so the image is flat against the back wall
@@ -315,7 +298,7 @@ public class CVManager extends Thread {
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90));
         backSpace.setLocation(backSpaceLocationOnField);
 
-        /**
+        /*
          * Create a transformation matrix describing where the phone is on the robot.
          *
          * The coordinate frame for the robot looks the same as the field.
@@ -347,19 +330,18 @@ public class CVManager extends Thread {
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES,
                          90, 0, 0));
 
-        /**  Let all the trackable listeners know where the phone is.  */
+        /*  Let all the trackable listeners know where the phone is.  */
         for (VuforiaTrackable trackable : allTrackables)
         {
             ((VuforiaTrackableDefaultListener)trackable.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
         }
     }
 
-    /**
+    /*
      * Initialize the Tensor Flow Object Detection engine.
      */
     private void initTfod(int hw) {
-        int tfodMonitorViewId = hw;
-        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(hw);
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
     }

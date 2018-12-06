@@ -9,13 +9,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 public class CamManager extends Thread {
     private BNO055IMU imu;
-    private Orientation angles;
     private HardwareInfinity robot;
     boolean go = true;
     float reference;
 
 
-    public void init(BNO055IMU imu, HardwareInfinity robo_t) {
+    void init(BNO055IMU imu, HardwareInfinity robo_t) {
         this.imu = imu;
         this.robot = robo_t;
 
@@ -25,8 +24,8 @@ public class CamManager extends Thread {
     angleZero as the input in a final float format, so it can't change. We always input with angles.firstAngle.
     Then, angles.firstAngle is again repeatedly sensed, but since angleZero is a final value, it should be a reference point.
     Thus, the camera should move as intended, provided the camera movement code is correct.**/
-    public void camVision(final float angleZero) {
-        angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+    private void camVision(final float angleZero) {
+        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
         float angleDiff = ( angles.firstAngle - angleZero );
 

@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -20,28 +19,24 @@ import java.util.Locale;
 
 @Autonomous (name="TensorAuto", group="FTCPio")
 public class SimpleAuto extends LinearOpMode {
-    HardwareInfinity robot = new HardwareInfinity();
+    private HardwareInfinity robot = new HardwareInfinity();
     private ElapsedTime runtime = new ElapsedTime();
     //private Gyroscope imu;
     //private DcMotor motorLeft;
     //private DcMotor motorLeft;
 
-    static final double TETRIX_TICKS_PER_REV = 1440;
-    static final double DRIVE_GEAR_REDUCTION = 2.0;     // This is < 1.0 if geared UP
-    static final double WHEEL_DIAMETER_CM = 4.0 * 2.54;     // For figuring circumference
-    static final double COUNTS_PER_INCH = (TETRIX_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_CM * 3.1415);
-    static final double DRIVE_SPEED = 0.5;
-    static final double TURN_SPEED = 0.4;
+    private static final double TETRIX_TICKS_PER_REV = 1440;
+    private static final double DRIVE_GEAR_REDUCTION = 2.0;     // This is < 1.0 if geared UP
+    private static final double WHEEL_DIAMETER_CM = 4.0 * 2.54;     // For figuring circumference
+    private static final double COUNTS_PER_INCH = (TETRIX_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_CM * 3.1415);
+    private static final double DRIVE_SPEED = 0.5;
+    private static final double TURN_SPEED = 0.4;
 
 
-    BNO055IMU imu;
+    private BNO055IMU imu;
 
     // State used for updating telemetry
-    Orientation angles;
-    Acceleration gravity;
-    CamManager CamM;
-    CVManager tFlow;
-    int choose;
+    private int choose;
 
 
     // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
@@ -72,8 +67,8 @@ public class SimpleAuto extends LinearOpMode {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(IParameters);
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
-        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        gravity = imu.getGravity();
+        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        //Acceleration gravity = imu.getGravity();
 
         robot.motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.motorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -83,13 +78,13 @@ public class SimpleAuto extends LinearOpMode {
         robot.motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.linearArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        tFlow = new CVManager();
-        CamM = new CamManager();
+        CVManager tFlow = new CVManager();
+        CamManager camM = new CamManager();
         tFlow.init(hardwareMap.get(WebcamName.class, "Webcam 1"), hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
-        CamM.init(imu,robot);
-        CamM.reference = angles.firstAngle;
-        CamM.start();
+        camM.init(imu,robot);
+        camM.reference = angles.firstAngle;
+        camM.start();
         tFlow.start();
 
         telemetry.addData("Status", "Initialized");
@@ -219,6 +214,7 @@ public class SimpleAuto extends LinearOpMode {
         formatAngle(angles.angleUnit, angles.firstAngle);
 
         encoderDrive(TURN_SPEED, 16, -16, 5.0);
+        angleTurn(0.3,-90);
         //NEED TO TEST MORE, (16,-16) is close to 90 degrees
         //encoderDrive(DRIVE_SPEED,24,24,4.0);
         sleep(250);
@@ -246,12 +242,12 @@ public class SimpleAuto extends LinearOpMode {
         telemetry.addData("Status: ", "Finished");
         telemetry.update();
         tFlow.go = false;
-        CamM.go = false;
+        camM.go = false;
     }
-    public void angleTurn(double speed, double angle) {
+    private void angleTurn(double speed, double angle) {
         double targetAngle;
         if (opModeIsActive()) {
-            angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            Orientation angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             targetAngle = angle+angles.firstAngle;
             telemetry.addData("IMU Heading:", "%.5f", angles.firstAngle+180);
             telemetry.addData("min:","%.5f",targetAngle-50*speed);
@@ -273,10 +269,10 @@ public class SimpleAuto extends LinearOpMode {
             }
         }
     }
-    public void encoderDrive(double speed, double leftCM, double rightCM, double timeoutS) {
+    private void encoderDrive(double speed, double leftCM, double rightCM, double timeoutS) {
         int newLeftTarget;
         int newRightTarget;
-        double initAng = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+        //double initAng = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
 
         if (opModeIsActive()) {
             newLeftTarget = robot.motorLeft.getCurrentPosition() + (int) (leftCM * COUNTS_PER_INCH);
@@ -299,7 +295,7 @@ public class SimpleAuto extends LinearOpMode {
                 telemetry.addData("Path2", "Running at %7d :%7d",
                         robot.motorLeft.getCurrentPosition(),
                         robot.motorRight.getCurrentPosition());
-                /**if (imu.getAngularOrientation(AxesReference.INTRINSIC,
+                /*if (imu.getAngularOrientation(AxesReference.INTRINSIC,
                         AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle > initAng+0.01
                         || imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX,
                         AngleUnit.DEGREES).firstAngle < initAng-0.01) {
@@ -309,7 +305,7 @@ public class SimpleAuto extends LinearOpMode {
                     angleTurn(1, initAng);
                     robot.motorLeft.setTargetPosition(newLeftTarget+(robot.motorLeft.getCurrentPosition()-mLt));
                     robot.motorRight.setTargetPosition(newRightTarget+(robot.motorRight.getCurrentPosition()-mRt));
-                }**/
+                }*/
                 telemetry.update();
             }
 
@@ -323,10 +319,10 @@ public class SimpleAuto extends LinearOpMode {
         }
     }
 
-    String formatAngle(AngleUnit angleUnit, double angle) {
+    private String formatAngle(AngleUnit angleUnit, double angle) {
         return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
     }
-    String formatDegrees(double degrees) {
+    private String formatDegrees(double degrees) {
         return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
     }
 }

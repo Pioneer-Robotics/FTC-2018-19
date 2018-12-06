@@ -5,18 +5,18 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
-@TeleOp (name="armConfig", group="LL5156")
+@TeleOp (name="armConfig", group="FTCPio")
 @Disabled
 public class Config extends LinearOpMode
 {
-    HardwareInfinity robot = new HardwareInfinity();
+    private HardwareInfinity robot = new HardwareInfinity();
 
-    public static double           LINEAR_ZERO;
+    private static double           LINEAR_ZERO;
     public static final double     CHANGE_IN_LINEAR        = 5000; // change value to diff
-    public static double           MAX_RGT_LATCH           = 0;
-    public static double           MIN_RGT_LATCH           = 0;
-    public static double           MAX_LFT_LATCH           = 0;
-    public static double           MIN_LFT_LATCH           = 0;
+    private static double           MAX_RGT_LATCH           = 0;
+    private static double           MIN_RGT_LATCH           = 0;
+    private static double           MAX_LFT_LATCH           = 0;
+    private static double           MIN_LFT_LATCH           = 0;
 
 
     @Override

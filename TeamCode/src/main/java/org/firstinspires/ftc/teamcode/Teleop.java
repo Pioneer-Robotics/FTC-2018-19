@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+//import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -16,21 +16,18 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 public class Teleop extends LinearOpMode
 {
     /* Declare OpMode members. */
-    HardwareInfinity robot           = new HardwareInfinity();
-    static final double     TETRIX_TICKS_PER_REV    = 1440;
-    static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;
-    static final double     WHEEL_DIAMETER_CM   = 4.0*2.54 ;
-    static final double     COUNTS_PER_INCH         = (TETRIX_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) /
+    private HardwareInfinity robot           = new HardwareInfinity();
+    private static final double     TETRIX_TICKS_PER_REV    = 1440;
+    private static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;
+    private static final double     WHEEL_DIAMETER_CM   = 4.0*2.54 ;
+    private static final double     COUNTS_PER_INCH         = (TETRIX_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_CM * 3.1415);
-    BNO055IMU imu;
-    CVManager tFlow;
+    private BNO055IMU imu;
 
     // State used for updating telemetry
-    Orientation angles;
-    Acceleration gravity;
+    private Orientation angles;
 
-    BNO055IMU.Parameters IParameters = new BNO055IMU.Parameters();
-    CamManager CamM;
+    private BNO055IMU.Parameters IParameters = new BNO055IMU.Parameters();
 
 
     @Override
@@ -48,7 +45,7 @@ public class Teleop extends LinearOpMode
         boolean flipster1 = false;
         int activate_suq = 0;
 
-        CamM = new CamManager();
+        CamManager camM = new CamManager();
         IParameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         IParameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         IParameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
@@ -60,8 +57,8 @@ public class Teleop extends LinearOpMode
         motorRight = hardwareMap.get(DcMotor.class, "motorRight");
         motorLeft = hardwareMap.get(DcMotor.class, "motorLeft");*/
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        gravity = imu.getGravity();
-        tFlow = new CVManager();
+        //Acceleration gravity = imu.getGravity();
+        CVManager tFlow = new CVManager();
 
         robot.init(hardwareMap);
 
@@ -72,9 +69,9 @@ public class Teleop extends LinearOpMode
         robot.botSwitch.setMode(DigitalChannel.Mode.INPUT);
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        CamM.init(imu,robot);
-        CamM.reference = angles.firstAngle;
-        CamM.start();
+        camM.init(imu,robot);
+        camM.reference = angles.firstAngle;
+        camM.start();
         tFlow.start();
 
 
@@ -88,8 +85,8 @@ public class Teleop extends LinearOpMode
             turn  =  gamepad1.left_stick_x;
             arm = gamepad2.right_stick_y;
 
-            telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-            telemetry.addData("TFlow saysX: ", "%.5f",tFlow.mineralX);
+            telemetry.addData("TFlow says: ", "%d", tFlow.Status);
+            telemetry.addData("TFlow saysX: ", "%.5f", tFlow.mineralX);
 
             //normalization of arm value
             armMax = Math.abs(arm);
@@ -219,7 +216,7 @@ public class Teleop extends LinearOpMode
             //sleep(50);
         }
     }
-    public void angleTurn(double speed, double angle) {
+    private void angleTurn(double speed, double angle) {
         double targetAngle;
         if (opModeIsActive()) {
             angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
