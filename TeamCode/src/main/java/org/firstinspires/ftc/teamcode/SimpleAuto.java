@@ -40,7 +40,8 @@ public class SimpleAuto extends LinearOpMode {
     Orientation angles;
     Acceleration gravity;
     CamManager CamM;
-    TensorFlowSource tFlow;
+    CVManager tFlow;
+    int choose;
 
 
     // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
@@ -82,7 +83,7 @@ public class SimpleAuto extends LinearOpMode {
         robot.motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.linearArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        tFlow = new TensorFlowSource();
+        tFlow = new CVManager();
         CamM = new CamManager();
         tFlow.init(hardwareMap.get(WebcamName.class, "Webcam 1"), hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
@@ -127,21 +128,37 @@ public class SimpleAuto extends LinearOpMode {
         telemetry.update();
 
         //Drive away
-        encoderDrive(1, -30, -30, 10.0);
+        encoderDrive(1, -40, -40, 10.0);
 
         //Run Google Tensor Flow to detect object.....
         telemetry.addData("Status: ", "Detecting Gold Sample");
 
+        choose = tFlow.Status;
+        if (tFlow.Status == -3) {
+            if (tFlow.mineralX<233) {
+                choose = 1;
+            } else if (tFlow.mineralX<466) {
+                choose = 2;
+            } else if (tFlow.mineralX!=0) {
+                choose = 3;
+            } else {
+                choose = -4;
+            }
+        }
+
         telemetry.addData("TFlow says: ", "%d",tFlow.Status);
         telemetry.addData("TFlow says: ", "%.5f",tFlow.mineralX);
+        telemetry.addData("Choose says", "%d",choose);
         telemetry.update();
         sleep(2500);
         telemetry.addData("TFlow says: ", "%d",tFlow.Status);
         telemetry.addData("TFlow says: ", "%.5f",tFlow.mineralX);
+        telemetry.addData("Choose says", "%d",choose);
         telemetry.update();
         sleep(2500);
 
-        switch (tFlow.Status) {
+
+        switch (choose) {
             case 1:
                 //left
                 robot.motorLeft.setPower(0.75);
@@ -183,7 +200,7 @@ public class SimpleAuto extends LinearOpMode {
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 break;
             case -3:
-                //this is the manual mode
+                //this is the manual mode, shouldn't ever be used
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 telemetry.addData("TFlow says: ", "%.5f",tFlow.mineralX);
                 telemetry.update();
@@ -235,14 +252,13 @@ public class SimpleAuto extends LinearOpMode {
         double targetAngle;
         if (opModeIsActive()) {
             angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-            targetAngle = (angle+angles.firstAngle+180)%360;
-            telemetry.update();
+            targetAngle = angle+angles.firstAngle;
             telemetry.addData("IMU Heading:", "%.5f", angles.firstAngle+180);
             telemetry.addData("min:","%.5f",targetAngle-50*speed);
             telemetry.addData("max:","%.5f",targetAngle+50*speed);
             telemetry.update();
-            while (!((angles.firstAngle+180 > (targetAngle-50*speed)%360) && (angles.firstAngle < (targetAngle+50*speed)%360))) {
-                if (angles.firstAngle+180 > targetAngle%360) {
+            while (angles.firstAngle-targetAngle > 50*speed) {
+                if (Math.abs(angles.firstAngle-targetAngle) < Math.abs(targetAngle-angles.firstAngle)) {
                     robot.motorLeft.setPower(Math.abs(speed));
                     robot.motorRight.setPower(-Math.abs(speed));
                 } else {

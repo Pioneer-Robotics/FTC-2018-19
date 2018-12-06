@@ -11,7 +11,7 @@ public class CamManager extends Thread {
     private BNO055IMU imu;
     private Orientation angles;
     private HardwareInfinity robot;
-    boolean go;
+    boolean go = true;
     float reference;
 
 

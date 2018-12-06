@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.widget.Switch;
-
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -25,7 +23,7 @@ public class Teleop extends LinearOpMode
     static final double     COUNTS_PER_INCH         = (TETRIX_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_CM * 3.1415);
     BNO055IMU imu;
-    TensorFlowSource tFlow;
+    CVManager tFlow;
 
     // State used for updating telemetry
     Orientation angles;
@@ -63,7 +61,7 @@ public class Teleop extends LinearOpMode
         motorLeft = hardwareMap.get(DcMotor.class, "motorLeft");*/
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         gravity = imu.getGravity();
-        tFlow = new TensorFlowSource();
+        tFlow = new CVManager();
 
         robot.init(hardwareMap);
 
@@ -225,13 +223,13 @@ public class Teleop extends LinearOpMode
         double targetAngle;
         if (opModeIsActive()) {
             angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-            targetAngle = (angle+angles.firstAngle+180)%360;
+            targetAngle = angle+angles.firstAngle;
             telemetry.addData("IMU Heading:", "%.5f", angles.firstAngle+180);
             telemetry.addData("min:","%.5f",targetAngle-50*speed);
             telemetry.addData("max:","%.5f",targetAngle+50*speed);
             telemetry.update();
-            while (!((angles.firstAngle+180 > (targetAngle-50*speed)%360) && (angles.firstAngle < (targetAngle+50*speed)%360))) {
-                if (angles.firstAngle+180 > targetAngle%360) {
+            while (angles.firstAngle-targetAngle > 50*speed) {
+                if (Math.abs(angles.firstAngle-targetAngle) < Math.abs(targetAngle-angles.firstAngle)) {
                     robot.motorLeft.setPower(Math.abs(speed));
                     robot.motorRight.setPower(-Math.abs(speed));
                 } else {
