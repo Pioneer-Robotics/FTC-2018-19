@@ -66,7 +66,7 @@ public class Config extends LinearOpMode
                     telemetry.update();
                 }
 
-                //BIG PROBLEMS HEREEEEEEEEEE
+                //BIG PROBLEMS HERE
                 if (gamepad2.right_trigger == 1 && gamepad2.dpad_down){
                      MIN_RGT_LATCH = robot.Latch.getPosition();
                 }

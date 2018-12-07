@@ -178,10 +178,10 @@ public class Teleop extends LinearOpMode
             telemetry.addData("Camera:", "%.3f",turn);
 
             if (gamepad1.dpad_left) {
-                angleTurn(0.3,-90);
+                angleTurn(0.3,90);
             }
             if (gamepad1.dpad_right) {
-                angleTurn(0.3,90);
+                angleTurn(0.3,-90);
             }
             // Controls latching servos on linear actuator
             // Latch open
@@ -210,6 +210,7 @@ public class Teleop extends LinearOpMode
             telemetry.addData("right", "%.2f", right);
             telemetry.addData("arm","%.2f", arm);
             telemetry.addData("Motor Encoder", "%d",robot.linearArm.getCurrentPosition());
+            telemetry.addData("Camera:","%.5f",robot.Camera.getPosition());
             telemetry.update();
 
             // Pace this loop so jaw action is reasonable speed.
@@ -218,27 +219,36 @@ public class Teleop extends LinearOpMode
     }
     private void angleTurn(double speed, double angle) {
         double targetAngle;
+        int margin = 7;
         if (opModeIsActive()) {
             angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-            targetAngle = angle+angles.firstAngle;
+            targetAngle = angle+angles.firstAngle+180;
+            telemetry.clearAll();
             telemetry.addData("IMU Heading:", "%.5f", angles.firstAngle+180);
-            telemetry.addData("min:","%.5f",targetAngle-50*speed);
-            telemetry.addData("max:","%.5f",targetAngle+50*speed);
+            telemetry.addData("min:","%.5f",targetAngle-margin*speed);
+            telemetry.addData("max:","%.5f",targetAngle+margin*speed);
+            telemetry.addData("Condition","%.5f",Math.abs(angles.firstAngle+180-targetAngle));
+            telemetry.addData("Error","%.5f",margin*speed);
             telemetry.update();
-            while (angles.firstAngle-targetAngle > 50*speed) {
-                if (Math.abs(angles.firstAngle-targetAngle) < Math.abs(targetAngle-angles.firstAngle)) {
+            while (Math.abs(angles.firstAngle+180-targetAngle) > margin*speed && (360-Math.abs(angles.firstAngle+180-targetAngle)) > margin*speed) {
+                if (angle>0) {
                     robot.motorLeft.setPower(Math.abs(speed));
                     robot.motorRight.setPower(-Math.abs(speed));
                 } else {
                     robot.motorLeft.setPower(-Math.abs(speed));
                     robot.motorRight.setPower(Math.abs(speed));
                 }
-                telemetry.addData("IMU Heading:", "%.5f", angles.firstAngle+180);
-                telemetry.addData("min:","%.5f",targetAngle+180-50*speed);
-                telemetry.addData("max:","%.5f",targetAngle+180+50*speed);
+                telemetry.addData("Error:","%.5f", Math.abs(angles.firstAngle+180-targetAngle));
+                telemetry.addData("Margin:","%.5f",margin*speed);
+                telemetry.addData("IMU Heading:", "%.5f", angles.firstAngle + 180);
+                telemetry.addData("min:", "%.5f", targetAngle - margin * speed);
+                telemetry.addData("target:", "%.5f", targetAngle);
+                telemetry.addData("max:", "%.5f", targetAngle + margin * speed);
                 telemetry.update();
-                angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+                angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             }
+            robot.motorLeft.setPower(0);
+            robot.motorRight.setPower(0);
         }
     }
 }
