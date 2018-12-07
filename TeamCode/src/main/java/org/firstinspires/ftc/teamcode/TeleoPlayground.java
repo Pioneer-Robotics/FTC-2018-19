@@ -61,8 +61,7 @@ public class TeleoPlayground extends LinearOpMode
 
         robot.init(hardwareMap);
 
-        tFlow.init(hardwareMap.get(WebcamName.class, "Webcam 1"), hardwareMap.appContext.getResources().getIdentifier(
-                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+        //tFlow.init(hardwareMap.get(WebcamName.class, "Webcam 1"), hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         telemetry.addData("Teleop", "Initiate");    //
         telemetry.update();
         robot.botSwitch.setMode(DigitalChannel.Mode.INPUT);
@@ -70,8 +69,8 @@ public class TeleoPlayground extends LinearOpMode
         waitForStart();
         camM.init(imu,robot);
         camM.reference = angles.firstAngle;
-        camM.start();
-        tFlow.start();
+        //camM.start();
+        //tFlow.start();
 
 
         // run until the end of the match (driver presses STOP)
@@ -119,8 +118,8 @@ public class TeleoPlayground extends LinearOpMode
             }
 
             //blended motion
-            left  = drive + turn/2;
-            right = drive - turn/2;
+            left  = (drive + turn/2)*(1-gamepad1.right_trigger);
+            right = (drive - turn/2)*(1-gamepad1.right_trigger);
 
             // Normalize the values so neither exceed +/- 1.0
             max = (Math.max(Math.abs(left), Math.abs(right)))/2;

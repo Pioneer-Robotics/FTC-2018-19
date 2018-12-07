@@ -156,6 +156,7 @@ public class SimpleAuto extends LinearOpMode {
         switch (choose) {
             case 1:
                 //left
+                //angleTurn(0.5,38.8);
                 robot.motorLeft.setPower(0.75);
                 robot.motorRight.setPower(-0.75);
 
@@ -179,6 +180,7 @@ public class SimpleAuto extends LinearOpMode {
                 break;
             case 3:
                 //right
+                //angleTurn(0.5,-36.8);
                 robot.motorLeft.setPower(-0.75);
                 robot.motorRight.setPower(0.75);
 
@@ -213,8 +215,8 @@ public class SimpleAuto extends LinearOpMode {
 
         formatAngle(angles.angleUnit, angles.firstAngle);
 
-        encoderDrive(TURN_SPEED, 16, -16, 5.0);
-        angleTurn(0.3,-90);
+        //encoderDrive(TURN_SPEED, 16, -16, 5.0);
+        angleTurn(0.5,-90);
         //NEED TO TEST MORE, (16,-16) is close to 90 degrees
         //encoderDrive(DRIVE_SPEED,24,24,4.0);
         sleep(250);
@@ -275,7 +277,7 @@ public class SimpleAuto extends LinearOpMode {
     private void encoderDrive(double speed, double leftCM, double rightCM, double timeoutS) {
         int newLeftTarget;
         int newRightTarget;
-        //double initAng = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+        double initAng = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
 
         if (opModeIsActive()) {
             newLeftTarget = robot.motorLeft.getCurrentPosition() + (int) (leftCM * COUNTS_PER_INCH);
@@ -295,20 +297,18 @@ public class SimpleAuto extends LinearOpMode {
                     (robot.motorLeft.isBusy() && robot.motorRight.isBusy()))
             {
                 telemetry.addData("Path1", "Running to %7d :%7d", newLeftTarget, newRightTarget);
-                telemetry.addData("Path2", "Running at %7d :%7d",
-                        robot.motorLeft.getCurrentPosition(),
-                        robot.motorRight.getCurrentPosition());
-                /*if (imu.getAngularOrientation(AxesReference.INTRINSIC,
-                        AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle > initAng+0.01
+                telemetry.addData("Path2", "Running at %7d :%7d", robot.motorLeft.getCurrentPosition(), robot.motorRight.getCurrentPosition());
+                if (imu.getAngularOrientation(AxesReference.INTRINSIC,
+                        AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle > initAng+10
                         || imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX,
-                        AngleUnit.DEGREES).firstAngle < initAng-0.01) {
+                        AngleUnit.DEGREES).firstAngle < initAng-10) {
 
                     int mLt = robot.motorLeft.getCurrentPosition();
                     int mRt = robot.motorRight.getCurrentPosition();
-                    angleTurn(1, initAng);
+                    angleTurn(0.5, initAng);
                     robot.motorLeft.setTargetPosition(newLeftTarget+(robot.motorLeft.getCurrentPosition()-mLt));
                     robot.motorRight.setTargetPosition(newRightTarget+(robot.motorRight.getCurrentPosition()-mRt));
-                }*/
+                }
                 telemetry.update();
             }
 

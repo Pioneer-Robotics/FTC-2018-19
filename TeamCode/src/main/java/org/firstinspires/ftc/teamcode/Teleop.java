@@ -87,8 +87,8 @@ public class Teleop extends LinearOpMode
             }
 
             //blended motion
-            left  = drive + turn/2;
-            right = drive - turn/2;
+            left  = (drive + turn/2)*(1-gamepad1.right_trigger);
+            right = (drive - turn/2)*(1-gamepad1.right_trigger);
 
             // Normalize the values so neither exceed +/- 1.0
             max = (Math.max(Math.abs(left), Math.abs(right)))/2;
@@ -100,8 +100,8 @@ public class Teleop extends LinearOpMode
 
             if (gamepad1.y)
             {
-                left *= -0.25;
-                right *= -0.25;
+                left *= -0.25*(1-gamepad1.right_trigger);
+                right *= -0.25*(1-gamepad1.right_trigger);
                 robot.motorLeft.setPower(-right);
                 robot.motorRight.setPower(-left);
                 telemetry.addData("Reverse","Activated");
