@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.HardwareInfinity;
 @TeleOp
 @Disabled
 public class PracticeProgram extends LinearOpMode {
-    HardwareInfinity robot = new HardwareInfinity ();
+    HardwareInfinity robot = new HardwareInfinity();
     //private Gyroscope imu;
     private DcMotor motorRight;
     private DcMotor motorLeft;
