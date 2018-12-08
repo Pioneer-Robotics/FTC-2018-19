@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -28,6 +30,8 @@ public class HardwareInfinity
     DigitalChannel botSwitch;
     DigitalChannel topSwitch;
     TouchSensor trigger;
+    BNO055IMU imu;
+    BNO055IMU.Parameters IParameters = new BNO055IMU.Parameters();
 
     //public Servo    rightClaw   = null;
 
@@ -58,11 +62,18 @@ public class HardwareInfinity
         linearArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorLeft.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
-        motorRight.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
+        motorLeft.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
+        motorRight.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
         botSwitch = hwMap.get(DigitalChannel.class, "botSwitch");
         topSwitch = hwMap.get(DigitalChannel.class, "topSwitch");
         trigger = hwMap.get(TouchSensor.class, "trigger");
+        imu = hwMap.get(BNO055IMU.class, "imu");
+        IParameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        IParameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        IParameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        IParameters.loggingEnabled = true;
+        IParameters.loggingTag = "IMU";
+        imu.initialize(IParameters);
 
         // Set all motors to zero power
         motorLeft.setPower(0);

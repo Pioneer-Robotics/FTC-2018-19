@@ -102,14 +102,14 @@ public class Teleop extends LinearOpMode
             {
                 left *= -0.25*(1-gamepad1.right_trigger);
                 right *= -0.25*(1-gamepad1.right_trigger);
-                robot.motorLeft.setPower(-right);
-                robot.motorRight.setPower(-left);
+                robot.motorLeft.setPower(right);
+                robot.motorRight.setPower(left);
                 telemetry.addData("Reverse","Activated");
             }
             else
             {
-                robot.motorLeft.setPower(-left);
-                robot.motorRight.setPower(-right);
+                robot.motorLeft.setPower(left);
+                robot.motorRight.setPower(right);
                 telemetry.addData("Reverse", "Deactivated");
             }
             if (gamepad2.right_bumper) {

@@ -1,9 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -16,18 +17,16 @@ public class TeleoPlayground extends LinearOpMode
 {
     /* Declare OpMode members. */
     private HardwareInfinity robot = new HardwareInfinity();
+    private ElapsedTime runtime = new ElapsedTime();
     private static final double     TETRIX_TICKS_PER_REV    = 1440;
     private static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;
     private static final double     WHEEL_DIAMETER_CM   = 4.0*2.54 ;
     private static final double     COUNTS_PER_INCH         = (TETRIX_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_CM * 3.1415);
-    private BNO055IMU imu;
+    private static final double DRIVE_SPEED = 0.5;
 
     // State used for updating telemetry
     private Orientation angles;
-
-    private BNO055IMU.Parameters IParameters = new BNO055IMU.Parameters();
-
 
     @Override
     public void runOpMode()
@@ -45,32 +44,23 @@ public class TeleoPlayground extends LinearOpMode
         int activate_suq = 0;
 
         CamManager camM = new CamManager();
-        IParameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        IParameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        IParameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-        IParameters.loggingEnabled = true;
-        IParameters.loggingTag = "IMU";
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(IParameters);
-        /*imu = hardwareMap.get(Gyroscope.class, "imu");
-        motorRight = hardwareMap.get(DcMotor.class, "motorRight");
-        motorLeft = hardwareMap.get(DcMotor.class, "motorLeft");*/
-        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         //Acceleration gravity = imu.getGravity();
         CVManager tFlow = new CVManager();
 
         robot.init(hardwareMap);
 
-        //tFlow.init(hardwareMap.get(WebcamName.class, "Webcam 1"), hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+        angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        tFlow.init(hardwareMap.get(WebcamName.class, "Webcam 1"), hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         telemetry.addData("Teleop", "Initiate");    //
         telemetry.update();
         robot.botSwitch.setMode(DigitalChannel.Mode.INPUT);
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        camM.init(imu,robot);
+        camM.init(robot.imu,robot);
         camM.reference = angles.firstAngle;
-        //camM.start();
-        //tFlow.start();
+        camM.start();
+        tFlow.start();
 
 
         // run until the end of the match (driver presses STOP)
@@ -91,6 +81,96 @@ public class TeleoPlayground extends LinearOpMode
             if (armMax > 1.0)
             {
                 arm /= armMax;
+            }
+            if (gamepad1.a) {
+                encoderDrive(0.5,35,35,10);
+            }
+            if (gamepad1.b) {
+                encoderDrive(0.5,35,35,10);
+                int choose = tFlow.Status;
+                if (tFlow.Status == -3) {
+                    if (tFlow.mineralX<233) {
+                        choose = 1;
+                    } else if (tFlow.mineralX<466) {
+                        choose = 2;
+                    } else if (tFlow.mineralX!=0) {
+                        choose = 3;
+                    } else {
+                        choose = -4;
+                    }
+                }
+
+                telemetry.addData("TFlow says: ", "%d",tFlow.Status);
+                telemetry.addData("TFlow says: ", "%.5f",tFlow.mineralX);
+                telemetry.addData("Choose says", "%d",choose);
+                telemetry.update();
+                sleep(2500);
+                telemetry.addData("TFlow says: ", "%d",tFlow.Status);
+                telemetry.addData("TFlow says: ", "%.5f",tFlow.mineralX);
+                telemetry.addData("Choose says", "%d",choose);
+                telemetry.update();
+                sleep(2500);
+
+
+                switch (choose) {
+                    case 1:
+                        //left
+                        angleTurn(0.5,20);
+                        /*robot.motorLeft.setPower(0.75);
+                        robot.motorRight.setPower(-0.75);
+
+                        while (!(angles.firstAngle <= 38.8))
+                        {
+                            robot.motorLeft.setPower(0.75);
+                            robot.motorRight.setPower(-0.75);
+                        }
+                        robot.motorLeft.setPower(0);
+                        robot.motorRight.setPower(0);*/
+                        encoderDrive(DRIVE_SPEED, 61.51, 61.51, 5);
+                        angleTurn(0.5, 90);
+                        telemetry.addData("TFlow says: ", "%d",tFlow.Status);
+                        break;
+                    case 2:
+                        //middle
+                        //theoretically no movement is necessary
+                        telemetry.addData("TFlow says: ", "%d",tFlow.Status);
+                        encoderDrive(DRIVE_SPEED, 49.26, 49.26, 5);
+                        angleTurn(0.5, 90);
+                        break;
+                    case 3:
+                        //right
+                        angleTurn(0.5,-20);
+                        /*robot.motorLeft.setPower(-0.75);
+                        robot.motorRight.setPower(0.75);
+
+                        while (!(angles.firstAngle >= -36.8))
+                        {
+                            robot.motorLeft.setPower(-0.75);
+                            robot.motorRight.setPower(0.75);
+
+                        }
+                        robot.motorLeft.setPower(0);
+                        robot.motorRight.setPower(0);*/
+                        encoderDrive(DRIVE_SPEED, 61.51, 61.51, 5);
+                        angleTurn(0.5, 90);
+                        telemetry.addData("TFlow says: ", "%d",tFlow.Status);
+                        break;
+                    case -3:
+                        //this is the manual mode, shouldn't ever be used
+                        telemetry.addData("TFlow says: ", "%d",tFlow.Status);
+                        telemetry.addData("TFlow says: ", "%.5f",tFlow.mineralX);
+                        telemetry.update();
+                        sleep(5000);
+                        break;
+                    default:
+                        //error happened with TensorFlow
+                        telemetry.addData("TFlow says: ", "%d",tFlow.Status);
+                        // if tensor flow doesn't function, the robot will default to moving to the middle position
+                        encoderDrive(DRIVE_SPEED, 13, 13, 5);
+                        angleTurn(0.5, 90);
+                        break;
+                }
+                telemetry.update();
             }
             telemetry.addData("Trigger is", robot.trigger.isPressed() ? "Pressed" : "not Pressed");
             telemetry.addData("Bottom is", robot.botSwitch.getState() ? "Pressed" : "not Pressed");
@@ -133,14 +213,14 @@ public class TeleoPlayground extends LinearOpMode
             {
                 left *= -0.25;
                 right *= -0.25;
-                robot.motorLeft.setPower(-right);
-                robot.motorRight.setPower(-left);
+                robot.motorLeft.setPower(right);
+                robot.motorRight.setPower(left);
                 telemetry.addData("Reverse","Activated");
             }
             else
             {
-                robot.motorLeft.setPower(-left);
-                robot.motorRight.setPower(-right);
+                robot.motorLeft.setPower(left);
+                robot.motorRight.setPower(right);
                 telemetry.addData("Reverse", "Deactivated");
             }
             if (gamepad2.right_bumper) {
@@ -172,7 +252,7 @@ public class TeleoPlayground extends LinearOpMode
             }
             robot.Succq.setPower(activate_suq);
             pre_suq = robot.Succq.getCurrentPosition();
-            telemetry.addData("IMU Heading:", "%.5f", imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle+180);
+            telemetry.addData("IMU Heading:", "%.5f", robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle+180);
             telemetry.addData("Camera:", "%.3f",turn);
 
             if (gamepad1.dpad_left) {
@@ -214,12 +294,16 @@ public class TeleoPlayground extends LinearOpMode
             // Pace this loop so jaw action is reasonable speed.
             //sleep(50);
         }
+        if (this.isStopRequested()) {
+            tFlow.go = false;
+            camM.go = false;
+        }
     }
     private void angleTurn(double speed, double angle) {
         double targetAngle;
         int margin = 7;
         if (opModeIsActive()) {
-            angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            angles   = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             targetAngle = angle+angles.firstAngle+180;
             telemetry.clearAll();
             while (Math.abs(angles.firstAngle+180-targetAngle) > margin*speed && (360-Math.abs(angles.firstAngle+180-targetAngle)) > margin*speed) {
@@ -237,10 +321,58 @@ public class TeleoPlayground extends LinearOpMode
                 telemetry.addData("target:", "%.5f", targetAngle);
                 telemetry.addData("max:", "%.5f", targetAngle + margin * speed);
                 telemetry.update();
-                angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+                angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             }
             robot.motorLeft.setPower(0);
             robot.motorRight.setPower(0);
         }
     }
+    private void encoderDrive(double speed, double leftCM, double rightCM, double timeoutS) {
+        int newLeftTarget;
+        int newRightTarget;
+        double initAng = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+
+        if (opModeIsActive()) {
+            newLeftTarget = robot.motorLeft.getCurrentPosition() + (int) (leftCM * COUNTS_PER_INCH);
+            newRightTarget = robot.motorLeft.getCurrentPosition() + (int) (rightCM * COUNTS_PER_INCH);
+            robot.motorLeft.setTargetPosition(newLeftTarget);
+            robot.motorRight.setTargetPosition(newRightTarget);
+
+            robot.motorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.motorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            runtime.reset();
+            robot.motorLeft.setPower(Math.abs(speed));
+            robot.motorRight.setPower(Math.abs(speed));
+
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (robot.motorLeft.isBusy() && robot.motorRight.isBusy()))
+            {
+                telemetry.addData("Path1", "Running to %7d :%7d", newLeftTarget, newRightTarget);
+                telemetry.addData("Path2", "Running at %7d :%7d", robot.motorLeft.getCurrentPosition(), robot.motorRight.getCurrentPosition());
+                if (robot.imu.getAngularOrientation(AxesReference.INTRINSIC,
+                        AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle > initAng+10
+                        || robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX,
+                        AngleUnit.DEGREES).firstAngle < initAng-10) {
+
+                    int mLt = robot.motorLeft.getCurrentPosition();
+                    int mRt = robot.motorRight.getCurrentPosition();
+                    angleTurn(0.5, initAng);
+                    robot.motorLeft.setTargetPosition(newLeftTarget+(robot.motorLeft.getCurrentPosition()-mLt));
+                    robot.motorRight.setTargetPosition(newRightTarget+(robot.motorRight.getCurrentPosition()-mRt));
+                }
+                telemetry.update();
+            }
+
+            robot.motorLeft.setPower(0);
+            robot.motorRight.setPower(0);
+
+            robot.motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            sleep(250);
+        }
+    }
+
 }
