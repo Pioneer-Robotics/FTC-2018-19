@@ -108,12 +108,8 @@ public class SimpleAuto extends LinearOpMode {
         telemetry.update();
 
         //Drive away
-        encoderDrive(1, 60, 60, 10.0);
-
-        //Run Google Tensor Flow to detect object.....
-        telemetry.addData("Status: ", "Detecting Gold Sample");
-
-        choose = tFlow.Status;
+        encoderDrive(0.5,35,35,10);
+        int choose = tFlow.Status;
         if (tFlow.Status == -3) {
             if (tFlow.mineralX<233) {
                 choose = 1;
@@ -126,87 +122,81 @@ public class SimpleAuto extends LinearOpMode {
             }
         }
 
-        telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-        telemetry.addData("TFlow says: ", "%.5f",tFlow.mineralX);
-        telemetry.addData("Choose says", "%d",choose);
-        telemetry.update();
-        sleep(2500);
-        telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-        telemetry.addData("TFlow says: ", "%.5f",tFlow.mineralX);
-        telemetry.addData("Choose says", "%d",choose);
-        telemetry.update();
-        sleep(2500);
-
-
         switch (choose) {
             case 1:
                 //left
-                //angleTurn(0.5,38.8);
-                robot.motorLeft.setPower(0.75);
-                robot.motorRight.setPower(-0.75);
+                angleTurn(0.5,20);
+                        /*robot.motorLeft.setPower(0.75);
+                        robot.motorRight.setPower(-0.75);
 
-                while (!(angles.firstAngle <= 38.8))
-                {
-                    robot.motorLeft.setPower(0.75);
-                    robot.motorRight.setPower(-0.75);
-                }
-                robot.motorLeft.setPower(0);
-                robot.motorRight.setPower(0);
-                encoderDrive(DRIVE_SPEED, -61.51, -61.51, 5);
-                angleTurn(0.5, 90);
+                        while (!(angles.firstAngle <= 38.8))
+                        {
+                            robot.motorLeft.setPower(0.75);
+                            robot.motorRight.setPower(-0.75);
+                        }
+                        robot.motorLeft.setPower(0);
+                        robot.motorRight.setPower(0);*/
+                encoderDrive(DRIVE_SPEED, 61.51, 61.51, 5);
+                angleTurn(0.5, -20);
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
+                encoderDrive( 0.5,10,10,10);
+
+                angleTurn(0.3, 90);
                 break;
             case 2:
                 //middle
                 //theoretically no movement is necessary
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                encoderDrive(DRIVE_SPEED, -49.26, -49.26, 5);
-                angleTurn(0.5, 90);
+                encoderDrive(DRIVE_SPEED, 49.26, 49.26, 5);
+                encoderDrive( 0.5,10,10,10);
+
+                angleTurn(0.3, 90);
+                encoderDrive( 0.5, 10,10,10);
                 break;
             case 3:
                 //right
-                //angleTurn(0.5,-36.8);
-                robot.motorLeft.setPower(0.75);
-                robot.motorRight.setPower(-0.75);
+                angleTurn(0.5,-20);
+                        /*robot.motorLeft.setPower(-0.75);
+                        robot.motorRight.setPower(0.75);
 
-                while (!(angles.firstAngle >= -36.8))
-                {
-                    robot.motorLeft.setPower(0.75);
-                    robot.motorRight.setPower(-0.75);
+                        while (!(angles.firstAngle >= -36.8))
+                        {
+                            robot.motorLeft.setPower(-0.75);
+                            robot.motorRight.setPower(0.75);
 
-                }
-                robot.motorLeft.setPower(0);
-                robot.motorRight.setPower(0);
-                encoderDrive(DRIVE_SPEED, -61.51, -61.51, 5);
-                angleTurn(0.5, 90);
+                        }
+                        robot.motorLeft.setPower(0);
+                        robot.motorRight.setPower(0);*/
+                encoderDrive(DRIVE_SPEED, 61.51, 61.51, 5);
+                angleTurn(0.5, 20);
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
+                encoderDrive( 0.5,10,10,10);
+                angleTurn(0.3, 90);
+                encoderDrive( 0.5, 20,20,10);
                 break;
             case -3:
                 //this is the manual mode, shouldn't ever be used
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 telemetry.addData("TFlow says: ", "%.5f",tFlow.mineralX);
                 telemetry.update();
-                sleep(5000);
                 break;
             default:
                 //error happened with TensorFlow
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-               // if tensor flow doesn't function, the robot will default to moving to the middle position
-                encoderDrive(DRIVE_SPEED, -13, -13, 5);
-                angleTurn(0.5, 90);
+                // if tensor flow doesn't function, the robot will default to moving to the middle position
+                encoderDrive(DRIVE_SPEED, 13, 13, 5);
+                encoderDrive( 0.5,10,10,10);
+
+                angleTurn(0.3, 90);
                 break;
         }
         telemetry.update();
 
-        formatAngle(angles.angleUnit, angles.firstAngle);
 
         //encoderDrive(TURN_SPEED, 16, -16, 5.0);
-        angleTurn(0.5,-90);
+        //angleTurn(0.5,-90);
         //NEED TO TEST MORE, (16,-16) is close to 90 degrees
-        //encoderDrive(DRIVE_SPEED,24,24,4.0);
-        sleep(250);
-
-        //Drop Team Marker
+        //encoderDrive(DRIVE_SPEED,1000,1000,4.0);
         telemetry.addData("Status: ", "Dropping Team Marker");
         telemetry.update();
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMIN_POSITION);
@@ -214,7 +204,15 @@ public class SimpleAuto extends LinearOpMode {
         telemetry.update();
         sleep(500);
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
+        
+        angleTurn(0.3, 45);
+        encoderDrive(1, 305,305,30);
+        while (!robot.botSwitch.getState()) {
+            robot.linearArm.setPower(-1);
+        }
+        robot.linearArm.setPower(0);
 
+        //Drop Team Marker
 
         while (opModeIsActive())
         {

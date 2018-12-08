@@ -100,18 +100,6 @@ public class TeleoPlayground extends LinearOpMode
                     }
                 }
 
-                telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                telemetry.addData("TFlow says: ", "%.5f",tFlow.mineralX);
-                telemetry.addData("Choose says", "%d",choose);
-                telemetry.update();
-                sleep(2500);
-                telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                telemetry.addData("TFlow says: ", "%.5f",tFlow.mineralX);
-                telemetry.addData("Choose says", "%d",choose);
-                telemetry.update();
-                sleep(2500);
-
-
                 switch (choose) {
                     case 1:
                         //left
@@ -127,7 +115,7 @@ public class TeleoPlayground extends LinearOpMode
                         robot.motorLeft.setPower(0);
                         robot.motorRight.setPower(0);*/
                         encoderDrive(DRIVE_SPEED, 61.51, 61.51, 5);
-                        angleTurn(0.5, 90);
+                        angleTurn(0.5, -20);
                         telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                         break;
                     case 2:
@@ -135,7 +123,6 @@ public class TeleoPlayground extends LinearOpMode
                         //theoretically no movement is necessary
                         telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                         encoderDrive(DRIVE_SPEED, 49.26, 49.26, 5);
-                        angleTurn(0.5, 90);
                         break;
                     case 3:
                         //right
@@ -152,7 +139,7 @@ public class TeleoPlayground extends LinearOpMode
                         robot.motorLeft.setPower(0);
                         robot.motorRight.setPower(0);*/
                         encoderDrive(DRIVE_SPEED, 61.51, 61.51, 5);
-                        angleTurn(0.5, 90);
+                        angleTurn(0.5, 20);
                         telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                         break;
                     case -3:
@@ -160,17 +147,16 @@ public class TeleoPlayground extends LinearOpMode
                         telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                         telemetry.addData("TFlow says: ", "%.5f",tFlow.mineralX);
                         telemetry.update();
-                        sleep(5000);
                         break;
                     default:
                         //error happened with TensorFlow
                         telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                         // if tensor flow doesn't function, the robot will default to moving to the middle position
                         encoderDrive(DRIVE_SPEED, 13, 13, 5);
-                        angleTurn(0.5, 90);
                         break;
                 }
                 telemetry.update();
+                break;
             }
             telemetry.addData("Trigger is", robot.trigger.isPressed() ? "Pressed" : "not Pressed");
             telemetry.addData("Bottom is", robot.botSwitch.getState() ? "Pressed" : "not Pressed");
@@ -308,11 +294,11 @@ public class TeleoPlayground extends LinearOpMode
             telemetry.clearAll();
             while (Math.abs(angles.firstAngle+180-targetAngle) > margin*speed && (360-Math.abs(angles.firstAngle+180-targetAngle)) > margin*speed) {
                 if (angle>0) {
-                    robot.motorLeft.setPower(Math.abs(speed));
-                    robot.motorRight.setPower(-Math.abs(speed));
-                } else {
                     robot.motorLeft.setPower(-Math.abs(speed));
                     robot.motorRight.setPower(Math.abs(speed));
+                } else {
+                    robot.motorLeft.setPower(Math.abs(speed));
+                    robot.motorRight.setPower(-Math.abs(speed));
                 }
                 telemetry.addData("Error:","%.5f", Math.abs(angles.firstAngle+180-targetAngle));
                 telemetry.addData("Margin:","%.5f",margin*speed);
@@ -325,7 +311,9 @@ public class TeleoPlayground extends LinearOpMode
             }
             robot.motorLeft.setPower(0);
             robot.motorRight.setPower(0);
+            return;
         }
+        return;
     }
     private void encoderDrive(double speed, double leftCM, double rightCM, double timeoutS) {
         int newLeftTarget;
@@ -352,9 +340,9 @@ public class TeleoPlayground extends LinearOpMode
                 telemetry.addData("Path1", "Running to %7d :%7d", newLeftTarget, newRightTarget);
                 telemetry.addData("Path2", "Running at %7d :%7d", robot.motorLeft.getCurrentPosition(), robot.motorRight.getCurrentPosition());
                 if (robot.imu.getAngularOrientation(AxesReference.INTRINSIC,
-                        AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle > initAng+10
+                        AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle > initAng+5
                         || robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX,
-                        AngleUnit.DEGREES).firstAngle < initAng-10) {
+                        AngleUnit.DEGREES).firstAngle < initAng-5) {
 
                     int mLt = robot.motorLeft.getCurrentPosition();
                     int mRt = robot.motorRight.getCurrentPosition();
