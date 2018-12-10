@@ -86,7 +86,7 @@ public class TeleoPlayground extends LinearOpMode
                 encoderDrive(0.5,35,35,10);
             }
             if (gamepad1.b) {
-                encoderDrive(0.5,35,35,10);
+                encoderDrive(0.5,5,5,10);
                 int choose = tFlow.Status;
                 if (tFlow.Status == -3) {
                     if (tFlow.mineralX<233) {
@@ -117,12 +117,19 @@ public class TeleoPlayground extends LinearOpMode
                         encoderDrive(DRIVE_SPEED, 61.51, 61.51, 5);
                         angleTurn(0.5, -20);
                         telemetry.addData("TFlow says: ", "%d",tFlow.Status);
+                        encoderDrive( 0.5,10,10,10);
+
+                        angleTurn(0.3, 90);
                         break;
                     case 2:
                         //middle
                         //theoretically no movement is necessary
                         telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                         encoderDrive(DRIVE_SPEED, 49.26, 49.26, 5);
+                        encoderDrive( 0.5,10,10,10);
+
+                        angleTurn(0.3, 90);
+                        encoderDrive( 0.5, 10,10,10);
                         break;
                     case 3:
                         //right
@@ -141,6 +148,9 @@ public class TeleoPlayground extends LinearOpMode
                         encoderDrive(DRIVE_SPEED, 61.51, 61.51, 5);
                         angleTurn(0.5, 20);
                         telemetry.addData("TFlow says: ", "%d",tFlow.Status);
+                        encoderDrive( 0.5,10,10,10);
+                        angleTurn(0.3, 90);
+                        encoderDrive( 0.5, 20,20,10);
                         break;
                     case -3:
                         //this is the manual mode, shouldn't ever be used
@@ -153,9 +163,30 @@ public class TeleoPlayground extends LinearOpMode
                         telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                         // if tensor flow doesn't function, the robot will default to moving to the middle position
                         encoderDrive(DRIVE_SPEED, 13, 13, 5);
+                        encoderDrive( 0.5,10,10,10);
+
+                        angleTurn(0.3, 90);
                         break;
                 }
                 telemetry.update();
+
+                //encoderDrive(TURN_SPEED, 16, -16, 5.0);
+                //angleTurn(0.5,-90);
+                //NEED TO TEST MORE, (16,-16) is close to 90 degrees
+                //encoderDrive(DRIVE_SPEED,1000,1000,4.0);
+                telemetry.addData("Status: ", "Dropping Team Marker");
+                telemetry.update();
+                robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMIN_POSITION);
+                telemetry.addData("Status: ", "Dropped Team Marker");
+                telemetry.update();
+                sleep(500);
+                robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
+                angleTurn(0.3,180);
+                angleTurn(0.3, -45);
+                while (!robot.botSwitch.getState()) {
+                    robot.linearArm.setPower(-1);
+                }
+                robot.linearArm.setPower(0);
                 break;
             }
             telemetry.addData("Trigger is", robot.trigger.isPressed() ? "Pressed" : "not Pressed");

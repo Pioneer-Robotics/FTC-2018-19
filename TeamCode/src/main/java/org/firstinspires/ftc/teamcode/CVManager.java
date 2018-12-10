@@ -210,6 +210,7 @@ public class CVManager extends Thread {
                 int st = this.checkThree();
                 if (st != -1 && st != -2) {
                     this.Status = st;
+                    this.go = false;
                 } else if (st == -2) {
                     this.mineralX = findGold();
                     this.Status = -3;

@@ -28,7 +28,7 @@ public class CamManager extends Thread {
         float angleDiff = ( angles.firstAngle - angleZero );
 
         if (((angles.firstAngle + angleDiff) >= angleZero - 150)  && ((angles.firstAngle + angleDiff) <= (angleZero + 150)) ) {
-            robot.Camera.setPosition(0.95-Math.abs( Float.parseFloat(df.format(angles.firstAngle)) * (0.5/90) - 0.5));
+            robot.Camera.setPosition(1-Math.abs( Float.parseFloat(df.format(angles.firstAngle)) * (0.5/90) - 0.5));
             //cam stays center while robot turns
         }
     }

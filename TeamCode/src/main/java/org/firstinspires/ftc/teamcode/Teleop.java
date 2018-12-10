@@ -100,8 +100,8 @@ public class Teleop extends LinearOpMode
 
             if (gamepad1.y)
             {
-                left *= -0.25*(1-gamepad1.right_trigger);
-                right *= -0.25*(1-gamepad1.right_trigger);
+                left *= -0.5*(1-gamepad1.right_trigger);
+                right *= -0.5*(1-gamepad1.right_trigger);
                 robot.motorLeft.setPower(right);
                 robot.motorRight.setPower(left);
                 telemetry.addData("Reverse","Activated");
@@ -112,10 +112,12 @@ public class Teleop extends LinearOpMode
                 robot.motorRight.setPower(right);
                 telemetry.addData("Reverse", "Deactivated");
             }
+            if (gamepad2.b) {
+                robot.Collector.setPosition(1);
+            }
             if (gamepad2.right_bumper) {
                 if (!flipster) {
                     if (activate_suq == 0) {
-                        robot.Collector.setPosition(1);
                         activate_suq = 1;
                         robot.Succq.setPower(activate_suq);
                         sleep(20);

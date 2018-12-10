@@ -37,7 +37,7 @@ public class HardwareInfinity
 
     static final double lunchBoxMAX_POSITION = 0.35;
     static final double lunchBoxMIN_POSITION = 0.875;
-    static final double LatchMAX_POSITION = 0.87;
+    static final double LatchMAX_POSITION = 1;
     static final double LatchMIN_POSITION = 0;
 
     /* local OpMode members. */
@@ -95,7 +95,7 @@ public class HardwareInfinity
 
 
         lunchBox.setPosition(lunchBoxMAX_POSITION);
-        Latch.setPosition(LatchMAX_POSITION);
+        Latch.setPosition(LatchMIN_POSITION);
         Collector.setPosition(0.6);
         Camera.setPosition(0.5);
 
