@@ -10,13 +10,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-public class Movement {
-    DcMotor motorLeft;
-    DcMotor motorRight;
-    BNO055IMU imu;
-    LinearOpMode Op;
-    ElapsedTime runtime;
-    double COUNTS_PER_INCH;
+class Movement {
+    private DcMotor motorLeft;
+    private DcMotor motorRight;
+    private BNO055IMU imu;
+    private LinearOpMode Op;
+    private ElapsedTime runtime;
+    private double COUNTS_PER_INCH;
 
     void init(DcMotor motL, DcMotor motR, BNO055IMU im, LinearOpMode O, ElapsedTime run, double CPI) {
         motorLeft = motL;
