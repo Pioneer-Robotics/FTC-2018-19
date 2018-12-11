@@ -65,9 +65,11 @@ public class TMAuto extends LinearOpMode {
 
         CVManager tFlow = new CVManager();
         CamManager camM = new CamManager();
+        Movement mov = new Movement();
         tFlow.init(hardwareMap.get(WebcamName.class, "Webcam 1"), hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         camM.init(robot.imu,robot);
+        mov.init(robot.motorLeft,robot.motorRight,robot.imu,this,runtime, COUNTS_PER_INCH);
         camM.reference = angles.firstAngle;
         camM.start();
         tFlow.start();
@@ -110,7 +112,7 @@ public class TMAuto extends LinearOpMode {
         sleep(500);
 
         //Drive away
-        encoderDrive(0.5,10,10,10);
+        mov.encoderDrive(0.5,10,10,10);
         telemetry.addData("Choose:", "%d", choose);
         telemetry.addData("Status:","%d",tFlow.Status);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
@@ -138,7 +140,7 @@ public class TMAuto extends LinearOpMode {
         switch (choose) {
             case 1:
                 //left
-                angleTurn(0.5,20);
+                mov.angleTurn(0.5,20);
                         /*robot.motorLeft.setPower(0.75);
                         robot.motorRight.setPower(-0.75);
 
@@ -149,26 +151,26 @@ public class TMAuto extends LinearOpMode {
                         }
                         robot.motorLeft.setPower(0);
                         robot.motorRight.setPower(0);*/
-                encoderDrive(DRIVE_SPEED, 61.51, 61.51, 5);
-                angleTurn(0.2, -20);
+                mov.encoderDrive(DRIVE_SPEED, 61.51, 61.51, 5);
+                mov.angleTurn(0.2, -20);
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                encoderDrive( 0.5,2,2,10);
+                mov.encoderDrive( 0.5,2,2,10);
 
-                angleTurn(0.3, 90);
+                mov.angleTurn(0.3, 90);
                 break;
             case 2:
                 //middle
                 //theoretically no movement is necessary
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                encoderDrive(DRIVE_SPEED, 49.26, 49.26, 5);
-                encoderDrive( 0.5,10,10,10);
+                mov.encoderDrive(DRIVE_SPEED, 49.26, 49.26, 5);
+                mov.encoderDrive( 0.5,10,10,10);
 
-                angleTurn(0.2, 90);
-                encoderDrive( 0.5, 5,5,10);
+                mov.angleTurn(0.2, 90);
+                mov.encoderDrive( 0.5, 5,5,10);
                 break;
             case 3:
                 //right
-                angleTurn(0.5,-20);
+                mov.angleTurn(0.5,-20);
                         /*robot.motorLeft.setPower(-0.75);
                         robot.motorRight.setPower(0.75);
 
@@ -180,12 +182,12 @@ public class TMAuto extends LinearOpMode {
                         }
                         robot.motorLeft.setPower(0);
                         robot.motorRight.setPower(0);*/
-                encoderDrive(DRIVE_SPEED, 61.51, 61.51, 5);
-                angleTurn(0.2, 20);
+                mov.encoderDrive(DRIVE_SPEED, 61.51, 61.51, 5);
+                mov.angleTurn(0.2, 20);
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                encoderDrive( 0.5,5,5,10);
-                angleTurn(0.2, 90);
-                encoderDrive( 0.5, 5,5,10);
+                mov.encoderDrive( 0.5,5,5,10);
+                mov.angleTurn(0.2, 90);
+                mov.encoderDrive( 0.5, 5,5,10);
                 break;
             case -3:
                 //this is the manual mode, shouldn't ever be used
@@ -197,10 +199,10 @@ public class TMAuto extends LinearOpMode {
                 //error happened with TensorFlow
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 // if tensor flow doesn't function, the robot will default to moving to the middle position
-                encoderDrive(DRIVE_SPEED, 13, 13, 5);
-                encoderDrive( 0.5,10,10,10);
+                mov.encoderDrive(DRIVE_SPEED, 13, 13, 5);
+                mov.encoderDrive( 0.5,10,10,10);
 
-                angleTurn(0.3, 90);
+                mov.angleTurn(0.3, 90);
                 break;
         }
         telemetry.update();
@@ -216,8 +218,8 @@ public class TMAuto extends LinearOpMode {
         telemetry.update();
         sleep(500);
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
-        angleTurn(0.3,160);
-        angleTurn(0.3, -25);
+        mov.angleTurn(0.3,160);
+        mov.angleTurn(0.3, -25);
         while (!robot.botSwitch.getState()) {
             robot.linearArm.setPower(-1);
         }
@@ -241,100 +243,5 @@ public class TMAuto extends LinearOpMode {
         telemetry.update();
         tFlow.go = false;
         camM.go = false;
-    }
-    private void angleTurn(double speed, double angle) {
-        double targetAngle;
-        int margin = 7;
-        if (opModeIsActive()) {
-            Orientation angles   = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-            targetAngle = angle+angles.firstAngle+180;
-            telemetry.clearAll();
-            while (Math.abs(angles.firstAngle+180-targetAngle) > margin*speed && (360-Math.abs(angles.firstAngle+180-targetAngle)) > margin*speed) {
-                if (angle>0) {
-                    robot.motorLeft.setPower(-Math.abs(speed));
-                    robot.motorRight.setPower(Math.abs(speed));
-                } else {
-                    robot.motorLeft.setPower(Math.abs(speed));
-                    robot.motorRight.setPower(-Math.abs(speed));
-                }
-                telemetry.addData("Error:","%.5f", Math.abs(angles.firstAngle+180-targetAngle));
-                telemetry.addData("Margin:","%.5f",margin*speed);
-                telemetry.addData("IMU Heading:", "%.5f", angles.firstAngle + 180);
-                telemetry.addData("min:", "%.5f", targetAngle - margin * speed);
-                telemetry.addData("target:", "%.5f", targetAngle);
-                telemetry.addData("max:", "%.5f", targetAngle + margin * speed);
-                telemetry.update();
-                angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-                if (this.isStopRequested()) {
-                    return;
-                }
-                if (Math.abs(angles.firstAngle+180-targetAngle) < margin*speed || (360-Math.abs(angles.firstAngle+180-targetAngle)) < margin*speed) {
-                    robot.motorLeft.setPower(0);
-                    robot.motorRight.setPower(0);
-                    return;
-                }
-            }
-            telemetry.addData("Finished","!");
-            telemetry.update();
-            robot.motorLeft.setPower(0);
-            robot.motorRight.setPower(0);
-        }
-    }
-    private void encoderDrive(double speed, double leftCM, double rightCM, double timeoutS) {
-        int newLeftTarget;
-        int newRightTarget;
-        double initAng = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-
-        if (opModeIsActive()) {
-            newLeftTarget = robot.motorLeft.getCurrentPosition() + (int) (leftCM * COUNTS_PER_INCH);
-            newRightTarget = robot.motorLeft.getCurrentPosition() + (int) (rightCM * COUNTS_PER_INCH);
-            robot.motorLeft.setTargetPosition(newLeftTarget);
-            robot.motorRight.setTargetPosition(newRightTarget);
-
-            robot.motorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.motorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            runtime.reset();
-            robot.motorLeft.setPower(Math.abs(speed));
-            robot.motorRight.setPower(Math.abs(speed));
-
-            while (opModeIsActive() &&
-                    (runtime.seconds() < timeoutS) &&
-                    (robot.motorLeft.isBusy() && robot.motorRight.isBusy()))
-            {
-                telemetry.addData("Path1", "Running to %7d :%7d", newLeftTarget, newRightTarget);
-                telemetry.addData("Path2", "Running at %7d :%7d", robot.motorLeft.getCurrentPosition(), robot.motorRight.getCurrentPosition());
-                if (robot.imu.getAngularOrientation(AxesReference.INTRINSIC,
-                        AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle > initAng+10
-                        || robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX,
-                        AngleUnit.DEGREES).firstAngle < initAng-10) {
-
-                    int mLt = robot.motorLeft.getCurrentPosition();
-                    int mRt = robot.motorRight.getCurrentPosition();
-                    angleTurn(0.5, initAng);
-                    robot.motorLeft.setTargetPosition(newLeftTarget+(robot.motorLeft.getCurrentPosition()-mLt));
-                    robot.motorRight.setTargetPosition(newRightTarget+(robot.motorRight.getCurrentPosition()-mRt));
-                }
-                if (this.isStopRequested()) {
-                    return;
-                }
-                telemetry.update();
-            }
-
-            robot.motorLeft.setPower(0);
-            robot.motorRight.setPower(0);
-
-            robot.motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            sleep(250);
-        }
-    }
-
-    private String formatAngle(AngleUnit angleUnit, double angle) {
-        return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
-    }
-    private String formatDegrees(double degrees) {
-        return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
     }
 }
