@@ -84,6 +84,10 @@ public class TeleoPlayground extends LinearOpMode
             {
                 arm /= armMax;
             }
+            if (gamepad2.a) {
+                tFlow.mode = Math.abs(1-tFlow.mode);
+                sleep(100);
+            }
             if (gamepad1.a) {
                 mov.encoderDrive(0.5,35,35,10);
             }

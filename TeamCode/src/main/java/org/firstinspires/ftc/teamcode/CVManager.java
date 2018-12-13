@@ -75,6 +75,7 @@ public class CVManager extends Thread {
     float mineralX = 0;
     boolean go = true;
     int Status = 0;
+    int mode = 0;
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -120,7 +121,6 @@ public class CVManager extends Thread {
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
             if (updatedRecognitions != null) {
                 // # of objects
-                updatedRecognitions.size();
                 if (updatedRecognitions.size() == 3) {
                     int goldMineralX = -1;
                     int silverMineral1X = -1;
@@ -152,6 +152,41 @@ public class CVManager extends Thread {
                 return -1;
             }
 
+        }
+        return -4;
+    }
+    private int tIaR() {
+        if (tfod != null) {
+            // getUpdatedRecognitions() will return null if no new information is available since
+            // the last time that call was made.
+            List<Recognition> updatedRecognitions = tfod.getRecognitions();
+            // # of objects
+            if (updatedRecognitions.size() == 3) {
+                float minX = 0;
+                float maxX = 0;
+                float goldMineralX = -1;
+                float goldMineralY = -1;
+                float silverMineral1X = -1;
+                float silverMineral1Y = -1;
+                float silverMineral2X = -1;
+                float silverMineral2Y = -1;
+                for (Recognition recognition : updatedRecognitions) {
+                    if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                        goldMineralX = recognition.getLeft();
+                        goldMineralY = recognition.getTop();
+                    } else if (silverMineral1X == -1) {
+                        silverMineral1X = recognition.getLeft();
+                        silverMineral1Y = recognition.getTop();
+                    } else {
+                        silverMineral2X = recognition.getLeft();
+                        silverMineral2Y = recognition.getTop();
+                    }
+                }
+                float slope = (silverMineral2Y-silverMineral1Y)/(silverMineral2X-silverMineral1X);
+                float intrcpt = silverMineral2Y - slope*silverMineral2X;
+                if (Math.abs(slope*goldMineralX+intrcpt - goldMineralY) >= 20) return 2;
+                else return 1;
+            } else return -3;
         }
         return -4;
     }
@@ -207,14 +242,18 @@ public class CVManager extends Thread {
         if (tfod != null) {
             tfod.activate();
             while (go) {
-                int st = this.checkThree();
-                if (st != -1 && st != -2) {
-                    this.Status = st;
-                    this.go = false;
-                } else if (st == -2) {
-                    this.mineralX = findGold();
-                    this.Status = -3;
-                }
+                if (mode == 0) {
+                    int st = this.checkThree();
+                    if (st != -1 && st != -2) {
+                        this.Status = st;
+                        this.go = false;
+                    } else if (st == -2) {
+                        this.mineralX = this.findGold();
+                        this.Status = -3;
+                    }
+                } else if (mode == 1) {
+                    this.Status = this.tIaR();
+                } else go = false;
             }
             tfod.shutdown();
         }
