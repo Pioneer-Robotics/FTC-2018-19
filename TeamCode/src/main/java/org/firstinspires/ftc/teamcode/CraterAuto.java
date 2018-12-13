@@ -135,7 +135,7 @@ public class CraterAuto extends LinearOpMode {
         telemetry.addData("Status:","%d",tFlow.Status);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
         telemetry.update();
-        sleep(1000);
+        //sleep(1000);
         switch (choose) {
             case 1:
                 //left
