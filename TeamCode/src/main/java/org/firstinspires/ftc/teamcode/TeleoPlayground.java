@@ -76,6 +76,7 @@ public class TeleoPlayground extends LinearOpMode
             arm = gamepad2.right_stick_y;
 
             telemetry.addData("TFlow says: ", "%d", tFlow.Status);
+            telemetry.addData("TFlow mode: ", "%d", tFlow.mode);
             telemetry.addData("TFlow saysX: ", "%.5f", tFlow.mineralX);
 
             //normalization of arm value
