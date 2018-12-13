@@ -77,7 +77,7 @@ public class CraterAuto extends LinearOpMode {
         telemetry.update();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        sleep(5000); // trex only wait
+       
         //Tank(1,1);
         //(motorLeft.getCurrentPosition() < Rotations(2))
 
