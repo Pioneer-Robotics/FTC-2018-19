@@ -156,14 +156,17 @@ public class Teleop extends LinearOpMode
                 robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);
                 telemetry.addData("Latches","Min");
             }
-            // Drops team marker with servo
+
+            /*
+             // Drops team marker with servo
             if (gamepad2.x)
             {
                 robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMIN_POSITION);
-                sleep(1000);
+                sleep(50);
                 robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
                 telemetry.addLine("Team Marker Dropped");
             }
+            */
 
             // Send telemetry message to signify robot running;
             telemetry.addData("left",  "%.2f", left);
