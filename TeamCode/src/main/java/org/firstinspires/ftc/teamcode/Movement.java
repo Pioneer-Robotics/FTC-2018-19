@@ -10,13 +10,21 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-class Movement {
+class Movement extends Thread {
     private DcMotor motorLeft;
     private DcMotor motorRight;
     private BNO055IMU imu;
     private LinearOpMode Op;
     private ElapsedTime runtime;
     private double COUNTS_PER_INCH;
+    private double speedG;
+    private double angleG;
+    private double leftCMG;
+    private double rightCMG;
+    private double timeoutSG;
+    private int mode;
+
+    int margin = 7;
 
     void init(DcMotor motL, DcMotor motR, BNO055IMU im, LinearOpMode O, ElapsedTime run, double CPI) {
         motorLeft = motL;
@@ -27,10 +35,16 @@ class Movement {
         COUNTS_PER_INCH = CPI;
     }
 
-    void angleTurn(double speed, double angle) {
+    void angleTurn(double speed, double angle, boolean backgrnd) {
         double targetAngle;
-        int margin = 7;
         if (Op.opModeIsActive()) {
+            if (backgrnd) {
+                angleG = angle;
+                speedG = speed;
+                mode = 1;
+                start();
+
+            }
             Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             targetAngle = angle + angles.firstAngle + 180;
             Op.telemetry.clearAll();
@@ -65,12 +79,21 @@ class Movement {
             motorRight.setPower(0);
         }
     }
-    void encoderDrive(double speed, double leftCM, double rightCM, double timeoutS) {
+    void encoderDrive(double speed, double leftCM, double rightCM, double timeoutS, boolean backgrnd) {
         int newLeftTarget;
         int newRightTarget;
         double initAng = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
 
         if (Op.opModeIsActive()) {
+            if (backgrnd) {
+                speedG = speed;
+                leftCMG = leftCM;
+                rightCMG = rightCM;
+                timeoutSG = timeoutS;
+                mode = 2;
+                start();
+
+            }
             newLeftTarget = motorLeft.getCurrentPosition() + (int) (leftCM * COUNTS_PER_INCH);
             newRightTarget = motorLeft.getCurrentPosition() + (int) (rightCM * COUNTS_PER_INCH);
             motorLeft.setTargetPosition(newLeftTarget);
@@ -113,6 +136,15 @@ class Movement {
             motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             Op.sleep(250);
+        }
+    }
+    public void run() {
+        if (mode == 1) {
+            angleTurn(speedG,angleG,false);
+        } else if (mode == 2) {
+            encoderDrive(speedG, leftCMG, rightCMG, timeoutSG,false);
+        } else {
+            return;
         }
     }
 }

@@ -111,7 +111,7 @@ public class CraterAuto extends LinearOpMode {
         sleep(500);
 
         //Drive away
-        mov.encoderDrive(0.5,8,8,10);
+        mov.encoderDrive(0.5,8,8,10, false);
         telemetry.addData("Choose:", "%d", choose);
         telemetry.addData("Status:","%d",tFlow.Status);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
@@ -139,7 +139,7 @@ public class CraterAuto extends LinearOpMode {
         switch (choose) {
             case 1:
                 //left
-                mov.angleTurn(0.5,20);
+                mov.angleTurn(0.5,20, false);
                         /*robot.motorLeft.setPower(0.75);
                         robot.motorRight.setPower(-0.75);
 
@@ -150,9 +150,9 @@ public class CraterAuto extends LinearOpMode {
                         }
                         robot.motorLeft.setPower(0);
                         robot.motorRight.setPower(0);*/
-                mov.encoderDrive(DRIVE_SPEED, 55, 55, 5);
+                mov.encoderDrive(DRIVE_SPEED, 55, 55, 5, false);
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive( 0.5,5,5,10);
+                mov.encoderDrive( 0.5,5,5,10, false);
 
                 //angleTurn(0.3, 90);
                 break;
@@ -160,14 +160,14 @@ public class CraterAuto extends LinearOpMode {
                 //middle
                 //theoretically no movement is necessary
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive(DRIVE_SPEED, 49.26, 49.26, 5);
+                mov.encoderDrive(DRIVE_SPEED, 49.26, 49.26, 5, false);
                 //encoderDrive( 0.5,10,10,10);
 
                 //encoderDrive( 0.5, 5,5,10);
                 break;
             case 3:
                 //right
-                mov.angleTurn(0.5,-20);
+                mov.angleTurn(0.5,-20, false);
                         /*robot.motorLeft.setPower(-0.75);
                         robot.motorRight.setPower(0.75);
 
@@ -179,9 +179,9 @@ public class CraterAuto extends LinearOpMode {
                         }
                         robot.motorLeft.setPower(0);
                         robot.motorRight.setPower(0);*/
-                mov.encoderDrive(DRIVE_SPEED, 55, 55, 5);
+                mov.encoderDrive(DRIVE_SPEED, 55, 55, 5, false);
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive( 0.5, 5,5,10);
+                mov.encoderDrive( 0.5, 5,5,10, false);
                 break;
             case -3:
                 //this is the manual mode, shouldn't ever be used
@@ -193,7 +193,7 @@ public class CraterAuto extends LinearOpMode {
                 //error happened with TensorFlow
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 // if tensor flow doesn't function, the robot will default to moving to the middle position
-                mov.encoderDrive(0.5,39,39,10);
+                mov.encoderDrive(0.5,39,39,10, false);
 
                 break;
         }

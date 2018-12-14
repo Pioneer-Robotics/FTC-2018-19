@@ -90,10 +90,10 @@ public class TeleoPlayground extends LinearOpMode
                 sleep(100);
             }
             if (gamepad1.a) {
-                mov.encoderDrive(0.5,35,35,10);
+                mov.encoderDrive(0.5,35,35,10, false);
             }
             if (gamepad1.b) {
-                mov.encoderDrive(0.5,5,5,10);
+                mov.encoderDrive(0.5,5,5,10, false);
                 int choose = tFlow.Status;
                 if (tFlow.Status == -3) {
                     if (tFlow.mineralX<233) {
@@ -110,7 +110,7 @@ public class TeleoPlayground extends LinearOpMode
                 switch (choose) {
                     case 1:
                         //left
-                        mov.angleTurn(0.5,20);
+                        mov.angleTurn(0.5,20, false);
                         /*robot.motorLeft.setPower(0.75);
                         robot.motorRight.setPower(-0.75);
 
@@ -121,26 +121,26 @@ public class TeleoPlayground extends LinearOpMode
                         }
                         robot.motorLeft.setPower(0);
                         robot.motorRight.setPower(0);*/
-                        mov.encoderDrive(DRIVE_SPEED, 61.51, 61.51, 5);
-                        mov.angleTurn(0.5, -20);
+                        mov.encoderDrive(DRIVE_SPEED, 61.51, 61.51, 5, false);
+                        mov.angleTurn(0.5, -20, false);
                         telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                        mov.encoderDrive( 0.5,10,10,10);
+                        mov.encoderDrive( 0.5,10,10,10, false);
 
-                        mov.angleTurn(0.3, 90);
+                        mov.angleTurn(0.3, 90, false);
                         break;
                     case 2:
                         //middle
                         //theoretically no movement is necessary
                         telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                        mov.encoderDrive(DRIVE_SPEED, 49.26, 49.26, 5);
-                        mov.encoderDrive( 0.5,10,10,10);
+                        mov.encoderDrive(DRIVE_SPEED, 49.26, 49.26, 5, false);
+                        mov.encoderDrive( 0.5,10,10,10, false);
 
-                        mov.angleTurn(0.3, 90);
-                        mov.encoderDrive( 0.5, 10,10,10);
+                        mov.angleTurn(0.3, 90, false);
+                        mov.encoderDrive( 0.5, 10,10,10, false);
                         break;
                     case 3:
                         //right
-                        mov.angleTurn(0.5,-20);
+                        mov.angleTurn(0.5,-20, false);
                         /*robot.motorLeft.setPower(-0.75);
                         robot.motorRight.setPower(0.75);
 
@@ -152,12 +152,12 @@ public class TeleoPlayground extends LinearOpMode
                         }
                         robot.motorLeft.setPower(0);
                         robot.motorRight.setPower(0);*/
-                        mov.encoderDrive(DRIVE_SPEED, 61.51, 61.51, 5);
-                        mov.angleTurn(0.5, 20);
+                        mov.encoderDrive(DRIVE_SPEED, 61.51, 61.51, 5, false);
+                        mov.angleTurn(0.5, 20, false);
                         telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                        mov.encoderDrive( 0.5,10,10,10);
-                        mov.angleTurn(0.3, 90);
-                        mov.encoderDrive( 0.5, 20,20,10);
+                        mov.encoderDrive( 0.5,10,10,10, false);
+                        mov.angleTurn(0.3, 90, false);
+                        mov.encoderDrive( 0.5, 20,20,10, false);
                         break;
                     case -3:
                         //this is the manual mode, shouldn't ever be used
@@ -169,10 +169,10 @@ public class TeleoPlayground extends LinearOpMode
                         //error happened with TensorFlow
                         telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                         // if tensor flow doesn't function, the robot will default to moving to the middle position
-                        mov.encoderDrive(DRIVE_SPEED, 13, 13, 5);
-                        mov.encoderDrive( 0.5,10,10,10);
+                        mov.encoderDrive(DRIVE_SPEED, 13, 13, 5, false);
+                        mov.encoderDrive( 0.5,10,10,10, false);
 
-                        mov.angleTurn(0.3, 90);
+                        mov.angleTurn(0.3, 90, false);
                         break;
                 }
                 telemetry.update();
@@ -188,8 +188,8 @@ public class TeleoPlayground extends LinearOpMode
                 telemetry.update();
                 sleep(500);
                 robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
-                mov.angleTurn(0.3,180);
-                mov.angleTurn(0.3, -45);
+                mov.angleTurn(0.3,180, false);
+                mov.angleTurn(0.3, -45, false);
                 while (!robot.botSwitch.getState()) {
                     robot.linearArm.setPower(-1);
                 }
@@ -280,10 +280,10 @@ public class TeleoPlayground extends LinearOpMode
             telemetry.addData("Camera:", "%.3f",turn);
 
             if (gamepad1.dpad_left) {
-                mov.angleTurn(0.3,90);
+                mov.angleTurn(0.3,90, true);
             }
             if (gamepad1.dpad_right) {
-                mov.angleTurn(0.3,-90);
+                mov.angleTurn(0.3,-90, true);
             }
             // Controls latching servos on linear actuator
             // Latch open
