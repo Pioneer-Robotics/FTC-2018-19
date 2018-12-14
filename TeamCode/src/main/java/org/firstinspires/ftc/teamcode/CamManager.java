@@ -46,7 +46,7 @@ public class CamManager extends Thread {
             robot.Camera.setPosition(robot.Camera.getPosition()+dir);
         }
     }
-    
+
     public void run() {
         while (go) {
             if (mode == 1) {
