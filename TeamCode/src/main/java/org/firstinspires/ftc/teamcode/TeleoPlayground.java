@@ -86,7 +86,11 @@ public class TeleoPlayground extends LinearOpMode
                 arm /= armMax;
             }
             if (gamepad2.a) {
-                tFlow.mode = Math.abs(1-tFlow.mode);
+                tFlow.mode = (1-tFlow.mode);
+                sleep(100);
+            }
+            if (gamepad2.b) {
+                camM.mode = (3-camM.mode);
                 sleep(100);
             }
             if (gamepad1.a) {

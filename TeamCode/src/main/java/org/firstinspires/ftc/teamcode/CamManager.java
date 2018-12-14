@@ -13,6 +13,8 @@ public class CamManager extends Thread {
     private HardwareInfinity robot;
     boolean go = true;
     float reference;
+    int mode = 1;
+    double dir = 0.05;
     DecimalFormat df = new DecimalFormat("#.###");
 
 
@@ -32,11 +34,26 @@ public class CamManager extends Thread {
             //cam stays center while robot turns
         }
     }
-
-
+    private void scan() {
+        if (robot.Camera.getPosition()>= 1 || robot.Camera.getPosition() <= 0) {
+            dir = -dir;
+        }
+        if (robot.Camera.getPosition()+dir>=1) {
+            robot.Camera.setPosition(1);
+        } else if (robot.Camera.getPosition()+dir<=0) {
+            robot.Camera.setPosition(0);
+        } else {
+            robot.Camera.setPosition(robot.Camera.getPosition()+dir);
+        }
+    }
+    
     public void run() {
         while (go) {
-            camVision(reference);
+            if (mode == 1) {
+                camVision(reference);
+            } else if (mode == 2) {
+                scan();
+            }
         }
     }
 }
