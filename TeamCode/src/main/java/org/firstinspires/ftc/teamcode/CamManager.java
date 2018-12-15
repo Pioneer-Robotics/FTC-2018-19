@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.Hardware;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -11,16 +14,21 @@ import java.text.DecimalFormat;
 public class CamManager extends Thread {
     private BNO055IMU imu;
     private HardwareInfinity robot;
+    private CVManager CamCV = new CVManager();
     boolean go = true;
     float reference;
-    int mode = 1;
-    double dir = 0.05;
+    int mode = 0;
+    double dir = 0.003;
+    private float screenX= 760; //pixel size of tflow
     DecimalFormat df = new DecimalFormat("#.###");
 
 
-    void init(BNO055IMU imu, HardwareInfinity robo_t) {
+    void init(BNO055IMU imu, HardwareInfinity robo_t, HardwareMap hw) {
         this.imu = imu;
         this.robot = robo_t;
+        //CamCV.init(hw.get(WebcamName.class, "Webcam 1"),hw.appContext.getResources().getIdentifier(
+                //"tfodMonitorViewId", "id", hw.appContext.getPackageName()));
+        CamCV.mode = 2;
 
     }
 
@@ -35,24 +43,44 @@ public class CamManager extends Thread {
         }
     }
     private void scan() {
-        if (robot.Camera.getPosition()>= 1 || robot.Camera.getPosition() <= 0) {
+        if (robot.Camera.getPosition()>= 1 || robot.Camera.getPosition() <= 0.5) {
             dir = -dir;
         }
         if (robot.Camera.getPosition()+dir>=1) {
             robot.Camera.setPosition(1);
-        } else if (robot.Camera.getPosition()+dir<=0) {
-            robot.Camera.setPosition(0);
+        } else if (robot.Camera.getPosition()+dir<=0.5) {
+            robot.Camera.setPosition(0.5);
         } else {
             robot.Camera.setPosition(robot.Camera.getPosition()+dir);
         }
     }
+    private void track(double goldX) {
+       //0=left
+        //1=right
 
+        if (goldX < screenX/2 && robot.Camera.getPosition() >= 0  ){  //left side
+           robot.Camera.setPosition(0.00263158*(380-goldX));
+       }
+        else if (goldX > screenX/2 && robot.Camera.getPosition() <= 1  ){  //right side
+            robot.Camera.setPosition(0.00263158*(380-goldX));
+        }
+
+
+
+
+
+    }
     public void run() {
         while (go) {
-            if (mode == 1) {
+            if (mode == 0) {
                 camVision(reference);
-            } else if (mode == 2) {
+            } else if (mode == 1) {
                 scan();
+            } else if (mode == 2) {
+                //if (!CamCV.isAlive()) {
+                //    CamCV.start();
+                //}
+                //track(CamCV.mineralX);
             }
         }
     }

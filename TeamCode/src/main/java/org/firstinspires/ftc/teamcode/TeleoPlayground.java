@@ -54,8 +54,9 @@ public class TeleoPlayground extends LinearOpMode
 
         tFlow.init(hardwareMap.get(WebcamName.class, "Webcam 1"), hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         robot.botSwitch.setMode(DigitalChannel.Mode.INPUT);
-        camM.init(robot.imu,robot);
+        camM.init(robot.imu,robot, hardwareMap);
         mov.init(robot.motorLeft,robot.motorRight,robot.imu,this,runtime, COUNTS_PER_INCH);
+        tFlow.disable = false;
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         camM.reference = angles.firstAngle;
@@ -72,7 +73,7 @@ public class TeleoPlayground extends LinearOpMode
             // In this mode the Left stick moves the robot fwd and back, the Right stick turns left and right.
             // This way it's also easy to just drive straight, or just turn.
             drive = -gamepad1.left_stick_y;
-            turn  =  gamepad1.left_stick_x;
+            turn  =  -gamepad1.left_stick_x;
             arm = gamepad2.right_stick_y;
 
             telemetry.addData("TFlow says: ", "%d", tFlow.Status);
@@ -90,12 +91,14 @@ public class TeleoPlayground extends LinearOpMode
                 sleep(100);
             }
             if (gamepad2.b) {
-                camM.mode = (3-camM.mode);
+                camM.mode = (1-camM.mode);
                 sleep(100);
             }
             if (gamepad1.a) {
                 mov.encoderDrive(0.5,35,35,10, false);
             }
+            //if (gamepad1.dpad_up) camM.mode = 2;
+
             if (gamepad1.b) {
                 mov.encoderDrive(0.5,5,5,10, false);
                 int choose = tFlow.Status;

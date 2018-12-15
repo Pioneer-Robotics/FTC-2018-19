@@ -75,6 +75,7 @@ public class CVManager extends Thread {
     float mineralX = 0;
     boolean go = true;
     int Status = 0;
+    boolean disable = true;
     int mode = 0;
 
     /*
@@ -162,8 +163,6 @@ public class CVManager extends Thread {
             List<Recognition> updatedRecognitions = tfod.getRecognitions();
             // # of objects
             if (updatedRecognitions.size() == 3) {
-                float minX = 0;
-                float maxX = 0;
                 float goldMineralX = -1;
                 float goldMineralY = -1;
                 float silverMineral1X = -1;
@@ -182,15 +181,14 @@ public class CVManager extends Thread {
                         silverMineral2Y = recognition.getTop();
                     }
                 }
-                float slope = (silverMineral2Y-silverMineral1Y)/(silverMineral2X-silverMineral1X);
-                float intrcpt = silverMineral2Y - slope*silverMineral2X;
-                if (Math.abs(slope*goldMineralX+intrcpt - goldMineralY) >= 20) return 2;
+                float slope = (silverMineral2Y-silverMineral1Y)/(silverMineral2X-silverMineral1X);   //(y2-y1)/(x2-x1)
+                float intrcpt = silverMineral2Y - slope*silverMineral2X;  // b= y-mx
+                if (Math.abs(slope*goldMineralX+intrcpt - goldMineralY) >= 10) return 2;
                 else return 1;
             } else return -3;
         }
         return -4;
     }
-
     private float findGold() {
         if (tfod != null) {
             // getUpdatedRecognitions() will return null if no new information is available since
@@ -203,6 +201,7 @@ public class CVManager extends Thread {
                 if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                     if (recognition.getConfidence() > maxC) {
                         goldX = recognition.getLeft();
+                        maxC = recognition.getConfidence();
                     }
                 }
             }
@@ -246,13 +245,16 @@ public class CVManager extends Thread {
                     int st = this.checkThree();
                     if (st != -1 && st != -2) {
                         this.Status = st;
-                        this.go = false;
+                        if (disable) this.go = false;
                     } else if (st == -2) {
                         this.mineralX = this.findGold();
                         this.Status = -3;
                     }
                 } else if (mode == 1) {
                     this.Status = this.tIaR();
+                } else if (mode == 2) {
+                    this.mineralX = this.findGold();
+                    this.Status = -3;
                 } else go = false;
             }
             tfod.shutdown();
