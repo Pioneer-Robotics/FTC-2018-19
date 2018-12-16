@@ -55,14 +55,16 @@ public class CamManager extends Thread {
         }
     }
     private void track(double goldX) {
-       //0=left
-        //1=right
-
-        if (goldX < screenX/2 && robot.Camera.getPosition() >= 0  ){  //left side
-           robot.Camera.setPosition(0.00263158*(380-goldX));
-       }
-        else if (goldX > screenX/2 && robot.Camera.getPosition() <= 1  ){  //right side
-            robot.Camera.setPosition(0.00263158*(380-goldX));
+      //0 & 0 =left
+        //1 & 780=right
+        if (goldX != screenX/2 && robot.Camera.getPosition()<= 1 && robot.Camera.getPosition()>= 0 && robot.Camera.getPosition() + 0.002631579*(goldX-380) <=1 && robot.Camera.getPosition() + 0.002631579*(goldX-380) >=0){
+            robot.Camera.setPosition(robot.Camera.getPosition() + 0.002631579*(goldX-380));
+        }
+        else if (robot.Camera.getPosition() + 0.002631579*(goldX-380) >1){
+            robot.Camera.setPosition(1);
+        }
+        else if (robot.Camera.getPosition() + 0.002631579*(goldX-380) < 0){
+            robot.Camera.setPosition(0);
         }
 
 
