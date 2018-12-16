@@ -57,13 +57,14 @@ public class CamManager extends Thread {
     private void track(double goldX) {
       //0 & 0 =left
         //1 & 780=right
-        if (goldX != screenX/2 && robot.Camera.getPosition()<= 1 && robot.Camera.getPosition()>= 0 && robot.Camera.getPosition() + 0.002631579*(goldX-380) <=1 && robot.Camera.getPosition() + 0.002631579*(goldX-380) >=0){
-            robot.Camera.setPosition(robot.Camera.getPosition() + 0.002631579*(goldX-380));
+        double pixelDiff = robot.Camera.getPosition() + 0.002631579*(goldX-380);
+        if (goldX != screenX/2 && robot.Camera.getPosition()<= 1 && robot.Camera.getPosition()>= 0 && pixelDiff <=1 && pixelDiff >=0){
+            robot.Camera.setPosition(pixelDiff);
         }
-        else if (robot.Camera.getPosition() + 0.002631579*(goldX-380) >1){
+        else if (pixelDiff >1){
             robot.Camera.setPosition(1);
         }
-        else if (robot.Camera.getPosition() + 0.002631579*(goldX-380) < 0){
+        else if (pixelDiff < 0){
             robot.Camera.setPosition(0);
         }
 
