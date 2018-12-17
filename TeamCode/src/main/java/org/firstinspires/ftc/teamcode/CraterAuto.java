@@ -67,7 +67,7 @@ public class CraterAuto extends LinearOpMode {
         Movement mov = new Movement();
         tFlow.init(hardwareMap.get(WebcamName.class, "Webcam 1"), hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
-        camM.init(robot.imu,robot,hardwareMap);
+        camM.init(robot.imu,robot,hardwareMap, tFlow.Vuforia());
         mov.init(robot.motorLeft,robot.motorRight,robot.imu,this,runtime, COUNTS_PER_INCH);
         camM.reference = angles.firstAngle;
         camM.start();

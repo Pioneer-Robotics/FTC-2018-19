@@ -54,7 +54,7 @@ public class TeleoPlayground extends LinearOpMode
 
         tFlow.init(hardwareMap.get(WebcamName.class, "Webcam 1"), hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         robot.botSwitch.setMode(DigitalChannel.Mode.INPUT);
-        camM.init(robot.imu,robot, hardwareMap);
+        camM.init(robot.imu,robot, hardwareMap, tFlow.Vuforia());
         mov.init(robot.motorLeft,robot.motorRight,robot.imu,this,runtime, COUNTS_PER_INCH);
         tFlow.disable = false;
         // Wait for the game to start (driver presses PLAY)

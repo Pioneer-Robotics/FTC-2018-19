@@ -114,6 +114,13 @@ public class CVManager extends Thread {
         this.initTfod(hw);
         Status = 100;
     }
+    void initwoVu(VuforiaLocalizer vu, int hw) {
+        this.vuforia = vu;
+        this.initTfod(hw);
+    }
+    VuforiaLocalizer Vuforia() {
+        return vuforia;
+    }
     private int checkThree() {
         // Activate Tensor Flow Object Detection.
         if (tfod != null) {
