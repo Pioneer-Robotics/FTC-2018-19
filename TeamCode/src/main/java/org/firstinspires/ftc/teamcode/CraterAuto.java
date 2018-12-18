@@ -13,8 +13,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
-import java.util.Locale;
-
 
 @Autonomous (name="CraterAuto", group="FTCPio")
 public class CraterAuto extends LinearOpMode {
@@ -67,7 +65,7 @@ public class CraterAuto extends LinearOpMode {
         Movement mov = new Movement();
         tFlow.init(hardwareMap.get(WebcamName.class, "Webcam 1"), hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
-        camM.init(robot.imu,robot,hardwareMap, tFlow.Vuforia());
+        camM.init(robot.imu,robot,hardwareMap, tFlow);
         mov.init(robot.motorLeft,robot.motorRight,robot.imu,this,runtime, COUNTS_PER_INCH);
         camM.reference = angles.firstAngle;
         camM.start();

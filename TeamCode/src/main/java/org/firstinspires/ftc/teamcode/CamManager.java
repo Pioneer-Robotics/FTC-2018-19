@@ -7,7 +7,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 
 import java.text.DecimalFormat;
 
@@ -23,12 +22,10 @@ public class CamManager extends Thread {
     DecimalFormat df = new DecimalFormat("#.###");
 
 
-    void init(BNO055IMU imu, HardwareInfinity robo_t, HardwareMap hw, VuforiaLocalizer vu) {
+    void init(BNO055IMU imu, HardwareInfinity robo_t, HardwareMap hw, CVManager tf) {
         this.imu = imu;
         this.robot = robo_t;
-        CamCV.initwoVu(vu ,hw.appContext.getResources().getIdentifier(
-                "tfodMonitorViewId", "id", hw.appContext.getPackageName()));
-        CamCV.mode = 2;
+        this.CamCV = tf;
 
     }
 
@@ -80,10 +77,11 @@ public class CamManager extends Thread {
             } else if (mode == 1) {
                 scan();
             } else if (mode == 2) {
-                if (!CamCV.isAlive()) {
-                    CamCV.start();
-                }
+                CamCV.track = true;
                 track(CamCV.mineralX);
+            }
+            if (mode != 2) {
+                CamCV.track = false;
             }
         }
     }

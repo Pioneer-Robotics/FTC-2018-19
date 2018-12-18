@@ -75,6 +75,7 @@ public class CVManager extends Thread {
     float mineralX = 0;
     boolean go = true;
     int Status = 0;
+    boolean track = false;
     boolean disable = true;
     int mode = 0;
 
@@ -259,10 +260,14 @@ public class CVManager extends Thread {
                     }
                 } else if (mode == 1) {
                     this.Status = this.tIaR();
-                } else if (mode == 2) {
+                } else {
+                    if (track) {
+                        this.mineralX = this.findGold();
+                    } else go = false;
+                }
+                if (track) {
                     this.mineralX = this.findGold();
-                    this.Status = -3;
-                } else go = false;
+                }
             }
             tfod.shutdown();
         }

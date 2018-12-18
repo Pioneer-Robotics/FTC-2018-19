@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -54,7 +53,7 @@ public class TeleoPlayground extends LinearOpMode
 
         tFlow.init(hardwareMap.get(WebcamName.class, "Webcam 1"), hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
         robot.botSwitch.setMode(DigitalChannel.Mode.INPUT);
-        camM.init(robot.imu,robot, hardwareMap, tFlow.Vuforia());
+        camM.init(robot.imu,robot, hardwareMap, tFlow);
         mov.init(robot.motorLeft,robot.motorRight,robot.imu,this,runtime, COUNTS_PER_INCH);
         tFlow.disable = false;
         // Wait for the game to start (driver presses PLAY)
