@@ -28,7 +28,7 @@ public class CamManager extends Thread {
         this.robot = robo_t;
         this.CamCV = tf;
         this.CamCV.disable = false;
-        if (!this.CamCV.isAlive() && canTrack) this.CamCV.run();
+        if (!this.CamCV.isAlive() && canTrack) this.CamCV.start();
 
     }
 

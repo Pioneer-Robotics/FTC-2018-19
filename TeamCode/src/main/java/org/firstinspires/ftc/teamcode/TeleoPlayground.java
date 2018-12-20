@@ -56,11 +56,11 @@ public class TeleoPlayground extends LinearOpMode
         camM.init(robot.imu,robot, hardwareMap, tFlow);
         mov.init(robot.motorLeft,robot.motorRight,robot.imu,this,runtime, COUNTS_PER_INCH);
         tFlow.disable = false;
+        telemetry.addData("Teleop", "Initiate");
+        telemetry.update();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         camM.reference = angles.firstAngle;
-        telemetry.addData("Teleop", "Initiate");
-        telemetry.update();
         camM.start();
         tFlow.start();
 
@@ -90,7 +90,7 @@ public class TeleoPlayground extends LinearOpMode
                 sleep(100);
             }
             if (gamepad2.b) {
-                camM.mode = (1-camM.mode);
+                if (camM.mode == 2) camM.mode = 0; else camM.mode = 2;
                 sleep(100);
             }
             if (gamepad1.a) {
