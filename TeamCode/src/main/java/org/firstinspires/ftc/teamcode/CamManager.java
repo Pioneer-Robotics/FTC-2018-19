@@ -18,6 +18,7 @@ public class CamManager extends Thread {
     float reference;
     int mode = 0;
     double dir = 0.003;
+    private static boolean canTrack = true; //set this to false if the app crashes with tracking
     private float screenX= 760; //pixel size of tflow
     DecimalFormat df = new DecimalFormat("#.###");
 
@@ -26,6 +27,8 @@ public class CamManager extends Thread {
         this.imu = imu;
         this.robot = robo_t;
         this.CamCV = tf;
+        this.CamCV.disable = false;
+        if (!this.CamCV.isAlive() && canTrack) this.CamCV.run();
 
     }
 
@@ -76,7 +79,7 @@ public class CamManager extends Thread {
                 camVision(reference);
             } else if (mode == 1) {
                 scan();
-            } else if (mode == 2) {
+            } else if (mode == 2 && canTrack) {
                 CamCV.track = true;
                 track(CamCV.mineralX);
             }
@@ -84,5 +87,6 @@ public class CamManager extends Thread {
                 CamCV.track = false;
             }
         }
+        CamCV.go = false;
     }
 }
