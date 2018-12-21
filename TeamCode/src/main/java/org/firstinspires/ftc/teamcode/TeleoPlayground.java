@@ -63,7 +63,7 @@ public class TeleoPlayground extends LinearOpMode
         camM.reference = angles.firstAngle;
         camM.start();
         tFlow.start();
-
+        tFlow.track=true;
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive())

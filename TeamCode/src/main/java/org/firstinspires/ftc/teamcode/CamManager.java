@@ -17,9 +17,9 @@ public class CamManager extends Thread {
     boolean go = true;
     float reference;
     int mode = 0;
-    double dir = 0.003;
+    double camSpeed = 0.001;
     private static boolean canTrack = true; //set this to false if the app crashes with tracking
-    private float screenX= 760; //pixel size of tflow
+    private float screenX= 800; //pixel size of tflow
     DecimalFormat df = new DecimalFormat("#.###");
 
 
@@ -28,7 +28,7 @@ public class CamManager extends Thread {
         this.robot = robo_t;
         this.CamCV = tf;
         this.CamCV.disable = false;
-        if (!this.CamCV.isAlive() && canTrack) this.CamCV.start();
+        //if (!this.CamCV.isAlive() && canTrack) this.CamCV.start();
 
     }
 
@@ -44,20 +44,20 @@ public class CamManager extends Thread {
     }
     private void scan() {
         if (robot.Camera.getPosition()>= 1 || robot.Camera.getPosition() <= 0.5) {
-            dir = -dir;
+            camSpeed = -camSpeed;
         }
-        if (robot.Camera.getPosition()+dir>=1) {
+        if (robot.Camera.getPosition()+ camSpeed >=1) {
             robot.Camera.setPosition(1);
-        } else if (robot.Camera.getPosition()+dir<=0.5) {
+        } else if (robot.Camera.getPosition()+ camSpeed <=0.5) {
             robot.Camera.setPosition(0.5);
         } else {
-            robot.Camera.setPosition(robot.Camera.getPosition()+dir);
+            robot.Camera.setPosition(robot.Camera.getPosition()+ camSpeed);
         }
     }
     private void track(double goldX) {
       //0 & 0 =left
         //1 & 780=right
-        double pixelDiff = robot.Camera.getPosition() + 0.002631579*(goldX-380);
+        /*double pixelDiff = robot.Camera.getPosition() + 0.0025*(goldX-(screenX/2));
         if (goldX != screenX/2 && robot.Camera.getPosition()<= 1 && robot.Camera.getPosition()>= 0 && pixelDiff <=1 && pixelDiff >=0){
             robot.Camera.setPosition(pixelDiff);
         }
@@ -66,18 +66,38 @@ public class CamManager extends Thread {
         }
         else if (pixelDiff < 0){
             robot.Camera.setPosition(0);
+        }*/
+        if (goldX>((screenX/2)+70)) {
+            camSpeed = 0.001;
+            /*try {
+                Thread.sleep(10);
+            } catch (InterruptedException e){
+                int Jwee;
+            }*/
+        } else if (goldX<((screenX/2)-70)) {
+            camSpeed = -0.001;
+            /*try {
+                Thread.sleep(10);
+            } catch (InterruptedException e){
+                int Jwee;
+            }*/
+        } else camSpeed = 0;
+        if (robot.Camera.getPosition()+ camSpeed >=1) {
+            robot.Camera.setPosition(1);
+        } else if (robot.Camera.getPosition()+ camSpeed <=0) {
+            robot.Camera.setPosition(0);
+        } else {
+            robot.Camera.setPosition(robot.Camera.getPosition()+ camSpeed);
         }
-
-
-
-
-
     }
     public void run() {
         while (go) {
             if (mode == 0) {
                 camVision(reference);
             } else if (mode == 1) {
+                if (camSpeed == 0) {
+                    camSpeed = 0.001;
+                }
                 scan();
             } else if (mode == 2 && canTrack) {
                 CamCV.track = true;
@@ -85,6 +105,11 @@ public class CamManager extends Thread {
             }
             if (mode != 2) {
                 CamCV.track = false;
+            }
+            if (CamCV.mineralX == 0 && mode == 2) {
+                mode = 1;
+            } else if (mode == 1 && CamCV.mineralX != 0) {
+                mode = 2;
             }
         }
         CamCV.go = false;
