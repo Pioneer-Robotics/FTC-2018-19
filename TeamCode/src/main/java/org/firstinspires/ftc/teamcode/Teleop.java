@@ -29,6 +29,7 @@ public class Teleop extends OpMode
     boolean flipster = false;
     boolean flipster1 = false;
     boolean flipster2 = false;
+    boolean flipster3 = false;
     boolean deathFlip = false;
     float activate_suq = 0;
     int asuq = 0;
@@ -65,7 +66,7 @@ public class Teleop extends OpMode
         } else if (gamepad2.right_bumper) {
             arm = -1;
         } else arm = 0;
-        telemetry.addData("Trigger is", robot.trigger.isPressed() ? "Pressed" : "not Pressed");
+        //telemetry.addData("Trigger is", robot.trigger.isPressed() ? "Pressed" : "not Pressed");
         telemetry.addData("Bottom is", robot.botSwitch.getState() ? "Pressed" : "not Pressed");
         telemetry.addData("Top is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
         // Output the safe vales to the motor drives.
@@ -101,7 +102,6 @@ public class Teleop extends OpMode
             left /= max;
             right /= max;
         }
-
         if (gamepad1.y)
         {
             left *= -0.5*(1-gamepad1.right_trigger);
@@ -156,9 +156,22 @@ public class Teleop extends OpMode
         } else {
             flipster1 = false;
         }
+
+        if (gamepad1.a) {
+            if (!flipster3) {
+                if (robot.dropTop.getPosition() == 0) {
+                    robot.dropTop.setPosition(0.5);
+                } else {
+                    robot.dropTop.setPosition(0);
+                }
+                flipster3 = true;
+            }
+        } else {
+            flipster3 = false;
+        }
         //if the Succq isn't moving then stop it to save the motor
         if (asuq != 0) activate_suq = asuq;
-        if ((activate_suq!=0) && (pre_suq == robot.Succq.getCurrentPosition()) && gamepad1.right_stick_y==0) {
+        if ((activate_suq!=0) && (pre_suq == robot.Succq.getCurrentPosition()) && gamepad1.right_stick_y==0 && !deathFlip) {
             activate_suq = 0;
         }
         robot.Succq.setPower(activate_suq);

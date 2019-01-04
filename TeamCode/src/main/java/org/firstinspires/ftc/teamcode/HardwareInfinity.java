@@ -28,6 +28,7 @@ public class HardwareInfinity
     Servo lunchBox;
     Servo Latch;
     Servo Camera;
+    Servo dropTop;
     DigitalChannel botSwitch;
     DigitalChannel topSwitch;
     TouchSensor trigger;
@@ -101,10 +102,12 @@ public class HardwareInfinity
         lunchBox  = hwMap.get(Servo.class, "lunchBox");
         Latch  = hwMap.get(Servo.class, "Latch");
         Camera = hwMap.get(Servo.class, "Camera");
+        dropTop = hwMap.get(Servo.class, "dropTop");
 
         lunchBox.setPosition(lunchBoxMAX_POSITION);
         Latch.setPosition(LatchMIN_POSITION);
         Camera.setPosition(0.5);
+        dropTop.setPosition(0);
 
     }
 }
