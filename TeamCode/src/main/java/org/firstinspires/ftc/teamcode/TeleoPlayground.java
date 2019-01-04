@@ -73,18 +73,17 @@ public class TeleoPlayground extends LinearOpMode
             // This way it's also easy to just drive straight, or just turn.
             drive = -gamepad1.left_stick_y;
             turn  =  -gamepad1.left_stick_x;
-            arm = gamepad2.right_stick_y;
+            if (gamepad2.left_bumper) {
+                arm = 1;
+            } else if (gamepad2.right_bumper) {
+                arm = -1;
+            } else arm = 0;
 
             telemetry.addData("TFlow says: ", "%d", tFlow.Status);
             telemetry.addData("TFlow mode: ", "%d", tFlow.mode);
             telemetry.addData("TFlow saysX: ", "%.5f", tFlow.mineralX);
 
             //normalization of arm value
-            armMax = Math.abs(arm);
-            if (armMax > 1.0)
-            {
-                arm /= armMax;
-            }
             if (gamepad2.a) {
                 tFlow.mode = (1-tFlow.mode);
                 sleep(100);
@@ -202,6 +201,7 @@ public class TeleoPlayground extends LinearOpMode
                 robot.linearArm.setPower(0);
                 break;
             }
+
             telemetry.addData("Trigger is", robot.trigger.isPressed() ? "Pressed" : "not Pressed");
             telemetry.addData("Bottom is", robot.botSwitch.getState() ? "Pressed" : "not Pressed");
             telemetry.addData("Top is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
@@ -253,10 +253,9 @@ public class TeleoPlayground extends LinearOpMode
                 robot.motorRight.setPower(right);
                 telemetry.addData("Reverse", "Deactivated");
             }
-            if (gamepad2.right_bumper) {
+            if (gamepad1.right_bumper) {
                 if (!flipster) {
                     if (activate_suq == 0) {
-                        robot.Collector.setPosition(1);
                         activate_suq = 1;
                         robot.Succq.setPower(activate_suq);
                         sleep(20);
@@ -268,7 +267,7 @@ public class TeleoPlayground extends LinearOpMode
             } else {
                 flipster = false;
             }
-            if (gamepad2.left_bumper) {
+            if (gamepad1.left_bumper) {
                 if (!flipster1) {
                     activate_suq = -activate_suq;
                 }

@@ -114,7 +114,9 @@ public class TMAuto extends LinearOpMode {
         telemetry.addData("Status:","%d",tFlow.Status);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
         telemetry.update();
-        //sleep(2000);
+        while (tFlow.go && runtime.milliseconds() <= 2000) {
+            sleep(1);
+        }
         int choose = tFlow.Status;
         if (tFlow.Status == -3) {
             if (tFlow.mineralX<233) {
