@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 @TeleOp(name="TeleOp", group="FTCPio")
@@ -47,8 +48,13 @@ public class Teleop extends OpMode
 
         telemetry.addData("Teleop", "Initiate");    //
         telemetry.update();
-        robot.botSwitch.setMode(DigitalChannel.Mode.INPUT);
+        robot.Camera.setPosition(0);
+        robot.lunchBox.setPosition(0.3);
         // Wait for the game to start (driver presses PLAY)
+    }
+    @Override
+    public void start() {
+
     }
     @Override
     public void loop()
@@ -56,16 +62,18 @@ public class Teleop extends OpMode
         // Run wheels in POV mode (note: The joystick goes negative when pushed forwards, so negate it)
         // In this mode the Left stick moves the robot fwd and back, the Right stick turns left and right.
         // This way it's also easy to just drive straight, or just turn.
-        drive = -gamepad1.left_stick_y;
+        drive = gamepad1.left_stick_y;
         turn  =  -gamepad1.left_stick_x;
-        armB = -gamepad2.left_stick_y/4;
-        bar = -gamepad2.right_stick_y/10;
+        armB = -gamepad2.left_stick_y;
+        bar = -gamepad2.right_stick_y/8;
         if (asuq==0) activate_suq = gamepad1.right_stick_y;
-        if (gamepad2.left_bumper) {
+        /*if (gamepad2.left_bumper) {
             arm = 1;
         } else if (gamepad2.right_bumper) {
             arm = -1;
-        } else arm = 0;
+        } else arm = 0;*/
+        arm = gamepad2.left_trigger;
+        if (gamepad2.left_trigger == 0) arm = -gamepad2.right_trigger;
         //telemetry.addData("Trigger is", robot.trigger.isPressed() ? "Pressed" : "not Pressed");
         telemetry.addData("Bottom is", robot.botSwitch.getState() ? "Pressed" : "not Pressed");
         telemetry.addData("Top is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
@@ -92,8 +100,8 @@ public class Teleop extends OpMode
         }
 
         //blended motion
-        left  = (drive + turn/2)*(1-gamepad1.right_trigger);
-        right = (drive - turn/2)*(1-gamepad1.right_trigger);
+        left  = (drive + turn/2)*(gamepad1.right_trigger/3+1)*0.75;
+        right = (drive - turn/2)*(gamepad1.right_trigger/3+1)*0.75;
 
         // Normalize the values so neither exceed +/- 1.0
         max = (Math.max(Math.abs(left), Math.abs(right)))/2;
@@ -135,7 +143,11 @@ public class Teleop extends OpMode
         } else {
             flipster = false;
         }
-        if (gamepad2.guide) {
+        if (!gamepad2.left_bumper) robot.armBase.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        else robot.armBase.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        if (!gamepad2.right_bumper) robot.FBar.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        else robot.FBar.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        if (gamepad2.a) {
             if (!flipster2) {
                 if (!deathFlip) {
                     deathFlip = true;
@@ -171,6 +183,7 @@ public class Teleop extends OpMode
         }
         //if the Succq isn't moving then stop it to save the motor
         if (asuq != 0) activate_suq = asuq;
+        telemetry.addData("Death Flip: ", deathFlip);
         if ((activate_suq!=0) && (pre_suq == robot.Succq.getCurrentPosition()) && gamepad1.right_stick_y==0 && !deathFlip) {
             activate_suq = 0;
         }
@@ -179,22 +192,24 @@ public class Teleop extends OpMode
         if ((armB!=0) && (pre_arm == robot.armBase.getCurrentPosition()) && !deathFlip) {
             armB = 0;
         }
+        telemetry.addData("Arm Base Power: ","%.5f",armB);
         robot.armBase.setPower(armB);
         pre_arm = robot.armBase.getCurrentPosition();
         if ((bar!=0) && (pre_bar == robot.FBar.getCurrentPosition()) && !deathFlip) {
             bar = 0;
         }
+        telemetry.addData("4Bar Power: ","%.5f",bar);
         robot.FBar.setPower(bar);
         pre_bar = robot.Succq.getCurrentPosition();
         // Controls latching servos on linear actuator
         // Latch open
-        if (gamepad2.dpad_up)
+        if (gamepad1.dpad_up)
         {
             robot.Latch.setPosition(HardwareInfinity.LatchMAX_POSITION);
             telemetry.addData("Latches","Max");
         }
         // Latch closed
-        if (gamepad2.dpad_down)
+        if (gamepad1.dpad_down)
         {
             robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);
             telemetry.addData("Latches","Min");

@@ -37,7 +37,7 @@ public class HardwareInfinity
 
     //public Servo    rightClaw   = null;
 
-    static final double lunchBoxMAX_POSITION = 0;
+    static final double lunchBoxMAX_POSITION = 0.05;
     static final double lunchBoxMIN_POSITION = 0.5;
     static final double LatchMAX_POSITION = 1;
     static final double LatchMIN_POSITION = 0;
@@ -66,14 +66,16 @@ public class HardwareInfinity
         linearArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        armBase.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        FBar.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armBase.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        FBar.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         motorLeft.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         motorRight.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         FBar.setDirection(DcMotor.Direction.REVERSE);
         botSwitch = hwMap.get(DigitalChannel.class, "botSwitch");
         topSwitch = hwMap.get(DigitalChannel.class, "topSwitch");
         trigger = hwMap.get(TouchSensor.class, "trigger");
+        topSwitch.setMode(DigitalChannel.Mode.INPUT);
+        botSwitch.setMode(DigitalChannel.Mode.INPUT);
         imu = hwMap.get(BNO055IMU.class, "imu");
         IParameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         IParameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
