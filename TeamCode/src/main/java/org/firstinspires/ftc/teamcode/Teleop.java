@@ -27,8 +27,8 @@ public class Teleop extends OpMode
     double pre_suq = 0;
     double pre_arm = 0;
     double pre_bar = 0;
-    boolean flipster = false;
-    boolean flipster1 = false;
+    //boolean flipster = false;
+    //boolean flipster1 = false;
     boolean flipster2 = false;
     boolean flipster3 = false;
     boolean deathFlip = false;
@@ -66,14 +66,15 @@ public class Teleop extends OpMode
         turn  =  -gamepad1.left_stick_x;
         armB = -gamepad2.left_stick_y;
         bar = -gamepad2.right_stick_y/8;
-        if (asuq==0) activate_suq = gamepad1.right_stick_y;
+        if (asuq==0) activate_suq = gamepad1.right_stick_y/4*(1+gamepad1.left_trigger);
+        telemetry.addData("Succq:", gamepad1.right_stick_y/4 *(1+gamepad1.left_trigger));
         /*if (gamepad2.left_bumper) {
             arm = 1;
         } else if (gamepad2.right_bumper) {
             arm = -1;
         } else arm = 0;*/
         arm = gamepad2.left_trigger;
-        if (gamepad2.left_trigger == 0) arm = -gamepad2.right_trigger;
+        /*if (gamepad2.left_trigger == 0)*/ arm = -gamepad2.right_trigger;
         //telemetry.addData("Trigger is", robot.trigger.isPressed() ? "Pressed" : "not Pressed");
         telemetry.addData("Bottom is", robot.botSwitch.getState() ? "Pressed" : "not Pressed");
         telemetry.addData("Top is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
@@ -100,8 +101,9 @@ public class Teleop extends OpMode
         }
 
         //blended motion
-        left  = (drive + turn/2)*(gamepad1.right_trigger/3+1)*0.75;
-        right = (drive - turn/2)*(gamepad1.right_trigger/3+1)*0.75;
+        left  = (drive+turn)/2*(gamepad1.right_trigger*3/2+1)*0.75;
+        right = (drive-turn)/2*(gamepad1.right_trigger*3/2+1)*0.75;
+        telemetry.addData("Multiplier:", (gamepad1.right_trigger*3/2+1)*0.75);
 
         // Normalize the values so neither exceed +/- 1.0
         max = (Math.max(Math.abs(left), Math.abs(right)))/2;
@@ -125,7 +127,7 @@ public class Teleop extends OpMode
             telemetry.addData("Reverse", "Deactivated");
         }
 
-        if (gamepad1.right_bumper) {
+        /*if (gamepad1.right_bumper) {
             if (!flipster) {
                 if (asuq == 0) {
                     asuq = 1;
@@ -142,10 +144,10 @@ public class Teleop extends OpMode
             }
         } else {
             flipster = false;
-        }
-        if (!gamepad2.left_bumper) robot.armBase.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        }*/
+        if (gamepad2.left_bumper) robot.armBase.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         else robot.armBase.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        if (!gamepad2.right_bumper) robot.FBar.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        if (gamepad2.right_bumper) robot.FBar.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         else robot.FBar.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         if (gamepad2.a) {
             if (!flipster2) {
@@ -160,21 +162,21 @@ public class Teleop extends OpMode
             flipster2 = false;
         }
 
-        if (gamepad1.left_bumper) {
+        /*if (gamepad1.left_bumper) {
             if (!flipster1) {
                 asuq = -asuq;
             }
             flipster1 = true;
         } else {
             flipster1 = false;
-        }
+        }*/
 
         if (gamepad1.a) {
             if (!flipster3) {
-                if (robot.dropTop.getPosition() == 0) {
-                    robot.dropTop.setPosition(0.5);
+                if (robot.dropTop.getPosition() == HardwareInfinity.DT_MIN) {
+                    robot.dropTop.setPosition(HardwareInfinity.DT_MAX);
                 } else {
-                    robot.dropTop.setPosition(0);
+                    robot.dropTop.setPosition(HardwareInfinity.DT_MIN);
                 }
                 flipster3 = true;
             }
