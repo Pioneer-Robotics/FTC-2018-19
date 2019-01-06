@@ -127,6 +127,7 @@ public class TMAuto extends LinearOpMode {
 
         }
         robot.linearArm.setPower(0);
+        /*
         runtime.reset();
         while (tFlow.go && runtime.milliseconds() <= 10000) {
             telemetry.addData("Choose:", "%d", choose);
@@ -135,6 +136,7 @@ public class TMAuto extends LinearOpMode {
             telemetry.update();
             sleep(1);
         }
+        */
         telemetry.addData("Choose:", "%d", choose);
         telemetry.addData("Status:","%d",tFlow.Status);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
@@ -196,11 +198,11 @@ public class TMAuto extends LinearOpMode {
                 //middle
                 //theoretically no movement is necessary
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive(DRIVE_SPEED, 40, 40, 5, false);
+                mov.encoderDrive(DRIVE_SPEED, 45, 45, 5, false);
                 //mov.encoderDrive( 0.5,10,10,10, false);
 
                 mov.angleTurn(0.2, 90, false);
-                mov.encoderDrive( 0.5, 5,5,10, false);
+                //mov.encoderDrive( 0.5, 5,5,10, false);
                 break;
             case 3:
                 //right
@@ -216,11 +218,11 @@ public class TMAuto extends LinearOpMode {
                         }
                         robot.motorLeft.setPower(0);
                         robot.motorRight.setPower(0);*/
-                mov.encoderDrive(DRIVE_SPEED, 45, 45, 5, false);
-                mov.angleTurn(0.2, 50, false);
+                mov.encoderDrive(DRIVE_SPEED, 35, 35, 5, false);
+                mov.angleTurn(0.2, 80, false);
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive( 0.5,5,5,10, false);
-                mov.angleTurn(0.2, 90, false);
+                mov.encoderDrive( 0.5,25,25,10, false);
+                mov.angleTurn(0.2, 50, false);
                 mov.encoderDrive( 0.5, 5,5,10, false);
                 break;
             case -3:

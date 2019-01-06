@@ -37,8 +37,8 @@ public class HardwareInfinity
 
     //public Servo    rightClaw   = null;
 
-    static final double lunchBoxMAX_POSITION = 0.05;
-    static final double lunchBoxMIN_POSITION = 0.7;
+    static final double lunchBoxMAX_POSITION = 0.15;
+    static final double lunchBoxMIN_POSITION = 0.8;
     static final double LatchMAX_POSITION = 0;
     static final double LatchMIN_POSITION = 1;
     static final double DT_MIN = 0.1;
