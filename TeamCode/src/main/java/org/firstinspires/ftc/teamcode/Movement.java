@@ -49,12 +49,17 @@ class Movement extends Thread {
             targetAngle = angle + angles.firstAngle + 180;
             Op.telemetry.clearAll();
             while (Math.abs(angles.firstAngle + 180 - targetAngle) > margin * speed && (360 - Math.abs(angles.firstAngle + 180 - targetAngle)) > margin * speed) {
+                if (Op.isStopRequested()) {
+                    motorLeft.setPower(0);
+                    motorRight.setPower(0);
+                    return;
+                }
                 if (angle > 0) {
-                    motorLeft.setPower(-Math.abs(speed));
-                    motorRight.setPower(Math.abs(speed));
-                } else {
                     motorLeft.setPower(Math.abs(speed));
                     motorRight.setPower(-Math.abs(speed));
+                } else {
+                    motorLeft.setPower(-Math.abs(speed));
+                    motorRight.setPower(Math.abs(speed));
                 }
                 Op.telemetry.addData("Error:", "%.5f", Math.abs(angles.firstAngle + 180 - targetAngle));
                 Op.telemetry.addData("Margin:", "%.5f", margin * speed);
@@ -65,6 +70,8 @@ class Movement extends Thread {
                 Op.telemetry.update();
                 angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
                 if (Op.isStopRequested()) {
+                    motorLeft.setPower(0);
+                    motorRight.setPower(0);
                     return;
                 }
                 if (Math.abs(angles.firstAngle + 180 - targetAngle) < margin * speed || (360 - Math.abs(angles.firstAngle + 180 - targetAngle)) < margin * speed) {
@@ -94,8 +101,8 @@ class Movement extends Thread {
                 start();
 
             }
-            newLeftTarget = motorLeft.getCurrentPosition() + (int) (leftCM * COUNTS_PER_INCH);
-            newRightTarget = motorLeft.getCurrentPosition() + (int) (rightCM * COUNTS_PER_INCH);
+            newLeftTarget = motorLeft.getCurrentPosition() - (int) (leftCM * COUNTS_PER_INCH);
+            newRightTarget = motorLeft.getCurrentPosition() - (int) (rightCM * COUNTS_PER_INCH);
             motorLeft.setTargetPosition(newLeftTarget);
             motorRight.setTargetPosition(newRightTarget);
 
@@ -110,6 +117,11 @@ class Movement extends Thread {
                     (runtime.seconds() < timeoutS) &&
                     (motorLeft.isBusy() && motorRight.isBusy()))
             {
+                if (Op.isStopRequested()) {
+                    motorLeft.setPower(0);
+                    motorRight.setPower(0);
+                    return;
+                }
                 Op.telemetry.addData("Path1", "Running to %7d :%7d", newLeftTarget, newRightTarget);
                 Op.telemetry.addData("Path2", "Running at %7d :%7d", motorLeft.getCurrentPosition(), motorRight.getCurrentPosition());
                 /*if (robot.imu.getAngularOrientation(AxesReference.INTRINSIC,
@@ -125,6 +137,8 @@ class Movement extends Thread {
                 }*/
                 Op.telemetry.update();
                 if (Op.isStopRequested()) {
+                    motorLeft.setPower(0);
+                    motorRight.setPower(0);
                     return;
                 }
             }

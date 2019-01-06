@@ -70,7 +70,7 @@ public class CraterAuto extends LinearOpMode {
         camM.reference = angles.firstAngle;
         camM.start();
         tFlow.start();
-
+        tFlow.disable = true;
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         // Wait for the game to start (driver presses PLAY)
@@ -92,11 +92,17 @@ public class CraterAuto extends LinearOpMode {
         /*     ACTUAL MOVEMENT--------------------------------------------------------------*/
 
 
-        while (robot.linearArm.getCurrentPosition()<= 11916)  /* Most effective detachment point might not be at the top*/ {
+        while (robot.linearArm.getCurrentPosition()<= 13516)  /* Most effective detachment point might not be at the top*/ {
             //positive = up
             telemetry.addData("Status: ", "Lowering robot");
+            telemetry.addData("Encoder: ", robot.linearArm.getCurrentPosition());
+            telemetry.addData("Top is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
             telemetry.update();
             robot.linearArm.setPower(1);
+            if (robot.topSwitch.getState()) {
+                robot.linearArm.setPower(0);
+                break;
+            }
 
         }
         robot.linearArm.setPower(0);
@@ -118,7 +124,7 @@ public class CraterAuto extends LinearOpMode {
         while (tFlow.go && runtime.milliseconds() <= 2000) {
             sleep(1);
         }
-        int choose = tFlow.Status;
+        choose = tFlow.Status;
         if (tFlow.Status == -3) {
             if (tFlow.mineralX<233 && tFlow.mineralX>0) {
                 choose = 1;
@@ -219,8 +225,15 @@ public class CraterAuto extends LinearOpMode {
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);*/
 
         //angleTurn(0.3, 45);
-        while (!robot.botSwitch.getState()) {
+        while (!robot.botSwitch.getState() && !robot.topSwitch.getState()) {
             robot.linearArm.setPower(-1);
+            telemetry.addData("Bottom is", robot.botSwitch.getState() ? "Pressed" : "not Pressed");
+            telemetry.addData("Top is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
+            telemetry.update();
+            if (this.isStopRequested()) {
+                robot.linearArm.setPower(0);
+                break;
+            }
         }
         robot.linearArm.setPower(0);
         //encoderDrive(1, 255,255,30);

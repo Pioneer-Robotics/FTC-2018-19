@@ -68,13 +68,14 @@ public class Teleop extends OpMode
         bar = -gamepad2.right_stick_y/8;
         if (asuq==0) activate_suq = gamepad1.right_stick_y/4*(1+gamepad1.left_trigger);
         telemetry.addData("Succq:", gamepad1.right_stick_y/4 *(1+gamepad1.left_trigger));
-        /*if (gamepad2.left_bumper) {
+        telemetry.addData("DT pos: ", robot.dropTop.getPosition());
+        if (gamepad1.left_bumper) {
             arm = 1;
-        } else if (gamepad2.right_bumper) {
+        } else if (gamepad1.right_bumper) {
             arm = -1;
-        } else arm = 0;*/
-        arm = gamepad2.left_trigger;
-        /*if (gamepad2.left_trigger == 0)*/ arm = -gamepad2.right_trigger;
+        } else arm = 0;
+        if (arm == 0) arm = gamepad2.left_trigger;
+        if (arm == 0) arm = -gamepad2.right_trigger;
         //telemetry.addData("Trigger is", robot.trigger.isPressed() ? "Pressed" : "not Pressed");
         telemetry.addData("Bottom is", robot.botSwitch.getState() ? "Pressed" : "not Pressed");
         telemetry.addData("Top is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
@@ -205,13 +206,13 @@ public class Teleop extends OpMode
         pre_bar = robot.Succq.getCurrentPosition();
         // Controls latching servos on linear actuator
         // Latch open
-        if (gamepad1.dpad_up)
+        if (gamepad1.dpad_right)
         {
             robot.Latch.setPosition(HardwareInfinity.LatchMAX_POSITION);
             telemetry.addData("Latches","Max");
         }
         // Latch closed
-        if (gamepad1.dpad_down)
+        if (gamepad1.dpad_left)
         {
             robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);
             telemetry.addData("Latches","Min");

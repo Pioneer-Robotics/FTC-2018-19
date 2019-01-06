@@ -38,10 +38,10 @@ public class HardwareInfinity
     //public Servo    rightClaw   = null;
 
     static final double lunchBoxMAX_POSITION = 0.05;
-    static final double lunchBoxMIN_POSITION = 0.5;
+    static final double lunchBoxMIN_POSITION = 0.7;
     static final double LatchMAX_POSITION = 0;
     static final double LatchMIN_POSITION = 1;
-    static final double DT_MIN = 0;
+    static final double DT_MIN = 0.1;
     static final double DT_MAX = 0.6;
 
     /* local OpMode members. */
@@ -109,9 +109,9 @@ public class HardwareInfinity
         dropTop = hwMap.get(Servo.class, "dropTop");
 
         lunchBox.setPosition(lunchBoxMAX_POSITION);
-        Latch.setPosition(LatchMIN_POSITION);
+        Latch.setPosition(LatchMAX_POSITION);
         Camera.setPosition(0.5);
-        dropTop.setPosition(DT_MIN);
+        //dropTop.setPosition(DT_MIN);
 
     }
 }
