@@ -217,8 +217,12 @@ public class Teleop extends OpMode
             robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);
             telemetry.addData("Latches","Min");
         }
-
-
+        if (gamepad1.dpad_down && robot.dropTop.getPosition()>HardwareInfinity.DT_MIN) {
+            robot.dropTop.setPosition(robot.dropTop.getPosition()-0.01);
+        }
+        if (gamepad1.dpad_up && robot.dropTop.getPosition()<HardwareInfinity.DT_MAX) {
+            robot.dropTop.setPosition(robot.dropTop.getPosition()+0.01);
+        }
          // Drops team marker with servo
         if (gamepad2.x)
         {

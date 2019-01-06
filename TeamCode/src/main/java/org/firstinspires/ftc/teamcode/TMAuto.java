@@ -173,6 +173,7 @@ public class TMAuto extends LinearOpMode {
         telemetry.addData("Status:","%d",tFlow.Status);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
         telemetry.update();
+        sleep(5000);
         switch (choose) {
             case 1:
                 //left
@@ -187,10 +188,10 @@ public class TMAuto extends LinearOpMode {
                         }
                         robot.motorLeft.setPower(0);
                         robot.motorRight.setPower(0);*/
-                mov.encoderDrive(DRIVE_SPEED, 45, 45, 5, false);
-                mov.angleTurn(0.2, -50, false);
+                mov.encoderDrive(DRIVE_SPEED, 35, 35, 5, false);
+                mov.angleTurn(0.2, -45, false);
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive( 0.5,2,2,10, false);
+                mov.encoderDrive( 0.5,15,15,10, false);
 
                 mov.angleTurn(0.3, 90, false);
                 break;
@@ -219,11 +220,11 @@ public class TMAuto extends LinearOpMode {
                         robot.motorLeft.setPower(0);
                         robot.motorRight.setPower(0);*/
                 mov.encoderDrive(DRIVE_SPEED, 35, 35, 5, false);
-                mov.angleTurn(0.2, 80, false);
+                mov.angleTurn(0.2, 60, false);
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive( 0.5,25,25,10, false);
-                mov.angleTurn(0.2, 50, false);
-                mov.encoderDrive( 0.5, 5,5,10, false);
+                mov.encoderDrive( 0.5,40,40,10, false);
+                mov.angleTurn(0.2, 90, false);
+                //mov.encoderDrive( 0.5, 5,5,10, false);
                 break;
             case -3:
                 //this is the manual mode, shouldn't ever be used

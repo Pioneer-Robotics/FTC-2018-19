@@ -41,8 +41,8 @@ public class HardwareInfinity
     static final double lunchBoxMIN_POSITION = 0.8;
     static final double LatchMAX_POSITION = 0;
     static final double LatchMIN_POSITION = 1;
-    static final double DT_MIN = 0.1;
-    static final double DT_MAX = 0.6;
+    static final double DT_MIN = 0.55;
+    static final double DT_MAX = 0.9;
 
     /* local OpMode members. */
     HardwareMap hwMap;
@@ -110,8 +110,8 @@ public class HardwareInfinity
 
         lunchBox.setPosition(lunchBoxMAX_POSITION);
         Latch.setPosition(LatchMAX_POSITION);
-        Camera.setPosition(0.5);
-        //dropTop.setPosition(DT_MIN);
+        Camera.setPosition(0.55);
+        dropTop.setPosition(DT_MAX);
 
     }
 }
