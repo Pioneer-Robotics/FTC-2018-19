@@ -178,52 +178,58 @@ public class TMAuto extends LinearOpMode {
             case 1:
                 //left
                 mov.angleTurn(0.5,23, false);
-                        /*robot.motorLeft.setPower(0.75);
-                        robot.motorRight.setPower(-0.75);
 
-                        while (!(angles.firstAngle <= 38.8))
-                        {
-                            robot.motorLeft.setPower(0.75);
-                            robot.motorRight.setPower(-0.75);
-                        }
-                        robot.motorLeft.setPower(0);
-                        robot.motorRight.setPower(0);*/
                 mov.encoderDrive(DRIVE_SPEED, 35, 35, 5, false);
-                mov.angleTurn(0.2, -45, false);
+                mov.angleTurn(0.2, -68, false);
+
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 mov.encoderDrive( 0.5,15,15,10, false);
-
                 mov.angleTurn(0.3, 90, false);
+
+                telemetry.addData("Status: ", "Dropping Team Marker");
+                telemetry.update();
+                robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMIN_POSITION);
+                telemetry.addData("Status: ", "Dropped Team Marker");
+                telemetry.update();
+                sleep(1500);
+                robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
                 break;
             case 2:
                 //middle
-                //theoretically no movement is necessary
+                //no turning movement is necessary to hit mineral
+
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 mov.encoderDrive(DRIVE_SPEED, 45, 45, 5, false);
-                //mov.encoderDrive( 0.5,10,10,10, false);
 
                 mov.angleTurn(0.2, 90, false);
+
+                telemetry.addData("Status: ", "Dropping Team Marker");
+                telemetry.update();
+                robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMIN_POSITION);
+                telemetry.addData("Status: ", "Dropped Team Marker");
+                telemetry.update();
+                sleep(1500);
+                robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
                 //mov.encoderDrive( 0.5, 5,5,10, false);
                 break;
             case 3:
                 //right
                 mov.angleTurn(0.5,-23, false);
-                        /*robot.motorLeft.setPower(-0.75);
-                        robot.motorRight.setPower(0.75);
 
-                        while (!(angles.firstAngle >= -36.8))
-                        {
-                            robot.motorLeft.setPower(-0.75);
-                            robot.motorRight.setPower(0.75);
-
-                        }
-                        robot.motorLeft.setPower(0);
-                        robot.motorRight.setPower(0);*/
                 mov.encoderDrive(DRIVE_SPEED, 35, 35, 5, false);
-                mov.angleTurn(0.2, 60, false);
+                mov.angleTurn(0.2, 66, false);
+
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 mov.encoderDrive( 0.5,40,40,10, false);
-                mov.angleTurn(0.2, 90, false);
+
+                telemetry.addData("Status: ", "Dropping Team Marker");
+                telemetry.update();
+                robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMIN_POSITION);
+                telemetry.addData("Status: ", "Dropped Team Marker");
+                telemetry.update();
+                sleep(1500);
+                robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
+                //mov.angleTurn(0.2, 90, false);
                 //mov.encoderDrive( 0.5, 5,5,10, false);
                 break;
             case -3:
@@ -244,17 +250,6 @@ public class TMAuto extends LinearOpMode {
         }
         telemetry.update();
 
-        //encoderDrive(TURN_SPEED, 16, -16, 5.0);
-        //angleTurn(0.5,-90);
-        //NEED TO TEST MORE, (16,-16) is close to 90 degrees
-        //encoderDrive(DRIVE_SPEED,1000,1000,4.0);
-        telemetry.addData("Status: ", "Dropping Team Marker");
-        telemetry.update();
-        robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMIN_POSITION);
-        telemetry.addData("Status: ", "Dropped Team Marker");
-        telemetry.update();
-        sleep(1500);
-        robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
         /*
         mov.angleTurn(0.3,160, false);
         mov.angleTurn(0.3, -25, false);

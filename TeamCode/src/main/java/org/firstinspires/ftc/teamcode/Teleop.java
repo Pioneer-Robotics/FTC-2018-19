@@ -65,9 +65,10 @@ public class Teleop extends OpMode
         drive = gamepad1.left_stick_y;
         turn  =  -gamepad1.left_stick_x;
         armB = -gamepad2.left_stick_y;
-        bar = -gamepad2.right_stick_y/8;
+        bar = -gamepad2.right_stick_y;
         if (asuq==0) activate_suq = gamepad1.right_stick_y/4*(1+gamepad1.left_trigger);
         telemetry.addData("Succq:", gamepad1.right_stick_y/4 *(1+gamepad1.left_trigger));
+        telemetry.addData("Succq Encoder: ", "%d", robot.Succq.getCurrentPosition());
         telemetry.addData("DT pos: ", robot.dropTop.getPosition());
         if (gamepad1.left_bumper) {
             arm = 1;
@@ -196,12 +197,14 @@ public class Teleop extends OpMode
             armB = 0;
         }
         telemetry.addData("Arm Base Power: ","%.5f",armB);
+        telemetry.addData("Arm Base Encoder: ", "%d", robot.armBase.getCurrentPosition());
         robot.armBase.setPower(armB);
         pre_arm = robot.armBase.getCurrentPosition();
         if ((bar!=0) && (pre_bar == robot.FBar.getCurrentPosition()) && !deathFlip) {
             bar = 0;
         }
         telemetry.addData("4Bar Power: ","%.5f",bar);
+        telemetry.addData("4Bar Encoder: ", "%d", robot.FBar.getCurrentPosition());
         robot.FBar.setPower(bar);
         pre_bar = robot.Succq.getCurrentPosition();
         // Controls latching servos on linear actuator
