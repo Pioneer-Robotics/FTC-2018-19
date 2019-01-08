@@ -230,12 +230,12 @@ public class TeleoPlayground extends LinearOpMode
             pre_bar = robot.Succq.getCurrentPosition();
             // Controls latching servos on linear actuator
             // Latch open
-            if (gamepad1.dpad_right) {
+            if (gamepad1.dpad_right || gamepad2.dpad_right) {
                 robot.Latch.setPosition(HardwareInfinity.LatchMAX_POSITION);
                 telemetry.addData("Latches", "Max");
             }
             // Latch closed
-            if (gamepad1.dpad_left) {
+            if (gamepad1.dpad_left || gamepad2.dpad_left) {
                 robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);
                 telemetry.addData("Latches", "Min");
             }
