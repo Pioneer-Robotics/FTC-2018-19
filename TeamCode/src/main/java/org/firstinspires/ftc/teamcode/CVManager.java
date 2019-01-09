@@ -73,6 +73,7 @@ public class CVManager extends Thread {
     private List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
     protected OpenGLMatrix location;
     float mineralX = 0;
+    float mineralY = 0;
     boolean go = true;
     int Status = 0;
     boolean track = false;
@@ -130,11 +131,17 @@ public class CVManager extends Thread {
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
             if (updatedRecognitions != null) {
                 // # of objects
-                if (updatedRecognitions.size() == 3) {
+                List<Recognition> trimmedRecognitions = new ArrayList<Recognition>();
+                if (updatedRecognitions.size() > 3) {
+                    for (Recognition recognition : updatedRecognitions) {
+                        if (recognition.getTop() >= 100) trimmedRecognitions.add(recognition);
+                    }
+                } else trimmedRecognitions = updatedRecognitions;
+                if (trimmedRecognitions.size() == 3) {
                     int goldMineralX = -1;
                     int silverMineral1X = -1;
                     int silverMineral2X = -1;
-                    for (Recognition recognition : updatedRecognitions) {
+                    for (Recognition recognition : trimmedRecognitions) {
                         if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                             goldMineralX = (int) recognition.getLeft();
                         } else if (silverMineral1X == -1) {
@@ -197,7 +204,7 @@ public class CVManager extends Thread {
         }
         return -4;
     }
-    private float findGold() {
+    private float[] findGold() {
         if (tfod != null) {
             // getUpdatedRecognitions() will return null if no new information is available since
             // the last time that call was made.
@@ -205,18 +212,22 @@ public class CVManager extends Thread {
             // # of objects
             float maxC = 0;
             float goldX = 0;
+            float goldY = 0;
             for (Recognition recognition : updatedRecognitions) {
                 if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                     if (recognition.getConfidence() > maxC) {
                         goldX = recognition.getLeft();
+                        goldY = recognition.getTop();
                         maxC = recognition.getConfidence();
                     }
                 }
             }
-            return goldX;
+            float[] ret = {goldX, goldY};
+            return ret;
 
         }
-        return -4;
+        float[] ret = {-4, 0};
+        return ret;
     }
 
     private OpenGLMatrix getVuforiaPosition() {
@@ -255,18 +266,24 @@ public class CVManager extends Thread {
                         this.Status = st;
                         if (disable) this.go = false;
                     } else if (st == -2) {
-                        this.mineralX = this.findGold();
+                        float[] pos = this.findGold();
+                        this.mineralX = pos[0];
+                        this.mineralY = pos[1];
                         this.Status = -3;
                     }
                 } else if (mode == 1) {
                     this.Status = this.tIaR();
                 } else {
                     if (track) {
-                        this.mineralX = this.findGold();
+                        float[] pos = this.findGold();
+                        this.mineralX = pos[0];
+                        this.mineralY = pos[1];
                     } else go = false;
                 }
                 if (track) {
-                    this.mineralX = this.findGold();
+                    float[] pos = this.findGold();
+                    this.mineralX = pos[0];
+                    this.mineralY = pos[1];
                 }
             }
             tfod.shutdown();
