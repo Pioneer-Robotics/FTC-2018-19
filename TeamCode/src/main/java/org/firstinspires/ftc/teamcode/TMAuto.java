@@ -35,16 +35,7 @@ public class TMAuto extends LinearOpMode {
     // and named "imu".
 
 
-    /*public double Rotations(double Rotation)
-    {
-        return Rotation*TETRIX_TICKS_PER_REV;
-    }
 
-    public void Tank(double powerL,double powerR)
-    {
-        motorRight.setPower(powerR);
-        motorLeft.setPower(powerL);
-    }*/
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
@@ -76,18 +67,14 @@ public class TMAuto extends LinearOpMode {
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        //Tank(1,1);
-        //(motorLeft.getCurrentPosition() < Rotations(2))
 
         telemetry.addData("Path0", "Starting at %7d:%7d",
                 robot.motorLeft.getCurrentPosition(), robot.motorRight.getCurrentPosition());
         telemetry.update();
         tFlow.disable = true;
 
-        // x tFlow.extractPos(tFlow.location)[0]
-        // y tFlow.extractPos(tFlow.location)[1]
-        //Drop down off lander - lowering robot
 
+        //Drop down off lander - lowering robot
 
 
         /*     ACTUAL MOVEMENT--------------------------------------------------------------*/
@@ -141,6 +128,7 @@ public class TMAuto extends LinearOpMode {
         telemetry.addData("Status:","%d",tFlow.Status);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
         telemetry.update();
+
         //Drive away
         mov.encoderDrive(0.5,10,10,10, false);
         telemetry.addData("Choose:", "%d", choose);
