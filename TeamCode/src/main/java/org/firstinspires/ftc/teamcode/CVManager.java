@@ -133,9 +133,22 @@ public class CVManager extends Thread {
                 // # of objects
                 List<Recognition> trimmedRecognitions = new ArrayList<Recognition>();
                 if (updatedRecognitions.size() > 3) {
+                    Recognition gold = updatedRecognitions.get(0);
+                    Recognition silver1 = updatedRecognitions.get(0);
+                    Recognition silver2 = updatedRecognitions.get(0);
                     for (Recognition recognition : updatedRecognitions) {
-                        if (recognition.getTop() >= 100) trimmedRecognitions.add(recognition);
+                        if (recognition.getLabel().equals(LABEL_GOLD_MINERAL) && (recognition.getTop() > gold.getTop() || gold.getLabel().equals(LABEL_SILVER_MINERAL))) {
+                            gold = recognition;
+                        } else if (recognition.getLabel().equals(LABEL_SILVER_MINERAL) && (recognition.getTop() > silver1.getTop() || silver1.getLabel().equals(LABEL_GOLD_MINERAL))) {
+                            silver2 = silver1;
+                            silver1 = recognition;
+                        } else if (recognition.getLabel().equals(LABEL_SILVER_MINERAL) && (recognition.getTop() > silver2.getTop() || silver2.getLabel().equals(LABEL_GOLD_MINERAL))) {
+                            silver2 = recognition;
+                        }
                     }
+                    trimmedRecognitions.add(gold);
+                    trimmedRecognitions.add(silver1);
+                    trimmedRecognitions.add(silver2);
                 } else trimmedRecognitions = updatedRecognitions;
                 if (trimmedRecognitions.size() == 3) {
                     int goldMineralX = -1;
@@ -210,15 +223,15 @@ public class CVManager extends Thread {
             // the last time that call was made.
             List<Recognition> updatedRecognitions = tfod.getRecognitions();
             // # of objects
-            float maxC = 0;
+            //float maxY = 0;
             float goldX = 0;
             float goldY = 0;
             for (Recognition recognition : updatedRecognitions) {
                 if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                    if (recognition.getConfidence() > maxC) {
+                    if (recognition.getTop() > goldY) {
                         goldX = recognition.getLeft();
                         goldY = recognition.getTop();
-                        maxC = recognition.getConfidence();
+                        //maxY = recognition.getTop();
                     }
                 }
             }
@@ -264,7 +277,7 @@ public class CVManager extends Thread {
                     int st = this.checkThree();
                     if (st != -1 && st != -2) {
                         this.Status = st;
-                        if (disable) this.go = false;
+                        if (disable && this.Status !=  -4) this.go = false;
                     } else if (st == -2) {
                         float[] pos = this.findGold();
                         this.mineralX = pos[0];

@@ -89,6 +89,8 @@ class Movement extends Thread {
     void encoderDrive(double speed, double leftCM, double rightCM, double timeoutS, boolean backgrnd) {
         int newLeftTarget;
         int newRightTarget;
+        motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         double initAng = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
 
         if (Op.opModeIsActive()) {
@@ -113,9 +115,7 @@ class Movement extends Thread {
             motorLeft.setPower(Math.abs(speed));
             motorRight.setPower(Math.abs(speed));
 
-            while (Op.opModeIsActive() &&
-                    (runtime.seconds() < timeoutS) &&
-                    (motorLeft.isBusy() && motorRight.isBusy()))
+            while (Op.opModeIsActive() && (runtime.seconds() < timeoutS) && motorLeft.isBusy() && motorRight.isBusy())
             {
                 if (Op.isStopRequested()) {
                     motorLeft.setPower(0);
@@ -145,6 +145,8 @@ class Movement extends Thread {
 
             motorLeft.setPower(0);
             motorRight.setPower(0);
+            motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
             motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

@@ -37,8 +37,8 @@ public class HardwareInfinity
 
     //public Servo    rightClaw   = null;
 
-    static final double lunchBoxMAX_POSITION = 0.05;
-    static final double lunchBoxMIN_POSITION = 0.7;
+    static final double lunchBoxMAX_POSITION = 0;
+    static final double lunchBoxMIN_POSITION = 0.6;
     static final double LatchMAX_POSITION = 0;
     static final double LatchMIN_POSITION = 1;
     static final double DT_MIN = 0.55;
@@ -110,7 +110,7 @@ public class HardwareInfinity
 
         lunchBox.setPosition(lunchBoxMAX_POSITION);
         Latch.setPosition(LatchMAX_POSITION);
-        Camera.setPosition(0.55);
+        Camera.setPosition(0.5);
         dropTop.setPosition(DT_MAX);
 
     }

@@ -161,26 +161,19 @@ public class TMAuto extends LinearOpMode {
         telemetry.addData("Status:","%d",tFlow.Status);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
         telemetry.update();
-        sleep(5000);
+        sleep(1500);
         switch (choose) {
             case 1:
                 //left
                 mov.angleTurn(0.5,23, false);
 
                 mov.encoderDrive(DRIVE_SPEED, 35, 35, 5, false);
-                mov.angleTurn(0.2, -68, false);
+                mov.angleTurn(0.2, -60, false);
 
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive( 0.5,15,15,10, false);
+                mov.encoderDrive( 0.5,20,20,10, false);
                 mov.angleTurn(0.3, 90, false);
 
-                telemetry.addData("Status: ", "Dropping Team Marker");
-                telemetry.update();
-                robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMIN_POSITION);
-                telemetry.addData("Status: ", "Dropped Team Marker");
-                telemetry.update();
-                sleep(1500);
-                robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
                 break;
             case 2:
                 //middle
@@ -189,15 +182,11 @@ public class TMAuto extends LinearOpMode {
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 mov.encoderDrive(DRIVE_SPEED, 45, 45, 5, false);
 
-                mov.angleTurn(0.2, 90, false);
+                mov.angleTurn(0.2, 85, false);
 
                 telemetry.addData("Status: ", "Dropping Team Marker");
                 telemetry.update();
-                robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMIN_POSITION);
-                telemetry.addData("Status: ", "Dropped Team Marker");
-                telemetry.update();
-                sleep(1500);
-                robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
+
                 //mov.encoderDrive( 0.5, 5,5,10, false);
                 break;
             case 3:
@@ -208,15 +197,9 @@ public class TMAuto extends LinearOpMode {
                 mov.angleTurn(0.2, 66, false);
 
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive( 0.5,40,40,10, false);
+                mov.encoderDrive( 0.5,35,35,10, false);
 
-                telemetry.addData("Status: ", "Dropping Team Marker");
-                telemetry.update();
-                robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMIN_POSITION);
-                telemetry.addData("Status: ", "Dropped Team Marker");
-                telemetry.update();
-                sleep(1500);
-                robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
+
                 //mov.angleTurn(0.2, 90, false);
                 //mov.encoderDrive( 0.5, 5,5,10, false);
                 break;
@@ -236,6 +219,14 @@ public class TMAuto extends LinearOpMode {
                 mov.angleTurn(0.3, 90, false);
                 break;
         }
+        telemetry.addData("Status: ", "Dropping Team Marker");
+        telemetry.update();
+        robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMIN_POSITION);
+        sleep(1500);
+        telemetry.addData("Status: ", "Dropped Team Marker");
+        telemetry.update();
+        sleep(1500);
+        robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
         telemetry.update();
 
         /*

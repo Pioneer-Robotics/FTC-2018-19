@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -14,9 +13,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
-@Disabled
-@Autonomous (name="CraterAuto", group="FTCPio")
-public class CraterAuto extends LinearOpMode {
+
+@Autonomous (name="NewCrater", group="FTCPio")
+public class NewCrater extends LinearOpMode {
     private HardwareInfinity robot = new HardwareInfinity();
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -36,16 +35,7 @@ public class CraterAuto extends LinearOpMode {
     // and named "imu".
 
 
-    /*public double Rotations(double Rotation)
-    {
-        return Rotation*TETRIX_TICKS_PER_REV;
-    }
 
-    public void Tank(double powerL,double powerR)
-    {
-        motorRight.setPower(powerR);
-        motorLeft.setPower(powerL);
-    }*/
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
@@ -171,53 +161,51 @@ public class CraterAuto extends LinearOpMode {
         telemetry.addData("Status:","%d",tFlow.Status);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
         telemetry.update();
+        sleep(2000);
         switch (choose) {
             case 1:
                 //left
                 mov.angleTurn(0.5,23, false);
 
-                mov.encoderDrive(DRIVE_SPEED, 18, 18, 5, false);
-                mov.encoderDrive(DRIVE_SPEED, -13, -13, 5, false);
+                mov.encoderDrive(DRIVE_SPEED, 25, 25, 5, false);
+                mov.encoderDrive(DRIVE_SPEED, -25, -25, 5, false);
 
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.angleTurn(0.5,67, false);
+                mov.angleTurn(0.5,-23, false);
 
-                mov.encoderDrive( 0.5,30,30,10, false);
+                //mov.encoderDrive( 0.5,45,45,10, false);
+                /*
                 mov.angleTurn(0.5,45, false);
                 mov.encoderDrive( 0.5,30,30,10, false);
                 mov.angleTurn(0.5,90, false);
-
+                */
                 //angleTurn(0.3, 90);
                 break;
             case 2:
                 //middle
                 //theoretically no movement is necessary
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive(DRIVE_SPEED, 15, 15, 5, false);
-                mov.encoderDrive(DRIVE_SPEED, -10, -10, 5, false);
+                mov.encoderDrive(DRIVE_SPEED, 20, 20, 5, false);
+                mov.encoderDrive(DRIVE_SPEED, -20, -20, 5, false);
 
-                mov.angleTurn(0.5,90, false);
-                mov.encoderDrive(DRIVE_SPEED, 40, 40, 5, false);
-                mov.angleTurn(0.5,45, false);
-                mov.encoderDrive(DRIVE_SPEED, 30, 30, 5, false);
-
-                mov.angleTurn(0.5,90, false);
 
                 break;
             case 3:
                 //right
                 mov.angleTurn(0.5,-23, false);
 
-                mov.encoderDrive(DRIVE_SPEED, 18, 18, 5, false);
-                mov.encoderDrive(DRIVE_SPEED, -13, -13, 5, false);
-                mov.angleTurn(0.5,113, false);
-                mov.encoderDrive(DRIVE_SPEED, 60, 60, 5, false);
-                mov.angleTurn(0.5,45, false);
+                mov.encoderDrive(DRIVE_SPEED, 25, 25, 5, false);
+                mov.encoderDrive(DRIVE_SPEED, -25, -25, 5, false);
+                mov.angleTurn(0.5,23, false);
+                //mov.encoderDrive(DRIVE_SPEED, 60, 60, 5, false);
+                //mov.angleTurn(0.5,40, false);
+                /*
                 mov.encoderDrive(DRIVE_SPEED, 30, 30, 5, false);
 
                 mov.angleTurn(0.5,90, false);
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 //mov.encoderDrive( 0.5, 5,5,10, false);
+                */
                 break;
             case -3:
                 //this is the manual mode, shouldn't ever be used
@@ -231,45 +219,54 @@ public class CraterAuto extends LinearOpMode {
                 // if tensor flow doesn't function, the robot will default to moving to the middle position
                 mov.encoderDrive(0.5,22,22,10, false);
 
+                mov.encoderDrive(DRIVE_SPEED, -10, -10, 5, false);
+
+                mov.angleTurn(0.5,90, false);
+                mov.encoderDrive(DRIVE_SPEED, 40, 40, 5, false);
+                mov.angleTurn(0.5,45, false);
+                mov.encoderDrive(DRIVE_SPEED, 30, 30, 5, false);
+
+                mov.angleTurn(0.5,90, false);
                 break;
         }
+        mov.encoderDrive(DRIVE_SPEED, 10, 10, 5, false);
+        mov.angleTurn(0.5,67, false);
+        mov.encoderDrive(DRIVE_SPEED, 60, 60, 5, false);
+        mov.angleTurn(0.5,40, false);
+        mov.encoderDrive(DRIVE_SPEED, 50, 50, 5, false);
+        sleep(500);
+        mov.angleTurn(0.5,85, false);
         telemetry.update();
-
-        /*angleTurn(0.3,90);
-        encoderDrive( 1,75,75,10);
-        angleTurn(0.3,45);
-        encoderDrive(1, 50,50,10);*/
-        //encoderDrive(1, 255,255,30);
-
-        //encoderDrive(TURN_SPEED, 16, -16, 5.0);
-        //angleTurn(0.5,-90);
-        //NEED TO TEST MORE, (16,-16) is close to 90 degrees
-        //encoderDrive(DRIVE_SPEED,1000,1000,4.0);
-        /*telemetry.addData("Status: ", "Dropping Team Marker");
+        telemetry.addData("Status: ", "Dropping Team Marker");
         telemetry.update();
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMIN_POSITION);
         telemetry.addData("Status: ", "Dropped Team Marker");
         telemetry.update();
-        sleep(500);
-        robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);*/
+        sleep(1500);
+        robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
 
-        //angleTurn(0.3, 45);
+        /*
+        mov.angleTurn(0.3,160, false);
+        mov.angleTurn(0.3, -25, false);
+        */
         while (!robot.botSwitch.getState() && !robot.topSwitch.getState()) {
             robot.linearArm.setPower(-1);
-            telemetry.addData("Bottom is", robot.botSwitch.getState() ? "Pressed" : "not Pressed");
             telemetry.addData("Top is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
+            telemetry.addData("Bottom is", robot.botSwitch.getState() ? "Pressed" : "not Pressed");
             telemetry.update();
             if (this.isStopRequested()) {
                 robot.linearArm.setPower(0);
                 break;
             }
+
         }
         robot.linearArm.setPower(0);
         //encoderDrive(1, 255,255,30);
 
+
         //Drop Team Marker
 
-        while (opModeIsActive())
+        /*while (opModeIsActive())
         {
             telemetry.addData("Power L", robot.motorLeft.getPower());
             telemetry.addData("Power R", robot.motorRight.getPower());
@@ -277,11 +274,9 @@ public class CraterAuto extends LinearOpMode {
             telemetry.addData("Rotations R", robot.motorLeft.getCurrentPosition() / TETRIX_TICKS_PER_REV);
             telemetry.addData("Linear Encoder", robot.linearArm.getCurrentPosition());
             telemetry.update();
-        }
+        }*/
         //Tank(0,0);
         telemetry.addData("Status: ", "Finished");
         telemetry.update();
-        tFlow.go = false;
-        camM.go = false;
     }
 }

@@ -49,7 +49,8 @@ public class Teleop extends OpMode
         telemetry.addData("Teleop", "Initiate");    //
         telemetry.update();
         robot.Camera.setPosition(0);
-        robot.lunchBox.setPosition(0.3);
+        robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
+        robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);
         // Wait for the game to start (driver presses PLAY)
     }
     @Override
