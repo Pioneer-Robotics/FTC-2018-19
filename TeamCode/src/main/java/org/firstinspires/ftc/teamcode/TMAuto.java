@@ -164,7 +164,7 @@ public class TMAuto extends LinearOpMode {
         sleep(1500);
         switch (choose) {
             case 1:
-                //left
+                //Mineral on Left
                 mov.angleTurn(0.5,23, false);
 
                 mov.encoderDrive(DRIVE_SPEED, 35, 35, 5, false);
@@ -176,7 +176,7 @@ public class TMAuto extends LinearOpMode {
 
                 break;
             case 2:
-                //middle
+                //Mineral in Middle
                 //no turning movement is necessary to hit mineral
 
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
@@ -190,14 +190,14 @@ public class TMAuto extends LinearOpMode {
                 //mov.encoderDrive( 0.5, 5,5,10, false);
                 break;
             case 3:
-                //right
+                //Mineral on Right
                 mov.angleTurn(0.5,-23, false);
 
                 mov.encoderDrive(DRIVE_SPEED, 35, 35, 5, false);
                 mov.angleTurn(0.2, 66, false);
-
-                telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive( 0.5,35,35,10, false);
+                sleep(2000);
+                //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
+                mov.encoderDrive(DRIVE_SPEED,10,10,5, false);
 
 
                 //mov.angleTurn(0.2, 90, false);
