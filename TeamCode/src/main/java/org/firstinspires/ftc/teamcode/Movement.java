@@ -107,7 +107,14 @@ class Movement extends Thread {
             newRightTarget = motorLeft.getCurrentPosition() - (int) (rightCM * COUNTS_PER_INCH);
             motorLeft.setTargetPosition(newLeftTarget);
             motorRight.setTargetPosition(newRightTarget);
+            Op.telemetry.addData("Encoder Target: ", "%7d :%7d", newLeftTarget, newRightTarget);
+            Op.telemetry.addData("Current Position: ", "%7d :%7d", motorLeft.getCurrentPosition(), motorRight.getCurrentPosition());
+            Op.telemetry.update();
+            try {
+                sleep(2000);
+            } catch (InterruptedException e) {
 
+            }
             motorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -115,15 +122,15 @@ class Movement extends Thread {
             motorLeft.setPower(Math.abs(speed));
             motorRight.setPower(Math.abs(speed));
 
-            while (Op.opModeIsActive() && (runtime.seconds() < timeoutS) && motorLeft.isBusy() && motorRight.isBusy())
+            while (Op.opModeIsActive() && (runtime.seconds() < timeoutS) && (motorLeft.isBusy() || motorRight.isBusy()))
             {
                 if (Op.isStopRequested()) {
                     motorLeft.setPower(0);
                     motorRight.setPower(0);
                     return;
                 }
-                Op.telemetry.addData("Path1", "Running to %7d :%7d", newLeftTarget, newRightTarget);
-                Op.telemetry.addData("Path2", "Running at %7d :%7d", motorLeft.getCurrentPosition(), motorRight.getCurrentPosition());
+                Op.telemetry.addData("Encoder Target: ", "%7d :%7d", newLeftTarget, newRightTarget);
+                Op.telemetry.addData("Current Position: ", "%7d :%7d", motorLeft.getCurrentPosition(), motorRight.getCurrentPosition());
                 /*if (robot.imu.getAngularOrientation(AxesReference.INTRINSIC,
                         AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle > initAng+10
                         || robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX,
@@ -145,6 +152,11 @@ class Movement extends Thread {
 
             motorLeft.setPower(0);
             motorRight.setPower(0);
+            try {
+                sleep(2000);
+            } catch (InterruptedException e) {
+
+            }
             /*
             motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

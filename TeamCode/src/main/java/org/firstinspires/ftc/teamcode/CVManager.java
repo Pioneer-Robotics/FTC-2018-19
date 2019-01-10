@@ -131,7 +131,7 @@ public class CVManager extends Thread {
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
             if (updatedRecognitions != null) {
                 // # of objects
-                List<Recognition> trimmedRecognitions = new ArrayList<Recognition>();
+                List<Recognition> trimmedRecognitions = new ArrayList<>();
                 if (updatedRecognitions.size() > 3) {
                     Recognition gold = updatedRecognitions.get(0);
                     Recognition silver1 = updatedRecognitions.get(0);
