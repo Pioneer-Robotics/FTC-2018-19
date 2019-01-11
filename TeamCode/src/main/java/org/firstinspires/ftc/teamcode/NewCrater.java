@@ -79,7 +79,8 @@ public class NewCrater extends LinearOpMode {
 
         /*     ACTUAL MOVEMENT--------------------------------------------------------------*/
 
-
+        robot.armBase.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.armBase.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         while (robot.linearArm.getCurrentPosition()<= 13516)  /* Most effective detachment point might not be at the top*/ {
             //positive = up
             telemetry.addData("Status: ", "Lowering robot");
@@ -91,6 +92,8 @@ public class NewCrater extends LinearOpMode {
                 robot.linearArm.setPower(0);
                 break;
             }
+            /*if (robot.armBase.getCurrentPosition() < 500) robot.armBase.setPower(-1);
+            else robot.armBase.setPower(0);*/
             if (this.isStopRequested()) {
                 robot.linearArm.setPower(0);
                 camM.go = false;
@@ -161,7 +164,6 @@ public class NewCrater extends LinearOpMode {
         telemetry.addData("Status:","%d",tFlow.Status);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
         telemetry.update();
-        sleep(2000);
         switch (choose) {
             case 1:
                 //left

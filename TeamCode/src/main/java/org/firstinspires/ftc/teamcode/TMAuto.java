@@ -161,14 +161,13 @@ public class TMAuto extends LinearOpMode {
         telemetry.addData("Status:","%d",tFlow.Status);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
         telemetry.update();
-        sleep(1500);
         switch (choose) {
             case 1:
                 //Mineral on Left
                 mov.angleTurn(0.5,23, false);
 
-                mov.encoderDrive(DRIVE_SPEED, 35, 35, 5, false);
-                mov.angleTurn(0.2, -60, false);
+                mov.encoderDrive(DRIVE_SPEED, 45, 45, 5, false);
+                mov.angleTurn(0.2, -65, false);
 
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 mov.encoderDrive( 0.5,20,20,10, false);
@@ -195,9 +194,9 @@ public class TMAuto extends LinearOpMode {
 
                 mov.encoderDrive(DRIVE_SPEED, 35, 35, 5, false);
                 mov.angleTurn(0.2, 66, false);
-                sleep(2000);
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 mov.encoderDrive(DRIVE_SPEED,10,10,5, false);
+                mov.angleTurn(0.2, 85, false);
 
 
                 //mov.angleTurn(0.2, 90, false);

@@ -81,16 +81,16 @@ class Movement extends Thread {
                 }
             }
             Op.telemetry.addData("Finished", "!");
-            Op.telemetry.update();
+            Op.telemetry.update();motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorLeft.setPower(0);
             motorRight.setPower(0);
         }
     }
-    void encoderDrive(double speed, double leftCM, double rightCM, double timeoutS, boolean backgrnd) {
+    void encoderDriveOld(double speed, double leftCM, double rightCM, double timeoutS, boolean backgrnd) {
         int newLeftTarget;
         int newRightTarget;
-        motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         double initAng = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
 
         if (Op.opModeIsActive()) {
@@ -122,7 +122,7 @@ class Movement extends Thread {
             motorLeft.setPower(Math.abs(speed));
             motorRight.setPower(Math.abs(speed));
 
-            while (Op.opModeIsActive() && (runtime.seconds() < timeoutS) && (motorLeft.isBusy() || motorRight.isBusy()))
+            while (Op.opModeIsActive() && (runtime.seconds() < timeoutS) && (motorLeft.isBusy() && motorRight.isBusy()))
             {
                 if (Op.isStopRequested()) {
                     motorLeft.setPower(0);
@@ -149,7 +149,8 @@ class Movement extends Thread {
                     return;
                 }
             }
-
+            motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorLeft.setPower(0);
             motorRight.setPower(0);
             try {
@@ -157,9 +158,96 @@ class Movement extends Thread {
             } catch (InterruptedException e) {
 
             }
+
+            motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            Op.sleep(250);
+        }
+    }
+    void encoderDrive(double speed, double leftCM, double rightCM, double timeoutS, boolean backgrnd) {
+        int newLeftTarget;
+        int newRightTarget;
+
+        motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        //double initAng = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+
+        if (Op.opModeIsActive()) {
+            if (backgrnd) {
+                speedG = speed;
+                leftCMG = leftCM;
+                rightCMG = rightCM;
+                timeoutSG = timeoutS;
+                mode = 2;
+                start();
+
+            }
+            newLeftTarget = motorLeft.getCurrentPosition() - (int) (leftCM * COUNTS_PER_INCH);
+            newRightTarget = motorLeft.getCurrentPosition() - (int) (rightCM * COUNTS_PER_INCH);
+            int lT = Math.abs(motorLeft.getCurrentPosition() - (int) (leftCM * COUNTS_PER_INCH));
+            int rT = Math.abs(motorLeft.getCurrentPosition() - (int) (rightCM * COUNTS_PER_INCH));
+            Op.telemetry.addData("Encoder Target: ", "%7d :%7d", newLeftTarget, newRightTarget);
+            Op.telemetry.addData("Current Position: ", "%7d :%7d", motorLeft.getCurrentPosition(), motorRight.getCurrentPosition());
+            Op.telemetry.update();
             /*
+            try {
+                sleep(2000);
+            } catch (InterruptedException e) {
+
+            }
+            */
+            motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            runtime.reset();
+            motorLeft.setPower(Math.copySign(Math.abs(speed),newLeftTarget));
+            motorRight.setPower(Math.copySign(Math.abs(speed),newRightTarget));
+
+            while (Op.opModeIsActive() && (runtime.seconds() < timeoutS) && (Math.abs(motorLeft.getCurrentPosition()-newLeftTarget)>10
+                    && Math.abs(motorRight.getCurrentPosition()-newRightTarget)>10)
+                    && (lT+4 >= Math.abs(motorLeft.getCurrentPosition() - newLeftTarget)
+                    && rT+4 >= Math.abs(motorRight.getCurrentPosition() - newRightTarget)))
+            {
+                lT = Math.abs(motorLeft.getCurrentPosition() - newLeftTarget);
+                rT = Math.abs(motorLeft.getCurrentPosition() - newRightTarget);
+                if (Op.isStopRequested()) {
+                    motorLeft.setPower(0);
+                    motorRight.setPower(0);
+                    return;
+                }
+                Op.telemetry.addData("Encoder Target: ", "%7d, %7d", newLeftTarget, newRightTarget);
+                Op.telemetry.addData("Current Position: ", "%7d, %7d", motorLeft.getCurrentPosition(), motorRight.getCurrentPosition());
+                Op.telemetry.addData("Special Numbers:", "%7d, %7d", lT, rT);
+                /*if (robot.imu.getAngularOrientation(AxesReference.INTRINSIC,
+                        AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle > initAng+10
+                        || robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX,
+                        AngleUnit.DEGREES).firstAngle < initAng-10) {
+
+                    int mLt = robot.motorLeft.getCurrentPosition();
+                    int mRt = robot.motorRight.getCurrentPosition();
+                    angleTurn(0.5, initAng);
+                    robot.motorLeft.setTargetPosition(newLeftTarget+(robot.motorLeft.getCurrentPosition()-mLt));
+                    robot.motorRight.setTargetPosition(newRightTarget+(robot.motorRight.getCurrentPosition()-mRt));
+                }*/
+                Op.telemetry.update();
+                if (Op.isStopRequested()) {
+                    motorLeft.setPower(0);
+                    motorRight.setPower(0);
+                    return;
+                }
+            }
             motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motorLeft.setPower(0);
+            motorRight.setPower(0);
+            /*
+            try {
+                sleep(2000);
+            } catch (InterruptedException e) {
+
+            }
             */
             motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
