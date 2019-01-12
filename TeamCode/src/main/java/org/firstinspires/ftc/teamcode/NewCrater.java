@@ -180,7 +180,7 @@ public class NewCrater extends LinearOpMode {
                 mov.encoderDrive(DRIVE_SPEED, -15, -15, 5, false);
 
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.angleTurn(TURN_SPEED,-33, false);
+                mov.angleTurn(0.2,-33, false);
 
                 break;
             case 2:
@@ -210,7 +210,7 @@ public class NewCrater extends LinearOpMode {
                 mov.angleTurn(TURN_SPEED,33, false);
 
                 mov.encoderDrive(DRIVE_SPEED, -15, -15, 5, false);
-                mov.angleTurn(TURN_SPEED,33, false);
+                mov.angleTurn(0.2,33, false);
 
                 break;
             case -3:
