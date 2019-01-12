@@ -30,7 +30,6 @@ public class Teleop extends OpMode
     //boolean flipster = false;
     //boolean flipster1 = false;
     boolean flipster2 = false;
-    boolean flipster3 = false;
     boolean deathFlip = false;
     float activate_suq = 0;
     int asuq = 0;
@@ -66,7 +65,7 @@ public class Teleop extends OpMode
         drive = gamepad1.left_stick_y;
         turn  =  -gamepad1.left_stick_x;
         armB = -gamepad2.left_stick_y;
-        bar = -gamepad2.right_stick_y;
+        bar = gamepad2.right_stick_y;
         if (asuq==0) activate_suq = gamepad1.right_stick_y/4*(1+gamepad1.left_trigger);
         telemetry.addData("Succq:", gamepad1.right_stick_y/4 *(1+gamepad1.left_trigger));
         telemetry.addData("Succq Encoder: ", "%d", robot.Succq.getCurrentPosition());
@@ -175,16 +174,7 @@ public class Teleop extends OpMode
         }*/
 
         if (gamepad1.a) {
-            if (!flipster3) {
-                if (robot.dropTop.getPosition() == HardwareInfinity.DT_MIN) {
-                    robot.dropTop.setPosition(HardwareInfinity.DT_MAX);
-                } else {
-                    robot.dropTop.setPosition(HardwareInfinity.DT_MIN);
-                }
-                flipster3 = true;
-            }
-        } else {
-            flipster3 = false;
+            robot.dropTop.setPosition(HardwareInfinity.DT_MAX);
         }
         //if the Succq isn't moving then stop it to save the motor
         if (asuq != 0) activate_suq = asuq;
@@ -222,10 +212,10 @@ public class Teleop extends OpMode
             telemetry.addData("Latches","Min");
         }
         if ((gamepad1.dpad_down || gamepad2.dpad_down) && robot.dropTop.getPosition()>HardwareInfinity.DT_MIN) {
-            robot.dropTop.setPosition(robot.dropTop.getPosition()-0.01);
+            robot.dropTop.setPosition(robot.dropTop.getPosition()-0.015);
         }
         if ((gamepad1.dpad_up || gamepad2.dpad_up) && robot.dropTop.getPosition()<HardwareInfinity.DT_MAX) {
-            robot.dropTop.setPosition(robot.dropTop.getPosition()+0.01);
+            robot.dropTop.setPosition(robot.dropTop.getPosition()+0.015);
         }
          // Drops team marker with servo
         if (gamepad2.x)

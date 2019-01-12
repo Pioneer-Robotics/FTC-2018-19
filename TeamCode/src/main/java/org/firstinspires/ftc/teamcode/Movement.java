@@ -204,12 +204,16 @@ class Movement extends Thread {
             runtime.reset();
             motorLeft.setPower(Math.copySign(Math.abs(speed),newLeftTarget));
             motorRight.setPower(Math.copySign(Math.abs(speed),newRightTarget));
+            try {
+                Thread.sleep(250);
+            } catch (InterruptedException e) { }
 
             while (Op.opModeIsActive() && (runtime.seconds() < timeoutS) && (Math.abs(motorLeft.getCurrentPosition()-newLeftTarget)>10
                     && Math.abs(motorRight.getCurrentPosition()-newRightTarget)>10)
                     && (lT+4 >= Math.abs(motorLeft.getCurrentPosition() - newLeftTarget)
                     && rT+4 >= Math.abs(motorRight.getCurrentPosition() - newRightTarget)))
             {
+                Op.telemetry.addData("Goodness:", "%7d, %7d",lT+4 - Math.abs(motorLeft.getCurrentPosition() - newLeftTarget), rT+4 - Math.abs(motorRight.getCurrentPosition() - newRightTarget));
                 lT = Math.abs(motorLeft.getCurrentPosition() - newLeftTarget);
                 rT = Math.abs(motorLeft.getCurrentPosition() - newRightTarget);
                 if (Op.isStopRequested()) {
@@ -238,17 +242,20 @@ class Movement extends Thread {
                     return;
                 }
             }
+            Op.telemetry.addData("Goodness:", "%7d, %7d",lT+4 - Math.abs(motorLeft.getCurrentPosition() - newLeftTarget), rT+4 - Math.abs(motorRight.getCurrentPosition() - newRightTarget));
+            Op.telemetry.addData("Encoder Target: ", "%7d, %7d", newLeftTarget, newRightTarget);
+            Op.telemetry.addData("Current Position: ", "%7d, %7d", motorLeft.getCurrentPosition(), motorRight.getCurrentPosition());
+            Op.telemetry.addData("Special Numbers:", "%7d, %7d", lT, rT);
+            Op.telemetry.update();
             motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorLeft.setPower(0);
             motorRight.setPower(0);
-            /*
             try {
                 sleep(2000);
             } catch (InterruptedException e) {
 
             }
-            */
             motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 

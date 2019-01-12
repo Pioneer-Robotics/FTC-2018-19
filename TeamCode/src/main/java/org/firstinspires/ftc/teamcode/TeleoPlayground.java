@@ -98,7 +98,7 @@ public class TeleoPlayground extends LinearOpMode
             drive = gamepad1.left_stick_y;
             turn = -gamepad1.left_stick_x;
             armB = -gamepad2.left_stick_y;
-            bar = -gamepad2.right_stick_y;
+            bar = gamepad2.right_stick_y;
             if (asuq == 0) activate_suq = gamepad1.right_stick_y / 4 * (1 + gamepad1.left_trigger);
             telemetry.addData("Succq:", gamepad1.right_stick_y / 4 * (1 + gamepad1.left_trigger));
             telemetry.addData("Succq Encoder: ", "%d", robot.Succq.getCurrentPosition());
