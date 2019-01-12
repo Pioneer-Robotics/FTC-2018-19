@@ -60,7 +60,6 @@ public class TMAuto extends LinearOpMode {
         mov.init(robot.motorLeft,robot.motorRight,robot.imu,this,runtime, COUNTS_PER_INCH);
         camM.reference = angles.firstAngle;
         camM.start();
-        tFlow.start();
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -73,7 +72,6 @@ public class TMAuto extends LinearOpMode {
         telemetry.update();
         tFlow.disable = true;
 
-
         //Drop down off lander - lowering robot
 
 
@@ -85,6 +83,9 @@ public class TMAuto extends LinearOpMode {
             telemetry.addData("Status: ", "Lowering robot");
             telemetry.addData("Encoder: ", robot.linearArm.getCurrentPosition());
             telemetry.addData("Bottom is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
+            telemetry.addData("Choose:", "%d", choose);
+            telemetry.addData("Status:","%d",tFlow.Status);
+            telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
             telemetry.update();
             robot.linearArm.setPower(1);
             if (robot.topSwitch.getState()) {
@@ -100,16 +101,20 @@ public class TMAuto extends LinearOpMode {
 
         }
         robot.linearArm.setPower(0);
-
+        tFlow.start();
         // Detach from lander
         robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);
         telemetry.addData("Latches", "Min");
         telemetry.addData("Status: ", "Disengaging From Lander");
         telemetry.update();
-        while (!robot.botSwitch.getState() && !robot.topSwitch.getState()) {
+        runtime.reset();
+        while (!robot.botSwitch.getState() && !robot.topSwitch.getState() && runtime.milliseconds() < 3000) {
             robot.linearArm.setPower(1);
             telemetry.addData("Top is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
             telemetry.addData("Bottom is", robot.botSwitch.getState() ? "Pressed" : "not Pressed");
+            telemetry.addData("Choose:", "%d", choose);
+            telemetry.addData("Status:","%d",tFlow.Status);
+            telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
             telemetry.update();
 
         }
@@ -124,6 +129,7 @@ public class TMAuto extends LinearOpMode {
             sleep(1);
         }
         */
+        sleep(1000);
         telemetry.addData("Choose:", "%d", choose);
         telemetry.addData("Status:","%d",tFlow.Status);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
@@ -182,10 +188,6 @@ public class TMAuto extends LinearOpMode {
 
                 mov.angleTurn(0.2, 60, false);
 
-                telemetry.addData("Status: ", "Dropping Team Marker");
-                telemetry.update();
-
-                //mov.encoderDrive( 0.5, 5,5,10, false);
                 break;
             case 3:
                 //Mineral on Right
@@ -200,12 +202,6 @@ public class TMAuto extends LinearOpMode {
 
                 //mov.angleTurn(0.2, 90, false);
                 //mov.encoderDrive( 0.5, 5,5,10, false);
-                break;
-            case -3:
-                //this is the manual mode, shouldn't ever be used
-                telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                telemetry.addData("TFlow says: ", "%.5f",tFlow.mineralX);
-                telemetry.update();
                 break;
             default:
                 //error happened with TensorFlow
@@ -227,14 +223,24 @@ public class TMAuto extends LinearOpMode {
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
         telemetry.update();
 
-        /*
-        mov.angleTurn(0.3,160, false);
-        mov.angleTurn(0.3, -25, false);
-        */
+        switch (choose) {
+            case 1:
+                mov.angleTurn(0.3, 180, false);
+                //mov.encoderDrive(DRIVE_SPEED,-25,-25,30, false);
+                break;
+            case 2:
+                mov.angleTurn(0.2, -135, false);
+                //mov.encoderDrive(DRIVE_SPEED, -20, -20, 10, false);
+                break;
+            case 3:
+                mov.angleTurn(0.2, 90, false);
+                //mov.encoderDrive(DRIVE_SPEED,-20,-20,30, false);
+                break;
+        }
         robot.Camera.setPosition(0);
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
         robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);
-        while (!robot.botSwitch.getState() && !robot.topSwitch.getState()) {
+        while (!robot.botSwitch.getState()) {
             robot.linearArm.setPower(-1);
             telemetry.addData("Top is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
             telemetry.addData("Bottom is", robot.botSwitch.getState() ? "Pressed" : "not Pressed");

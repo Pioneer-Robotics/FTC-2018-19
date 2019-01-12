@@ -86,6 +86,9 @@ public class NewCrater extends LinearOpMode {
             telemetry.addData("Status: ", "Lowering robot");
             telemetry.addData("Encoder: ", robot.linearArm.getCurrentPosition());
             telemetry.addData("Bottom is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
+            telemetry.addData("Choose:", "%d", choose);
+            telemetry.addData("Status:","%d",tFlow.Status);
+            telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
             telemetry.update();
             robot.linearArm.setPower(1);
             if (robot.topSwitch.getState()) {
@@ -109,12 +112,15 @@ public class NewCrater extends LinearOpMode {
         telemetry.addData("Latches", "Min");
         telemetry.addData("Status: ", "Disengaging From Lander");
         telemetry.update();
-        while (!robot.botSwitch.getState() && !robot.topSwitch.getState()) {
+        runtime.reset();
+        while (!robot.botSwitch.getState() && !robot.topSwitch.getState() && runtime.milliseconds() < 3000) {
             robot.linearArm.setPower(1);
             telemetry.addData("Top is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
             telemetry.addData("Bottom is", robot.botSwitch.getState() ? "Pressed" : "not Pressed");
+            telemetry.addData("Choose:", "%d", choose);
+            telemetry.addData("Status:","%d",tFlow.Status);
+            telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
             telemetry.update();
-
         }
         robot.linearArm.setPower(0);
         /*
@@ -179,14 +185,12 @@ public class NewCrater extends LinearOpMode {
 
                 mov.encoderDrive(DRIVE_SPEED, -15, -15, 5, false);
 
-                telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 mov.angleTurn(0.2,-33, false);
 
                 break;
             case 2:
                 //middle
                 //theoretically no movement is necessary
-                telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 mov.encoderDrive(DRIVE_SPEED, 7, 7, 5, false);
                 sleep(100);
 
@@ -212,14 +216,6 @@ public class NewCrater extends LinearOpMode {
                 mov.encoderDrive(DRIVE_SPEED, -15, -15, 5, false);
                 mov.angleTurn(0.2,33, false);
 
-                break;
-            case -3:
-                //this is the manual mode, shouldn't ever be used
-                telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                telemetry.addData("TFlow says: ", "%.5f",tFlow.mineralX);
-                telemetry.update();
-                mov.encoderDrive(DRIVE_SPEED, 13, 13, 5, false);
-                mov.encoderDrive(DRIVE_SPEED, -13, -13, 5, false);
                 break;
             default:
                 //error happened with TensorFlow
@@ -250,15 +246,13 @@ public class NewCrater extends LinearOpMode {
         telemetry.update();
         sleep(1500);
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
+        //mov.angleTurn(TURN_SPEED,95, false);
+        //mov.encoderDrive(DRIVE_SPEED, 70, 70, 20, false);
 
-        /*
-        mov.angleTurn(0.3,160, false);
-        mov.angleTurn(0.3, -25, false);
-        */
         robot.Camera.setPosition(0);
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
         robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);
-        while (!robot.botSwitch.getState() && !robot.topSwitch.getState()) {
+        while (!robot.botSwitch.getState()) {
             robot.linearArm.setPower(-1);
             telemetry.addData("Top is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
             telemetry.addData("Bottom is", robot.botSwitch.getState() ? "Pressed" : "not Pressed");
