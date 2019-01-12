@@ -24,7 +24,7 @@ public class NewCrater extends LinearOpMode {
     private static final double WHEEL_DIAMETER_CM = 4.0 * 2.54;     // For figuring circumference
     private static final double COUNTS_PER_INCH = (TETRIX_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_CM * 3.1415);
     private static final double DRIVE_SPEED = 0.5;
-    private static final double TURN_SPEED = 0.4;
+    private static final double TURN_SPEED = 0.3;
 
     // State used for updating telemetry
     private int choose;
@@ -164,80 +164,84 @@ public class NewCrater extends LinearOpMode {
         telemetry.addData("Status:","%d",tFlow.Status);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
         telemetry.update();
+        sleep(100);
         switch (choose) {
             case 1:
                 //left
-                mov.angleTurn(0.5,23, false);
+                mov.angleTurn(TURN_SPEED,33, false);
 
-                mov.encoderDrive(DRIVE_SPEED, 25, 25, 5, false);
-                mov.encoderDrive(DRIVE_SPEED, -25, -25, 5, false);
+                mov.encoderDrive(DRIVE_SPEED, 15, 15, 5, false);
+                sleep(100);
+
+                mov.angleTurn(TURN_SPEED,33, false);
+                sleep(250);
+                mov.angleTurn(TURN_SPEED,-33, false);
+
+                mov.encoderDrive(DRIVE_SPEED, -15, -15, 5, false);
 
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.angleTurn(0.5,-23, false);
+                mov.angleTurn(TURN_SPEED,-33, false);
 
-                //mov.encoderDrive( 0.5,45,45,10, false);
-                /*
-                mov.angleTurn(0.5,45, false);
-                mov.encoderDrive( 0.5,30,30,10, false);
-                mov.angleTurn(0.5,90, false);
-                */
-                //angleTurn(0.3, 90);
                 break;
             case 2:
                 //middle
                 //theoretically no movement is necessary
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive(DRIVE_SPEED, 20, 20, 5, false);
-                mov.encoderDrive(DRIVE_SPEED, -20, -20, 5, false);
+                mov.encoderDrive(DRIVE_SPEED, 7, 7, 5, false);
+                sleep(100);
+
+                mov.angleTurn(TURN_SPEED,-33, false);
+                sleep(250);
+                mov.angleTurn(TURN_SPEED,33, false);
+
+                mov.encoderDrive(DRIVE_SPEED, -7, -7, 5, false);
 
 
                 break;
             case 3:
                 //right
-                mov.angleTurn(0.5,-23, false);
+                mov.angleTurn(TURN_SPEED,-33, false);
 
-                mov.encoderDrive(DRIVE_SPEED, 25, 25, 5, false);
-                mov.encoderDrive(DRIVE_SPEED, -25, -25, 5, false);
-                mov.angleTurn(0.5,23, false);
-                //mov.encoderDrive(DRIVE_SPEED, 60, 60, 5, false);
-                //mov.angleTurn(0.5,40, false);
-                /*
-                mov.encoderDrive(DRIVE_SPEED, 30, 30, 5, false);
+                mov.encoderDrive(DRIVE_SPEED, 15, 15, 5, false);
+                sleep(100);
 
-                mov.angleTurn(0.5,90, false);
-                telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                //mov.encoderDrive( 0.5, 5,5,10, false);
-                */
+                mov.angleTurn(TURN_SPEED,-33, false);
+                sleep(250);
+                mov.angleTurn(TURN_SPEED,33, false);
+
+                mov.encoderDrive(DRIVE_SPEED, -15, -15, 5, false);
+                mov.angleTurn(TURN_SPEED,33, false);
+
                 break;
             case -3:
                 //this is the manual mode, shouldn't ever be used
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 telemetry.addData("TFlow says: ", "%.5f",tFlow.mineralX);
                 telemetry.update();
+                mov.encoderDrive(DRIVE_SPEED, 13, 13, 5, false);
+                mov.encoderDrive(DRIVE_SPEED, -13, -13, 5, false);
                 break;
             default:
                 //error happened with TensorFlow
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 // if tensor flow doesn't function, the robot will default to moving to the middle position
-                mov.encoderDrive(0.5,22,22,10, false);
-
-                mov.encoderDrive(DRIVE_SPEED, -10, -10, 5, false);
-
-                mov.angleTurn(0.5,90, false);
-                mov.encoderDrive(DRIVE_SPEED, 40, 40, 5, false);
-                mov.angleTurn(0.5,45, false);
-                mov.encoderDrive(DRIVE_SPEED, 30, 30, 5, false);
-
-                mov.angleTurn(0.5,90, false);
+                mov.encoderDrive(DRIVE_SPEED, 20, 20, 5, false);
+                mov.encoderDrive(DRIVE_SPEED, -20, -20, 5, false);
                 break;
         }
-        mov.encoderDrive(DRIVE_SPEED, 10, 10, 5, false);
-        mov.angleTurn(0.5,67, false);
-        mov.encoderDrive(DRIVE_SPEED, 60, 60, 5, false);
-        mov.angleTurn(0.5,40, false);
-        mov.encoderDrive(DRIVE_SPEED, 50, 50, 5, false);
+        sleep(250);
+        mov.encoderDrive(0.2, 2, 2, 5, false);
+        sleep(100);
+
+        mov.angleTurn(TURN_SPEED,58, false);
+        mov.encoderDrive(DRIVE_SPEED, 32, 32, 33, false);
+        mov.angleTurn(TURN_SPEED,25, false);
+        mov.encoderDrive(DRIVE_SPEED, 7, 7, 5, false);
+        mov.angleTurn(TURN_SPEED,14, false);
+        mov.encoderDrive(DRIVE_SPEED, 33, 33, 5, false);
+
         sleep(500);
-        mov.angleTurn(0.5,85, false);
+        mov.angleTurn(TURN_SPEED,95, false);
         telemetry.update();
         telemetry.addData("Status: ", "Dropping Team Marker");
         telemetry.update();
@@ -266,7 +270,6 @@ public class NewCrater extends LinearOpMode {
 
         }
         robot.linearArm.setPower(0);
-        //encoderDrive(1, 255,255,30);
 
 
         //Drop Team Marker
