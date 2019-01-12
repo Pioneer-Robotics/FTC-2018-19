@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -15,6 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 
 @Autonomous (name="TMAutoNL", group="FTCPio")
+@Disabled
 public class TMAutoNL extends LinearOpMode {
     private HardwareInfinity robot = new HardwareInfinity();
     private ElapsedTime runtime = new ElapsedTime();
@@ -108,7 +110,7 @@ public class TMAutoNL extends LinearOpMode {
         telemetry.update();
 
         //Drive away
-        mov.encoderDrive(0.5,10,10,30, false);
+        mov.encoderDrive(0.5,5,5,30, false);
         telemetry.addData("Choose:", "%d", choose);
         telemetry.addData("Status:","%d",tFlow.Status);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
@@ -139,19 +141,16 @@ public class TMAutoNL extends LinearOpMode {
         telemetry.addData("Status:","%d",tFlow.Status);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
         telemetry.update();
-        sleep(2000);
         switch (choose) {
             case 1:
                 //Mineral on Left
                 mov.angleTurn(0.5,23, false);
 
-                mov.encoderDrive(DRIVE_SPEED, 45, 45, 20, false);
-                sleep(2000);
-                mov.angleTurn(0.2, -65, false);
-
-                telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive( 0.5,20,20,15, false);
-                mov.angleTurn(0.3, 90, false);
+                mov.encoderDrive(DRIVE_SPEED, 35, 35, 5, false);
+                mov.angleTurn(0.2, -76, false);
+                //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
+                mov.encoderDrive(DRIVE_SPEED,25,25,30, false);
+                mov.angleTurn(0.3, 80, false);
 
                 break;
             case 2:
@@ -161,7 +160,7 @@ public class TMAutoNL extends LinearOpMode {
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 mov.encoderDrive(DRIVE_SPEED, 45, 45, 5, false);
 
-                mov.angleTurn(0.2, 85, false);
+                mov.angleTurn(0.2, 60, false);
 
                 telemetry.addData("Status: ", "Dropping Team Marker");
                 telemetry.update();
@@ -175,8 +174,8 @@ public class TMAutoNL extends LinearOpMode {
                 mov.encoderDrive(DRIVE_SPEED, 35, 35, 5, false);
                 mov.angleTurn(0.2, 66, false);
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive(DRIVE_SPEED,10,10,30, false);
-                mov.angleTurn(0.2, 85, false);
+                mov.encoderDrive(DRIVE_SPEED,20,20,30, false);
+                mov.angleTurn(0.2, 40, false);
 
 
                 //mov.angleTurn(0.2, 90, false);
@@ -212,6 +211,9 @@ public class TMAutoNL extends LinearOpMode {
         mov.angleTurn(0.3,160, false);
         mov.angleTurn(0.3, -25, false);
         */
+        robot.Camera.setPosition(0);
+        robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
+        robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);
         while (!robot.botSwitch.getState() && !robot.topSwitch.getState()) {
             robot.linearArm.setPower(-1);
             telemetry.addData("Top is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");

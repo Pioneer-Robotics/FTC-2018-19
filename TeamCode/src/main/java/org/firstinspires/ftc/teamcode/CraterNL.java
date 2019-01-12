@@ -14,8 +14,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 
-@Autonomous (name="NewCrater", group="FTCPio")
-public class NewCrater extends LinearOpMode {
+@Autonomous (name="CraterNL", group="FTCPio")
+public class CraterNL extends LinearOpMode {
     private HardwareInfinity robot = new HardwareInfinity();
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -81,28 +81,6 @@ public class NewCrater extends LinearOpMode {
 
         robot.armBase.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.armBase.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        while (robot.linearArm.getCurrentPosition()<= 13516)  /* Most effective detachment point might not be at the top*/ {
-            //positive = up
-            telemetry.addData("Status: ", "Lowering robot");
-            telemetry.addData("Encoder: ", robot.linearArm.getCurrentPosition());
-            telemetry.addData("Bottom is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
-            telemetry.update();
-            robot.linearArm.setPower(1);
-            if (robot.topSwitch.getState()) {
-                robot.linearArm.setPower(0);
-                break;
-            }
-            /*if (robot.armBase.getCurrentPosition() < 500) robot.armBase.setPower(-1);
-            else robot.armBase.setPower(0);*/
-            if (this.isStopRequested()) {
-                robot.linearArm.setPower(0);
-                camM.go = false;
-                tFlow.go =false;
-                return;
-            }
-
-        }
-        robot.linearArm.setPower(0);
 
         // Detach from lander
         robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);
@@ -167,13 +145,13 @@ public class NewCrater extends LinearOpMode {
         switch (choose) {
             case 1:
                 //left
-                mov.angleTurn(0.5,23, false);
+                mov.angleTurn(0.5,32, false);
 
-                mov.encoderDrive(DRIVE_SPEED, 25, 25, 5, false);
-                mov.encoderDrive(DRIVE_SPEED, -25, -25, 5, false);
+                mov.encoderDrive(DRIVE_SPEED, 15, 15, 5, false);
+                mov.encoderDrive(DRIVE_SPEED, -15, -15, 5, false);
 
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.angleTurn(0.5,-23, false);
+                mov.angleTurn(0.5,-32, false);
 
                 //mov.encoderDrive( 0.5,45,45,10, false);
                 /*
@@ -194,11 +172,11 @@ public class NewCrater extends LinearOpMode {
                 break;
             case 3:
                 //right
-                mov.angleTurn(0.5,-23, false);
+                mov.angleTurn(0.5,-32, false);
 
-                mov.encoderDrive(DRIVE_SPEED, 25, 25, 5, false);
-                mov.encoderDrive(DRIVE_SPEED, -25, -25, 5, false);
-                mov.angleTurn(0.5,23, false);
+                mov.encoderDrive(DRIVE_SPEED, 15, 15, 5, false);
+                mov.encoderDrive(DRIVE_SPEED, -15, -15, 5, false);
+                mov.angleTurn(0.5,32, false);
                 //mov.encoderDrive(DRIVE_SPEED, 60, 60, 5, false);
                 //mov.angleTurn(0.5,40, false);
                 /*
@@ -214,30 +192,28 @@ public class NewCrater extends LinearOpMode {
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 telemetry.addData("TFlow says: ", "%.5f",tFlow.mineralX);
                 telemetry.update();
+                mov.encoderDrive(DRIVE_SPEED, 20, 20, 5, false);
+                mov.encoderDrive(DRIVE_SPEED, -20, -20, 5, false);
                 break;
             default:
                 //error happened with TensorFlow
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 // if tensor flow doesn't function, the robot will default to moving to the middle position
-                mov.encoderDrive(0.5,22,22,10, false);
-
-                mov.encoderDrive(DRIVE_SPEED, -10, -10, 5, false);
-
-                mov.angleTurn(0.5,90, false);
-                mov.encoderDrive(DRIVE_SPEED, 40, 40, 5, false);
-                mov.angleTurn(0.5,45, false);
-                mov.encoderDrive(DRIVE_SPEED, 30, 30, 5, false);
-
-                mov.angleTurn(0.5,90, false);
+                mov.encoderDrive(DRIVE_SPEED, 20, 20, 5, false);
+                mov.encoderDrive(DRIVE_SPEED, -20, -20, 5, false);
                 break;
         }
-        mov.encoderDrive(DRIVE_SPEED, 10, 10, 5, false);
-        mov.angleTurn(0.5,67, false);
-        mov.encoderDrive(DRIVE_SPEED, 60, 60, 5, false);
-        mov.angleTurn(0.5,40, false);
-        mov.encoderDrive(DRIVE_SPEED, 50, 50, 5, false);
+        mov.encoderDrive(DRIVE_SPEED, 2, 2, 5, false);
+        sleep(250);
+        mov.angleTurn(0.5,58, false);
+        mov.encoderDrive(DRIVE_SPEED, 32, 32, 33, false);
+        mov.angleTurn(0.5,30, false);
+        mov.encoderDrive(DRIVE_SPEED, 12, 12, 5, false);
+        mov.angleTurn(0.5,14, false);
+        mov.encoderDrive(DRIVE_SPEED, 32, 32, 5, false);
+
         sleep(500);
-        mov.angleTurn(0.5,85, false);
+        mov.angleTurn(0.5,90, false);
         telemetry.update();
         telemetry.addData("Status: ", "Dropping Team Marker");
         telemetry.update();

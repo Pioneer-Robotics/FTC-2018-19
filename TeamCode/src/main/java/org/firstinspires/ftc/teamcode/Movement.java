@@ -170,7 +170,7 @@ class Movement extends Thread {
         int newRightTarget;
 
         motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         //double initAng = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
 
@@ -185,9 +185,9 @@ class Movement extends Thread {
 
             }
             newLeftTarget = motorLeft.getCurrentPosition() - (int) (leftCM * COUNTS_PER_INCH);
-            newRightTarget = motorLeft.getCurrentPosition() - (int) (rightCM * COUNTS_PER_INCH);
+            newRightTarget = motorRight.getCurrentPosition() - (int) (rightCM * COUNTS_PER_INCH);
             int lT = Math.abs(motorLeft.getCurrentPosition() - (int) (leftCM * COUNTS_PER_INCH));
-            int rT = Math.abs(motorLeft.getCurrentPosition() - (int) (rightCM * COUNTS_PER_INCH));
+            int rT = Math.abs(motorRight.getCurrentPosition() - (int) (rightCM * COUNTS_PER_INCH));
             Op.telemetry.addData("Encoder Target: ", "%7d :%7d", newLeftTarget, newRightTarget);
             Op.telemetry.addData("Current Position: ", "%7d :%7d", motorLeft.getCurrentPosition(), motorRight.getCurrentPosition());
             Op.telemetry.update();
@@ -210,10 +210,9 @@ class Movement extends Thread {
 
             while (Op.opModeIsActive() && (runtime.seconds() < timeoutS) && (Math.abs(motorLeft.getCurrentPosition()-newLeftTarget)>10
                     && Math.abs(motorRight.getCurrentPosition()-newRightTarget)>10)
-                    && (lT+4 >= Math.abs(motorLeft.getCurrentPosition() - newLeftTarget)
-                    && rT+4 >= Math.abs(motorRight.getCurrentPosition() - newRightTarget)))
+                    && (lT+20 >= Math.abs(motorLeft.getCurrentPosition() - newLeftTarget)))
             {
-                Op.telemetry.addData("Goodness:", "%7d, %7d",lT+4 - Math.abs(motorLeft.getCurrentPosition() - newLeftTarget), rT+4 - Math.abs(motorRight.getCurrentPosition() - newRightTarget));
+                Op.telemetry.addData("Goodness:", "%7d, %7d",lT+20 - Math.abs(motorLeft.getCurrentPosition() - newLeftTarget), rT+20 - Math.abs(motorRight.getCurrentPosition() - newRightTarget));
                 lT = Math.abs(motorLeft.getCurrentPosition() - newLeftTarget);
                 rT = Math.abs(motorLeft.getCurrentPosition() - newRightTarget);
                 if (Op.isStopRequested()) {
@@ -242,7 +241,7 @@ class Movement extends Thread {
                     return;
                 }
             }
-            Op.telemetry.addData("Goodness:", "%7d, %7d",lT+4 - Math.abs(motorLeft.getCurrentPosition() - newLeftTarget), rT+4 - Math.abs(motorRight.getCurrentPosition() - newRightTarget));
+            Op.telemetry.addData("Goodness:", "%7d, %7d",lT+20 - Math.abs(motorLeft.getCurrentPosition() - newLeftTarget), rT+20 - Math.abs(motorRight.getCurrentPosition() - newRightTarget));
             Op.telemetry.addData("Encoder Target: ", "%7d, %7d", newLeftTarget, newRightTarget);
             Op.telemetry.addData("Current Position: ", "%7d, %7d", motorLeft.getCurrentPosition(), motorRight.getCurrentPosition());
             Op.telemetry.addData("Special Numbers:", "%7d, %7d", lT, rT);
@@ -251,15 +250,14 @@ class Movement extends Thread {
             motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorLeft.setPower(0);
             motorRight.setPower(0);
+            motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             try {
-                sleep(2000);
+                sleep(250);
             } catch (InterruptedException e) {
 
             }
-            motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            Op.sleep(250);
         }
     }
     public void run() {
