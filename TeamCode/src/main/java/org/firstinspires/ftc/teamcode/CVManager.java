@@ -151,6 +151,7 @@ public class CVManager extends Thread {
                     trimmedRecognitions.add(silver2);
                 } else trimmedRecognitions = updatedRecognitions;
                 if (trimmedRecognitions.size() == 3) {
+                    if (tIaRMan(trimmedRecognitions) != 1) return -3;
                     int goldMineralX = -1;
                     int silverMineral1X = -1;
                     int silverMineral2X = -1;
@@ -209,6 +210,36 @@ public class CVManager extends Thread {
                         silverMineral2Y = recognition.getTop();
                     }
                 }
+                float slope = (silverMineral2Y-silverMineral1Y)/(silverMineral2X-silverMineral1X);   //(y2-y1)/(x2-x1)
+                float intrcpt = silverMineral2Y - slope*silverMineral2X;  // b= y-mx
+                if (Math.abs(slope*goldMineralX+intrcpt - goldMineralY) >= 10) return 2;
+                else return 1;
+            } else return -3;
+        }
+        return -4;
+    }
+    private int tIaRMan(List<Recognition> updatedRecognitions) {
+        if (tfod != null) {
+            if (updatedRecognitions.size() == 3) {
+                float goldMineralX = -1;
+                float goldMineralY = -1;
+                float silverMineral1X = -1;
+                float silverMineral1Y = -1;
+                float silverMineral2X = -1;
+                float silverMineral2Y = -1;
+                for (Recognition recognition : updatedRecognitions) {
+                    if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                        goldMineralX = recognition.getLeft();
+                        goldMineralY = recognition.getTop();
+                    } else if (silverMineral1X == -1) {
+                        silverMineral1X = recognition.getLeft();
+                        silverMineral1Y = recognition.getTop();
+                    } else {
+                        silverMineral2X = recognition.getLeft();
+                        silverMineral2Y = recognition.getTop();
+                    }
+                }
+                //do a linear regression to figure out if the minerals are in a row or not
                 float slope = (silverMineral2Y-silverMineral1Y)/(silverMineral2X-silverMineral1X);   //(y2-y1)/(x2-x1)
                 float intrcpt = silverMineral2Y - slope*silverMineral2X;  // b= y-mx
                 if (Math.abs(slope*goldMineralX+intrcpt - goldMineralY) >= 10) return 2;
