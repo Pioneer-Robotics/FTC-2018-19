@@ -136,7 +136,7 @@ public class TMAuto extends LinearOpMode {
         telemetry.update();
 
         //Drive away
-        mov.encoderDrive(0.5,5,5,30, false);
+        mov.encoderDrive(0.5,5,30);
         telemetry.addData("Choose:", "%d", choose);
         telemetry.addData("Status:","%d",tFlow.Status);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
@@ -170,13 +170,13 @@ public class TMAuto extends LinearOpMode {
         switch (choose) {
             case 1:
                 //Mineral on Left
-                mov.angleTurn(0.5,23, false);
+                mov.angleTurn(0.5,23);
 
-                mov.encoderDrive(DRIVE_SPEED, 35, 35, 5, false);
-                mov.angleTurn(0.2, -76, false);
+                mov.encoderDrive(DRIVE_SPEED, 35, 35, 5);
+                mov.angleTurn(0.2, -76);
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive(DRIVE_SPEED,25,25,30, false);
-                mov.angleTurn(0.3, 80, false);
+                mov.encoderDrive(DRIVE_SPEED,25,25,30);
+                mov.angleTurn(0.3, 80);
 
                 break;
             case 2:
@@ -184,20 +184,20 @@ public class TMAuto extends LinearOpMode {
                 //no turning movement is necessary to hit mineral
 
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive(DRIVE_SPEED, 45, 45, 5, false);
+                mov.encoderDrive(DRIVE_SPEED, 45, 45, 5);
 
-                mov.angleTurn(0.2, 60, false);
+                mov.angleTurn(0.2, 60);
 
                 break;
             case 3:
                 //Mineral on Right
-                mov.angleTurn(0.5,-23, false);
+                mov.angleTurn(0.5,-23);
 
-                mov.encoderDrive(DRIVE_SPEED, 35, 35, 5, false);
-                mov.angleTurn(0.2, 66, false);
+                mov.encoderDrive(DRIVE_SPEED, 35, 35, 5);
+                mov.angleTurn(0.2, 66);
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive(DRIVE_SPEED,20,20,30, false);
-                mov.angleTurn(0.2, 40, false);
+                mov.encoderDrive(DRIVE_SPEED,20,20,30);
+                mov.angleTurn(0.2, 40);
 
 
                 //mov.angleTurn(0.2, 90, false);
@@ -207,10 +207,10 @@ public class TMAuto extends LinearOpMode {
                 //error happened with TensorFlow
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 // if tensor flow doesn't function, the robot will default to moving to the middle position
-                mov.encoderDrive(DRIVE_SPEED, 13, 13, 5, false);
-                mov.encoderDrive( 0.5,10,10,10, false);
+                mov.encoderDrive(DRIVE_SPEED, 13, 13, 5);
+                mov.encoderDrive( 0.5,10,10,10);
 
-                mov.angleTurn(0.3, 90, false);
+                mov.angleTurn(0.3, 90);
                 break;
         }
         telemetry.addData("Status: ", "Dropping Team Marker");
@@ -225,15 +225,15 @@ public class TMAuto extends LinearOpMode {
 
         switch (choose) {
             case 1:
-                mov.angleTurn(0.3, 180, false);
+                mov.angleTurn(0.3, 180);
                 //mov.encoderDrive(DRIVE_SPEED,-25,-25,30, false);
                 break;
             case 2:
-                mov.angleTurn(0.2, -135, false);
+                mov.angleTurn(0.2, -135);
                 //mov.encoderDrive(DRIVE_SPEED, -20, -20, 10, false);
                 break;
             case 3:
-                mov.angleTurn(0.2, 90, false);
+                mov.angleTurn(0.2, 90);
                 //mov.encoderDrive(DRIVE_SPEED,-20,-20,30, false);
                 break;
         }
