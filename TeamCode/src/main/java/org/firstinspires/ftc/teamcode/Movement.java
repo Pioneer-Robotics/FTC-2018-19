@@ -168,7 +168,7 @@ class Movement extends Thread {
     void experimentalDrive(double speed, double distance, double timeoutS, boolean backgrnd) {
         int newTarget;
 
-        double initAng = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+        //double initAng = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
 
         if (Op.opModeIsActive()) {
             if (backgrnd) {
@@ -354,8 +354,6 @@ class Movement extends Thread {
             encoderDrive(speedG, leftCMG, rightCMG, timeoutSG,false);
         } else if (mode == 3) {
             experimentalDrive(speedG,leftCMG,timeoutSG,false);
-        } else {
-            return;
         }
     }
 }

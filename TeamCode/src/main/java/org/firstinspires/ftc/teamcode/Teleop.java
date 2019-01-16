@@ -124,8 +124,8 @@ public class Teleop extends OpMode
         }
         else
         {
-            robot.motorLeft.setPower(left);
-            robot.motorRight.setPower(right);
+            robot.motorLeft.setPower(Math.sqrt(left));
+            robot.motorRight.setPower(Math.sqrt(right));
             telemetry.addData("Reverse", "Deactivated");
         }
 

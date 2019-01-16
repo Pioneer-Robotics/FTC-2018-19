@@ -206,7 +206,7 @@ public class CraterAuto extends LinearOpMode {
                 //right
                 mov.angleTurn(TURN_SPEED,-33);
 
-                mov.encoderDrive(DRIVE_SPEED, 15, 15, 5);
+                mov.encoderDrive(DRIVE_SPEED, 15, 5);
                 sleep(100);
 
                 mov.angleTurn(TURN_SPEED,-33);
@@ -247,7 +247,7 @@ public class CraterAuto extends LinearOpMode {
         sleep(1500);
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
         //mov.angleTurn(TURN_SPEED,95, false);
-        //mov.encoderDrive(DRIVE_SPEED, 70, 70, 20, false);
+        //mov.encoderDrive(DRIVE_SPEED, 70, 20);
 
         robot.Camera.setPosition(0);
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
