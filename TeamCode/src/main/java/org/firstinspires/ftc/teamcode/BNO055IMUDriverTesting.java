@@ -69,8 +69,10 @@ public class BNO055IMUDriverTesting extends LinearOpMode {
     Orientation angles;
     Orientation oldAng;
     //Acceleration gravity;
-    ElapsedTime runtime;
+    ElapsedTime runtime = new ElapsedTime();
     double time;
+    double maxt;
+    double maxd;
 
     //----------------------------------------------------------------------------------------------
     // Main logic
@@ -94,7 +96,13 @@ public class BNO055IMUDriverTesting extends LinearOpMode {
         // and named "imu".
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        oldAng = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
+        //BNO055IMU.Register reg = new BNO055IMU.Register();
+        //reg.bVal = (byte)0xA0;
+        //private SensorManager mSensorManager;
+        //private Sensor mSensor;
 
         // Set up our telemetry dashboard
         composeTelemetry();
@@ -107,7 +115,30 @@ public class BNO055IMUDriverTesting extends LinearOpMode {
 
         // Loop and update the dashboard
         while (opModeIsActive()) {
+            oldAng = angles;
+            runtime.reset();
+            angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            time = runtime.milliseconds();
+            if (time>maxt) maxt = time;
+            if (angles.firstAngle - oldAng.firstAngle>maxt) maxd = angles.firstAngle - oldAng.firstAngle;
             telemetry.update();
+            telemetry.addLine()
+                    .addData("heading", "%.5f", angles.thirdAngle)
+                    .addData("roll", "%.5f", angles.thirdAngle)
+                    .addData("pitch","%.5f", angles.thirdAngle);
+            /*telemetry.addLine()
+                    .addData("nheading", "%.5f", imu.read())
+                    .addData("nroll", "%.5f", angles.thirdAngle)
+                    .addData("npitch","%.5f", angles.thirdAngle);*/
+            telemetry.addLine()
+                    .addData("Latency: ", "%.8f", time);
+            telemetry.addLine()
+                    .addData("Delta H: ", "%.8f", angles.firstAngle - oldAng.firstAngle)
+                    .addData("Delta R: ", "%.8f", angles.secondAngle - oldAng.secondAngle)
+                    .addData("Delta P: ", "%.8f", angles.thirdAngle - oldAng.thirdAngle);
+            telemetry.addLine()
+                    .addData("Max Latency: ", "%.2f", maxt)
+                    .addData("Max Delta: ", "%.2f", maxd);
         }
     }
 

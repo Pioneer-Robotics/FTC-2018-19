@@ -76,7 +76,8 @@ public class TeleoPlayground extends LinearOpMode
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            telemetry.addData("TFlow says: ", "%d", tFlow.Status);
+            telemetry.
+                    addData("TFlow says: ", "%d", tFlow.Status);
             telemetry.addData("TFlow mode: ", "%d", tFlow.mode);
             telemetry.addData("TFlow saysX: ", "%.5f", tFlow.mineralX);
             telemetry.addData("TFlow saysY: ", "%.5f", tFlow.mineralY);
