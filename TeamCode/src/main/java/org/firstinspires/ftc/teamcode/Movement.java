@@ -34,7 +34,101 @@ class Movement extends Thread {
         runtime = run;
         COUNTS_PER_INCH = CPI;
     }
+    void experimentalTurn(double speed, double angle, boolean backgrnd) {
+        double targetAngle;
+        double time = 0;
+        double maxtime = 0;
+        double maxdel = 0;
+        double start = 0;
+        int direction = 0; // -1 = cw, 1 = ccw
+        double dis = 0;
+        if (Op.opModeIsActive()) {
+            if (backgrnd) {
+                angleG = angle;
+                speedG = speed;
+                mode = 1;
+                start();
 
+            }
+            Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            Orientation delta = angles;
+            start = angles.firstAngle;
+            targetAngle = angle + angles.firstAngle + 180;
+            Op.telemetry.clearAll();
+            runtime.reset();
+            while (true) {
+                time = runtime.milliseconds();
+                if (time>maxtime) maxtime = time;
+                if (Math.abs(angles.firstAngle-delta.firstAngle)> maxdel) maxdel = Math.abs(angles.firstAngle-delta.firstAngle);
+                runtime.reset();
+                if (Op.isStopRequested()) {
+                    motorLeft.setPower(0);
+                    motorRight.setPower(0);
+                    return;
+                }
+                if ((angles.firstAngle-targetAngle)%360<(targetAngle-angles.firstAngle)%360) {
+                    direction = -1;
+                    dis = (angles.firstAngle-targetAngle)%360;
+                } else {
+                    direction = 1;
+                    dis = (targetAngle-angles.firstAngle)%360;
+                }
+                //if (angle > 0 && )
+                if (angle > 0) {
+                    motorLeft.setPower(Math.abs(speed));
+                    motorRight.setPower(-Math.abs(speed));
+                } else {
+                    motorLeft.setPower(-Math.abs(speed));
+                    motorRight.setPower(Math.abs(speed));
+                }
+                /*Op.telemetry.addData("Error:", "%.5f", Math.abs(angles.firstAngle + 180 - targetAngle));
+                Op.telemetry.addData("Margin:", "%.5f", margin * speed);
+                Op.telemetry.addData("IMU Heading:", "%.5f", angles.firstAngle + 180);
+                Op.telemetry.addData("min:", "%.5f", targetAngle - margin * speed);
+                Op.telemetry.addData("target:", "%.5f", targetAngle);
+                Op.telemetry.addData("max:", "%.5f", targetAngle + margin * speed);*/
+                Op.telemetry.addData("time: ", "%.2f",time);
+                Op.telemetry.addData("delta:", "%.2f", angles.firstAngle-delta.firstAngle);
+                Op.telemetry.addData("maxtime:", "%.2f", maxtime);
+                Op.telemetry.addData("maxdel:", "%.2f",maxdel);
+                Op.telemetry.update();
+                delta = angles;
+                angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+                /*if (Op.isStopRequested()) {
+                    motorLeft.setPower(0);
+                    motorRight.setPower(0);
+                    return;
+                }*/
+                if (Math.abs(angles.firstAngle + 180 - targetAngle) < margin * speed || (360 - Math.abs(angles.firstAngle + 180 - targetAngle)) < margin * speed) {
+                    motorLeft.setPower(0);
+                    motorRight.setPower(0);
+                    break;
+                }
+            }
+            motorLeft.setPower(0);
+            motorRight.setPower(0);
+            Op.telemetry.addData("Finished", "!");
+            Op.telemetry.addData("Error:", "%.5f", Math.abs(angles.firstAngle + 180 - targetAngle));
+            Op.telemetry.addData("Margin:", "%.5f", margin * speed);
+            Op.telemetry.addData("IMU Heading:", "%.5f", angles.firstAngle + 180);
+            Op.telemetry.addData("min:", "%.5f", targetAngle - margin * speed);
+            Op.telemetry.addData("target:", "%.5f", targetAngle);
+            Op.telemetry.addData("max:", "%.5f", targetAngle + margin * speed);
+            Op.telemetry.addData("time:", "%.2f", time);
+            Op.telemetry.addData("delta:", "%.2f", angles.firstAngle-delta.firstAngle);
+            Op.telemetry.addData("maxtime:", "%.2f", maxtime);
+            Op.telemetry.addData("maxdel:", "%.2f",maxdel);
+            Op.telemetry.update();
+            motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            try {
+                sleep(5000);
+            } catch (InterruptedException e) {
+
+            }
+            Op.sleep(5000);
+        }
+    }
     void angleTurn(double speed, double angle, boolean backgrnd) {
         double targetAngle;
         double time = 0;
