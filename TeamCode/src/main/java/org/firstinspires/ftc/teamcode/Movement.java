@@ -36,10 +36,11 @@ class Movement extends Thread {
     }
     void experimentalTurn(double speed, double angle, boolean backgrnd) {
         double targetAngle;
-        double time = 0;
+        double time;
         double maxtime = 0;
         double maxdel = 0;
-        double start = 0;
+        //double start;
+        double spd = 0;
         int direction = 0; // -1 = cw, 1 = ccw
         double dis = 0;
         if (Op.opModeIsActive()) {
@@ -52,7 +53,7 @@ class Movement extends Thread {
             }
             Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             Orientation delta = angles;
-            start = angles.firstAngle;
+            //start = angles.firstAngle;
             targetAngle = angle + angles.firstAngle + 180;
             Op.telemetry.clearAll();
             runtime.reset();
@@ -73,14 +74,19 @@ class Movement extends Thread {
                     direction = 1;
                     dis = (targetAngle-angles.firstAngle)%360;
                 }
-                //if (angle > 0 && )
-                if (angle > 0) {
+                /*if (angle > 0 /*&& (Math.abs(((angles.firstAngle-start)%360 + (targetAngle-angles.firstAngle)%360)-angle)<0.5 || Math.abs(((start-angles.firstAngle)%360 + (angles.firstAngle-targetAngle)%360)-angle)<0.5)) {
+                    spd = (targetAngle-angles.firstAngle)%360/
+                }*/
+                spd=dis/angles.firstAngle;
+                motorLeft.setPower(direction*Math.abs(speed*spd));
+                motorRight.setPower(-direction*Math.abs(speed*spd));
+                /*if (angle > 0) {
                     motorLeft.setPower(Math.abs(speed));
                     motorRight.setPower(-Math.abs(speed));
                 } else {
                     motorLeft.setPower(-Math.abs(speed));
                     motorRight.setPower(Math.abs(speed));
-                }
+                }*/
                 /*Op.telemetry.addData("Error:", "%.5f", Math.abs(angles.firstAngle + 180 - targetAngle));
                 Op.telemetry.addData("Margin:", "%.5f", margin * speed);
                 Op.telemetry.addData("IMU Heading:", "%.5f", angles.firstAngle + 180);
