@@ -54,7 +54,7 @@ class Movement extends Thread {
             Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             Orientation delta = angles;
             //start = angles.firstAngle;
-            targetAngle = angle + angles.firstAngle + 180;
+            targetAngle = angle + angles.firstAngle;
             Op.telemetry.clearAll();
             runtime.reset();
             while (true) {
@@ -87,12 +87,13 @@ class Movement extends Thread {
                     motorLeft.setPower(-Math.abs(speed));
                     motorRight.setPower(Math.abs(speed));
                 }*/
-                /*Op.telemetry.addData("Error:", "%.5f", Math.abs(angles.firstAngle + 180 - targetAngle));
+                Op.telemetry.addData("Error:", "%.5f", dis);
+                Op.telemetry.addData("Speed:", direction*Math.abs(speed*spd));
                 Op.telemetry.addData("Margin:", "%.5f", margin * speed);
-                Op.telemetry.addData("IMU Heading:", "%.5f", angles.firstAngle + 180);
+                Op.telemetry.addData("IMU Heading:", "%.5f", angles.firstAngle);
                 Op.telemetry.addData("min:", "%.5f", targetAngle - margin * speed);
                 Op.telemetry.addData("target:", "%.5f", targetAngle);
-                Op.telemetry.addData("max:", "%.5f", targetAngle + margin * speed);*/
+                Op.telemetry.addData("max:", "%.5f", targetAngle + margin * speed);
                 Op.telemetry.addData("time: ", "%.2f",time);
                 Op.telemetry.addData("delta:", "%.2f", angles.firstAngle-delta.firstAngle);
                 Op.telemetry.addData("maxtime:", "%.2f", maxtime);
@@ -105,7 +106,7 @@ class Movement extends Thread {
                     motorRight.setPower(0);
                     return;
                 }*/
-                if (Math.abs(angles.firstAngle + 180 - targetAngle) < margin * speed || (360 - Math.abs(angles.firstAngle + 180 - targetAngle)) < margin * speed) {
+                if (dis < margin * speed) {
                     motorLeft.setPower(0);
                     motorRight.setPower(0);
                     break;
