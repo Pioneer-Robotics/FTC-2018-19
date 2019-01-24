@@ -23,6 +23,7 @@ class Movement extends Thread {
     private double rightCMG;
     private double timeoutSG;
     private int mode;
+    boolean experiment = false;
 
     int margin = 7;
 
@@ -74,19 +75,9 @@ class Movement extends Thread {
                     direction = 1;
                     dis = (targetAngle-angles.firstAngle)%360;
                 }
-                /*if (angle > 0 /*&& (Math.abs(((angles.firstAngle-start)%360 + (targetAngle-angles.firstAngle)%360)-angle)<0.5 || Math.abs(((start-angles.firstAngle)%360 + (angles.firstAngle-targetAngle)%360)-angle)<0.5)) {
-                    spd = (targetAngle-angles.firstAngle)%360/
-                }*/
                 spd=dis/angles.firstAngle;
                 motorLeft.setPower(direction*Math.abs(speed*spd));
                 motorRight.setPower(-direction*Math.abs(speed*spd));
-                /*if (angle > 0) {
-                    motorLeft.setPower(Math.abs(speed));
-                    motorRight.setPower(-Math.abs(speed));
-                } else {
-                    motorLeft.setPower(-Math.abs(speed));
-                    motorRight.setPower(Math.abs(speed));
-                }*/
                 Op.telemetry.addData("Error:", "%.5f", dis);
                 Op.telemetry.addData("Speed:", direction*Math.abs(speed*spd));
                 Op.telemetry.addData("Margin:", "%.5f", margin * speed);
@@ -101,11 +92,6 @@ class Movement extends Thread {
                 Op.telemetry.update();
                 delta = angles;
                 angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-                /*if (Op.isStopRequested()) {
-                    motorLeft.setPower(0);
-                    motorRight.setPower(0);
-                    return;
-                }*/
                 if (dis < margin * speed) {
                     motorLeft.setPower(0);
                     motorRight.setPower(0);
@@ -133,10 +119,10 @@ class Movement extends Thread {
             } catch (InterruptedException e) {
 
             }
-            Op.sleep(5000);
         }
     }
     void angleTurn(double speed, double angle, boolean backgrnd) {
+        if (experiment) experimentalTurn(speed,angle,backgrnd);
         double targetAngle;
         double time = 0;
         double maxtime = 0;
@@ -216,7 +202,6 @@ class Movement extends Thread {
             } catch (InterruptedException e) {
 
             }
-            Op.sleep(5000);
         }
     }
     void encoderDriveOld(double speed, double leftCM, double rightCM, double timeoutS, boolean backgrnd) {
@@ -468,6 +453,7 @@ class Movement extends Thread {
         }
     }
     void encoderDrive(double speed, double distance, double timeoutS) {
+        if (experiment) experimentalDrive(speed,distance,timeoutS);
         encoderDrive(speed, distance, distance, timeoutS, false);
     }
     void encoderDrive(double speed, double leftCM, double rightCM, double timeoutS) {
