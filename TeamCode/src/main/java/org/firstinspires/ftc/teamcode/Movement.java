@@ -41,9 +41,9 @@ class Movement extends Thread {
         double maxtime = 0;
         double maxdel = 0;
         //double start;
-        double spd = 0;
-        int direction = 0; // -1 = cw, 1 = ccw
-        double dis = 0;
+        double spd;
+        int direction; // -1 = cw, 1 = ccw
+        double dis;
         if (Op.opModeIsActive()) {
             if (backgrnd) {
                 angleG = angle;
@@ -76,8 +76,8 @@ class Movement extends Thread {
                     dis = (targetAngle-angles.firstAngle)%360;
                 }
                 spd=dis/angles.firstAngle;
-                motorLeft.setPower(direction*Math.abs(speed*spd));
-                motorRight.setPower(-direction*Math.abs(speed*spd));
+                motorLeft.setPower(direction*Math.sqrt(Math.abs(speed*spd)));
+                motorRight.setPower(-direction*Math.sqrt(Math.abs(speed*spd)));
                 Op.telemetry.addData("Error:", "%.5f", dis);
                 Op.telemetry.addData("Speed:", direction*Math.abs(speed*spd));
                 Op.telemetry.addData("Margin:", "%.5f", margin * speed);
@@ -311,8 +311,8 @@ class Movement extends Thread {
             motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             runtime.reset();
-            motorLeft.setPower(Math.abs(speed));
-            motorRight.setPower(Math.abs(speed));
+            motorLeft.setPower(Math.copySign(speed,distance));
+            motorRight.setPower(Math.copySign(speed,distance));
 
             while (Op.opModeIsActive() && (runtime.seconds() < timeoutS) && (motorLeft.isBusy()))
             {
@@ -461,6 +461,9 @@ class Movement extends Thread {
     }
     void experimentalDrive(double speed, double distance, double timeoutS) {
         experimentalDrive(speed, distance, timeoutS, false);
+    }
+    void experimentalTurn(double speed, double angle) {
+        experimentalTurn(speed, angle,false);
     }
     void angleTurn(double speed, double angle) {
         angleTurn(speed, angle, false);
