@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="TeleOp", group="FTCPio")
+@TeleOp(name="Test", group="FTCPio")
 public class NewMovementTester extends LinearOpMode {
     private HardwareInfinity robot = new HardwareInfinity();
     Movement mov = new Movement();
@@ -17,13 +17,17 @@ public class NewMovementTester extends LinearOpMode {
     public void runOpMode() {
         robot.init(hardwareMap);
         mov.init(robot.motorLeft,robot.motorRight,robot.imu,this,runtime, COUNTS_PER_INCH);
+        waitForStart();
+        sleep(100);
         while (opModeIsActive()) {
             while (!gamepad1.a) {
+                sleep(1);
             }
             mov.experimentalTurn(1,-90);
             while (!gamepad1.a) {
+                sleep(1);
             }
-            mov.experimentalDrive(1,100,30);
+            mov.experimentalDrive(1,50,30);
         }
     }
 }

@@ -25,7 +25,7 @@ class Movement extends Thread {
     private int mode;
     boolean experiment = false;
 
-    int margin = 7;
+    double margin = 0.1;
 
     void init(DcMotor motL, DcMotor motR, BNO055IMU im, LinearOpMode O, ElapsedTime run, double CPI) {
         motorLeft = motL;
@@ -68,17 +68,18 @@ class Movement extends Thread {
                     motorRight.setPower(0);
                     return;
                 }
-                if ((angles.firstAngle-targetAngle)%360<(targetAngle-angles.firstAngle)%360) {
+                if (Math.abs((angles.firstAngle-targetAngle)%360)<Math.abs((targetAngle-angles.firstAngle)%360)) {
                     direction = -1;
-                    dis = (angles.firstAngle-targetAngle)%360;
+                    dis = Math.abs((angles.firstAngle-targetAngle)%360);
                 } else {
                     direction = 1;
-                    dis = (targetAngle-angles.firstAngle)%360;
+                    dis =  Math.abs((targetAngle-angles.firstAngle)%360);
                 }
                 spd=dis/angles.firstAngle;
-                motorLeft.setPower(direction*Math.sqrt(Math.abs(speed*spd)));
-                motorRight.setPower(-direction*Math.sqrt(Math.abs(speed*spd)));
+                motorLeft.setPower(-direction*Math.sqrt(Math.abs(speed*spd)));
+                motorRight.setPower(direction*Math.sqrt(Math.abs(speed*spd)));
                 Op.telemetry.addData("Error:", "%.5f", dis);
+                Op.telemetry.addData("Direction:", "%7d",direction);
                 Op.telemetry.addData("Speed:", direction*Math.abs(speed*spd));
                 Op.telemetry.addData("Margin:", "%.5f", margin * speed);
                 Op.telemetry.addData("IMU Heading:", "%.5f", angles.firstAngle);
@@ -101,13 +102,14 @@ class Movement extends Thread {
             motorLeft.setPower(0);
             motorRight.setPower(0);
             Op.telemetry.addData("Finished", "!");
-            Op.telemetry.addData("Error:", "%.5f", Math.abs(angles.firstAngle + 180 - targetAngle));
+            Op.telemetry.addData("Error:", "%.5f", dis);
+            Op.telemetry.addData("Speed:", direction*Math.abs(speed*spd));
             Op.telemetry.addData("Margin:", "%.5f", margin * speed);
-            Op.telemetry.addData("IMU Heading:", "%.5f", angles.firstAngle + 180);
+            Op.telemetry.addData("IMU Heading:", "%.5f", angles.firstAngle);
             Op.telemetry.addData("min:", "%.5f", targetAngle - margin * speed);
             Op.telemetry.addData("target:", "%.5f", targetAngle);
             Op.telemetry.addData("max:", "%.5f", targetAngle + margin * speed);
-            Op.telemetry.addData("time:", "%.2f", time);
+            Op.telemetry.addData("time: ", "%.2f",time);
             Op.telemetry.addData("delta:", "%.2f", angles.firstAngle-delta.firstAngle);
             Op.telemetry.addData("maxtime:", "%.2f", maxtime);
             Op.telemetry.addData("maxdel:", "%.2f",maxdel);
@@ -300,7 +302,7 @@ class Movement extends Thread {
             motorLeft.setTargetPosition(newTarget);
             //motorRight.setTargetPosition(newRightTarget);
             Op.telemetry.addData("Encoder Target: ", "%7d", newTarget);
-            Op.telemetry.addData("Current Position: ", "%7d :%7d", motorLeft.getCurrentPosition(), motorRight.getCurrentPosition());
+            Op.telemetry.addData("Current Position: ", "%7d ", motorLeft.getCurrentPosition());
             Op.telemetry.update();
             try {
                 sleep(2000);
@@ -312,7 +314,7 @@ class Movement extends Thread {
 
             runtime.reset();
             motorLeft.setPower(Math.copySign(speed,distance));
-            motorRight.setPower(Math.copySign(speed,distance));
+            motorRight.setPower(-Math.copySign(speed,distance));
 
             while (Op.opModeIsActive() && (runtime.seconds() < timeoutS) && (motorLeft.isBusy()))
             {
@@ -321,7 +323,7 @@ class Movement extends Thread {
                     motorRight.setPower(0);
                     return;
                 }
-                Op.telemetry.addData("Encoder Target: ", "%7d :%7d", newTarget);
+                Op.telemetry.addData("Encoder Target: ", "%7d", newTarget);
                 Op.telemetry.addData("Current Position: ", "%7d :%7d", motorLeft.getCurrentPosition(), motorRight.getCurrentPosition());
                 /*if (robot.imu.getAngularOrientation(AxesReference.INTRINSIC,
                         AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle > initAng+10
