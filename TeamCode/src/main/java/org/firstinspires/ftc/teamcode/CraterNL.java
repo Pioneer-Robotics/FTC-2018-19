@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 
 @Autonomous (name="CraterNL", group="FTCPio")
-@Disabled
+//@Disabled
 public class CraterNL extends LinearOpMode {
     private HardwareInfinity robot = new HardwareInfinity();
     private ElapsedTime runtime = new ElapsedTime();
@@ -25,8 +25,8 @@ public class CraterNL extends LinearOpMode {
     private static final double DRIVE_GEAR_REDUCTION = 2.0;     // This is < 1.0 if geared UP
     private static final double WHEEL_DIAMETER_CM = 4.0 * 2.54;     // For figuring circumference
     private static final double COUNTS_PER_INCH = (TETRIX_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_CM * 3.1415);
-    private static final double DRIVE_SPEED = 0.5;
-    private static final double TURN_SPEED = 0.3;
+    private static final double DRIVE_SPEED = 0.6;
+    private static final double TURN_SPEED = 0.6;
 
     // State used for updating telemetry
     private int choose;
@@ -113,7 +113,7 @@ public class CraterNL extends LinearOpMode {
         telemetry.update();
 
         //Drive away
-        mov.encoderDrive(0.5,10,10);
+        mov.encoderDrive(0.3,10,10, 5);
         telemetry.addData("Choose:", "%d", choose);
         telemetry.addData("Status:","%d",tFlow.Status);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
@@ -150,14 +150,13 @@ public class CraterNL extends LinearOpMode {
                 //left
                 mov.angleTurn(TURN_SPEED,33);
 
-                mov.encoderDrive(DRIVE_SPEED, 15, 5);
+                mov.encoderDrive(DRIVE_SPEED, 15,15, 5);
                 sleep(100);
 
                 mov.angleTurn(TURN_SPEED,33);
-                sleep(250);
                 mov.angleTurn(TURN_SPEED,-33);
 
-                mov.encoderDrive(DRIVE_SPEED, -15, 5);
+                mov.encoderDrive(DRIVE_SPEED, -15,-15, 5);
 
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 mov.angleTurn(TURN_SPEED,-33);
@@ -167,14 +166,13 @@ public class CraterNL extends LinearOpMode {
                 //middle
                 //theoretically no movement is necessary
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive(DRIVE_SPEED, 7, 5);
+                mov.encoderDrive(DRIVE_SPEED, 7,7, 5);
                 sleep(100);
 
                 mov.angleTurn(TURN_SPEED,-33);
-                sleep(250);
                 mov.angleTurn(TURN_SPEED,33);
 
-                mov.encoderDrive(DRIVE_SPEED, -7, 5);
+                mov.encoderDrive(DRIVE_SPEED, -7,-7, 5);
 
 
                 break;
@@ -182,14 +180,13 @@ public class CraterNL extends LinearOpMode {
                 //right
                 mov.angleTurn(TURN_SPEED,-33);
 
-                mov.encoderDrive(DRIVE_SPEED, 15, 5);
+                mov.encoderDrive(DRIVE_SPEED, 15,15, 5);
                 sleep(100);
 
                 mov.angleTurn(TURN_SPEED,-33);
-                sleep(250);
                 mov.angleTurn(TURN_SPEED,33);
 
-                mov.encoderDrive(DRIVE_SPEED, -15, 5);
+                mov.encoderDrive(DRIVE_SPEED, -15, -15,5);
                 mov.angleTurn(TURN_SPEED,33);
 
                 break;
@@ -198,27 +195,27 @@ public class CraterNL extends LinearOpMode {
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 telemetry.addData("TFlow says: ", "%.5f",tFlow.mineralX);
                 telemetry.update();
-                mov.encoderDrive(DRIVE_SPEED, 13, 5);
-                mov.encoderDrive(DRIVE_SPEED, -13, 5);
+                mov.encoderDrive(DRIVE_SPEED, 13,13, 5);
+                mov.encoderDrive(DRIVE_SPEED, -13,-13, 5);
                 break;
             default:
                 //error happened with TensorFlow
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 // if tensor flow doesn't function, the robot will default to moving to the middle position
-                mov.encoderDrive(DRIVE_SPEED, 20, 5);
-                mov.encoderDrive(DRIVE_SPEED, -20, 5);
+                mov.encoderDrive(DRIVE_SPEED, 20, 20,5);
+                mov.encoderDrive(DRIVE_SPEED, -20,-29, 5);
                 break;
         }
         sleep(250);
-        mov.encoderDrive(0.2, 2, 5);
+        mov.encoderDrive(0.2, 2,2, 5);
         sleep(100);
 
         mov.angleTurn(TURN_SPEED,58);
-        mov.encoderDrive(DRIVE_SPEED, 32, 33);
+        mov.encoderDrive(DRIVE_SPEED, 32, 32,5);
         mov.angleTurn(TURN_SPEED,25);
-        mov.encoderDrive(DRIVE_SPEED, 7, 5);
+        mov.encoderDrive(DRIVE_SPEED, 7,7, 5);
         mov.angleTurn(TURN_SPEED,14);
-        mov.encoderDrive(DRIVE_SPEED, 33, 5);
+        mov.encoderDrive(DRIVE_SPEED, 33,33, 5);
 
         sleep(500);
         mov.angleTurn(TURN_SPEED,95);

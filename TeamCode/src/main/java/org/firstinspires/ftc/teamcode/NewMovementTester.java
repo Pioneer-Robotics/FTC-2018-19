@@ -19,15 +19,21 @@ public class NewMovementTester extends LinearOpMode {
         mov.init(robot.motorLeft,robot.motorRight,robot.imu,this,runtime, COUNTS_PER_INCH);
         waitForStart();
         sleep(100);
-        while (opModeIsActive()) {
+        while (opModeIsActive() && !isStopRequested()) {
             while (!gamepad1.a) {
                 sleep(1);
+                if (isStopRequested()) {
+                    return;
+                }
             }
             mov.experimentalTurn(1,-90);
             while (!gamepad1.a) {
                 sleep(1);
+                if (isStopRequested()) {
+                    return;
+                }
             }
-            mov.experimentalDrive(1,50,30);
+            mov.encoderDrive(1,50,30,5);
         }
     }
 }

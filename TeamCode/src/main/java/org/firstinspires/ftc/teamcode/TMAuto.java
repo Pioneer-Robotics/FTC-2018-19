@@ -23,8 +23,8 @@ public class TMAuto extends LinearOpMode {
     private static final double DRIVE_GEAR_REDUCTION = 2.0;     // This is < 1.0 if geared UP
     private static final double WHEEL_DIAMETER_CM = 4.0 * 2.54;     // For figuring circumference
     private static final double COUNTS_PER_INCH = (TETRIX_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_CM * 3.1415);
-    private static final double DRIVE_SPEED = 0.5;
-    private static final double TURN_SPEED = 0.4;
+    private static final double DRIVE_SPEED = 0.7;
+    private static final double TURN_SPEED = 1;
 
     // State used for updating telemetry
     private int choose;
@@ -136,7 +136,7 @@ public class TMAuto extends LinearOpMode {
         telemetry.update();
 
         //Drive away
-        mov.encoderDrive(0.5,5,30);
+        mov.encoderDrive(0.5,5,5,10);
         telemetry.addData("Choose:", "%d", choose);
         telemetry.addData("Status:","%d",tFlow.Status);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
@@ -170,38 +170,29 @@ public class TMAuto extends LinearOpMode {
         switch (choose) {
             case 1:
                 //Mineral on Left
-                mov.angleTurn(0.5,23);
-                sleep(5000);
-                mov.encoderDrive(DRIVE_SPEED, 35, 5);
-                mov.angleTurn(0.2, -76);
-                sleep(5000);
+                mov.angleTurn(0.7,23);
+                mov.encoderDrive(DRIVE_SPEED, 35,35, 5);
+                mov.angleTurn(0.9, -76);
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive(DRIVE_SPEED,25,30);
-                mov.angleTurn(0.3, 80);
-                sleep(5000);
+                mov.encoderDrive(DRIVE_SPEED,25,25, 5);
+                mov.angleTurn(1, 80);
 
                 break;
             case 2:
                 //Mineral in Middle
                 //no turning movement is necessary to hit mineral
+                mov.encoderDrive(DRIVE_SPEED, 45,45, 5);
 
-                //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive(DRIVE_SPEED, 45, 5);
-
-                mov.angleTurn(0.2, 60);
-                sleep(5000);
+                mov.angleTurn(0.7, 60);
                 break;
             case 3:
                 //Mineral on Right
                 mov.angleTurn(0.5,-23);
-                sleep(5000);
-                mov.encoderDrive(DRIVE_SPEED, 35, 5);
-                mov.angleTurn(0.2, 66);
-                sleep(5000);
+                mov.encoderDrive(DRIVE_SPEED, 35,35, 5);
+                mov.angleTurn(0.7, 66);
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive(DRIVE_SPEED,20,30);
-                mov.angleTurn(0.2, 40);
-                sleep(5000);
+                mov.encoderDrive(DRIVE_SPEED,20,20,5);
+                mov.angleTurn(0.6, 40);
 
                 //mov.angleTurn(0.2, 90, false);
                 //mov.encoderDrive( 0.5, 5,5,10, false);
@@ -210,8 +201,8 @@ public class TMAuto extends LinearOpMode {
                 //error happened with TensorFlow
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 // if tensor flow doesn't function, the robot will default to moving to the middle position
-                mov.encoderDrive(DRIVE_SPEED, 13, 5);
-                mov.encoderDrive( 0.5,10,10);
+                mov.encoderDrive(DRIVE_SPEED, 13, 13,5);
+                mov.encoderDrive( 0.5,10,10, 5);
 
                 mov.angleTurn(0.3, 90);
                 sleep(5000);
@@ -229,17 +220,17 @@ public class TMAuto extends LinearOpMode {
 
         switch (choose) {
             case 1:
-                mov.angleTurn(0.3, 180);
+                mov.angleTurn(1, 180);
                 sleep(5000);
                 //mov.encoderDrive(DRIVE_SPEED,-25,-25,30, false);
                 break;
             case 2:
-                mov.angleTurn(0.2, -135);
+                mov.angleTurn(1, -135);
                 sleep(5000);
                 //mov.encoderDrive(DRIVE_SPEED, -20, -20, 10, false);
                 break;
             case 3:
-                mov.angleTurn(0.2, 90);
+                mov.angleTurn(1, 90);
                 sleep(5000);
                 //mov.encoderDrive(DRIVE_SPEED,-20,-20,30, false);
                 break;

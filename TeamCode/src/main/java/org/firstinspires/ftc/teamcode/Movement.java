@@ -22,14 +22,16 @@ class Movement extends Thread {
     private double leftCMG;
     private double rightCMG;
     private double timeoutSG;
+    private double minPower;
     private int mode;
     boolean experiment = false;
 
-    double margin = 0.1;
+    double margin = 0.5;
 
     void init(DcMotor motL, DcMotor motR, BNO055IMU im, LinearOpMode O, ElapsedTime run, double CPI) {
         motorLeft = motL;
         motorRight = motR;
+        minPower = 0.2;
         imu = im;
         Op = O;
         runtime = run;
@@ -68,17 +70,34 @@ class Movement extends Thread {
                     motorRight.setPower(0);
                     return;
                 }
-                if (Math.abs((angles.firstAngle-targetAngle)%360)<Math.abs((targetAngle-angles.firstAngle)%360)) {
+                if ((360-Math.abs((angles.firstAngle-targetAngle+360)%360))<(Math.abs((angles.firstAngle-targetAngle+360)%360))) {
                     direction = -1;
-                    dis = Math.abs((angles.firstAngle-targetAngle)%360);
+                    dis = (360-Math.abs((angles.firstAngle-targetAngle+360)%360));
                 } else {
                     direction = 1;
-                    dis =  Math.abs((targetAngle-angles.firstAngle)%360);
+                    dis =  (Math.abs((angles.firstAngle-targetAngle+360)%360));
                 }
                 spd=dis/angles.firstAngle;
-                motorLeft.setPower(-direction*Math.sqrt(Math.abs(speed*spd)));
-                motorRight.setPower(direction*Math.sqrt(Math.abs(speed*spd)));
+                if((Math.abs(speed*spd)) > minPower)
+                {
+                    motorLeft.setPower(-direction*(Math.abs(speed*spd)));
+                }
+                else
+                {
+                    motorLeft.setPower(-direction*minPower);
+                }
+
+                if((Math.abs(speed*spd)) > minPower)
+                {
+                    motorRight.setPower(direction*(Math.abs(speed*spd)));
+                }
+                else
+                {
+                    motorRight.setPower(direction*minPower);
+                }
                 Op.telemetry.addData("Error:", "%.5f", dis);
+                Op.telemetry.addData("+1D:", "%.5f",(Math.abs((angles.firstAngle-targetAngle+360)%360)));
+                Op.telemetry.addData("-1D:", "%.5f",(360-Math.abs((angles.firstAngle-targetAngle+360)%360)));
                 Op.telemetry.addData("Direction:", "%7d",direction);
                 Op.telemetry.addData("Speed:", direction*Math.abs(speed*spd));
                 Op.telemetry.addData("Margin:", "%.5f", margin * speed);
@@ -117,95 +136,13 @@ class Movement extends Thread {
             motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             try {
-                sleep(5000);
+                sleep(1000);
             } catch (InterruptedException e) {
 
             }
         }
     }
-    void angleTurn(double speed, double angle, boolean backgrnd) {
-        if (experiment) experimentalTurn(speed,angle,backgrnd);
-        double targetAngle;
-        double time = 0;
-        double maxtime = 0;
-        double maxdel = 0;
-        if (Op.opModeIsActive()) {
-            if (backgrnd) {
-                angleG = angle;
-                speedG = speed;
-                mode = 1;
-                start();
 
-            }
-            Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-            Orientation delta = angles;
-            targetAngle = angle + angles.firstAngle + 180;
-            Op.telemetry.clearAll();
-            runtime.reset();
-            while (true) {
-                time = runtime.milliseconds();
-                if (time>maxtime) maxtime = time;
-                if (Math.abs(angles.firstAngle-delta.firstAngle)> maxdel) maxdel = Math.abs(angles.firstAngle-delta.firstAngle);
-                runtime.reset();
-                if (Op.isStopRequested()) {
-                    motorLeft.setPower(0);
-                    motorRight.setPower(0);
-                    return;
-                }
-                if (angle > 0) {
-                    motorLeft.setPower(Math.abs(speed));
-                    motorRight.setPower(-Math.abs(speed));
-                } else {
-                    motorLeft.setPower(-Math.abs(speed));
-                    motorRight.setPower(Math.abs(speed));
-                }
-                /*Op.telemetry.addData("Error:", "%.5f", Math.abs(angles.firstAngle + 180 - targetAngle));
-                Op.telemetry.addData("Margin:", "%.5f", margin * speed);
-                Op.telemetry.addData("IMU Heading:", "%.5f", angles.firstAngle + 180);
-                Op.telemetry.addData("min:", "%.5f", targetAngle - margin * speed);
-                Op.telemetry.addData("target:", "%.5f", targetAngle);
-                Op.telemetry.addData("max:", "%.5f", targetAngle + margin * speed);*/
-                Op.telemetry.addData("time: ", "%.2f",time);
-                Op.telemetry.addData("delta:", "%.2f", angles.firstAngle-delta.firstAngle);
-                Op.telemetry.addData("maxtime:", "%.2f", maxtime);
-                Op.telemetry.addData("maxdel:", "%.2f",maxdel);
-                Op.telemetry.update();
-                delta = angles;
-                angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-                /*if (Op.isStopRequested()) {
-                    motorLeft.setPower(0);
-                    motorRight.setPower(0);
-                    return;
-                }*/
-                if (Math.abs(angles.firstAngle + 180 - targetAngle) < margin * speed || (360 - Math.abs(angles.firstAngle + 180 - targetAngle)) < margin * speed) {
-                    motorLeft.setPower(0);
-                    motorRight.setPower(0);
-                    break;
-                }
-            }
-            motorLeft.setPower(0);
-            motorRight.setPower(0);
-            Op.telemetry.addData("Finished", "!");
-            Op.telemetry.addData("Error:", "%.5f", Math.abs(angles.firstAngle + 180 - targetAngle));
-            Op.telemetry.addData("Margin:", "%.5f", margin * speed);
-            Op.telemetry.addData("IMU Heading:", "%.5f", angles.firstAngle + 180);
-            Op.telemetry.addData("min:", "%.5f", targetAngle - margin * speed);
-            Op.telemetry.addData("target:", "%.5f", targetAngle);
-            Op.telemetry.addData("max:", "%.5f", targetAngle + margin * speed);
-            Op.telemetry.addData("time:", "%.2f", time);
-            Op.telemetry.addData("delta:", "%.2f", angles.firstAngle-delta.firstAngle);
-            Op.telemetry.addData("maxtime:", "%.2f", maxtime);
-            Op.telemetry.addData("maxdel:", "%.2f",maxdel);
-            Op.telemetry.update();
-            motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            try {
-                sleep(5000);
-            } catch (InterruptedException e) {
-
-            }
-        }
-    }
     void encoderDriveOld(double speed, double leftCM, double rightCM, double timeoutS, boolean backgrnd) {
         int newLeftTarget;
         int newRightTarget;
@@ -396,14 +333,18 @@ class Movement extends Thread {
             motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             runtime.reset();
-            motorLeft.setPower(Math.copySign(Math.abs(speed),newLeftTarget));
-            motorRight.setPower(Math.copySign(Math.abs(speed),newRightTarget));
+
+            motorLeft.setPower(-Math.copySign(speed,leftCMG));
+                //*lT/((int) (leftCM * COUNTS_PER_INCH))
+            motorRight.setPower(-Math.copySign(speed, rightCMG));
+            ;//*rT/((int) (rightCM * COUNTS_PER_INCH)),newRightTarget));
+
             try {
                 Thread.sleep(250);
             } catch (InterruptedException e) { }
 
-            while (Op.opModeIsActive() && (runtime.seconds() < timeoutS) && (Math.abs(motorLeft.getCurrentPosition()-newLeftTarget)>10
-                    && Math.abs(motorRight.getCurrentPosition()-newRightTarget)>10)
+            while (Op.opModeIsActive() && (runtime.seconds() < timeoutS) && (Math.abs(motorLeft.getCurrentPosition()-newLeftTarget)>2
+                    && Math.abs(motorRight.getCurrentPosition()-newRightTarget)>2)
                     && (lT+20 >= Math.abs(motorLeft.getCurrentPosition() - newLeftTarget)))
             {
                 Op.telemetry.addData("Goodness:", "%7d, %7d",lT+20 - Math.abs(motorLeft.getCurrentPosition() - newLeftTarget), rT+20 - Math.abs(motorRight.getCurrentPosition() - newRightTarget));
@@ -414,6 +355,11 @@ class Movement extends Thread {
                     motorRight.setPower(0);
                     return;
                 }
+                /*
+                motorLeft.setPower(Math.copySign(Math.abs(speed)*lT/((int) (leftCM * COUNTS_PER_INCH)),newLeftTarget));
+                motorRight.setPower(Math.copySign(Math.abs(speed)*rT/((int) (rightCM * COUNTS_PER_INCH)),newRightTarget));
+                */
+                Op.telemetry.addData("Speeds:","%.5f, %.5f",Math.copySign(Math.abs(speed)*lT/((int) (leftCM * COUNTS_PER_INCH)),newLeftTarget),Math.copySign(Math.abs(speed)*rT/((int) (rightCM * COUNTS_PER_INCH)),newRightTarget));
                 Op.telemetry.addData("Encoder Target: ", "%7d, %7d", newLeftTarget, newRightTarget);
                 Op.telemetry.addData("Current Position: ", "%7d, %7d", motorLeft.getCurrentPosition(), motorRight.getCurrentPosition());
                 Op.telemetry.addData("Special Numbers:", "%7d, %7d", lT, rT);
@@ -454,29 +400,40 @@ class Movement extends Thread {
 
         }
     }
+    /*
     void encoderDrive(double speed, double distance, double timeoutS) {
-        if (experiment) experimentalDrive(speed,distance,timeoutS);
+        //if (experiment) experimentalDrive(speed,distance,timeoutS);
         encoderDrive(speed, distance, distance, timeoutS, false);
     }
+    */
     void encoderDrive(double speed, double leftCM, double rightCM, double timeoutS) {
         encoderDrive(speed, leftCM, rightCM, timeoutS, false);
     }
+    /*
     void experimentalDrive(double speed, double distance, double timeoutS) {
         experimentalDrive(speed, distance, timeoutS, false);
     }
+    */
     void experimentalTurn(double speed, double angle) {
         experimentalTurn(speed, angle,false);
     }
     void angleTurn(double speed, double angle) {
+        experimentalTurn(speed,angle,false);
+    }
+    /*
+    void angleTurn(double speed, double angle) {
         angleTurn(speed, angle, false);
     }
+    */
     public void run() {
         if (mode == 1) {
-            angleTurn(speedG,angleG,false);
+            angleTurn(speedG,angleG);
         } else if (mode == 2) {
             encoderDrive(speedG, leftCMG, rightCMG, timeoutSG,false);
-        } else if (mode == 3) {
+        }
+        /*else if (mode == 3) {
             experimentalDrive(speedG,leftCMG,timeoutSG,false);
         }
+        */
     }
 }
