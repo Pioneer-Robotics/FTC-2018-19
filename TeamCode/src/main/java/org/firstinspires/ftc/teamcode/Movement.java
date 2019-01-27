@@ -36,65 +36,52 @@ class Movement extends Thread {
         Op = O;
         runtime = run;
         COUNTS_PER_INCH = CPI;
+        //turns all the necessary robot parts into local variables as it is extremely tedious to have to write each as an argument for every individual function call.
     }
     void experimentalTurn(double speed, double angle, boolean backgrnd) {
-        double targetAngle;
-        double time;
-        double maxtime = 0;
-        double maxdel = 0;
+        double targetAngle; //Self-explanatory
+        double time; //diagnostics, read how long each iteration of turn takes
+        double maxtime = 0;//diagnostics, max acquisition time
+        double maxdel = 0;//diagnostics, max delta (difference) of angles, angles/iteration
         //double start;
-        double spd;
-        int direction; // -1 = cw, 1 = ccw
-        double dis;
+        double spd; //dynamic (can change) speed of turn
+        int direction; // -1 = cw, 1 = ccw. Determines the direction of the turn
+        double dis; //distance to targetAngle
         if (Op.opModeIsActive()) {
-            if (backgrnd) {
+            if (backgrnd) { //allows the program run in background as a separate task.
                 angleG = angle;
                 speedG = speed;
                 mode = 1;
                 start();
-
+                return;
             }
-            Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-            Orientation delta = angles;
-            //start = angles.firstAngle;
-            targetAngle = angle + angles.firstAngle;
+            Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES); //current angle of imu
+            Orientation delta = angles; //delta of angle, essentially previous acquisition
+            targetAngle = angle + angles.firstAngle; //calculates target angle
             Op.telemetry.clearAll();
             runtime.reset();
             while (true) {
+                //calculations for deltas and times for telemetry diagnostics
                 time = runtime.milliseconds();
                 if (time>maxtime) maxtime = time;
                 if (Math.abs(angles.firstAngle-delta.firstAngle)> maxdel) maxdel = Math.abs(angles.firstAngle-delta.firstAngle);
                 runtime.reset();
-                if (Op.isStopRequested()) {
+                if (Op.isStopRequested()) { //stops crashes of driver station
                     motorLeft.setPower(0);
                     motorRight.setPower(0);
                     return;
                 }
-                if ((360-Math.abs((angles.firstAngle-targetAngle+360)%360))<(Math.abs((angles.firstAngle-targetAngle+360)%360))) {
+                if ((360-Math.abs((angles.firstAngle-targetAngle+360)%360))<(Math.abs((angles.firstAngle-targetAngle+360)%360))) { //calculates direction and distance to targetAngle
                     direction = -1;
                     dis = (360-Math.abs((angles.firstAngle-targetAngle+360)%360));
                 } else {
                     direction = 1;
                     dis =  (Math.abs((angles.firstAngle-targetAngle+360)%360));
                 }
-                spd=dis/angles.firstAngle;
-                if((Math.abs(speed*spd)) > minPower)
-                {
-                    motorLeft.setPower(-direction*(Math.abs(speed*spd)));
-                }
-                else
-                {
-                    motorLeft.setPower(-direction*minPower);
-                }
-
-                if((Math.abs(speed*spd)) > minPower)
-                {
-                    motorRight.setPower(direction*(Math.abs(speed*spd)));
-                }
-                else
-                {
-                    motorRight.setPower(direction*minPower);
-                }
+                spd=dis/((angles.firstAngle+360)%360); //Calculate speed from distance to targetAngle
+                motorLeft.setPower(-direction*(Math.abs(speed*spd))); //set motor power based on given speed against dynamic spd and sets direction appropriately
+                motorRight.setPower(direction*(Math.abs(speed*spd)));
+                //actual telemetry for diagnostics
                 Op.telemetry.addData("Error:", "%.5f", dis);
                 Op.telemetry.addData("+1D:", "%.5f",(Math.abs((angles.firstAngle-targetAngle+360)%360)));
                 Op.telemetry.addData("-1D:", "%.5f",(360-Math.abs((angles.firstAngle-targetAngle+360)%360)));
@@ -110,16 +97,15 @@ class Movement extends Thread {
                 Op.telemetry.addData("maxtime:", "%.2f", maxtime);
                 Op.telemetry.addData("maxdel:", "%.2f",maxdel);
                 Op.telemetry.update();
-                delta = angles;
-                angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-                if (dis < margin * speed) {
+                delta = angles; //slightly more calculations for the delta
+                angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES); //acquires current angle
+                if (dis < margin * speed) { //determines stop conditions
                     motorLeft.setPower(0);
                     motorRight.setPower(0);
                     break;
                 }
             }
-            motorLeft.setPower(0);
-            motorRight.setPower(0);
+            //further telemetry to keep displaying values.
             Op.telemetry.addData("Finished", "!");
             Op.telemetry.addData("Error:", "%.5f", dis);
             Op.telemetry.addData("Speed:", direction*Math.abs(speed*spd));
@@ -133,10 +119,11 @@ class Movement extends Thread {
             Op.telemetry.addData("maxtime:", "%.2f", maxtime);
             Op.telemetry.addData("maxdel:", "%.2f",maxdel);
             Op.telemetry.update();
+            //reset motors for other uses.
             motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            try {
-                sleep(1000);
+            try {//wait to account for jitter, momentum, etc.
+                sleep(100);
             } catch (InterruptedException e) {
 
             }
@@ -340,7 +327,7 @@ class Movement extends Thread {
             ;//*rT/((int) (rightCM * COUNTS_PER_INCH)),newRightTarget));
 
             try {
-                Thread.sleep(250);
+                Thread.sleep(100);
             } catch (InterruptedException e) { }
 
             while (Op.opModeIsActive() && (runtime.seconds() < timeoutS) && (Math.abs(motorLeft.getCurrentPosition()-newLeftTarget)>2
