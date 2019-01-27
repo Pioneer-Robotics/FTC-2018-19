@@ -78,7 +78,9 @@ class Movement extends Thread {
                     direction = 1;
                     dis =  (Math.abs((angles.firstAngle-targetAngle+360)%360));
                 }
-                spd=dis/((angles.firstAngle+360)%360); //Calculate speed from distance to targetAngle
+                // Calculate speed from distance to targetAngle
+                //spd=dis/((angles.firstAngle+360)%360); //slower but more accurate
+                spd=dis/angles.firstAngle; //faster but less accurate
                 motorLeft.setPower(-direction*(Math.abs(speed*spd))); //set motor power based on given speed against dynamic spd and sets direction appropriately
                 motorRight.setPower(direction*(Math.abs(speed*spd)));
                 //actual telemetry for diagnostics
@@ -88,7 +90,7 @@ class Movement extends Thread {
                 Op.telemetry.addData("Direction:", "%7d",direction);
                 Op.telemetry.addData("Speed:", direction*Math.abs(speed*spd));
                 Op.telemetry.addData("Margin:", "%.5f", margin * speed);
-                Op.telemetry.addData("IMU Heading:", "%.5f", angles.firstAngle);
+                Op.telemetry.addData("IMU Heading:", "%.5f", ((angles.firstAngle+360)%360));
                 Op.telemetry.addData("min:", "%.5f", targetAngle - margin * speed);
                 Op.telemetry.addData("target:", "%.5f", targetAngle);
                 Op.telemetry.addData("max:", "%.5f", targetAngle + margin * speed);
@@ -284,48 +286,43 @@ class Movement extends Thread {
         }
     }
     void encoderDrive(double speed, double leftCM, double rightCM, double timeoutS, boolean backgrnd) {
+        //initialize target variables for encoderDrive
         int newLeftTarget;
         int newRightTarget;
-
+        //reset motors, ensuring they are completely stopped while doing so.
         motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        //double initAng = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-
         if (Op.opModeIsActive()) {
-            if (backgrnd) {
+            if (backgrnd) { //allows encoderDrive to run in the background
                 speedG = speed;
                 leftCMG = leftCM;
                 rightCMG = rightCM;
                 timeoutSG = timeoutS;
                 mode = 2;
                 start();
-
             }
+            //calculates absolute point that we want to stop at.
             newLeftTarget = motorLeft.getCurrentPosition() - (int) (leftCM * COUNTS_PER_INCH);
             newRightTarget = motorRight.getCurrentPosition() - (int) (rightCM * COUNTS_PER_INCH);
-            int lT = Math.abs(motorLeft.getCurrentPosition() - (int) (leftCM * COUNTS_PER_INCH));
-            int rT = Math.abs(motorRight.getCurrentPosition() - (int) (rightCM * COUNTS_PER_INCH));
+            //calculates physical distance needed to be traveled.
+            int lT = Math.abs(newLeftTarget);
+            int rT = Math.abs(newRightTarget);
+            //diagnostics to see how accurate the calculations are
             Op.telemetry.addData("Encoder Target: ", "%7d :%7d", newLeftTarget, newRightTarget);
             Op.telemetry.addData("Current Position: ", "%7d :%7d", motorLeft.getCurrentPosition(), motorRight.getCurrentPosition());
             Op.telemetry.update();
-            /*
-            try {
-                sleep(2000);
-            } catch (InterruptedException e) {
-
-            }
-            */
+            //changes mode of the motor to run with encoder
             motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             runtime.reset();
 
+            //sets speed for motors
             motorLeft.setPower(-Math.copySign(speed,leftCMG));
-                //*lT/((int) (leftCM * COUNTS_PER_INCH))
             motorRight.setPower(-Math.copySign(speed, rightCMG));
-            ;//*rT/((int) (rightCM * COUNTS_PER_INCH)),newRightTarget));
 
+            //wait to prevent jitter
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) { }
@@ -333,52 +330,50 @@ class Movement extends Thread {
             while (Op.opModeIsActive() && (runtime.seconds() < timeoutS) && (Math.abs(motorLeft.getCurrentPosition()-newLeftTarget)>2
                     && Math.abs(motorRight.getCurrentPosition()-newRightTarget)>2)
                     && (lT+20 >= Math.abs(motorLeft.getCurrentPosition() - newLeftTarget)))
-            {
+            { //figures out when to stop. 1st condition: checks the current position of the robot versus the expected position of the robot.
+                //If the distance is small, stop.
+                //2nd condition: If the robot overshoots, then the first condition will stop being met, which means the robot will not stop.
+                //To combat this problem, this condition checks whether the robot is getting closer to the target or not.
+                //If the robot is getting farther away, then stop the robot.
+
+                //calculations to read distance+telemetry to read distance
                 Op.telemetry.addData("Goodness:", "%7d, %7d",lT+20 - Math.abs(motorLeft.getCurrentPosition() - newLeftTarget), rT+20 - Math.abs(motorRight.getCurrentPosition() - newRightTarget));
                 lT = Math.abs(motorLeft.getCurrentPosition() - newLeftTarget);
                 rT = Math.abs(motorLeft.getCurrentPosition() - newRightTarget);
-                if (Op.isStopRequested()) {
+                if (Op.isStopRequested()) { //prevents crashes when emergency stop is activated
                     motorLeft.setPower(0);
                     motorRight.setPower(0);
                     return;
                 }
-                /*
-                motorLeft.setPower(Math.copySign(Math.abs(speed)*lT/((int) (leftCM * COUNTS_PER_INCH)),newLeftTarget));
-                motorRight.setPower(Math.copySign(Math.abs(speed)*rT/((int) (rightCM * COUNTS_PER_INCH)),newRightTarget));
-                */
+
+                //telemetry for diagnostics, reads exactly how encoderDrive is functioning.
                 Op.telemetry.addData("Speeds:","%.5f, %.5f",Math.copySign(Math.abs(speed)*lT/((int) (leftCM * COUNTS_PER_INCH)),newLeftTarget),Math.copySign(Math.abs(speed)*rT/((int) (rightCM * COUNTS_PER_INCH)),newRightTarget));
                 Op.telemetry.addData("Encoder Target: ", "%7d, %7d", newLeftTarget, newRightTarget);
                 Op.telemetry.addData("Current Position: ", "%7d, %7d", motorLeft.getCurrentPosition(), motorRight.getCurrentPosition());
                 Op.telemetry.addData("Special Numbers:", "%7d, %7d", lT, rT);
-                /*if (robot.imu.getAngularOrientation(AxesReference.INTRINSIC,
-                        AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle > initAng+10
-                        || robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX,
-                        AngleUnit.DEGREES).firstAngle < initAng-10) {
-
-                    int mLt = robot.motorLeft.getCurrentPosition();
-                    int mRt = robot.motorRight.getCurrentPosition();
-                    angleTurn(0.5, initAng);
-                    robot.motorLeft.setTargetPosition(newLeftTarget+(robot.motorLeft.getCurrentPosition()-mLt));
-                    robot.motorRight.setTargetPosition(newRightTarget+(robot.motorRight.getCurrentPosition()-mRt));
-                }*/
                 Op.telemetry.update();
-                if (Op.isStopRequested()) {
+                if (Op.isStopRequested()) {//prevents crashes when emergency stop is activated
                     motorLeft.setPower(0);
                     motorRight.setPower(0);
                     return;
                 }
             }
+            //telemetry for diagnostics, determines how well encoderDrive is working
             Op.telemetry.addData("Goodness:", "%7d, %7d",lT+20 - Math.abs(motorLeft.getCurrentPosition() - newLeftTarget), rT+20 - Math.abs(motorRight.getCurrentPosition() - newRightTarget));
             Op.telemetry.addData("Encoder Target: ", "%7d, %7d", newLeftTarget, newRightTarget);
             Op.telemetry.addData("Current Position: ", "%7d, %7d", motorLeft.getCurrentPosition(), motorRight.getCurrentPosition());
             Op.telemetry.addData("Special Numbers:", "%7d, %7d", lT, rT);
             Op.telemetry.update();
+            //reset motors, ensuring they are completely stopped while doing so.
             motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorLeft.setPower(0);
             motorRight.setPower(0);
+            /* TEST TO MAKE SURE THIS WORKS! The theory is that we don't need this ending statement in order to stop our robot.
             motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            */
+            //wait to prevent jitter
             try {
                 sleep(250);
             } catch (InterruptedException e) {
@@ -387,40 +382,30 @@ class Movement extends Thread {
 
         }
     }
-    /*
+    //automatically removes the need for tank drive (leftCM and rightCM) and background parameters
     void encoderDrive(double speed, double distance, double timeoutS) {
         //if (experiment) experimentalDrive(speed,distance,timeoutS);
         encoderDrive(speed, distance, distance, timeoutS, false);
     }
-    */
+    //automatically removes the need for background parameter
     void encoderDrive(double speed, double leftCM, double rightCM, double timeoutS) {
         encoderDrive(speed, leftCM, rightCM, timeoutS, false);
     }
-    /*
-    void experimentalDrive(double speed, double distance, double timeoutS) {
-        experimentalDrive(speed, distance, timeoutS, false);
-    }
-    */
+    //automatically removes the need for background parameter
     void experimentalTurn(double speed, double angle) {
         experimentalTurn(speed, angle,false);
     }
+    //bypasses angleTurn to experimentalTurn. Will be rectified in later iterations of the code, but for now, we don't wish to change all instances of angleTurn to experimentalTurn.
     void angleTurn(double speed, double angle) {
         experimentalTurn(speed,angle,false);
     }
-    /*
-    void angleTurn(double speed, double angle) {
-        angleTurn(speed, angle, false);
-    }
-    */
+
+    //controls code running in background
     public void run() {
         if (mode == 1) {
             angleTurn(speedG,angleG);
         } else if (mode == 2) {
             encoderDrive(speedG, leftCMG, rightCMG, timeoutSG,false);
         }
-        /*else if (mode == 3) {
-            experimentalDrive(speedG,leftCMG,timeoutSG,false);
-        }
-        */
     }
 }

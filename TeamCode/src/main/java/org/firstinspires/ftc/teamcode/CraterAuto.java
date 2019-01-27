@@ -176,7 +176,7 @@ public class CraterAuto extends LinearOpMode {
                 //left
                 mov.angleTurn(TURN_SPEED,33);
 
-                mov.encoderDrive(DRIVE_SPEED, 15, 15, 5);
+                mov.encoderDrive(DRIVE_SPEED, 15, 5);
                 sleep(100);
 
                 mov.angleTurn(TURN_SPEED,33);
