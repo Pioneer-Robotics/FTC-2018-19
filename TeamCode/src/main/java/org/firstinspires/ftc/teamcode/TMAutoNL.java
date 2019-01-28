@@ -144,13 +144,13 @@ public class TMAutoNL extends LinearOpMode {
         switch (choose) {
             case 1:
                 //Mineral on Left
-                mov.angleTurn(0.5,23);
+                mov.experimentalTurn(0.5,23);
 
                 mov.encoderDrive(DRIVE_SPEED, 35, 35, 5);
-                mov.angleTurn(0.2, -76);
+                mov.experimentalTurn(0.2, -76);
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 mov.encoderDrive(DRIVE_SPEED,25,25,30);
-                mov.angleTurn(0.3, 80);
+                mov.experimentalTurn(0.3, 80);
 
                 break;
             case 2:
@@ -160,7 +160,7 @@ public class TMAutoNL extends LinearOpMode {
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 mov.encoderDrive(DRIVE_SPEED, 45, 45, 5);
 
-                mov.angleTurn(0.2, 60);
+                mov.experimentalTurn(0.2, 60);
 
                 telemetry.addData("Status: ", "Dropping Team Marker");
                 telemetry.update();
@@ -169,16 +169,16 @@ public class TMAutoNL extends LinearOpMode {
                 break;
             case 3:
                 //Mineral on Right
-                mov.angleTurn(0.5,-23);
+                mov.experimentalTurn(0.5,-23);
 
                 mov.encoderDrive(DRIVE_SPEED, 35, 35, 5);
-                mov.angleTurn(0.2, 66);
+                mov.experimentalTurn(0.2, 66);
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 mov.encoderDrive(DRIVE_SPEED,20,20,30);
-                mov.angleTurn(0.2, 40);
+                mov.experimentalTurn(0.2, 40);
 
 
-                //mov.angleTurn(0.2, 90);
+                //mov.experimentalTurn(0.2, 90);
                 //mov.encoderDrive( 0.5, 5,5,10);
                 break;
             case -3:
@@ -194,7 +194,7 @@ public class TMAutoNL extends LinearOpMode {
                 mov.encoderDrive(DRIVE_SPEED, 13, 13, 5);
                 mov.encoderDrive( 0.5,10,10,10);
 
-                mov.angleTurn(0.3, 90);
+                mov.experimentalTurn(0.3, 90);
                 break;
         }
         telemetry.addData("Status: ", "Dropping Team Marker");
@@ -208,8 +208,8 @@ public class TMAutoNL extends LinearOpMode {
         telemetry.update();
 
         /*
-        mov.angleTurn(0.3,160);
-        mov.angleTurn(0.3, -25);
+        mov.experimentalTurn(0.3,160);
+        mov.experimentalTurn(0.3, -25);
         */
         robot.Camera.setPosition(0);
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);

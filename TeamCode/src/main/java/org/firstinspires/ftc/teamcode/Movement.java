@@ -29,6 +29,7 @@ class Movement extends Thread {
     double margin = 0.5;
 
     void init(DcMotor motL, DcMotor motR, BNO055IMU im, LinearOpMode O, ElapsedTime run, double CPI) {
+        //turns all the necessary robot parts into local variables as it is extremely tedious to have to write each as an argument for every individual function call.
         motorLeft = motL;
         motorRight = motR;
         minPower = 0.2;
@@ -36,7 +37,6 @@ class Movement extends Thread {
         Op = O;
         runtime = run;
         COUNTS_PER_INCH = CPI;
-        //turns all the necessary robot parts into local variables as it is extremely tedious to have to write each as an argument for every individual function call.
     }
     void experimentalTurn(double speed, double angle, boolean backgrnd) {
         double targetAngle; //Self-explanatory
@@ -83,6 +83,7 @@ class Movement extends Thread {
                 spd=dis/angles.firstAngle; //faster but less accurate
                 motorLeft.setPower(-direction*(Math.abs(speed*spd))); //set motor power based on given speed against dynamic spd and sets direction appropriately
                 motorRight.setPower(direction*(Math.abs(speed*spd)));
+
                 //actual telemetry for diagnostics
                 Op.telemetry.addData("Error:", "%.5f", dis);
                 Op.telemetry.addData("+1D:", "%.5f",(Math.abs((angles.firstAngle-targetAngle+360)%360)));
@@ -242,15 +243,11 @@ class Movement extends Thread {
     void experimentalTurn(double speed, double angle) {
         experimentalTurn(speed, angle,false);
     }
-    //bypasses angleTurn to experimentalTurn. Will be rectified in later iterations of the code, but for now, we don't wish to change all instances of angleTurn to experimentalTurn.
-    void angleTurn(double speed, double angle) {
-        experimentalTurn(speed,angle,false);
-    }
 
     //controls code running in background
     public void run() {
         if (mode == 1) {
-            angleTurn(speedG,angleG);
+            experimentalTurn(speedG,angleG);//check to see if this works! originally, was angleTurn, not experimental
         } else if (mode == 2) {
             encoderDrive(speedG, leftCMG, rightCMG, timeoutSG,false);
         }

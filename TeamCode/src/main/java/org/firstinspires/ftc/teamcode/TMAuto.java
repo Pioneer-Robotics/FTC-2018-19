@@ -170,12 +170,12 @@ public class TMAuto extends LinearOpMode {
         switch (choose) {
             case 1:
                 //Mineral on Left
-                mov.angleTurn(0.7,23);
+                mov.experimentalTurn(0.7,23);
                 mov.encoderDrive(DRIVE_SPEED, 35,35, 5);
-                mov.angleTurn(0.9, -76);
+                mov.experimentalTurn(0.9, -76);
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 mov.encoderDrive(DRIVE_SPEED,25,25, 5);
-                mov.angleTurn(1, 80);
+                mov.experimentalTurn(1, 80);
 
                 break;
             case 2:
@@ -183,18 +183,18 @@ public class TMAuto extends LinearOpMode {
                 //no turning movement is necessary to hit mineral
                 mov.encoderDrive(DRIVE_SPEED, 45,45, 5);
 
-                mov.angleTurn(0.7, 60);
+                mov.experimentalTurn(0.7, 60);
                 break;
             case 3:
                 //Mineral on Right
-                mov.angleTurn(0.5,-23);
+                mov.experimentalTurn(0.5,-23);
                 mov.encoderDrive(DRIVE_SPEED, 35,35, 5);
-                mov.angleTurn(0.7, 66);
+                mov.experimentalTurn(0.7, 66);
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 mov.encoderDrive(DRIVE_SPEED,20,20,5);
-                mov.angleTurn(0.6, 40);
+                mov.experimentalTurn(0.6, 40);
 
-                //mov.angleTurn(0.2, 90, false);
+                //mov.experimentalTurn(0.2, 90, false);
                 //mov.encoderDrive( 0.5, 5,5,10, false);
                 break;
             default:
@@ -204,7 +204,7 @@ public class TMAuto extends LinearOpMode {
                 mov.encoderDrive(DRIVE_SPEED, 13, 13,5);
                 mov.encoderDrive( 0.5,10,10, 5);
 
-                mov.angleTurn(0.3, 90);
+                mov.experimentalTurn(0.3, 90);
                 sleep(5000);
                 break;
         }
@@ -220,17 +220,17 @@ public class TMAuto extends LinearOpMode {
 
         switch (choose) {
             case 1:
-                mov.angleTurn(1, 180);
+                mov.experimentalTurn(1, 180);
                 sleep(5000);
                 //mov.encoderDrive(DRIVE_SPEED,-25,-25,30, false);
                 break;
             case 2:
-                mov.angleTurn(1, -135);
+                mov.experimentalTurn(1, -135);
                 sleep(5000);
                 //mov.encoderDrive(DRIVE_SPEED, -20, -20, 10, false);
                 break;
             case 3:
-                mov.angleTurn(1, 90);
+                mov.experimentalTurn(1, 90);
                 sleep(5000);
                 //mov.encoderDrive(DRIVE_SPEED,-20,-20,30, false);
                 break;
