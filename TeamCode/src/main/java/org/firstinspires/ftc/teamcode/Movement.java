@@ -71,12 +71,12 @@ class Movement extends Thread {
                     motorRight.setPower(0);
                     return;
                 }
-                if ((360-Math.abs((angles.firstAngle-targetAngle+360)%360))<(Math.abs((angles.firstAngle-targetAngle+360)%360))) { //calculates direction and distance to targetAngle
+                if ((Math.abs((720-angles.firstAngle+targetAngle)%360))<(Math.abs((720-targetAngle+angles.firstAngle)%360))) { //calculates direction and distance to targetAngle
                     direction = -1;
-                    dis = (360-Math.abs((angles.firstAngle-targetAngle+360)%360));
+                    dis = (Math.abs((720-angles.firstAngle+targetAngle)%360));
                 } else {
                     direction = 1;
-                    dis =  (Math.abs((angles.firstAngle-targetAngle+360)%360));
+                    dis =  (Math.abs((720-targetAngle+angles.firstAngle)%360));
                 }
                 // Calculate speed from distance to targetAngle
                 //spd=dis/((angles.firstAngle+360)%360); //slower but more accurate
