@@ -22,9 +22,7 @@ class Movement extends Thread {
     private double leftCMG;
     private double rightCMG;
     private double timeoutSG;
-    private double minPower;
     private int mode;
-    boolean experiment = false;
 
     double margin = 0.5;
 
@@ -32,7 +30,6 @@ class Movement extends Thread {
         //turns all the necessary robot parts into local variables as it is extremely tedious to have to write each as an argument for every individual function call.
         motorLeft = motL;
         motorRight = motR;
-        minPower = 0.2;
         imu = im;
         Op = O;
         runtime = run;
@@ -81,8 +78,8 @@ class Movement extends Thread {
                 // Calculate speed from distance to targetAngle
                 //spd=dis/((angles.firstAngle+360)%360); //slower but more accurate
                 spd=dis/angles.firstAngle; //faster but less accurate
-                motorLeft.setPower(-direction*(Math.abs(speed*spd))); //set motor power based on given speed against dynamic spd and sets direction appropriately
-                motorRight.setPower(direction*(Math.abs(speed*spd)));
+                motorLeft.setPower(-direction*(Math.abs(speed*spd)+0.05)); //set motor power based on given speed against dynamic spd and sets direction appropriately
+                motorRight.setPower(direction*(Math.abs(speed*spd)+0.05));
 
                 //actual telemetry for diagnostics
                 Op.telemetry.addData("Error:", "%.5f", dis);
@@ -177,7 +174,7 @@ class Movement extends Thread {
 
             while (Op.opModeIsActive() && (runtime.seconds() < timeoutS) && (Math.abs(motorLeft.getCurrentPosition()-newLeftTarget)>2
                     && Math.abs(motorRight.getCurrentPosition()-newRightTarget)>2)
-                    && (lT+20 >= Math.abs(motorLeft.getCurrentPosition() - newLeftTarget)))
+                    && (lT+10 >= Math.abs(motorLeft.getCurrentPosition() - newLeftTarget)))
             { //figures out when to stop. 1st condition: checks the current position of the robot versus the expected position of the robot.
                 //If the distance is small, stop.
                 //2nd condition: If the robot overshoots, then the first condition will stop being met, which means the robot will not stop.
