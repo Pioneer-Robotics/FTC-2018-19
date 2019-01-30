@@ -19,6 +19,8 @@ Thumbs.db
 .DS_Store
 
 # Android Studio
+FtcRobotController/FtcRobotController.iml
+TeamCode/TeamCode.iml
 *.iml
 .idea
 .gradle
