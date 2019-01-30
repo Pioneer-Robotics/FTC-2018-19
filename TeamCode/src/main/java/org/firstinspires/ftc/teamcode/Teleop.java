@@ -27,6 +27,8 @@ public class Teleop extends OpMode
     double pre_suq = 0;
     double pre_arm = 0;
     double pre_bar = 0;
+    boolean armBAuto;
+    boolean FBarAuto;
     //boolean flipster = false;
     //boolean flipster1 = false;
     boolean flipster2 = false;
@@ -50,6 +52,10 @@ public class Teleop extends OpMode
         robot.Camera.setPosition(0);
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
         robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);
+        robot.armBase.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.FBar.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.armBase.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.FBar.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // Wait for the game to start (driver presses PLAY)
     }
     @Override
@@ -189,14 +195,26 @@ public class Teleop extends OpMode
         }
         telemetry.addData("Arm Base Power: ","%.5f",armB);
         telemetry.addData("Arm Base Encoder: ", "%d", robot.armBase.getCurrentPosition());
-        robot.armBase.setPower(armB);
+        if (!armBAuto) {
+            robot.armBase.setPower(armB);
+        } else if (armB!=0) {
+            robot.armBase.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.armBase.setPower(0);
+            armBAuto = false;
+        }
         pre_arm = robot.armBase.getCurrentPosition();
         if ((bar!=0) && (pre_bar == robot.FBar.getCurrentPosition()) && !deathFlip) {
             bar = 0;
         }
         telemetry.addData("4Bar Power: ","%.5f",bar);
         telemetry.addData("4Bar Encoder: ", "%d", robot.FBar.getCurrentPosition());
-        robot.FBar.setPower(bar);
+        if (!FBarAuto) {
+            robot.FBar.setPower(bar);
+        } else if (bar!=0) {
+            robot.FBar.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.FBar.setPower(0);
+            FBarAuto =false;
+        }
         pre_bar = robot.Succq.getCurrentPosition();
         // Controls latching servos on linear actuator
         // Latch open
@@ -217,8 +235,50 @@ public class Teleop extends OpMode
         if ((gamepad1.dpad_up || gamepad2.dpad_up) && robot.dropTop.getPosition()<HardwareInfinity.DT_MAX) {
             robot.dropTop.setPosition(robot.dropTop.getPosition()+0.015);
         }
+        if (gamepad2.b) {
+            armBAuto = true;
+            robot.armBase.setTargetPosition(-6000);
+            robot.armBase.setPower(-1);
+            robot.armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            FBarAuto = true;
+            robot.FBar.setTargetPosition(-11000);
+            robot.FBar.setPower(-1);
+            robot.FBar.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+        if (gamepad2.y) {
+            armBAuto = true;
+            robot.armBase.setTargetPosition(-300);
+            robot.armBase.setPower(1);
+            robot.armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            FBarAuto = true;
+            robot.FBar.setTargetPosition(-300);
+            robot.FBar.setPower(1);
+            robot.FBar.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+        if (gamepad2.x) {
+            armBAuto = true;
+            robot.armBase.setTargetPosition(-300);
+            robot.armBase.setPower(-1);
+            robot.armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            FBarAuto = true;
+            robot.FBar.setTargetPosition(-10000);
+            robot.FBar.setPower(-1);
+            robot.FBar.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+        if (robot.armBase.isBusy()) {
+            armBAuto = true;
+        } else if (armBAuto) {
+            armBAuto = false;
+            robot.armBase.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        if (robot.FBar.isBusy()) {
+            FBarAuto = true;
+        } else if (FBarAuto) {
+            FBarAuto = false;
+            robot.FBar.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
          // Drops team marker with servo
-        if (gamepad2.x)
+        if (gamepad1.x)
         {
             robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMIN_POSITION);
             try {
