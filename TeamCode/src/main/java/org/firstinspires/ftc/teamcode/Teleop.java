@@ -52,6 +52,10 @@ public class Teleop extends OpMode
         robot.Camera.setPosition(0);
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
         robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);
+        robot.armBase.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.FBar.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.armBase.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.FBar.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // Wait for the game to start (driver presses PLAY)
     }
     @Override
@@ -209,7 +213,7 @@ public class Teleop extends OpMode
         } else if (bar!=0) {
             robot.FBar.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.FBar.setPower(0);
-            armBAuto =false;
+            FBarAuto =false;
         }
         pre_bar = robot.Succq.getCurrentPosition();
         // Controls latching servos on linear actuator
@@ -234,38 +238,38 @@ public class Teleop extends OpMode
         if (gamepad2.b) {
             armBAuto = true;
             robot.armBase.setTargetPosition(-6000);
-            robot.armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.armBase.setPower(-1);
+            robot.armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             FBarAuto = true;
             robot.FBar.setTargetPosition(-11000);
-            robot.FBar.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.FBar.setPower(-1);
+            robot.FBar.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
         if (gamepad2.y) {
             armBAuto = true;
             robot.armBase.setTargetPosition(-300);
-            robot.armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.armBase.setPower(1);
+            robot.armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             FBarAuto = true;
             robot.FBar.setTargetPosition(-300);
-            robot.FBar.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.FBar.setPower(1);
+            robot.FBar.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
         if (gamepad2.x) {
             armBAuto = true;
             robot.armBase.setTargetPosition(-300);
-            robot.armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.armBase.setPower(-1);
+            robot.armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             FBarAuto = true;
             robot.FBar.setTargetPosition(-10000);
-            robot.FBar.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.FBar.setPower(-1);
+            robot.FBar.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
         if (robot.armBase.isBusy()) {
             armBAuto = true;
         } else if (armBAuto) {
             armBAuto = false;
-            robot.FBar.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.armBase.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
         if (robot.FBar.isBusy()) {
             FBarAuto = true;
