@@ -44,6 +44,7 @@ class Movement extends Thread {
         double spd; //dynamic (can change) speed of turn
         int direction; // -1 = cw, 1 = ccw. Determines the direction of the turn
         double dis; //distance to targetAngle
+        double mspd;
         if (Op.opModeIsActive()) {
             if (backgrnd) { //allows the program run in background as a separate task.
                 angleG = angle;
@@ -56,6 +57,13 @@ class Movement extends Thread {
             Orientation delta = angles; //delta of angle, essentially previous acquisition
             targetAngle = angle + angles.firstAngle; //calculates target angle
             Op.telemetry.clearAll();
+            if ((Math.abs((720-angles.firstAngle+targetAngle)%360))<(Math.abs((720-targetAngle+angles.firstAngle)%360))) { //calculates direction and distance to targetAngle
+                dis = (Math.abs((720-angles.firstAngle+targetAngle)%360));
+            } else {
+                dis =  (Math.abs((720-targetAngle+angles.firstAngle)%360));
+            }
+            mspd=dis/angles.firstAngle;
+
             runtime.reset();
             while (true) {
                 //calculations for deltas and times for telemetry diagnostics
@@ -76,13 +84,14 @@ class Movement extends Thread {
                     dis =  (Math.abs((720-targetAngle+angles.firstAngle)%360));
                 }
                 // Calculate speed from distance to targetAngle
-                //spd=dis/((angles.firstAngle+360)%360); //slower but more accurate
-                spd=dis/angles.firstAngle; //faster but less accurate
+                //spd=dis/((angles.firstAngle+360)%360); //slower
+                spd=dis/angles.firstAngle; //faster
                 motorLeft.setPower(-direction*(Math.abs(speed*spd)+0.05)); //set motor power based on given speed against dynamic spd and sets direction appropriately
                 motorRight.setPower(direction*(Math.abs(speed*spd)+0.05));
 
                 //actual telemetry for diagnostics
                 Op.telemetry.addData("Error:", "%.5f", dis);
+                Op.telemetry.addData("Max Speed:", "%.5f",mspd);
                 Op.telemetry.addData("+1D:", "%.5f",(Math.abs((angles.firstAngle-targetAngle+360)%360)));
                 Op.telemetry.addData("-1D:", "%.5f",(360-Math.abs((angles.firstAngle-targetAngle+360)%360)));
                 Op.telemetry.addData("Direction:", "%7d",direction);
@@ -108,6 +117,7 @@ class Movement extends Thread {
             //further telemetry to keep displaying values.
             Op.telemetry.addData("Finished", "!");
             Op.telemetry.addData("Error:", "%.5f", dis);
+            Op.telemetry.addData("Max Speed:", "%.5f",mspd);
             Op.telemetry.addData("Speed:", direction*Math.abs(speed*spd));
             Op.telemetry.addData("Margin:", "%.5f", margin * speed);
             Op.telemetry.addData("IMU Heading:", "%.5f", angles.firstAngle);
