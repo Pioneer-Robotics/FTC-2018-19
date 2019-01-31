@@ -67,6 +67,8 @@ class Movement extends Thread {
             runtime.reset();
             while (true) {
                 //calculations for deltas and times for telemetry diagnostics
+                motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 time = runtime.milliseconds();
                 if (time>maxtime) maxtime = time;
                 if (Math.abs(angles.firstAngle-delta.firstAngle)> maxdel) maxdel = Math.abs(angles.firstAngle-delta.firstAngle);
@@ -86,12 +88,14 @@ class Movement extends Thread {
                 // Calculate speed from distance to targetAngle
                 //spd=dis/((angles.firstAngle+360)%360); //slower
                 spd=dis/angles.firstAngle; //faster
-                motorLeft.setPower(-direction*(Math.abs(speed*spd)+0.05)); //set motor power based on given speed against dynamic spd and sets direction appropriately
-                motorRight.setPower(direction*(Math.abs(speed*spd)+0.05));
+                motorLeft.setPower(-direction*(Math.abs(speed*spd))); //set motor power based on given speed against dynamic spd and sets direction appropriately
+                motorRight.setPower(direction*(Math.abs(speed*spd)));
 
                 //actual telemetry for diagnostics
                 Op.telemetry.addData("Error:", "%.5f", dis);
                 Op.telemetry.addData("Max Speed:", "%.5f",mspd);
+                Op.telemetry.addData("Left speed","%.5f",-direction*(Math.abs(speed*spd)));
+                Op.telemetry.addData("Right speed","%.5f",direction*(Math.abs(speed*spd)));
                 Op.telemetry.addData("+1D:", "%.5f",(Math.abs((angles.firstAngle-targetAngle+360)%360)));
                 Op.telemetry.addData("-1D:", "%.5f",(360-Math.abs((angles.firstAngle-targetAngle+360)%360)));
                 Op.telemetry.addData("Direction:", "%7d",direction);
@@ -118,6 +122,8 @@ class Movement extends Thread {
             Op.telemetry.addData("Finished", "!");
             Op.telemetry.addData("Error:", "%.5f", dis);
             Op.telemetry.addData("Max Speed:", "%.5f",mspd);
+            Op.telemetry.addData("Left speed","%.5f",-direction*(Math.abs(speed*spd)));
+            Op.telemetry.addData("Right speed","%.5f",direction*(Math.abs(speed*spd)));
             Op.telemetry.addData("Speed:", direction*Math.abs(speed*spd));
             Op.telemetry.addData("Margin:", "%.5f", margin * speed);
             Op.telemetry.addData("IMU Heading:", "%.5f", angles.firstAngle);
