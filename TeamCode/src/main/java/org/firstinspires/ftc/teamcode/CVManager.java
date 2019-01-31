@@ -71,6 +71,7 @@ public class CVManager extends Thread {
     private static final float mmFTCFieldWidth  = (12*6) * mmPerInch;       // the width of the FTC field (from the center point to the outer panels)
     private static final float mmTargetHeight   = (6) * mmPerInch;// the height of the center of the target image above the floor
     private List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
+    //Initialize all variables necessary to communicate with the other threads
     protected OpenGLMatrix location;
     float mineralX = 0;
     float mineralY = 0;
@@ -106,25 +107,18 @@ public class CVManager extends Thread {
      * Detection engine.
      */
     private TFObjectDetector tfod;
-
     void init(CameraName cam, int hw) {
+        //give the CVManager class the hooks into the hardware (Camera, hardware identifier) it needs in order function properly
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
-
-
         this.initVuforia(cam);
         this.initTfod(hw);
         Status = 100;
     }
-    void initwoVu(VuforiaLocalizer vu, int hw) {
-        this.vuforia = vu;
-        this.initTfod(hw);
-    }
-    VuforiaLocalizer Vuforia() {
-        return vuforia;
-    }
     private int checkThree() {
-        // Activate Tensor Flow Object Detection.
+        // Checks for whether there are at least 3 minerals, trims them down to the lowest 3,
+        // does some checks on those 3, then determines the order of the minerals
+        // First check activation of Tensor Flow Object Detection.
         if (tfod != null) {
             // getUpdatedRecognitions() will return null if no new information is available since
             // the last time that call was made.
@@ -132,7 +126,9 @@ public class CVManager extends Thread {
             if (updatedRecognitions != null) {
                 // # of objects
                 List<Recognition> trimmedRecognitions = new ArrayList<>();
+                // requires at least 3 minerals
                 if (updatedRecognitions.size() > 3) {
+                    //sorts out to 3 lowest minerals by x and puts them in trimmedRecognitions
                     Recognition gold = updatedRecognitions.get(0);
                     Recognition silver1 = updatedRecognitions.get(0);
                     Recognition silver2 = updatedRecognitions.get(0);
@@ -151,7 +147,9 @@ public class CVManager extends Thread {
                     trimmedRecognitions.add(silver2);
                 } else trimmedRecognitions = updatedRecognitions;
                 if (trimmedRecognitions.size() == 3) {
+                    //checks for if the three minerals are in a row
                     if (tIaRMan(trimmedRecognitions) != 1) return -3;
+                    // extracts xs from from the minerals
                     int goldMineralX = -1;
                     int silverMineral1X = -1;
                     int silverMineral2X = -1;
@@ -164,6 +162,7 @@ public class CVManager extends Thread {
                             silverMineral2X = (int) recognition.getLeft();
                         }
                     }
+                    //figures out the order of the minerals
                     if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
                         if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
                             return 1;  //left
@@ -175,17 +174,20 @@ public class CVManager extends Thread {
                     }
                 } else {
                     return -2;
+                    //there are not three minerals
                 }
 
-            }
-            else {
+            } else {
                 return -1;
+                //nothing changed since last tme
             }
 
         }
         return -4;
+        //tflow has not been inited yet
     }
     private int tIaR() {
+        //checks if three minerals are in a row, for doing alliances sampling mission
         if (tfod != null) {
             // getUpdatedRecognitions() will return null if no new information is available since
             // the last time that call was made.
@@ -198,6 +200,7 @@ public class CVManager extends Thread {
                 float silverMineral1Y = -1;
                 float silverMineral2X = -1;
                 float silverMineral2Y = -1;
+                //like in checkthree, but pulls ys and xs from the minerals
                 for (Recognition recognition : updatedRecognitions) {
                     if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                         goldMineralX = recognition.getLeft();
@@ -210,15 +213,19 @@ public class CVManager extends Thread {
                         silverMineral2Y = recognition.getTop();
                     }
                 }
+                //does a linear regression with 2 of the minerals
                 float slope = (silverMineral2Y-silverMineral1Y)/(silverMineral2X-silverMineral1X);   //(y2-y1)/(x2-x1)
                 float intrcpt = silverMineral2Y - slope*silverMineral2X;  // b= y-mx
+                //finds the residual of the third mineral, and if it is small enough, return the corresponding value: 1
                 if (Math.abs(slope*goldMineralX+intrcpt - goldMineralY) >= 10) return 2;
                 else return 1;
+                //there are not three objects: -3
             } else return -3;
         }
         return -4;
     }
     private int tIaRMan(List<Recognition> updatedRecognitions) {
+        //like tIar, but uses a list as input rather than directly pulling from tFlow
         if (tfod != null) {
             if (updatedRecognitions.size() == 3) {
                 float goldMineralX = -1;
@@ -249,6 +256,7 @@ public class CVManager extends Thread {
         return -4;
     }
     private float[] findGold() {
+        // return the x and y of the lowest gold mineral if all else fails
         if (tfod != null) {
             // getUpdatedRecognitions() will return null if no new information is available since
             // the last time that call was made.
@@ -257,6 +265,7 @@ public class CVManager extends Thread {
             //float maxY = 0;
             float goldX = 0;
             float goldY = 0;
+            //find lowest gold mineral
             for (Recognition recognition : updatedRecognitions) {
                 if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                     if (recognition.getTop() > goldY) {
@@ -266,6 +275,7 @@ public class CVManager extends Thread {
                     }
                 }
             }
+            //return the mineral we found
             float[] ret = {goldX, goldY};
             return ret;
 
@@ -275,6 +285,7 @@ public class CVManager extends Thread {
     }
 
     private OpenGLMatrix getVuforiaPosition() {
+        //pull the position from vuforia based off of the trackables on the walls
         boolean targetVisible = false;
         OpenGLMatrix lastLocation = null;
         for (VuforiaTrackable trackable : allTrackables) {
@@ -297,34 +308,41 @@ public class CVManager extends Thread {
         }
     }
     public double[] extractPos(OpenGLMatrix loc) {
+        //extract position from an OpenGLMatrix
         return new double[]{loc.getTranslation().get(0), loc.getTranslation().get(1)};
     }
 
     public void run() {
+        // a loop that controls the CVManager thread
+        //first make sure tFlow is initialized
         if (tfod != null) {
             tfod.activate();
             while (go) {
+                // mode 0 == standard mode
+                // give our best shot at determining where the gold mineral is for the sampling mission
                 if (mode == 0) {
+                    //filter checkThree to get information that we can pass on to the master thread
                     int st = this.checkThree();
                     if (st != -1 && st != -2) {
                         this.Status = st;
+                        //stop the loop if we have retrieved the information we need
                         if (disable && this.Status !=  -4) this.go = false;
                     } else if (st == -2) {
+                        // backup case to manually find the gold mineral
                         float[] pos = this.findGold();
                         this.mineralX = pos[0];
                         this.mineralY = pos[1];
                         this.Status = -3;
                     }
+                    // mode 1 == tracker for if minerals are in a row
                 } else if (mode == 1) {
                     this.Status = this.tIaR();
                 } else {
-                    if (track) {
-                        float[] pos = this.findGold();
-                        this.mineralX = pos[0];
-                        this.mineralY = pos[1];
-                    } else go = false;
+                    // auto stop the loop if it is not doing anything
+                    if (!track) go = false;
                 }
                 if (track) {
+                    //return mineral position to track the camera
                     float[] pos = this.findGold();
                     this.mineralX = pos[0];
                     this.mineralY = pos[1];
