@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -148,18 +147,18 @@ public class CraterNL extends LinearOpMode {
         switch (choose) {
             case 1:
                 //left
-                mov.experimentalTurn(TURN_SPEED,33);
+                mov.angleTurn(TURN_SPEED,33);
 
                 mov.encoderDrive(DRIVE_SPEED, 15,15, 5);
                 sleep(100);
 
-                mov.experimentalTurn(TURN_SPEED,33);
-                mov.experimentalTurn(TURN_SPEED,-33);
+                mov.angleTurn(TURN_SPEED,33);
+                mov.angleTurn(TURN_SPEED,-33);
 
                 mov.encoderDrive(DRIVE_SPEED, -15,-15, 5);
 
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.experimentalTurn(TURN_SPEED,-33);
+                mov.angleTurn(TURN_SPEED,-33);
 
                 break;
             case 2:
@@ -169,8 +168,8 @@ public class CraterNL extends LinearOpMode {
                 mov.encoderDrive(DRIVE_SPEED, 7,7, 5);
                 sleep(100);
 
-                mov.experimentalTurn(TURN_SPEED,-33);
-                mov.experimentalTurn(TURN_SPEED,33);
+                mov.angleTurn(TURN_SPEED,-33);
+                mov.angleTurn(TURN_SPEED,33);
 
                 mov.encoderDrive(DRIVE_SPEED, -7,-7, 5);
 
@@ -178,16 +177,16 @@ public class CraterNL extends LinearOpMode {
                 break;
             case 3:
                 //right
-                mov.experimentalTurn(TURN_SPEED,-33);
+                mov.angleTurn(TURN_SPEED,-33);
 
                 mov.encoderDrive(DRIVE_SPEED, 15,15, 5);
                 sleep(100);
 
-                mov.experimentalTurn(TURN_SPEED,-33);
-                mov.experimentalTurn(TURN_SPEED,33);
+                mov.angleTurn(TURN_SPEED,-33);
+                mov.angleTurn(TURN_SPEED,33);
 
                 mov.encoderDrive(DRIVE_SPEED, -15, -15,5);
-                mov.experimentalTurn(TURN_SPEED,33);
+                mov.angleTurn(TURN_SPEED,33);
 
                 break;
             case -3:
@@ -210,15 +209,15 @@ public class CraterNL extends LinearOpMode {
         mov.encoderDrive(0.2, 2,2, 5);
         sleep(100);
 
-        mov.experimentalTurn(TURN_SPEED,58);
+        mov.angleTurn(TURN_SPEED,58);
         mov.encoderDrive(DRIVE_SPEED, 32, 32,5);
-        mov.experimentalTurn(TURN_SPEED,25);
+        mov.angleTurn(TURN_SPEED,25);
         mov.encoderDrive(DRIVE_SPEED, 7,7, 5);
-        mov.experimentalTurn(TURN_SPEED,14);
+        mov.angleTurn(TURN_SPEED,14);
         mov.encoderDrive(DRIVE_SPEED, 33,33, 5);
 
         sleep(500);
-        mov.experimentalTurn(TURN_SPEED,95);
+        mov.angleTurn(TURN_SPEED,95);
         telemetry.update();
         telemetry.addData("Status: ", "Dropping Team Marker");
         telemetry.update();
@@ -229,8 +228,8 @@ public class CraterNL extends LinearOpMode {
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
 
         /*
-        mov.experimentalTurn(0.3,160);
-        mov.experimentalTurn(0.3, -25);
+        mov.angleTurn(0.3,160);
+        mov.angleTurn(0.3, -25);
         */
         robot.Camera.setPosition(0);
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);

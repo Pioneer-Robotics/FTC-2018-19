@@ -26,7 +26,7 @@ public class NewMovementTester extends LinearOpMode {
                     return;
                 }
             }
-            mov.experimentalTurn(1,-90);
+            mov.angleTurn(1,-90);
             while (!gamepad1.a) {
                 sleep(1);
                 if (isStopRequested()) {

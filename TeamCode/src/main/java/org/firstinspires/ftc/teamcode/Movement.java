@@ -35,7 +35,7 @@ class Movement extends Thread {
         runtime = run;
         COUNTS_PER_INCH = CPI;
     }
-    void experimentalTurn(double speed, double angle, boolean backgrnd) {
+    void angleTurn(double speed, double angle, boolean backgrnd) {
         double targetAngle; //Self-explanatory
         double time; //diagnostics, read how long each iteration of turn takes
         double maxtime = 0;//diagnostics, max acquisition time
@@ -64,7 +64,8 @@ class Movement extends Thread {
                 mdis =  (Math.abs((720-targetAngle+angles.firstAngle)%360));
             }
             mspd=mdis/angle;
-
+            motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             runtime.reset();
             while (true) {
                 //calculations for deltas and times for telemetry diagnostics
@@ -254,14 +255,14 @@ class Movement extends Thread {
         encoderDrive(speed, leftCM, rightCM, timeoutS, false);
     }
     //automatically removes the need for background parameter
-    void experimentalTurn(double speed, double angle) {
-        experimentalTurn(speed, angle,false);
+    void angleTurn(double speed, double angle) {
+        angleTurn(speed, angle,false);
     }
 
     //controls code running in background
     public void run() {
         if (mode == 1) {
-            experimentalTurn(speedG,angleG);//check to see if this works! originally, was angleTurn, not experimental
+            angleTurn(speedG,angleG);//check to see if this works! originally, was angleTurn, not experimental
         } else if (mode == 2) {
             encoderDrive(speedG, leftCMG, rightCMG, timeoutSG,false);
         }
