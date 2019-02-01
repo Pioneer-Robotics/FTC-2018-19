@@ -1,21 +1,16 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="TeleOp", group="FTCPio")
 public class Teleop extends OpMode
 {
     /* Declare OpMode members. */
     private HardwareInfinity robot = new HardwareInfinity();
-    private static final double     TETRIX_TICKS_PER_REV    = 1440;
-    private static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;
-    private static final double     WHEEL_DIAMETER_CM   = 4.0*2.54 ;
-    private static final double     COUNTS_PER_INCH         = (TETRIX_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) /
-            (WHEEL_DIAMETER_CM * 3.1415);
+    ElapsedTime time = new ElapsedTime();
     double left;
     double right;
     double drive;
@@ -25,17 +20,11 @@ public class Teleop extends OpMode
     double max;
     double arm;
     double pre_suq = 0;
-    double pre_arm = 0;
-    double pre_bar = 0;
     boolean armBAuto;
     boolean FBarAuto;
-    //boolean flipster = false;
-    //boolean flipster1 = false;
-    boolean flipster2 = false;
-    boolean deathFlip = false;
+    boolean dmac = false;
     float activate_suq = 0;
     int asuq = 0;
-
     // State used for updating telemetry;
     @Override
     public void init() {
@@ -60,7 +49,7 @@ public class Teleop extends OpMode
     }
     @Override
     public void start() {
-
+        time.reset();
     }
     @Override
     public void loop()
@@ -157,19 +146,6 @@ public class Teleop extends OpMode
         else robot.armBase.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         if (gamepad2.right_bumper) robot.FBar.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         else robot.FBar.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        if (gamepad2.a) {
-            if (!flipster2) {
-                if (!deathFlip) {
-                    deathFlip = true;
-                } else {
-                    deathFlip = false;
-                }
-                flipster2 = true;
-            }
-        } else {
-            flipster2 = false;
-        }
-
         /*if (gamepad1.left_bumper) {
             if (!flipster1) {
                 asuq = -asuq;
@@ -184,15 +160,11 @@ public class Teleop extends OpMode
         }
         //if the Succq isn't moving then stop it to save the motor
         if (asuq != 0) activate_suq = asuq;
-        telemetry.addData("Death Flip: ", deathFlip);
-        if ((activate_suq!=0) && (pre_suq == robot.Succq.getCurrentPosition()) && gamepad1.right_stick_y==0 && !deathFlip) {
+        if ((activate_suq!=0) && (pre_suq == robot.Succq.getCurrentPosition()) && gamepad1.right_stick_y==0) {
             activate_suq = 0;
         }
         robot.Succq.setPower(activate_suq);
         pre_suq = robot.Succq.getCurrentPosition();
-        if ((armB!=0) && (pre_arm == robot.armBase.getCurrentPosition()) && !deathFlip) {
-            armB = 0;
-        }
         telemetry.addData("Arm Base Power: ","%.5f",armB);
         telemetry.addData("Arm Base Encoder: ", "%d", robot.armBase.getCurrentPosition());
         if (!armBAuto) {
@@ -201,10 +173,6 @@ public class Teleop extends OpMode
             robot.armBase.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.armBase.setPower(0);
             armBAuto = false;
-        }
-        pre_arm = robot.armBase.getCurrentPosition();
-        if ((bar!=0) && (pre_bar == robot.FBar.getCurrentPosition()) && !deathFlip) {
-            bar = 0;
         }
         telemetry.addData("4Bar Power: ","%.5f",bar);
         telemetry.addData("4Bar Encoder: ", "%d", robot.FBar.getCurrentPosition());
@@ -215,7 +183,6 @@ public class Teleop extends OpMode
             robot.FBar.setPower(0);
             FBarAuto =false;
         }
-        pre_bar = robot.Succq.getCurrentPosition();
         // Controls latching servos on linear actuator
         // Latch open
         if (gamepad1.dpad_right)
@@ -237,14 +204,17 @@ public class Teleop extends OpMode
         }
         if (gamepad2.b) {
             armBAuto = true;
-            robot.armBase.setTargetPosition(-6000);
+            robot.armBase.setTargetPosition(-300);
             robot.armBase.setPower(-1);
             robot.armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             FBarAuto = true;
-            robot.FBar.setTargetPosition(-11000);
+            robot.FBar.setTargetPosition(-10000);
             robot.FBar.setPower(-1);
             robot.FBar.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            dmac = true;
+            time.reset();
         }
+
         if (gamepad2.y) {
             armBAuto = true;
             robot.armBase.setTargetPosition(-300);
@@ -264,6 +234,19 @@ public class Teleop extends OpMode
             robot.FBar.setTargetPosition(-10000);
             robot.FBar.setPower(-1);
             robot.FBar.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+        if (dmac && (time.seconds() >= 1 || (Math.abs(robot.armBase.getCurrentPosition()+300)<10 && Math.abs(robot.FBar.getCurrentPosition()+10000)<10))) {
+            if (armBAuto) {
+                robot.armBase.setTargetPosition(-6000);
+                robot.armBase.setPower(-1);
+                robot.armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            if (FBarAuto) {
+                robot.FBar.setTargetPosition(-11000);
+                robot.FBar.setPower(-1);
+                robot.FBar.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            dmac = false;
         }
         if (robot.armBase.isBusy()) {
             armBAuto = true;
