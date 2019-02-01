@@ -149,13 +149,13 @@ public class CraterNL extends LinearOpMode {
                 //left
                 mov.angleTurn(TURN_SPEED,33);
 
-                mov.encoderDrive(DRIVE_SPEED, 15,15, 5);
+                mov.encoderDrive(DRIVE_SPEED,15, 5);
                 sleep(100);
 
                 mov.angleTurn(TURN_SPEED,33);
                 mov.angleTurn(TURN_SPEED,-33);
 
-                mov.encoderDrive(DRIVE_SPEED, -15,-15, 5);
+                mov.encoderDrive(DRIVE_SPEED, -15, 5);
 
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 mov.angleTurn(TURN_SPEED,-33);
@@ -165,13 +165,13 @@ public class CraterNL extends LinearOpMode {
                 //middle
                 //theoretically no movement is necessary
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive(DRIVE_SPEED, 7,7, 5);
+                mov.encoderDrive(DRIVE_SPEED,7, 5);
                 sleep(100);
 
                 mov.angleTurn(TURN_SPEED,-33);
                 mov.angleTurn(TURN_SPEED,33);
 
-                mov.encoderDrive(DRIVE_SPEED, -7,-7, 5);
+                mov.encoderDrive(DRIVE_SPEED, -7, 5);
 
 
                 break;
@@ -179,13 +179,13 @@ public class CraterNL extends LinearOpMode {
                 //right
                 mov.angleTurn(TURN_SPEED,-33);
 
-                mov.encoderDrive(DRIVE_SPEED, 15,15, 5);
+                mov.encoderDrive(DRIVE_SPEED, 15, 5);
                 sleep(100);
 
                 mov.angleTurn(TURN_SPEED,-33);
                 mov.angleTurn(TURN_SPEED,33);
 
-                mov.encoderDrive(DRIVE_SPEED, -15, -15,5);
+                mov.encoderDrive(DRIVE_SPEED, -15,5);
                 mov.angleTurn(TURN_SPEED,33);
 
                 break;
@@ -194,27 +194,27 @@ public class CraterNL extends LinearOpMode {
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 telemetry.addData("TFlow says: ", "%.5f",tFlow.mineralX);
                 telemetry.update();
-                mov.encoderDrive(DRIVE_SPEED, 13,13, 5);
-                mov.encoderDrive(DRIVE_SPEED, -13,-13, 5);
+                mov.encoderDrive(DRIVE_SPEED,13, 5);
+                mov.encoderDrive(DRIVE_SPEED,-13, 5);
                 break;
             default:
                 //error happened with TensorFlow
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 // if tensor flow doesn't function, the robot will default to moving to the middle position
-                mov.encoderDrive(DRIVE_SPEED, 20, 20,5);
-                mov.encoderDrive(DRIVE_SPEED, -20,-29, 5);
+                mov.encoderDrive(DRIVE_SPEED, 20,5);
+                mov.encoderDrive(DRIVE_SPEED, -20,5);
                 break;
         }
         sleep(250);
-        mov.encoderDrive(0.2, 2,2, 5);
+        mov.encoderDrive(0.2,2, 5);
         sleep(100);
 
         mov.angleTurn(TURN_SPEED,58);
-        mov.encoderDrive(DRIVE_SPEED, 32, 32,5);
+        mov.encoderDrive(DRIVE_SPEED, 32,5);
         mov.angleTurn(TURN_SPEED,25);
-        mov.encoderDrive(DRIVE_SPEED, 7,7, 5);
+        mov.encoderDrive(DRIVE_SPEED,7, 5);
         mov.angleTurn(TURN_SPEED,14);
-        mov.encoderDrive(DRIVE_SPEED, 33,33, 5);
+        mov.encoderDrive(DRIVE_SPEED,33, 5);
 
         sleep(500);
         mov.angleTurn(TURN_SPEED,95);

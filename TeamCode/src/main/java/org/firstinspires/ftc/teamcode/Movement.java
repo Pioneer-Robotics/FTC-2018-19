@@ -24,7 +24,7 @@ class Movement extends Thread {
     private double timeoutSG;
     private int mode;
 
-    double margin = 0.5;
+    double margin = 0.1;
 
     void init(DcMotor motL, DcMotor motR, BNO055IMU im, LinearOpMode O, ElapsedTime run, double CPI) {
         //turns all the necessary robot parts into local variables as it is extremely tedious to have to write each as an argument for every individual function call.
@@ -182,8 +182,8 @@ class Movement extends Thread {
             runtime.reset();
 
             //sets speed for motors
-            motorLeft.setPower(-Math.copySign(speed,leftCMG));
-            motorRight.setPower(-Math.copySign(speed, rightCMG));
+            motorLeft.setPower(-Math.copySign(speed,leftCM));
+            motorRight.setPower(-Math.copySign(speed, rightCM));
 
             //wait to prevent jitter
             try {
@@ -200,7 +200,7 @@ class Movement extends Thread {
                 //If the robot is getting farther away, then stop the robot.
 
                 //calculations to read distance+telemetry to read distance
-                Op.telemetry.addData("Goodness:", "%7d, %7d",lT+20 - Math.abs(motorLeft.getCurrentPosition() - newLeftTarget), rT+20 - Math.abs(motorRight.getCurrentPosition() - newRightTarget));
+                Op.telemetry.addData("Goodness:", "%7d, %7d",lT+10 - Math.abs(motorLeft.getCurrentPosition() - newLeftTarget), rT+20 - Math.abs(motorRight.getCurrentPosition() - newRightTarget));
                 lT = Math.abs(motorLeft.getCurrentPosition() - newLeftTarget);
                 rT = Math.abs(motorLeft.getCurrentPosition() - newRightTarget);
                 if (Op.isStopRequested()) { //prevents crashes when emergency stop is activated
@@ -213,7 +213,7 @@ class Movement extends Thread {
                 Op.telemetry.addData("Speeds:","%.5f, %.5f",Math.copySign(Math.abs(speed)*lT/((int) (leftCM * COUNTS_PER_INCH)),newLeftTarget),Math.copySign(Math.abs(speed)*rT/((int) (rightCM * COUNTS_PER_INCH)),newRightTarget));
                 Op.telemetry.addData("Encoder Target: ", "%7d, %7d", newLeftTarget, newRightTarget);
                 Op.telemetry.addData("Current Position: ", "%7d, %7d", motorLeft.getCurrentPosition(), motorRight.getCurrentPosition());
-                Op.telemetry.addData("Special Numbers:", "%7d, %7d", lT, rT);
+                Op.telemetry.addData("Distance from Target:", "%7d, %7d", lT, rT);
                 Op.telemetry.update();
                 if (Op.isStopRequested()) {//prevents crashes when emergency stop is activated
                     motorLeft.setPower(0);

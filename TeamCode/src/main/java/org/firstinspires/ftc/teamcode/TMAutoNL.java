@@ -110,7 +110,7 @@ public class TMAutoNL extends LinearOpMode {
         telemetry.update();
 
         //Drive away
-        mov.encoderDrive(0.5,5,5,30);
+        mov.encoderDrive(0.5,5,30);
         telemetry.addData("Choose:", "%d", choose);
         telemetry.addData("Status:","%d",tFlow.Status);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
@@ -146,10 +146,10 @@ public class TMAutoNL extends LinearOpMode {
                 //Mineral on Left
                 mov.angleTurn(0.5,23);
 
-                mov.encoderDrive(DRIVE_SPEED, 35, 35, 5);
+                mov.encoderDrive(DRIVE_SPEED,35, 5);
                 mov.angleTurn(0.2, -76);
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive(DRIVE_SPEED,25,25,30);
+                mov.encoderDrive(DRIVE_SPEED,25,30);
                 mov.angleTurn(0.3, 80);
 
                 break;
@@ -158,7 +158,7 @@ public class TMAutoNL extends LinearOpMode {
                 //no turning movement is necessary to hit mineral
 
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive(DRIVE_SPEED, 45, 45, 5);
+                mov.encoderDrive(DRIVE_SPEED,45, 5);
 
                 mov.angleTurn(0.2, 60);
 
@@ -171,10 +171,10 @@ public class TMAutoNL extends LinearOpMode {
                 //Mineral on Right
                 mov.angleTurn(0.5,-23);
 
-                mov.encoderDrive(DRIVE_SPEED, 35, 35, 5);
+                mov.encoderDrive(DRIVE_SPEED,35, 5);
                 mov.angleTurn(0.2, 66);
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive(DRIVE_SPEED,20,20,30);
+                mov.encoderDrive(DRIVE_SPEED,20,30);
                 mov.angleTurn(0.2, 40);
 
 
@@ -191,8 +191,8 @@ public class TMAutoNL extends LinearOpMode {
                 //error happened with TensorFlow
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 // if tensor flow doesn't function, the robot will default to moving to the middle position
-                mov.encoderDrive(DRIVE_SPEED, 13, 13, 5);
-                mov.encoderDrive( 0.5,10,10,10);
+                mov.encoderDrive(DRIVE_SPEED,13, 5);
+                mov.encoderDrive( 0.5,10,10);
 
                 mov.angleTurn(0.3, 90);
                 break;

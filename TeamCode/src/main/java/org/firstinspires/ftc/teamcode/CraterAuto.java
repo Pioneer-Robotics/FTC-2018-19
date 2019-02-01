@@ -25,6 +25,7 @@ public class CraterAuto extends LinearOpMode {
     private static final double COUNTS_PER_INCH = (TETRIX_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_CM * 3.1415);
     private static final double DRIVE_SPEED = 0.7;
     private static final double TURN_SPEED = 0.5;
+    private static final boolean latch = false;
 
     // State used for updating telemetry
     private int choose;
@@ -79,50 +80,51 @@ public class CraterAuto extends LinearOpMode {
 
         /*     ACTUAL MOVEMENT--------------------------------------------------------------*/
 
-        robot.armBase.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.armBase.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        while (robot.linearArm.getCurrentPosition()<= 13516)  /* Most effective detachment point might not be at the top*/ {
-            //positive = up
-            telemetry.addData("Status: ", "Lowering robot");
-            telemetry.addData("Encoder: ", robot.linearArm.getCurrentPosition());
-            telemetry.addData("Bottom is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
-            telemetry.addData("Choose:", "%d", choose);
-            telemetry.addData("Status:","%d",tFlow.Status);
-            telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
-            telemetry.update();
-            robot.linearArm.setPower(1);
-            if (robot.topSwitch.getState()) {
-                robot.linearArm.setPower(0);
-                break;
-            }
+        if (latch) {
+            robot.armBase.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.armBase.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            while (robot.linearArm.getCurrentPosition() <= 13516)  /* Most effective detachment point might not be at the top*/ {
+                //positive = up
+                telemetry.addData("Status: ", "Lowering robot");
+                telemetry.addData("Encoder: ", robot.linearArm.getCurrentPosition());
+                telemetry.addData("Bottom is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
+                telemetry.addData("Choose:", "%d", choose);
+                telemetry.addData("Status:", "%d", tFlow.Status);
+                telemetry.addData("MineralX:", "%.5f", tFlow.mineralX);
+                telemetry.update();
+                robot.linearArm.setPower(1);
+                if (robot.topSwitch.getState()) {
+                    robot.linearArm.setPower(0);
+                    break;
+                }
             /*if (robot.armBase.getCurrentPosition() < 500) robot.armBase.setPower(-1);
             else robot.armBase.setPower(0);*/
-            if (this.isStopRequested()) {
-                robot.linearArm.setPower(0);
-                camM.go = false;
-                tFlow.go =false;
-                return;
+                if (this.isStopRequested()) {
+                    robot.linearArm.setPower(0);
+                    camM.go = false;
+                    tFlow.go = false;
+                    return;
+                }
+
             }
-
+            robot.linearArm.setPower(0);
         }
-        robot.linearArm.setPower(0);
-
-        // Detach from lander
-        robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);
-        telemetry.addData("Latches", "Min");
-        telemetry.addData("Status: ", "Disengaging From Lander");
-        telemetry.update();
-        runtime.reset();
-        while (!robot.botSwitch.getState() && !robot.topSwitch.getState() && runtime.milliseconds() < 3000) {
-            robot.linearArm.setPower(1);
-            telemetry.addData("Top is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
-            telemetry.addData("Bottom is", robot.botSwitch.getState() ? "Pressed" : "not Pressed");
-            telemetry.addData("Choose:", "%d", choose);
-            telemetry.addData("Status:","%d",tFlow.Status);
-            telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
+            // Detach from lander
+            robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);
+            telemetry.addData("Latches", "Min");
+            telemetry.addData("Status: ", "Disengaging From Lander");
             telemetry.update();
-        }
-        robot.linearArm.setPower(0);
+            runtime.reset();
+            while (!robot.botSwitch.getState() && !robot.topSwitch.getState() && runtime.milliseconds() < 3000) {
+                robot.linearArm.setPower(1);
+                telemetry.addData("Top is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
+                telemetry.addData("Bottom is", robot.botSwitch.getState() ? "Pressed" : "not Pressed");
+                telemetry.addData("Choose:", "%d", choose);
+                telemetry.addData("Status:", "%d", tFlow.Status);
+                telemetry.addData("MineralX:", "%.5f", tFlow.mineralX);
+                telemetry.update();
+            }
+            robot.linearArm.setPower(0);
         /*
         runtime.reset();
         while (tFlow.go && runtime.milliseconds() <= 10000) {
@@ -176,13 +178,13 @@ public class CraterAuto extends LinearOpMode {
                 //left
                 mov.angleTurn(TURN_SPEED,33);
 
-                mov.encoderDrive(DRIVE_SPEED, 15, 5);
+                mov.encoderDrive(DRIVE_SPEED, 12, 5);
                 sleep(100);
 
-                mov.angleTurn(TURN_SPEED,33);
-                mov.angleTurn(TURN_SPEED,-33);
+                mov.angleTurn(TURN_SPEED,20);
+                mov.angleTurn(TURN_SPEED,-20);
 
-                mov.encoderDrive(DRIVE_SPEED, -15, -15 ,5);
+                mov.encoderDrive(DRIVE_SPEED, -12,5);
 
                 mov.angleTurn(0.3,-33);
 
@@ -190,13 +192,13 @@ public class CraterAuto extends LinearOpMode {
             case 2:
                 //middle
                 //theoretically no movement is necessary
-                mov.encoderDrive(DRIVE_SPEED, 7,7, 5);
+                mov.encoderDrive(DRIVE_SPEED,7, 5);
                 sleep(100);
 
-                mov.angleTurn(TURN_SPEED,-33);
-                mov.angleTurn(TURN_SPEED,33);
+                mov.angleTurn(TURN_SPEED,-20);
+                mov.angleTurn(TURN_SPEED,20);
 
-                mov.encoderDrive(DRIVE_SPEED, -7,-7, 5);
+                mov.encoderDrive(DRIVE_SPEED,-7, 5);
 
 
                 break;
@@ -204,13 +206,13 @@ public class CraterAuto extends LinearOpMode {
                 //right
                 mov.angleTurn(TURN_SPEED,-33);
 
-                mov.encoderDrive(DRIVE_SPEED, 15,15, 5);
+                mov.encoderDrive(DRIVE_SPEED,12, 5);
                 sleep(100);
 
-                mov.angleTurn(TURN_SPEED,-33);
-                mov.angleTurn(TURN_SPEED,33);
+                mov.angleTurn(TURN_SPEED,-20);
+                mov.angleTurn(TURN_SPEED,20);
 
-                mov.encoderDrive(DRIVE_SPEED, -15, -15,5);
+                mov.encoderDrive(DRIVE_SPEED, -12,5);
                 mov.angleTurn(0.2,33);
 
                 break;
@@ -218,23 +220,23 @@ public class CraterAuto extends LinearOpMode {
                 //error happened with TensorFlow
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 // if tensor flow doesn't function, the robot will default to moving to the middle position
-                mov.encoderDrive(DRIVE_SPEED, 20,20,5);
-                mov.encoderDrive(DRIVE_SPEED, -20,-20,5);
+                mov.encoderDrive(DRIVE_SPEED, 7,5);
+                mov.encoderDrive(DRIVE_SPEED, -7,5);
                 break;
         }
         sleep(250);
-        mov.encoderDrive(0.2, 2,2  ,5);
+        mov.encoderDrive(0.2, 1 ,5);
         sleep(100);
 
-        mov.angleTurn(TURN_SPEED,58);
-        mov.encoderDrive(DRIVE_SPEED, 32, 32,5);
-        mov.angleTurn(TURN_SPEED,25);
-        mov.encoderDrive(DRIVE_SPEED, 7, 7,5);
-        mov.angleTurn(TURN_SPEED,14);
-        mov.encoderDrive(DRIVE_SPEED, 33, 33,5);
+        mov.angleTurn(TURN_SPEED,74);
+        mov.encoderDrive(DRIVE_SPEED, 34.5,5);
+        mov.angleTurn(TURN_SPEED,37);
+        mov.encoderDrive(DRIVE_SPEED, 11,5);
+        mov.angleTurn(TURN_SPEED,18);
+        mov.encoderDrive(DRIVE_SPEED, 20,5);
 
         sleep(500);
-        mov.angleTurn(TURN_SPEED,95);
+        mov.angleTurn(TURN_SPEED,85);
         telemetry.update();
         telemetry.addData("Status: ", "Dropping Team Marker");
         telemetry.update();
@@ -249,18 +251,20 @@ public class CraterAuto extends LinearOpMode {
         robot.Camera.setPosition(0);
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
         robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);
-        while (!robot.botSwitch.getState()) {
-            robot.linearArm.setPower(-1);
-            telemetry.addData("Top is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
-            telemetry.addData("Bottom is", robot.botSwitch.getState() ? "Pressed" : "not Pressed");
-            telemetry.update();
-            if (this.isStopRequested()) {
-                robot.linearArm.setPower(0);
-                break;
-            }
+        if (latch) {
+            while (!robot.botSwitch.getState()) {
+                robot.linearArm.setPower(-1);
+                telemetry.addData("Top is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
+                telemetry.addData("Bottom is", robot.botSwitch.getState() ? "Pressed" : "not Pressed");
+                telemetry.update();
+                if (this.isStopRequested()) {
+                    robot.linearArm.setPower(0);
+                    break;
+                }
 
+            }
+            robot.linearArm.setPower(0);
         }
-        robot.linearArm.setPower(0);
 
 
         //Drop Team Marker

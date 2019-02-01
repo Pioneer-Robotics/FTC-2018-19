@@ -33,7 +33,7 @@ public class NewMovementTester extends LinearOpMode {
                     return;
                 }
             }
-            mov.encoderDrive(1,50,30,5);
+            mov.encoderDrive(1,-50,30);
         }
     }
 }
