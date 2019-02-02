@@ -25,7 +25,7 @@ public class CraterAuto extends LinearOpMode {
     private static final double COUNTS_PER_INCH = (TETRIX_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_CM * 3.1415);
     private static final double DRIVE_SPEED = 0.7;
     private static final double TURN_SPEED = 0.5;
-    private static final boolean latch = false;
+    private static final boolean latch = true;
 
     // State used for updating telemetry
     private int choose;
@@ -178,13 +178,13 @@ public class CraterAuto extends LinearOpMode {
                 //left
                 mov.angleTurn(TURN_SPEED,33);
 
-                mov.encoderDrive(DRIVE_SPEED, 12, 5);
+                mov.encoderDrive(DRIVE_SPEED, 15, 5);
                 sleep(100);
 
-                mov.angleTurn(TURN_SPEED,20);
-                mov.angleTurn(TURN_SPEED,-20);
+                mov.angleTurn(TURN_SPEED,40);
+                mov.angleTurn(TURN_SPEED,-40);
 
-                mov.encoderDrive(DRIVE_SPEED, -12,5);
+                mov.encoderDrive(DRIVE_SPEED, -15,5);
 
                 mov.angleTurn(0.3,-33);
 
@@ -192,13 +192,13 @@ public class CraterAuto extends LinearOpMode {
             case 2:
                 //middle
                 //theoretically no movement is necessary
-                mov.encoderDrive(DRIVE_SPEED,7, 5);
+                mov.encoderDrive(DRIVE_SPEED,9, 5);
                 sleep(100);
 
-                mov.angleTurn(TURN_SPEED,-20);
-                mov.angleTurn(TURN_SPEED,20);
+                mov.angleTurn(TURN_SPEED,-40);
+                mov.angleTurn(TURN_SPEED,40);
 
-                mov.encoderDrive(DRIVE_SPEED,-7, 5);
+                mov.encoderDrive(DRIVE_SPEED,-9, 5);
 
 
                 break;
@@ -206,13 +206,13 @@ public class CraterAuto extends LinearOpMode {
                 //right
                 mov.angleTurn(TURN_SPEED,-33);
 
-                mov.encoderDrive(DRIVE_SPEED,12, 5);
+                mov.encoderDrive(DRIVE_SPEED,15, 5);
                 sleep(100);
 
-                mov.angleTurn(TURN_SPEED,-20);
-                mov.angleTurn(TURN_SPEED,20);
+                mov.angleTurn(TURN_SPEED,-40);
+                mov.angleTurn(TURN_SPEED,40);
 
-                mov.encoderDrive(DRIVE_SPEED, -12,5);
+                mov.encoderDrive(DRIVE_SPEED, -15,5);
                 mov.angleTurn(0.2,33);
 
                 break;
@@ -229,11 +229,11 @@ public class CraterAuto extends LinearOpMode {
         sleep(100);
 
         mov.angleTurn(TURN_SPEED,74);
-        mov.encoderDrive(DRIVE_SPEED, 34.5,5);
+        mov.encoderDrive(DRIVE_SPEED, 25,5);
         mov.angleTurn(TURN_SPEED,37);
-        mov.encoderDrive(DRIVE_SPEED, 11,5);
-        mov.angleTurn(TURN_SPEED,18);
-        mov.encoderDrive(DRIVE_SPEED, 20,5);
+        mov.encoderDrive(DRIVE_SPEED, 14,5);
+        mov.angleTurn(TURN_SPEED,19);
+        mov.encoderDrive(DRIVE_SPEED, 25,5);
 
         sleep(500);
         mov.angleTurn(TURN_SPEED,85);

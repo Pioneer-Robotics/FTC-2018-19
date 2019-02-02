@@ -142,10 +142,10 @@ public class Teleop extends OpMode
         } else {
             flipster = false;
         }*/
-        if (gamepad2.left_bumper) robot.armBase.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        /*if (gamepad2.left_bumper) robot.armBase.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         else robot.armBase.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         if (gamepad2.right_bumper) robot.FBar.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        else robot.FBar.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        else robot.FBar.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);*/
         /*if (gamepad1.left_bumper) {
             if (!flipster1) {
                 asuq = -asuq;
@@ -173,6 +173,7 @@ public class Teleop extends OpMode
             robot.armBase.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.armBase.setPower(0);
             armBAuto = false;
+            dmac = false;
         }
         telemetry.addData("4Bar Power: ","%.5f",bar);
         telemetry.addData("4Bar Encoder: ", "%d", robot.FBar.getCurrentPosition());
@@ -181,7 +182,8 @@ public class Teleop extends OpMode
         } else if (bar!=0) {
             robot.FBar.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.FBar.setPower(0);
-            FBarAuto =false;
+            FBarAuto = false;
+            dmac = false;
         }
         // Controls latching servos on linear actuator
         // Latch open
@@ -231,21 +233,21 @@ public class Teleop extends OpMode
             robot.armBase.setPower(-1);
             robot.armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             FBarAuto = true;
-            robot.FBar.setTargetPosition(-10000);
+            robot.FBar.setTargetPosition(-11500);
             robot.FBar.setPower(-1);
             robot.FBar.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
-        if (dmac && (time.seconds() >= 1 || (Math.abs(robot.armBase.getCurrentPosition()+300)<10 && Math.abs(robot.FBar.getCurrentPosition()+10000)<10))) {
-            if (armBAuto) {
-                robot.armBase.setTargetPosition(-6000);
+        telemetry.addData("Time: ", "%.5f", time.milliseconds());
+        telemetry.addData("dmac:", "%b", dmac);
+        if (dmac && (time.milliseconds() >= 4000 || (!robot.armBase.isBusy() && !robot.FBar.isBusy()))) {
+                robot.armBase.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                robot.armBase.setTargetPosition(-5500);
                 robot.armBase.setPower(-1);
                 robot.armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-            if (FBarAuto) {
-                robot.FBar.setTargetPosition(-11000);
+                robot.FBar.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                robot.FBar.setTargetPosition(-12000);
                 robot.FBar.setPower(-1);
                 robot.FBar.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
             dmac = false;
         }
         if (robot.armBase.isBusy()) {
