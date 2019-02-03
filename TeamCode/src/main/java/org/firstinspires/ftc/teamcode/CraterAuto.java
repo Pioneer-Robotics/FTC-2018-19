@@ -109,7 +109,7 @@ public class CraterAuto extends LinearOpMode {
             }
             robot.linearArm.setPower(0);
         }
-            // Detach from lander
+        // Detach from lander
             robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);
             telemetry.addData("Latches", "Min");
             telemetry.addData("Status: ", "Disengaging From Lander");
@@ -142,6 +142,7 @@ public class CraterAuto extends LinearOpMode {
 
         //Drive away
         mov.encoderDrive(0.5,10,10,10);
+
         telemetry.addData("Choose:", "%d", choose);
         telemetry.addData("Status:","%d",tFlow.Status);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
@@ -154,6 +155,8 @@ public class CraterAuto extends LinearOpMode {
             telemetry.update();
             sleep(1);
         }
+
+        // Tensorflow output stored into variable to choose where robot should go
         choose = tFlow.Status;
         if (tFlow.Status == -3) {
             if (tFlow.mineralX<233) {
@@ -173,6 +176,8 @@ public class CraterAuto extends LinearOpMode {
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
         telemetry.update();
         sleep(100);
+
+        // Perform sampling
         switch (choose) {
             case 1:
                 //left
@@ -224,6 +229,8 @@ public class CraterAuto extends LinearOpMode {
                 mov.encoderDrive(DRIVE_SPEED, -7,5);
                 break;
         }
+
+        // Maneuver to depot to drop team marker
         sleep(250);
         mov.encoderDrive(0.2, 1 ,5);
         sleep(100);
@@ -243,8 +250,14 @@ public class CraterAuto extends LinearOpMode {
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMIN_POSITION);
         telemetry.addData("Status: ", "Dropped Team Marker");
         telemetry.update();
-        sleep(1500);
+        sleep(500);
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
+
+        // Align with wall and back up into crater
+        //mov.encoderDrive(DRIVE_SPEED, -5, 5);
+        mov.angleTurn(TURN_SPEED,85);
+        mov.encoderDrive(DRIVE_SPEED, -35, 5);
+
         //mov.angleTurn(TURN_SPEED,95, false);
         //mov.encoderDrive(DRIVE_SPEED, 70, 20);
 

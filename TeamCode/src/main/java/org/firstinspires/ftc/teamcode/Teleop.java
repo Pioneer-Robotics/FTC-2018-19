@@ -109,6 +109,8 @@ public class Teleop extends OpMode
             left /= max;
             right /= max;
         }
+
+        // Decrease power input and flip direction so line-up for reattachment on lander is easier
         if (gamepad1.y)
         {
             left *= -0.5*(1-gamepad1.right_trigger);
@@ -204,6 +206,8 @@ public class Teleop extends OpMode
         if ((gamepad1.dpad_up || gamepad2.dpad_up) && robot.dropTop.getPosition()<HardwareInfinity.DT_MAX) {
             robot.dropTop.setPosition(robot.dropTop.getPosition()+0.015);
         }
+
+        // The following gamepad2 inputs are macros to move the EMCD 2.0 between its collection and depositing positions
         if (gamepad2.b) {
             armBAuto = true;
             robot.armBase.setTargetPosition(-300);

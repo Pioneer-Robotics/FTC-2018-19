@@ -24,7 +24,7 @@ public class TMAuto extends LinearOpMode {
     private static final double WHEEL_DIAMETER_CM = 4.0 * 2.54;     // For figuring circumference
     private static final double COUNTS_PER_INCH = (TETRIX_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_CM * 3.1415);
     private static final double DRIVE_SPEED = 0.7;
-    private static final double TURN_SPEED = 1;
+    private static final double TURN_SPEED = 0.5;
 
     // State used for updating telemetry
     private int choose;
@@ -102,6 +102,7 @@ public class TMAuto extends LinearOpMode {
         }
         robot.linearArm.setPower(0);
         tFlow.start();
+
         // Detach from lander
         robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);
         telemetry.addData("Latches", "Min");
@@ -137,6 +138,7 @@ public class TMAuto extends LinearOpMode {
 
         //Drive away
         mov.encoderDrive(0.5,5,10);
+
         telemetry.addData("Choose:", "%d", choose);
         telemetry.addData("Status:","%d",tFlow.Status);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
@@ -149,6 +151,8 @@ public class TMAuto extends LinearOpMode {
             telemetry.update();
             sleep(1);
         }
+
+        // Tensorflow output stored into variable to choose where robot should go
         choose = tFlow.Status;
         if (tFlow.Status == -3) {
             if (tFlow.mineralX<233) {
@@ -167,15 +171,17 @@ public class TMAuto extends LinearOpMode {
         telemetry.addData("Status:","%d",tFlow.Status);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
         telemetry.update();
+
+        // Perform sampling and position for dropping team marker
         switch (choose) {
             case 1:
                 //Mineral on Left
-                mov.angleTurn(0.7,23);
+                mov.angleTurn(TURN_SPEED,23);
                 mov.encoderDrive(DRIVE_SPEED,35, 5);
-                mov.angleTurn(0.9, -76);
+                mov.angleTurn(TURN_SPEED, -76);
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 mov.encoderDrive(DRIVE_SPEED,25, 5);
-                mov.angleTurn(1, 80);
+                mov.angleTurn(TURN_SPEED, 80);
 
                 break;
             case 2:
@@ -183,16 +189,16 @@ public class TMAuto extends LinearOpMode {
                 //no turning movement is necessary to hit mineral
                 mov.encoderDrive(DRIVE_SPEED,45, 5);
 
-                mov.angleTurn(0.7, 60);
+                mov.angleTurn(TURN_SPEED, 60);
                 break;
             case 3:
                 //Mineral on Right
-                mov.angleTurn(0.5,-23);
+                mov.angleTurn(TURN_SPEED,-23);
                 mov.encoderDrive(DRIVE_SPEED,35, 5);
-                mov.angleTurn(0.7, 66);
+                mov.angleTurn(TURN_SPEED, 66);
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive(DRIVE_SPEED,20,5);
-                mov.angleTurn(0.6, 40);
+                mov.encoderDrive(DRIVE_SPEED,10,5);
+                mov.angleTurn(TURN_SPEED, 20);
 
                 //mov.angleTurn(0.2, 90, false);
                 //mov.encoderDrive( 0.5, 5,5,10, false);
@@ -202,39 +208,49 @@ public class TMAuto extends LinearOpMode {
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 // if tensor flow doesn't function, the robot will default to moving to the middle position
                 mov.encoderDrive(DRIVE_SPEED,13,5);
-                mov.encoderDrive( 0.5,10, 5);
+                mov.encoderDrive(DRIVE_SPEED,10, 5);
 
-                mov.angleTurn(0.3, 90);
+                mov.angleTurn(TURN_SPEED, 90);
                 sleep(5000);
                 break;
         }
         telemetry.addData("Status: ", "Dropping Team Marker");
         telemetry.update();
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMIN_POSITION);
-        sleep(1500);
+        sleep(500);
         telemetry.addData("Status: ", "Dropped Team Marker");
         telemetry.update();
-        sleep(1500);
+        //sleep(1500);
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
         telemetry.update();
 
+        // Different maneuvering to get to crater depending on which position sampling mineral was in
+        // Goal is to line up with wall after team marker dropped
         switch (choose) {
             case 1:
-                mov.angleTurn(1, 180);
+                mov.encoderDrive(DRIVE_SPEED,-5, 5);
+                mov.angleTurn(TURN_SPEED, 40);
+                mov.encoderDrive(DRIVE_SPEED,-10, 5);
+                mov.angleTurn(TURN_SPEED, -23);
+
                 sleep(5000);
                 //mov.encoderDrive(DRIVE_SPEED,-25,-25,30, false);
                 break;
             case 2:
-                mov.angleTurn(1, -135);
+                mov.encoderDrive(DRIVE_SPEED,-10, 5);
+                mov.angleTurn(TURN_SPEED, -23);
                 sleep(5000);
                 //mov.encoderDrive(DRIVE_SPEED, -20, -20, 10, false);
                 break;
             case 3:
-                mov.angleTurn(1, 90);
+                mov.encoderDrive(DRIVE_SPEED,-10, 5);
+                mov.angleTurn(TURN_SPEED, -23);
                 sleep(5000);
-                //mov.encoderDrive(DRIVE_SPEED,-20,-20,30, false);
                 break;
         }
+        // Back up into crater
+        mov.encoderDrive(DRIVE_SPEED,-30, 5);
+
         robot.Camera.setPosition(0);
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
         robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);
