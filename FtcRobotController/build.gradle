@@ -7,7 +7,6 @@ android {
         config {
             keyAlias 'key0'
             keyPassword '12345678'
-            storeFile file('C:/Users/jcwan/Downloads/FTC/keys.jks')
             storePassword '12345678'
         }
     }
