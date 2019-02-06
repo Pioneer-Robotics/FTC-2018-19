@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -11,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import java.text.DecimalFormat;
 
 public class CamManager extends Thread {
+    //initialize al of the necessary variables
     private BNO055IMU imu;
     private HardwareInfinity robot;
     private CVManager CamCV = new CVManager();
@@ -23,26 +23,30 @@ public class CamManager extends Thread {
     DecimalFormat df = new DecimalFormat("#.###");
 
 
-    void init(BNO055IMU imu, HardwareInfinity robo_t, HardwareMap hw, CVManager tf) {
-        this.imu = imu;
+    void init(HardwareInfinity robo_t, CVManager tf) {
+        //pass necessary classes and sensors from the main hardware class
+        this.imu = robo_t.imu;
         this.robot = robo_t;
         this.CamCV = tf;
-        this.CamCV.disable = false;
+        //this.CamCV.disable = false;
         //if (!this.CamCV.isAlive() && canTrack) this.CamCV.start();
 
     }
 
     private void camVision(final float angleZero) {
+        //set the camera servo to a value relative to the IMU
+        //get IMU value
         Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-
+        //find angle delta
         float angleDiff = ( angles.firstAngle - angleZero );
-
+        //check if the servo can be moved to the right location and if so then do it
         if (((angles.firstAngle + angleDiff) >= angleZero - 150)  && ((angles.firstAngle + angleDiff) <= (angleZero + 150)) ) {
             robot.Camera.setPosition(1-Math.abs( Float.parseFloat(df.format(angles.firstAngle)) * (0.5/90) - 0.55));
             //cam stays center while robot turns
         }
     }
     private void scan() {
+        //move the camera back and forth to look for the gold
         if (robot.Camera.getPosition()>= 1 || robot.Camera.getPosition() <= 0.5) {
             camSpeed = -camSpeed;
         }
@@ -55,32 +59,13 @@ public class CamManager extends Thread {
         }
     }
     private void track(double goldX) {
-      //0 & 0 =left
+        // move to the position of the gold
+        //0 & 0 =left
         //1 & 780=right
-        /*double pixelDiff = robot.Camera.getPosition() + 0.0025*(goldX-(screenX/2));
-        if (goldX != screenX/2 && robot.Camera.getPosition()<= 1 && robot.Camera.getPosition()>= 0 && pixelDiff <=1 && pixelDiff >=0){
-            robot.Camera.setPosition(pixelDiff);
-        }
-        else if (pixelDiff >1){
-            robot.Camera.setPosition(1);
-        }
-        else if (pixelDiff < 0){
-            robot.Camera.setPosition(0);
-        }*/
         if (goldX>((screenX/2)+70)) {
             camSpeed = 0.001;
-            /*try {
-                Thread.sleep(10);
-            } catch (InterruptedException e){
-                int Jwee;
-            }*/
         } else if (goldX<((screenX/2)-70)) {
             camSpeed = -0.001;
-            /*try {
-                Thread.sleep(10);
-            } catch (InterruptedException e){
-                int Jwee;
-            }*/
         } else camSpeed = 0;
         if (robot.Camera.getPosition()+ camSpeed >=1) {
             robot.Camera.setPosition(1);
@@ -91,6 +76,7 @@ public class CamManager extends Thread {
         }
     }
     public void run() {
+        //main loop of the Camera Manager
         while (go) {
             if (mode == 0) {
                 camVision(reference);
@@ -100,6 +86,10 @@ public class CamManager extends Thread {
                 }
                 scan();
             } else if (mode == 2 && canTrack) {
+                if (!CamCV.isAlive()) {
+                    CamCV.go = true;
+                    CamCV.start();
+                }
                 CamCV.track = true;
                 track(CamCV.mineralX);
             }
