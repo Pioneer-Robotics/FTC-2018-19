@@ -77,15 +77,20 @@ public class CamManager extends Thread {
     }
     public void run() {
         //main loop of the Camera Manager
+        //check if we can run
         while (go) {
+            //take different actions based on the mode
             if (mode == 0) {
+                // counteract robot turning
                 camVision(reference);
             } else if (mode == 1) {
+                //scan in mode one
                 if (camSpeed == 0) {
                     camSpeed = 0.001;
                 }
                 scan();
             } else if (mode == 2 && canTrack) {
+                //track the gold in mode 2
                 if (!CamCV.isAlive()) {
                     CamCV.go = true;
                     CamCV.start();
@@ -93,6 +98,7 @@ public class CamManager extends Thread {
                 CamCV.track = true;
                 track(CamCV.mineralX);
             }
+            //Manage auto changing between the modes
             if (mode != 2) {
                 CamCV.track = false;
             }
