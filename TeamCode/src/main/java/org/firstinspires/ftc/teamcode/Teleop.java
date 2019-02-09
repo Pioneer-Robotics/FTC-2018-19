@@ -96,7 +96,6 @@ public class Teleop extends OpMode
         {
             robot.linearArm.setPower(0);
         }
-
         //blended motion
         left  = (drive+turn)/2*(gamepad1.right_trigger*3/2+1)*0.75;
         right = (drive-turn)/2*(gamepad1.right_trigger*3/2+1)*0.75;
