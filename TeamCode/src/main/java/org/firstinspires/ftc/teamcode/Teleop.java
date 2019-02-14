@@ -59,7 +59,7 @@ public class Teleop extends OpMode
         // This way it's also easy to just drive straight, or just turn.
         drive = gamepad1.left_stick_y;
         turn  =  -gamepad1.left_stick_x;
-        armB = -gamepad2.left_stick_y;
+        armB = -gamepad2.left_stick_y/4*(1+3*gamepad2.left_trigger);
         bar = gamepad2.right_stick_y;
         if (asuq==0) activate_suq = gamepad1.right_stick_y/4*(1+gamepad1.left_trigger);
         telemetry.addData("Succq:", gamepad1.right_stick_y/4 *(1+gamepad1.left_trigger));
@@ -70,8 +70,6 @@ public class Teleop extends OpMode
         } else if (gamepad1.right_bumper) {
             arm = -1;
         } else arm = 0;
-        if (arm == 0) arm = gamepad2.left_trigger;
-        if (arm == 0) arm = -gamepad2.right_trigger;
         //telemetry.addData("Trigger is", robot.trigger.isPressed() ? "Pressed" : "not Pressed");
         telemetry.addData("Bottom is", robot.botSwitch.getState() ? "Pressed" : "not Pressed");
         telemetry.addData("Top is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
@@ -170,7 +168,7 @@ public class Teleop extends OpMode
         telemetry.addData("Arm Base Encoder: ", "%d", robot.armBase.getCurrentPosition());
         if (!armBAuto) {
             robot.armBase.setPower(armB);
-        } else if (armB!=0) {
+        } else if (armB!=0 || gamepad2.left_bumper || gamepad2.a) {
             robot.armBase.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.armBase.setPower(0);
             armBAuto = false;
@@ -180,7 +178,7 @@ public class Teleop extends OpMode
         telemetry.addData("4Bar Encoder: ", "%d", robot.FBar.getCurrentPosition());
         if (!FBarAuto) {
             robot.FBar.setPower(bar);
-        } else if (bar!=0) {
+        } else if (bar!=0 || gamepad2.right_bumper|| gamepad2.a) {
             robot.FBar.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.FBar.setPower(0);
             FBarAuto = false;
