@@ -62,7 +62,7 @@ public class Teleop extends OpMode
         turn  =  -gamepad1.left_stick_x;
         armB = -gamepad2.left_stick_y/4*(1+3*gamepad2.left_trigger);
         bar = gamepad2.right_stick_y;
-        if (asuq==0) activate_suq = -(Math.pow(gamepad1.right_stick_y,2));
+        if (asuq==0) activate_suq = -Math.copySign(Math.pow(gamepad1.right_stick_y,2),gamepad1.right_stick_y);
         telemetry.addData("Succq:", activate_suq);
         telemetry.addData("Succq Encoder: ", "%d", robot.Succq.getCurrentPosition());
         telemetry.addData("Condition: ", "%.5f", Math.abs(robot.dropTop.getPosition() - HardwareInfinity.DT_MIN));
@@ -167,7 +167,9 @@ public class Teleop extends OpMode
         } else {
             flipster = true;
         }
-
+        if (robot.armBase.getCurrentPosition()<-3000 && !gamepad1.b) {
+            robot.dropTop.setPosition(HardwareInfinity.DT_MAX);
+        }
         //if the Succq isn't moving then stop it to save the motor
         if (asuq != 0) activate_suq = asuq;
         if ((activate_suq!=0) && (pre_suq == robot.Succq.getCurrentPosition()) && gamepad1.right_stick_y==0) {
