@@ -24,7 +24,7 @@ class Movement extends Thread {
     private double timeoutSG;
     private int mode;
 
-    double margin = 0.1;
+    double margin = 0.2;
 
     void init(DcMotor motL, DcMotor motR, BNO055IMU im, LinearOpMode O, ElapsedTime run, double CPI) {
         //turns all the necessary robot parts into local variables as it is extremely tedious to have to write each as an argument for every individual function call.
@@ -88,8 +88,8 @@ class Movement extends Thread {
                 // Calculate speed from distance to targetAngle
                 //spd=dis/((angles.firstAngle+360)%360); //slower
                 spd=dis/angle; //faster
-                motorLeft.setPower(-direction*(Math.abs(speed*spd)+0.05)); //set motor power based on given speed against dynamic spd and sets direction appropriately
-                motorRight.setPower(direction*(Math.abs(speed*spd)+0.05));
+                motorLeft.setPower(-direction*(Math.sqrt(Math.abs(speed*spd)))); //set motor power based on given speed against dynamic spd and sets direction appropriately
+                motorRight.setPower(direction*(Math.sqrt(Math.abs(speed*spd))));
 
                 //actual telemetry for diagnostics
                 Op.telemetry.addData("Error:", "%.5f", dis);

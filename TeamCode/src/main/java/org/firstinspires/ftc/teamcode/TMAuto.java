@@ -23,7 +23,7 @@ public class TMAuto extends LinearOpMode {
     private static final double DRIVE_GEAR_REDUCTION = 2.0;     // This is < 1.0 if geared UP
     private static final double WHEEL_DIAMETER_CM = 4.0 * 2.54;     // For figuring circumference
     private static final double COUNTS_PER_INCH = (TETRIX_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_CM * 3.1415);
-    private static final double DRIVE_SPEED = 0.7;
+    private static final double DRIVE_SPEED = 1;
     private static final double TURN_SPEED = 0.5;
 
     // State used for updating telemetry
@@ -130,7 +130,7 @@ public class TMAuto extends LinearOpMode {
             sleep(1);
         }
         */
-        sleep(1000);
+        sleep(100);
         telemetry.addData("Choose:", "%d", choose);
         telemetry.addData("Status:","%d",tFlow.Status);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
@@ -173,31 +173,34 @@ public class TMAuto extends LinearOpMode {
         telemetry.update();
 
         // Perform sampling and position for dropping team marker
+        sleep(6000);
         switch (choose) {
             case 1:
                 //Mineral on Left
-                mov.angleTurn(TURN_SPEED,23);
-                mov.encoderDrive(DRIVE_SPEED,35, 5);
-                mov.angleTurn(TURN_SPEED, -76);
+                mov.angleTurn(TURN_SPEED,33);
+                mov.encoderDrive(DRIVE_SPEED,32, 5);
+                mov.angleTurn(TURN_SPEED, -86);
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive(DRIVE_SPEED,25, 5);
-                mov.angleTurn(TURN_SPEED, 80);
+                mov.encoderDrive(DRIVE_SPEED,26, 5);
+                mov.angleTurn(TURN_SPEED, 85);
 
                 break;
             case 2:
                 //Mineral in Middle
                 //no turning movement is necessary to hit mineral
+                sleep(1000);
                 mov.encoderDrive(DRIVE_SPEED,45, 5);
 
                 mov.angleTurn(TURN_SPEED, 60);
                 break;
             case 3:
                 //Mineral on Right
-                mov.angleTurn(TURN_SPEED,-23);
+                sleep(1000);
+                mov.angleTurn(TURN_SPEED,-33);
                 mov.encoderDrive(DRIVE_SPEED,35, 5);
-                mov.angleTurn(TURN_SPEED, 66);
+                mov.angleTurn(TURN_SPEED, 76);
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive(DRIVE_SPEED,10,5);
+                mov.encoderDrive(DRIVE_SPEED,12,5);
                 mov.angleTurn(TURN_SPEED, 20);
 
                 //mov.angleTurn(0.2, 90, false);
@@ -226,31 +229,26 @@ public class TMAuto extends LinearOpMode {
 
         // Different maneuvering to get to crater depending on which position sampling mineral was in
         // Goal is to line up with wall after team marker dropped
+        /*
         switch (choose) {
             case 1:
-                mov.encoderDrive(DRIVE_SPEED,-5, 5);
-                mov.angleTurn(TURN_SPEED, 40);
-                mov.encoderDrive(DRIVE_SPEED,-10, 5);
-                mov.angleTurn(TURN_SPEED, -23);
-
-                sleep(5000);
-                //mov.encoderDrive(DRIVE_SPEED,-25,-25,30, false);
+                mov.encoderDrive(DRIVE_SPEED,-7, 5);
+                mov.angleTurn(TURN_SPEED, 35);
+                mov.encoderDrive(DRIVE_SPEED,12, 5);
+                mov.angleTurn(TURN_SPEED, 23);
                 break;
             case 2:
-                mov.encoderDrive(DRIVE_SPEED,-10, 5);
-                mov.angleTurn(TURN_SPEED, -23);
-                sleep(5000);
-                //mov.encoderDrive(DRIVE_SPEED, -20, -20, 10, false);
+                mov.encoderDrive(DRIVE_SPEED,17, 5);
+                mov.angleTurn(TURN_SPEED, 20);
                 break;
             case 3:
-                mov.encoderDrive(DRIVE_SPEED,-10, 5);
-                mov.angleTurn(TURN_SPEED, -23);
-                sleep(5000);
+                mov.encoderDrive(DRIVE_SPEED,16, 5);
+                mov.angleTurn(TURN_SPEED, 20);
                 break;
         }
-        // Back up into crater
-        mov.encoderDrive(DRIVE_SPEED,-30, 5);
-
+        // Back up into crater at max speed
+        mov.encoderDrive(1,50, 5);
+        */
         robot.Camera.setPosition(0);
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
         robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);

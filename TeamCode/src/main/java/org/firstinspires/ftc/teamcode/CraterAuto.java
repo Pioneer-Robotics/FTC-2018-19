@@ -23,8 +23,8 @@ public class CraterAuto extends LinearOpMode {
     private static final double DRIVE_GEAR_REDUCTION = 2.0;     // This is < 1.0 if geared UP
     private static final double WHEEL_DIAMETER_CM = 4.0 * 2.54;     // For figuring circumference
     private static final double COUNTS_PER_INCH = (TETRIX_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_CM * 3.1415);
-    private static final double DRIVE_SPEED = 0.7;
-    private static final double TURN_SPEED = 0.5;
+    private static final double DRIVE_SPEED = 1;
+    private static final double TURN_SPEED = 0.7;
     private static final boolean latch = true;
 
     // State used for updating telemetry
@@ -183,13 +183,13 @@ public class CraterAuto extends LinearOpMode {
                 //left
                 mov.angleTurn(TURN_SPEED,33);
 
-                mov.encoderDrive(DRIVE_SPEED, 15, 5);
+                mov.encoderDrive(DRIVE_SPEED, 12, 5);
                 sleep(100);
 
                 mov.angleTurn(TURN_SPEED,40);
                 mov.angleTurn(TURN_SPEED,-40);
 
-                mov.encoderDrive(DRIVE_SPEED, -15,5);
+                mov.encoderDrive(DRIVE_SPEED, -12,5);
 
                 mov.angleTurn(0.3,-33);
 
@@ -211,13 +211,13 @@ public class CraterAuto extends LinearOpMode {
                 //right
                 mov.angleTurn(TURN_SPEED,-33);
 
-                mov.encoderDrive(DRIVE_SPEED,15, 5);
+                mov.encoderDrive(DRIVE_SPEED,12, 5);
                 sleep(100);
 
                 mov.angleTurn(TURN_SPEED,-40);
                 mov.angleTurn(TURN_SPEED,40);
 
-                mov.encoderDrive(DRIVE_SPEED, -15,5);
+                mov.encoderDrive(DRIVE_SPEED, -12,5);
                 mov.angleTurn(0.2,33);
 
                 break;
@@ -231,18 +231,17 @@ public class CraterAuto extends LinearOpMode {
         }
 
         // Maneuver to depot to drop team marker
-        sleep(250);
+        //sleep(250);
         mov.encoderDrive(0.2, 1 ,5);
-        sleep(100);
 
-        mov.angleTurn(TURN_SPEED,74);
-        mov.encoderDrive(DRIVE_SPEED, 25,5);
-        mov.angleTurn(TURN_SPEED,37);
+        mov.angleTurn(TURN_SPEED,72);
+        mov.encoderDrive(DRIVE_SPEED, 27,5);
+        mov.angleTurn(TURN_SPEED,32);
         mov.encoderDrive(DRIVE_SPEED, 14,5);
         mov.angleTurn(TURN_SPEED,19);
         mov.encoderDrive(DRIVE_SPEED, 25,5);
 
-        sleep(500);
+        //sleep(500);
         mov.angleTurn(TURN_SPEED,85);
         telemetry.update();
         telemetry.addData("Status: ", "Dropping Team Marker");
@@ -250,7 +249,7 @@ public class CraterAuto extends LinearOpMode {
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMIN_POSITION);
         telemetry.addData("Status: ", "Dropped Team Marker");
         telemetry.update();
-        sleep(500);
+        //sleep(5250);
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
 
         // Align with wall and back up into crater
