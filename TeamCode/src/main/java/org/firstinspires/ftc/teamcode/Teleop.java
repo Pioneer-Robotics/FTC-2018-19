@@ -23,7 +23,8 @@ public class Teleop extends OpMode
     boolean armBAuto;
     boolean FBarAuto;
     boolean dmac = false;
-    float activate_suq = 0;
+    boolean flipster = true;
+    double activate_suq = 0;
     int asuq = 0;
     // State used for updating telemetry;
     @Override
@@ -61,9 +62,11 @@ public class Teleop extends OpMode
         turn  =  -gamepad1.left_stick_x;
         armB = -gamepad2.left_stick_y/4*(1+3*gamepad2.left_trigger);
         bar = gamepad2.right_stick_y;
-        if (asuq==0) activate_suq = gamepad1.right_stick_y/4*(1+gamepad1.left_trigger);
-        telemetry.addData("Succq:", gamepad1.right_stick_y/4 *(1+gamepad1.left_trigger));
+        if (asuq==0) activate_suq = -(Math.pow(gamepad1.right_stick_y,2));
+        telemetry.addData("Succq:", activate_suq);
         telemetry.addData("Succq Encoder: ", "%d", robot.Succq.getCurrentPosition());
+        telemetry.addData("Condition: ", "%.5f", Math.abs(robot.dropTop.getPosition() - HardwareInfinity.DT_MIN));
+        telemetry.addData("Flipster: ", flipster ? "True" : "False");
         telemetry.addData("DT pos: ", robot.dropTop.getPosition());
         if (gamepad1.left_bumper) {
             arm = 1;
@@ -155,8 +158,16 @@ public class Teleop extends OpMode
         }*/
 
         if (gamepad1.a) {
-            robot.dropTop.setPosition(HardwareInfinity.DT_MAX);
+            if (flipster) {
+                if (Math.abs(robot.dropTop.getPosition() - HardwareInfinity.DT_MIN)<=0.1) {
+                    robot.dropTop.setPosition(HardwareInfinity.DT_MAX);
+                } else robot.dropTop.setPosition(HardwareInfinity.DT_MIN);
+            }
+            flipster = false;
+        } else {
+            flipster = true;
         }
+
         //if the Succq isn't moving then stop it to save the motor
         if (asuq != 0) activate_suq = asuq;
         if ((activate_suq!=0) && (pre_suq == robot.Succq.getCurrentPosition()) && gamepad1.right_stick_y==0) {
@@ -205,20 +216,20 @@ public class Teleop extends OpMode
         }
 
         // The following gamepad2 inputs are macros to move the EMCD 2.0 between its collection and depositing positions
-        if (gamepad2.b) {
+        if (gamepad2.x) {
             armBAuto = true;
             robot.armBase.setTargetPosition(-300);
             robot.armBase.setPower(-1);
             robot.armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             FBarAuto = true;
-            robot.FBar.setTargetPosition(-10000);
+            robot.FBar.setTargetPosition(-25000);
             robot.FBar.setPower(-1);
             robot.FBar.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             dmac = true;
             time.reset();
         }
 
-        if (gamepad2.y) {
+        if (gamepad2.a) {
             armBAuto = true;
             robot.armBase.setTargetPosition(-300);
             robot.armBase.setPower(1);
@@ -228,13 +239,13 @@ public class Teleop extends OpMode
             robot.FBar.setPower(1);
             robot.FBar.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
-        if (gamepad2.x) {
+        if (gamepad2.y) {
             armBAuto = true;
             robot.armBase.setTargetPosition(-300);
             robot.armBase.setPower(-1);
             robot.armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             FBarAuto = true;
-            robot.FBar.setTargetPosition(-11500);
+            robot.FBar.setTargetPosition(-20500);
             robot.FBar.setPower(-1);
             robot.FBar.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
@@ -242,11 +253,11 @@ public class Teleop extends OpMode
         telemetry.addData("dmac:", "%b", dmac);
         if (dmac && (time.milliseconds() >= 4000 || (!robot.armBase.isBusy() && !robot.FBar.isBusy()))) {
                 robot.armBase.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                robot.armBase.setTargetPosition(-5500);
+                robot.armBase.setTargetPosition(-6750);
                 robot.armBase.setPower(-1);
                 robot.armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 robot.FBar.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                robot.FBar.setTargetPosition(-12000);
+                robot.FBar.setTargetPosition(-24750);
                 robot.FBar.setPower(-1);
                 robot.FBar.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             dmac = false;
@@ -268,7 +279,7 @@ public class Teleop extends OpMode
         {
             robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMIN_POSITION);
             try {
-                Thread.sleep(50);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
             }
             robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);

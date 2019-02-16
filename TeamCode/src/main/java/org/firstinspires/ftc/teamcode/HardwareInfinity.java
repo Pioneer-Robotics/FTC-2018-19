@@ -39,7 +39,7 @@ public class HardwareInfinity
     static final double lunchBoxMIN_POSITION = 0.6;
     static final double LatchMAX_POSITION = 0;
     static final double LatchMIN_POSITION = 1;
-    static final double DT_MIN = 0;
+    static final double DT_MIN = 0.5;
     static final double DT_MAX = 0.9;
 
     /* local OpMode members. */
@@ -96,7 +96,7 @@ public class HardwareInfinity
         motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         linearArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        Succq.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        Succq.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         armBase.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         FBar.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
