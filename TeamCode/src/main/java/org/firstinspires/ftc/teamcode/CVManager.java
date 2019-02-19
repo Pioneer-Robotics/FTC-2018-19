@@ -147,8 +147,8 @@ public class CVManager extends Thread {
                     trimmedRecognitions.add(silver2);
                 } else trimmedRecognitions = updatedRecognitions;
                 if (trimmedRecognitions.size() == 3) {
-                    //checks for if the three minerals are in a row
-                    if (tIaRMan(trimmedRecognitions) != 1) return -3;
+                    //checks for if the three minerals are in a row, otherwise we have the wrong 3 minerals
+                    if (tIaRMan(trimmedRecognitions) != 1) return -2;
                     // extracts xs from from the minerals
                     int goldMineralX = -1;
                     int silverMineral1X = -1;
