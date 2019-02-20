@@ -40,7 +40,7 @@ public class CraterAuto extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
-        robot.imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
+        //robot.imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
         Orientation angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         //Acceleration gravity = imu.getGravity();
 
