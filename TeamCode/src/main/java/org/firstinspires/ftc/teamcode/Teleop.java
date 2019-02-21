@@ -51,7 +51,7 @@ public class Teleop extends OpMode
         // This way it's also easy to just drive straight, or just turn.
         double drive = gamepad1.left_stick_y;
         double turn = -gamepad1.left_stick_x;
-        double armB = -gamepad2.left_stick_y / 4 * (1 + 3 * gamepad2.left_trigger);
+        double armB = -gamepad2.left_stick_y / 8 * (1 + 7 * gamepad2.left_trigger);
         double bar = gamepad2.right_stick_y;
         double activate_suq = -Math.copySign(Math.pow(gamepad1.right_stick_y, 2), gamepad1.right_stick_y);
         telemetry.addData("Succq:", activate_suq);
@@ -105,16 +105,16 @@ public class Teleop extends OpMode
         // Decrease power input and flip direction so line-up for reattachment on lander is easier
         if (gamepad1.y)
         {
-            left *= -0.5*(1-gamepad1.right_trigger);
-            right *= -0.5*(1-gamepad1.right_trigger);
+            left *= -0.5*(1-gamepad1.left_trigger);
+            right *= -0.5*(1-gamepad1.left_trigger);
             robot.motorLeft.setPower(right);
             robot.motorRight.setPower(left);
             telemetry.addData("Reverse","Activated");
         }
         else if (gamepad1.x)
         {
-            left *= -0.85;
-            right *= -0.85;
+            left *= -1;
+            right *= -1;
             robot.motorLeft.setPower(right);
             robot.motorRight.setPower(left);
             telemetry.addData("Reverse","Mineral Mode");
@@ -157,7 +157,7 @@ public class Teleop extends OpMode
             flipster1 = false;
         }*/
 
-        if (gamepad1.a) {
+        if (gamepad1.b) {
             if (flipster) {
                 if (Math.abs(robot.dropTop.getPosition() - HardwareInfinity.DT_MIN)<=0.1) {
                     robot.dropTop.setPosition(HardwareInfinity.DT_MAX);
@@ -167,7 +167,7 @@ public class Teleop extends OpMode
         } else {
             flipster = true;
         }
-        if (robot.armBase.getCurrentPosition()<-3000 && !gamepad1.b) {
+        if (robot.armBase.getCurrentPosition()<-3000 && !gamepad1.a) {
             robot.dropTop.setPosition(HardwareInfinity.DT_MAX);
         }
         //if the Succq isn't moving then stop it to save the motor
@@ -276,7 +276,7 @@ public class Teleop extends OpMode
             robot.FBar.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
          // Drops team marker with servo
-        if (gamepad1.x)
+        /*if (gamepad1.x)
         {
             robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMIN_POSITION);
             try {
@@ -285,7 +285,7 @@ public class Teleop extends OpMode
             }
             robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
             telemetry.addLine("Team Marker Dropped");
-        }
+        }*/
 
         // Send telemetry message to signify robot running;
         telemetry.addData("left",  "%.2f", left);

@@ -22,7 +22,7 @@ public class CraterAuto extends LinearOpMode {
     private static final double WHEEL_DIAMETER_CM = 4.0 * 2.54;     // For figuring circumference
     private static final double COUNTS_PER_INCH = (TETRIX_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_CM * 3.1415);
     private static final double DRIVE_SPEED = 1;
-    private static final double TURN_SPEED = 0.7;
+    private static final double TURN_SPEED = 0.5;
     private static final boolean latch = true;
 
     // State used for updating telemetry
@@ -88,6 +88,7 @@ public class CraterAuto extends LinearOpMode {
                 telemetry.addData("Bottom is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
                 telemetry.addData("Choose:", "%d", choose);
                 telemetry.addData("Status:", "%d", tFlow.Status);
+                telemetry.addData("Tar:","%d",tFlow.tar);
                 telemetry.addData("MineralX:", "%.5f", tFlow.mineralX);
                 telemetry.update();
                 robot.linearArm.setPower(1);
@@ -119,6 +120,7 @@ public class CraterAuto extends LinearOpMode {
                 telemetry.addData("Bottom is", robot.botSwitch.getState() ? "Pressed" : "not Pressed");
                 telemetry.addData("Choose:", "%d", choose);
                 telemetry.addData("Status:", "%d", tFlow.Status);
+                telemetry.addData("Tar:","%d",tFlow.tar);
                 telemetry.addData("MineralX:", "%.5f", tFlow.mineralX);
                 telemetry.update();
             }
@@ -135,6 +137,7 @@ public class CraterAuto extends LinearOpMode {
         */
         telemetry.addData("Choose:", "%d", choose);
         telemetry.addData("Status:","%d",tFlow.Status);
+        telemetry.addData("Tar:","%d",tFlow.tar);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
         telemetry.update();
 
@@ -143,12 +146,14 @@ public class CraterAuto extends LinearOpMode {
 
         telemetry.addData("Choose:", "%d", choose);
         telemetry.addData("Status:","%d",tFlow.Status);
+        telemetry.addData("Tar:","%d",tFlow.tar);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
         telemetry.update();
         runtime.reset();
-        while (tFlow.go && runtime.milliseconds() <= 2000) {
+        while (/*tFlow.go && */runtime.milliseconds() <= 2000) {
             telemetry.addData("Choose:", "%d", choose);
             telemetry.addData("Status:","%d",tFlow.Status);
+            telemetry.addData("Tar:","%d",tFlow.tar);
             telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
             telemetry.update();
             sleep(1);
@@ -171,6 +176,7 @@ public class CraterAuto extends LinearOpMode {
         tFlow.go = false;
         telemetry.addData("Choose:", "%d", choose);
         telemetry.addData("Status:","%d",tFlow.Status);
+        telemetry.addData("Tar:","%d",tFlow.tar);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
         telemetry.update();
         sleep(100);
@@ -179,15 +185,15 @@ public class CraterAuto extends LinearOpMode {
         switch (choose) {
             case 1:
                 //left
-                mov.angleTurn(TURN_SPEED,33);
+                mov.angleTurn(TURN_SPEED,38);
 
-                mov.encoderDrive(DRIVE_SPEED, 12, 5);
+                mov.encoderDrive(DRIVE_SPEED, 14, 5);
                 sleep(100);
                 /*
                 mov.angleTurn(TURN_SPEED,40);
                 mov.angleTurn(TURN_SPEED,-40);
                 */
-                mov.encoderDrive(DRIVE_SPEED, -12,5);
+                mov.encoderDrive(DRIVE_SPEED, -14,5);
 
                 mov.angleTurn(0.3,-33);
 
@@ -199,6 +205,7 @@ public class CraterAuto extends LinearOpMode {
                 sleep(100);
 
                 mov.angleTurn(TURN_SPEED,7);
+                sleep(100);
                 mov.angleTurn(TURN_SPEED,-7);
 
                 mov.encoderDrive(DRIVE_SPEED,-9, 5);
@@ -207,15 +214,15 @@ public class CraterAuto extends LinearOpMode {
                 break;
             case 3:
                 //right
-                mov.angleTurn(TURN_SPEED,-33);
+                mov.angleTurn(TURN_SPEED,-38);
 
-                mov.encoderDrive(DRIVE_SPEED,12, 5);
+                mov.encoderDrive(DRIVE_SPEED,14, 5);
                 sleep(100);
                 /*
                 mov.angleTurn(TURN_SPEED,-40);
                 mov.angleTurn(TURN_SPEED,40);
                 */
-                mov.encoderDrive(DRIVE_SPEED, -12,5);
+                mov.encoderDrive(DRIVE_SPEED, -14,5);
                 mov.angleTurn(0.2,33);
 
                 break;
@@ -232,11 +239,11 @@ public class CraterAuto extends LinearOpMode {
         //sleep(250);
         mov.encoderDrive(0.2, 1 ,5);
 
-        mov.angleTurn(TURN_SPEED,72);
-        mov.encoderDrive(DRIVE_SPEED, 28,5);
-        mov.angleTurn(TURN_SPEED,32);
+        mov.angleTurn(TURN_SPEED,68);
+        mov.encoderDrive(DRIVE_SPEED, 32,5);
+        mov.angleTurn(0.2,28);
         mov.encoderDrive(DRIVE_SPEED, 16,5);
-        mov.angleTurn(TURN_SPEED,19);
+        mov.angleTurn(0.2,19);
         mov.encoderDrive(DRIVE_SPEED, 22,5);
 
         //sleep(500);
@@ -251,7 +258,7 @@ public class CraterAuto extends LinearOpMode {
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
 
         // Align with wall and back up into crater
-        //mov.encoderDrive(DRIVE_SPEED, -5, 5);
+        mov.encoderDrive(DRIVE_SPEED, -2,5);
         mov.angleTurn(TURN_SPEED,-90);
         mov.encoderDrive(DRIVE_SPEED, -50, 5);
 
