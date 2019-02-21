@@ -69,6 +69,7 @@ class Movement extends Thread {
             runtime.reset();
             while (true) {
                 //calculations for deltas and times for telemetry diagnostics
+
                 time = runtime.milliseconds();
                 if (time>maxtime) maxtime = time;
                 if (Math.abs(angles.firstAngle-delta.firstAngle)> maxdel) maxdel = Math.abs(angles.firstAngle-delta.firstAngle);
@@ -232,10 +233,9 @@ class Movement extends Thread {
             motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorLeft.setPower(0);
             motorRight.setPower(0);
-            /* TEST TO MAKE SURE THIS WORKS! The theory is that we don't need this ending statement in order to stop our robot.
             motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            */
+
             //wait to prevent jitter
             try {
                 sleep(250);

@@ -71,6 +71,7 @@ public class TMAuto extends LinearOpMode {
                 robot.motorLeft.getCurrentPosition(), robot.motorRight.getCurrentPosition());
         telemetry.update();
         tFlow.disable = true;
+        tFlow.start();
 
         //Drop down off lander - lowering robot
 
@@ -85,6 +86,7 @@ public class TMAuto extends LinearOpMode {
             telemetry.addData("Bottom is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
             telemetry.addData("Choose:", "%d", choose);
             telemetry.addData("Status:","%d",tFlow.Status);
+            telemetry.addData("Tar:","%d",tFlow.tar);
             telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
             telemetry.update();
             robot.linearArm.setPower(1);
@@ -101,7 +103,6 @@ public class TMAuto extends LinearOpMode {
 
         }
         robot.linearArm.setPower(0);
-        tFlow.start();
 
         // Detach from lander
         robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);
@@ -115,6 +116,7 @@ public class TMAuto extends LinearOpMode {
             telemetry.addData("Bottom is", robot.botSwitch.getState() ? "Pressed" : "not Pressed");
             telemetry.addData("Choose:", "%d", choose);
             telemetry.addData("Status:","%d",tFlow.Status);
+            telemetry.addData("Tar:","%d",tFlow.tar);
             telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
             telemetry.update();
 
@@ -133,6 +135,7 @@ public class TMAuto extends LinearOpMode {
         sleep(100);
         telemetry.addData("Choose:", "%d", choose);
         telemetry.addData("Status:","%d",tFlow.Status);
+        telemetry.addData("Tar:","%d",tFlow.tar);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
         telemetry.update();
 
@@ -141,12 +144,14 @@ public class TMAuto extends LinearOpMode {
 
         telemetry.addData("Choose:", "%d", choose);
         telemetry.addData("Status:","%d",tFlow.Status);
+        telemetry.addData("Tar:","%d",tFlow.tar);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
         telemetry.update();
         runtime.reset();
         while (tFlow.go && runtime.milliseconds() <= 2000) {
             telemetry.addData("Choose:", "%d", choose);
             telemetry.addData("Status:","%d",tFlow.Status);
+            telemetry.addData("Tar:","%d",tFlow.tar);
             telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
             telemetry.update();
             sleep(1);
@@ -169,39 +174,38 @@ public class TMAuto extends LinearOpMode {
         tFlow.go = false;
         telemetry.addData("Choose:", "%d", choose);
         telemetry.addData("Status:","%d",tFlow.Status);
+        telemetry.addData("Tar:","%d",tFlow.tar);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
         telemetry.update();
 
         // Perform sampling and position for dropping team marker
-        sleep(6000);
+        //sleep(6000);
         switch (choose) {
             case 1:
                 //Mineral on Left
-                mov.angleTurn(TURN_SPEED,33);
-                mov.encoderDrive(DRIVE_SPEED,32, 5);
+                mov.angleTurn(TURN_SPEED,36);
+                mov.encoderDrive(DRIVE_SPEED,30, 5);
                 mov.angleTurn(TURN_SPEED, -86);
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive(DRIVE_SPEED,26, 5);
+                mov.encoderDrive(DRIVE_SPEED,20, 5);
                 mov.angleTurn(TURN_SPEED, 85);
 
                 break;
             case 2:
                 //Mineral in Middle
                 //no turning movement is necessary to hit mineral
-                sleep(1000);
-                mov.encoderDrive(DRIVE_SPEED,45, 5);
+                mov.encoderDrive(DRIVE_SPEED,38, 5);
 
                 mov.angleTurn(TURN_SPEED, 60);
                 break;
             case 3:
                 //Mineral on Right
-                sleep(1000);
-                mov.angleTurn(TURN_SPEED,-33);
-                mov.encoderDrive(DRIVE_SPEED,35, 5);
-                mov.angleTurn(TURN_SPEED, 76);
+                mov.angleTurn(TURN_SPEED,-38);
+                mov.encoderDrive(DRIVE_SPEED,33, 5);
+                mov.angleTurn(TURN_SPEED, 70);
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive(DRIVE_SPEED,12,5);
-                mov.angleTurn(TURN_SPEED, 20);
+                mov.encoderDrive(DRIVE_SPEED,18,5);
+                mov.angleTurn(TURN_SPEED, 30);
 
                 //mov.angleTurn(0.2, 90, false);
                 //mov.encoderDrive( 0.5, 5,5,10, false);
@@ -214,7 +218,7 @@ public class TMAuto extends LinearOpMode {
                 mov.encoderDrive(DRIVE_SPEED,10, 5);
 
                 mov.angleTurn(TURN_SPEED, 90);
-                sleep(5000);
+                sleep(2000);
                 break;
         }
         telemetry.addData("Status: ", "Dropping Team Marker");
@@ -229,26 +233,26 @@ public class TMAuto extends LinearOpMode {
 
         // Different maneuvering to get to crater depending on which position sampling mineral was in
         // Goal is to line up with wall after team marker dropped
-        /*
+
         switch (choose) {
             case 1:
                 mov.encoderDrive(DRIVE_SPEED,-7, 5);
                 mov.angleTurn(TURN_SPEED, 35);
-                mov.encoderDrive(DRIVE_SPEED,12, 5);
-                mov.angleTurn(TURN_SPEED, 23);
+                mov.encoderDrive(DRIVE_SPEED,-17, 5);
+                mov.angleTurn(TURN_SPEED, -32);
                 break;
             case 2:
-                mov.encoderDrive(DRIVE_SPEED,17, 5);
-                mov.angleTurn(TURN_SPEED, 20);
+                mov.encoderDrive(DRIVE_SPEED,-17, 5);
+                mov.angleTurn(TURN_SPEED, -28);
                 break;
             case 3:
-                mov.encoderDrive(DRIVE_SPEED,16, 5);
-                mov.angleTurn(TURN_SPEED, 20);
+                mov.encoderDrive(DRIVE_SPEED,-21, 5);
+                mov.angleTurn(TURN_SPEED, -35);
                 break;
         }
         // Back up into crater at max speed
-        mov.encoderDrive(1,50, 5);
-        */
+        mov.encoderDrive(1,-52, 10);
+
         robot.Camera.setPosition(0);
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
         robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);

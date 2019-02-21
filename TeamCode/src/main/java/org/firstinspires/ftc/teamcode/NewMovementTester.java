@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="Test", group="FTCPio")
+@TeleOp(name="MovTest", group="FTCPio")
 public class NewMovementTester extends LinearOpMode {
     private HardwareInfinity robot = new HardwareInfinity();
     Movement mov = new Movement();

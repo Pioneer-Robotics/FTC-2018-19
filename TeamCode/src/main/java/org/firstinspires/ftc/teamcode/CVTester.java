@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
-@TeleOp(name="Test", group="FTCPio")
+@TeleOp(name="CVTest", group="FTCPio")
 public class CVTester extends LinearOpMode {
     private HardwareInfinity robot = new HardwareInfinity();
     CVManager tFlow = new CVManager();
