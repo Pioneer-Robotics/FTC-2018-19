@@ -119,6 +119,14 @@ public class Teleop extends OpMode
             robot.motorRight.setPower(left);
             telemetry.addData("Reverse","Activated");
         }
+        else if (gamepad1.x)
+        {
+            left *= -0.9;
+            right *= -0.9;
+            robot.motorLeft.setPower(right);
+            robot.motorRight.setPower(left);
+            telemetry.addData("Reverse","Mineral Mode");
+        }
         else
         {
             robot.motorLeft.setPower(left);
