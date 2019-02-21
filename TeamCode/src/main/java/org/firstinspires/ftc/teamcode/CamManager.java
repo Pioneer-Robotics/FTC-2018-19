@@ -17,10 +17,8 @@ public class CamManager extends Thread {
     boolean go = true;
     float reference;
     int mode = 0;
-    double camSpeed = 0.001;
-    private static boolean canTrack = true; //set this to false if the app crashes with tracking
-    private float screenX= 800; //pixel size of tflow
-    DecimalFormat df = new DecimalFormat("#.###");
+    private double camSpeed = 0.001;
+    private DecimalFormat df = new DecimalFormat("#.###");
 
 
     void init(HardwareInfinity robo_t, CVManager tf) {
@@ -62,9 +60,11 @@ public class CamManager extends Thread {
         // move to the position of the gold
         //0 & 0 =left
         //1 & 780=right
-        if (goldX>((screenX/2)+70)) {
+        //pixel size of tflow
+        float screenX = 800;
+        if (goldX>((screenX /2)+70)) {
             camSpeed = 0.001;
-        } else if (goldX<((screenX/2)-70)) {
+        } else if (goldX<((screenX /2)-70)) {
             camSpeed = -0.001;
         } else camSpeed = 0;
         if (robot.Camera.getPosition()+ camSpeed >=1) {
@@ -80,6 +80,7 @@ public class CamManager extends Thread {
         //check if we can run
         while (go) {
             //take different actions based on the mode
+            //set this to false if the app crashes with tracking
             if (mode == 0) {
                 // counteract robot turning
                 camVision(reference);
@@ -89,7 +90,7 @@ public class CamManager extends Thread {
                     camSpeed = 0.001;
                 }
                 scan();
-            } else if (mode == 2 && canTrack) {
+            } else if (mode == 2) {
                 //track the gold in mode 2
                 if (!CamCV.isAlive()) {
                     CamCV.go = true;

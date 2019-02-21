@@ -24,8 +24,6 @@ class Movement extends Thread {
     private double timeoutSG;
     private int mode;
 
-    double margin = 0.2;
-
     void init(DcMotor motL, DcMotor motR, BNO055IMU im, LinearOpMode O, ElapsedTime run, double CPI) {
         //turns all the necessary robot parts into local variables as it is extremely tedious to have to write each as an argument for every individual function call.
         motorLeft = motL;
@@ -67,6 +65,7 @@ class Movement extends Thread {
             motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             runtime.reset();
+            double margin = 0.2;
             while (true) {
                 //calculations for deltas and times for telemetry diagnostics
 
@@ -143,7 +142,7 @@ class Movement extends Thread {
             motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             try {//wait to account for jitter, momentum, etc.
                 sleep(100);
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
 
             }
         }
@@ -189,7 +188,7 @@ class Movement extends Thread {
             //wait to prevent jitter
             try {
                 Thread.sleep(100);
-            } catch (InterruptedException e) { }
+            } catch (InterruptedException ignored) { }
 
             while (Op.opModeIsActive() && (runtime.seconds() < timeoutS) && (Math.abs(motorLeft.getCurrentPosition()-newLeftTarget)>2
                     && Math.abs(motorRight.getCurrentPosition()-newRightTarget)>2)
@@ -239,7 +238,7 @@ class Movement extends Thread {
             //wait to prevent jitter
             try {
                 sleep(250);
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
 
             }
 

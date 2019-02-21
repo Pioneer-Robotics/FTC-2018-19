@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
  * Servo channel:  Servo to open left claw:  "left_hand"
  * Servo channel:  Servo to open right claw: "right_hand"
  */
-public class HardwareInfinity
+class HardwareInfinity
 {
     /* Public OpMode members. */
     DcMotor  motorLeft;
@@ -31,7 +31,7 @@ public class HardwareInfinity
     DigitalChannel topSwitch;
     TouchSensor trigger;
     BNO055IMU imu;
-    BNO055IMU.Parameters IParameters = new BNO055IMU.Parameters();
+    private BNO055IMU.Parameters IParameters = new BNO055IMU.Parameters();
 
     //public Servo    rightClaw   = null;
 
@@ -43,7 +43,7 @@ public class HardwareInfinity
     static final double DT_MAX = 0.9;
 
     /* local OpMode members. */
-    HardwareMap hwMap;
+    private HardwareMap hwMap;
     //private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */

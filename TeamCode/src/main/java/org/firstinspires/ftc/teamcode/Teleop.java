@@ -10,22 +10,13 @@ public class Teleop extends OpMode
 {
     /* Declare OpMode members. */
     private HardwareInfinity robot = new HardwareInfinity();
-    ElapsedTime time = new ElapsedTime();
-    double left;
-    double right;
-    double drive;
-    double armB;
-    double bar;
-    double turn;
-    double max;
-    double arm;
-    double pre_suq = 0;
-    boolean armBAuto;
-    boolean FBarAuto;
-    boolean dmac = false;
-    boolean flipster = true;
-    double activate_suq = 0;
-    int asuq = 0;
+    private ElapsedTime time = new ElapsedTime();
+    private double pre_suq = 0;
+    private boolean armBAuto;
+    private boolean FBarAuto;
+    private boolean dmac = false;
+    private boolean flipster = true;
+
     // State used for updating telemetry;
     @Override
     public void init() {
@@ -58,16 +49,17 @@ public class Teleop extends OpMode
         // Run wheels in POV mode (note: The joystick goes negative when pushed forwards, so negate it)
         // In this mode the Left stick moves the robot fwd and back, the Right stick turns left and right.
         // This way it's also easy to just drive straight, or just turn.
-        drive = gamepad1.left_stick_y;
-        turn  =  -gamepad1.left_stick_x;
-        armB = -gamepad2.left_stick_y/4*(1+3*gamepad2.left_trigger);
-        bar = gamepad2.right_stick_y;
-        if (asuq==0) activate_suq = -Math.copySign(Math.pow(gamepad1.right_stick_y,2),gamepad1.right_stick_y);
+        double drive = gamepad1.left_stick_y;
+        double turn = -gamepad1.left_stick_x;
+        double armB = -gamepad2.left_stick_y / 4 * (1 + 3 * gamepad2.left_trigger);
+        double bar = gamepad2.right_stick_y;
+        double activate_suq = -Math.copySign(Math.pow(gamepad1.right_stick_y, 2), gamepad1.right_stick_y);
         telemetry.addData("Succq:", activate_suq);
         telemetry.addData("Succq Encoder: ", "%d", robot.Succq.getCurrentPosition());
         telemetry.addData("Condition: ", "%.5f", Math.abs(robot.dropTop.getPosition() - HardwareInfinity.DT_MIN));
         telemetry.addData("Flipster: ", flipster ? "True" : "False");
         telemetry.addData("DT pos: ", robot.dropTop.getPosition());
+        double arm;
         if (gamepad1.left_bumper) {
             arm = 1;
         } else if (gamepad1.right_bumper) {
@@ -93,17 +85,17 @@ public class Teleop extends OpMode
         {
             robot.linearArm.setPower(-arm);
         }
-        else if (robot.topSwitch.getState() && arm <= 0)
+        else if (robot.topSwitch.getState())
         {
             robot.linearArm.setPower(0);
         }
         //blended motion
-        left  = (drive+turn)/2*(gamepad1.right_trigger*3/2+1)*0.75;
-        right = (drive-turn)/2*(gamepad1.right_trigger*3/2+1)*0.75;
+        double left = (drive + turn) / 2 * (gamepad1.right_trigger * 3 / 2 + 1) * 0.75;
+        double right = (drive - turn) / 2 * (gamepad1.right_trigger * 3 / 2 + 1) * 0.75;
         telemetry.addData("Multiplier:", (gamepad1.right_trigger*3/2+1)*0.75);
 
         // Normalize the values so neither exceed +/- 1.0
-        max = (Math.max(Math.abs(left), Math.abs(right)))/2;
+        double max = (Math.max(Math.abs(left), Math.abs(right))) / 2;
         if (max > 1.0)
         {
             left /= max;
@@ -179,27 +171,26 @@ public class Teleop extends OpMode
             robot.dropTop.setPosition(HardwareInfinity.DT_MAX);
         }
         //if the Succq isn't moving then stop it to save the motor
-        if (asuq != 0) activate_suq = asuq;
-        if ((activate_suq!=0) && (pre_suq == robot.Succq.getCurrentPosition()) && gamepad1.right_stick_y==0) {
+        if ((activate_suq !=0) && (pre_suq == robot.Succq.getCurrentPosition()) && gamepad1.right_stick_y==0) {
             activate_suq = 0;
         }
         robot.Succq.setPower(activate_suq);
         pre_suq = robot.Succq.getCurrentPosition();
-        telemetry.addData("Arm Base Power: ","%.5f",armB);
+        telemetry.addData("Arm Base Power: ","%.5f", armB);
         telemetry.addData("Arm Base Encoder: ", "%d", robot.armBase.getCurrentPosition());
         if (!armBAuto) {
             robot.armBase.setPower(armB);
-        } else if (armB!=0 || gamepad2.left_bumper || gamepad2.a) {
+        } else if (armB !=0 || gamepad2.left_bumper || gamepad2.a) {
             robot.armBase.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.armBase.setPower(0);
             armBAuto = false;
             dmac = false;
         }
-        telemetry.addData("4Bar Power: ","%.5f",bar);
+        telemetry.addData("4Bar Power: ","%.5f", bar);
         telemetry.addData("4Bar Encoder: ", "%d", robot.FBar.getCurrentPosition());
         if (!FBarAuto) {
             robot.FBar.setPower(bar);
-        } else if (bar!=0 || gamepad2.right_bumper|| gamepad2.a) {
+        } else if (bar !=0 || gamepad2.right_bumper|| gamepad2.a) {
             robot.FBar.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.FBar.setPower(0);
             FBarAuto = false;
@@ -290,7 +281,7 @@ public class Teleop extends OpMode
             robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMIN_POSITION);
             try {
                 Thread.sleep(1000);
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
             }
             robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
             telemetry.addLine("Team Marker Dropped");

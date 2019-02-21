@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @TeleOp(name="MovTest", group="FTCPio")
 public class NewMovementTester extends LinearOpMode {
     private HardwareInfinity robot = new HardwareInfinity();
-    Movement mov = new Movement();
-    ElapsedTime runtime = new ElapsedTime();
+    private Movement mov = new Movement();
+    private ElapsedTime runtime = new ElapsedTime();
     private static final double TETRIX_TICKS_PER_REV = 1440;
     private static final double DRIVE_GEAR_REDUCTION = 2.0;     // This is < 1.0 if geared UP
     private static final double WHEEL_DIAMETER_CM = 4.0 * 2.54;     // For figuring circumference
