@@ -185,10 +185,10 @@ public class CraterAuto extends LinearOpMode {
 
                 mov.encoderDrive(DRIVE_SPEED, 12, 5);
                 sleep(100);
-
+                /*
                 mov.angleTurn(TURN_SPEED,40);
                 mov.angleTurn(TURN_SPEED,-40);
-
+                */
                 mov.encoderDrive(DRIVE_SPEED, -12,5);
 
                 mov.angleTurn(0.3,-33);
@@ -200,8 +200,8 @@ public class CraterAuto extends LinearOpMode {
                 mov.encoderDrive(DRIVE_SPEED,9, 5);
                 sleep(100);
 
-                mov.angleTurn(TURN_SPEED,-40);
-                mov.angleTurn(TURN_SPEED,40);
+                mov.angleTurn(TURN_SPEED,7);
+                mov.angleTurn(TURN_SPEED,-7);
 
                 mov.encoderDrive(DRIVE_SPEED,-9, 5);
 
@@ -213,10 +213,10 @@ public class CraterAuto extends LinearOpMode {
 
                 mov.encoderDrive(DRIVE_SPEED,12, 5);
                 sleep(100);
-
+                /*
                 mov.angleTurn(TURN_SPEED,-40);
                 mov.angleTurn(TURN_SPEED,40);
-
+                */
                 mov.encoderDrive(DRIVE_SPEED, -12,5);
                 mov.angleTurn(0.2,33);
 
@@ -235,27 +235,27 @@ public class CraterAuto extends LinearOpMode {
         mov.encoderDrive(0.2, 1 ,5);
 
         mov.angleTurn(TURN_SPEED,72);
-        mov.encoderDrive(DRIVE_SPEED, 27,5);
+        mov.encoderDrive(DRIVE_SPEED, 28,5);
         mov.angleTurn(TURN_SPEED,32);
-        mov.encoderDrive(DRIVE_SPEED, 14,5);
+        mov.encoderDrive(DRIVE_SPEED, 16,5);
         mov.angleTurn(TURN_SPEED,19);
-        mov.encoderDrive(DRIVE_SPEED, 25,5);
+        mov.encoderDrive(DRIVE_SPEED, 22,5);
 
         //sleep(500);
-        mov.angleTurn(TURN_SPEED,85);
+        mov.angleTurn(TURN_SPEED,90);
         telemetry.update();
         telemetry.addData("Status: ", "Dropping Team Marker");
         telemetry.update();
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMIN_POSITION);
         telemetry.addData("Status: ", "Dropped Team Marker");
         telemetry.update();
-        //sleep(5250);
+        sleep(500);
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
 
         // Align with wall and back up into crater
         //mov.encoderDrive(DRIVE_SPEED, -5, 5);
-        mov.angleTurn(TURN_SPEED,85);
-        mov.encoderDrive(DRIVE_SPEED, -35, 5);
+        mov.angleTurn(TURN_SPEED,-90);
+        mov.encoderDrive(DRIVE_SPEED, -50, 5);
 
         //mov.angleTurn(TURN_SPEED,95, false);
         //mov.encoderDrive(DRIVE_SPEED, 70, 20);

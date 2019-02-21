@@ -196,7 +196,7 @@ public class TMAuto extends LinearOpMode {
                 //no turning movement is necessary to hit mineral
                 mov.encoderDrive(DRIVE_SPEED,38, 5);
 
-                mov.angleTurn(TURN_SPEED, 60);
+                mov.angleTurn(TURN_SPEED, 68);
                 break;
             case 3:
                 //Mineral on Right
@@ -242,8 +242,8 @@ public class TMAuto extends LinearOpMode {
                 mov.angleTurn(TURN_SPEED, -32);
                 break;
             case 2:
-                mov.encoderDrive(DRIVE_SPEED,-17, 5);
-                mov.angleTurn(TURN_SPEED, -28);
+                mov.encoderDrive(DRIVE_SPEED,-19, 5);
+                mov.angleTurn(TURN_SPEED, -32);
                 break;
             case 3:
                 mov.encoderDrive(DRIVE_SPEED,-21, 5);
