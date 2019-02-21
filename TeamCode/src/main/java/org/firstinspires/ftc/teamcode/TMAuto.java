@@ -58,6 +58,8 @@ public class TMAuto extends LinearOpMode {
         mov.init(robot.motorLeft,robot.motorRight,robot.imu,this,runtime, COUNTS_PER_INCH);
         camM.reference = angles.firstAngle;
         camM.start();
+        tFlow.disable = true;
+        tFlow.start();
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -68,8 +70,6 @@ public class TMAuto extends LinearOpMode {
         telemetry.addData("Path0", "Starting at %7d:%7d",
                 robot.motorLeft.getCurrentPosition(), robot.motorRight.getCurrentPosition());
         telemetry.update();
-        tFlow.disable = true;
-        tFlow.start();
 
         //Drop down off lander - lowering robot
 

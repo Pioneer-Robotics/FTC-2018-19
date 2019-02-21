@@ -70,9 +70,9 @@ public class CVManager extends Thread {
     private static final float mmPerInch        = 25.4f;
     private static final float mmFTCFieldWidth  = (12*6) * mmPerInch;       // the width of the FTC field (from the center point to the outer panels)
     private static final float mmTargetHeight   = (6) * mmPerInch;// the height of the center of the target image above the floor
-    private List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
+    private List<VuforiaTrackable> allTrackables = new ArrayList<>();
     //Initialize all variables necessary to communicate with the other threads
-    protected OpenGLMatrix location;
+    OpenGLMatrix location;
     float mineralX = 0;
     float mineralY = 0;
     int tar = 0;
@@ -80,6 +80,7 @@ public class CVManager extends Thread {
     int Status = 0;
     boolean track = false;
     boolean disable = true;
+    int st;
     int mode = 0;
 
     /*
@@ -149,7 +150,7 @@ public class CVManager extends Thread {
                 } else trimmedRecognitions = updatedRecognitions;
                 if (trimmedRecognitions.size() == 3) {
                     //checks for if the three minerals are in a row, otherwise we have the wrong 3 minerals
-                    //if (tIaRMan(trimmedRecognitions) != 1) return -2;
+                    if (tIaRMan(trimmedRecognitions) != 1) return -2;
                     tar = tIaRMan(trimmedRecognitions);
                     // extracts x position from from the minerals
                     int goldMineralX = -1;
@@ -324,7 +325,7 @@ public class CVManager extends Thread {
                 // give our best shot at determining where the gold mineral is for the sampling mission
                 if (mode == 0) {
                     //filter checkThree to get information that we can pass on to the master thread
-                    int st = this.checkThree();
+                    st = this.checkThree();
                     if (st != -1 && st != -2) {
                         this.Status = st;
                         //stop the loop if we have retrieved the information we need

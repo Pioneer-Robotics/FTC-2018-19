@@ -58,6 +58,7 @@ public class CraterAuto extends LinearOpMode {
         camM.init(robot, tFlow);
         mov.init(robot.motorLeft,robot.motorRight,robot.imu,this,runtime, COUNTS_PER_INCH);
         camM.reference = angles.firstAngle;
+        tFlow.disable = true;
         camM.start();
         tFlow.start();
 
@@ -70,7 +71,6 @@ public class CraterAuto extends LinearOpMode {
         telemetry.addData("Path0", "Starting at %7d:%7d",
                 robot.motorLeft.getCurrentPosition(), robot.motorRight.getCurrentPosition());
         telemetry.update();
-        tFlow.disable = true;
 
 
         //Drop down off lander - lowering robot
