@@ -51,7 +51,7 @@ public class Teleop extends OpMode
         // This way it's also easy to just drive straight, or just turn.
         double drive = gamepad1.left_stick_y;
         double turn = -gamepad1.left_stick_x;
-        double armB = -gamepad2.left_stick_y / 8 * (1 + 7 * gamepad2.left_trigger);
+        double armB = -gamepad2.left_stick_y / 4 * (1 + 3 * gamepad2.left_trigger);
         double bar = gamepad2.right_stick_y;
         double activate_suq = -Math.copySign(Math.pow(gamepad1.right_stick_y, 2), gamepad1.right_stick_y);
         telemetry.addData("Succq:", activate_suq);

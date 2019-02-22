@@ -140,9 +140,9 @@ public class CraterAuto extends LinearOpMode {
         telemetry.addData("Tar:","%d",tFlow.tar);
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
         telemetry.update();
-
+        sleep(500);
         //Drive away
-        mov.encoderDrive(0.5,10,10,10);
+        mov.encoderDrive(DRIVE_SPEED,10,10,10);
 
         telemetry.addData("Choose:", "%d", choose);
         telemetry.addData("Status:","%d",tFlow.Status);
@@ -150,7 +150,7 @@ public class CraterAuto extends LinearOpMode {
         telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
         telemetry.update();
         runtime.reset();
-        while (/*tFlow.go && */runtime.milliseconds() <= 2000) {
+        while (tFlow.go && runtime.milliseconds() <= 2000) {
             telemetry.addData("Choose:", "%d", choose);
             telemetry.addData("Status:","%d",tFlow.Status);
             telemetry.addData("Tar:","%d",tFlow.tar);
@@ -187,15 +187,15 @@ public class CraterAuto extends LinearOpMode {
                 //left
                 mov.angleTurn(TURN_SPEED,38);
 
-                mov.encoderDrive(DRIVE_SPEED, 14, 5);
+                mov.encoderDrive(DRIVE_SPEED, 17, 5);
                 sleep(100);
                 /*
                 mov.angleTurn(TURN_SPEED,40);
                 mov.angleTurn(TURN_SPEED,-40);
                 */
-                mov.encoderDrive(DRIVE_SPEED, -14,5);
+                mov.encoderDrive(DRIVE_SPEED, -18,5);
 
-                mov.angleTurn(0.3,-33);
+                mov.angleTurn(0.3,-38);
 
                 break;
             case 2:
@@ -204,9 +204,9 @@ public class CraterAuto extends LinearOpMode {
                 mov.encoderDrive(DRIVE_SPEED,9, 5);
                 sleep(100);
 
-                mov.angleTurn(TURN_SPEED,7);
-                sleep(100);
-                mov.angleTurn(TURN_SPEED,-7);
+                mov.angleTurn(TURN_SPEED,10);
+                sleep(250);
+                mov.angleTurn(TURN_SPEED,-10);
 
                 mov.encoderDrive(DRIVE_SPEED,-9, 5);
 
@@ -216,22 +216,26 @@ public class CraterAuto extends LinearOpMode {
                 //right
                 mov.angleTurn(TURN_SPEED,-38);
 
-                mov.encoderDrive(DRIVE_SPEED,14, 5);
+                mov.encoderDrive(DRIVE_SPEED,17, 5);
                 sleep(100);
                 /*
                 mov.angleTurn(TURN_SPEED,-40);
                 mov.angleTurn(TURN_SPEED,40);
                 */
-                mov.encoderDrive(DRIVE_SPEED, -14,5);
-                mov.angleTurn(0.2,33);
+                mov.encoderDrive(DRIVE_SPEED, -17,5);
+                mov.angleTurn(0.2,38);
 
                 break;
             default:
                 //error happened with TensorFlow
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 // if tensor flow doesn't function, the robot will default to moving to the middle position
-                mov.encoderDrive(DRIVE_SPEED, 7,5);
-                mov.encoderDrive(DRIVE_SPEED, -7,5);
+                mov.encoderDrive(DRIVE_SPEED, 9,5);
+                mov.angleTurn(TURN_SPEED,20);
+                sleep(250);
+                mov.angleTurn(TURN_SPEED,-20);
+
+                mov.encoderDrive(DRIVE_SPEED, -9,5);
                 break;
         }
 
@@ -240,14 +244,14 @@ public class CraterAuto extends LinearOpMode {
         mov.encoderDrive(0.2, 1 ,5);
 
         mov.angleTurn(TURN_SPEED,68);
-        mov.encoderDrive(DRIVE_SPEED, 32,5);
-        mov.angleTurn(0.2,28);
-        mov.encoderDrive(DRIVE_SPEED, 16,5);
-        mov.angleTurn(0.2,19);
-        mov.encoderDrive(DRIVE_SPEED, 22,5);
+        mov.encoderDrive(DRIVE_SPEED, 34,5);
+        mov.angleTurn(0.2,32);
+        mov.encoderDrive(DRIVE_SPEED, 14,5);
+        mov.angleTurn(0.2,10);
+        mov.encoderDrive(DRIVE_SPEED, 20,5);
 
         //sleep(500);
-        mov.angleTurn(TURN_SPEED,90);
+        mov.angleTurn(0.3,90);
         telemetry.update();
         telemetry.addData("Status: ", "Dropping Team Marker");
         telemetry.update();

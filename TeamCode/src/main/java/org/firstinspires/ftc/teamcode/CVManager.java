@@ -278,8 +278,15 @@ public class CVManager extends Thread {
                     }
                 }
             }
+            float[] ret = {0,0};
             //return the mineral we found
-            float[] ret = {goldX, goldY};
+            if (goldX != 0) {
+                ret[0] = goldX;
+                ret[1] = goldY;
+            } else {
+                ret[0] = mineralX;
+                ret[1] = mineralY;
+            }
             return ret;
 
         }

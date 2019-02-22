@@ -88,8 +88,8 @@ class Movement extends Thread {
                 // Calculate speed from distance to targetAngle
                 //spd=dis/((angles.firstAngle+360)%360); //slower
                 spd=dis/angle; //faster
-                motorLeft.setPower(-direction*(Math.sqrt(Math.abs(speed*spd)))); //set motor power based on given speed against dynamic spd and sets direction appropriately
-                motorRight.setPower(direction*(Math.sqrt(Math.abs(speed*spd))));
+                motorLeft.setPower(-direction*(/*Math.sqrt*/(Math.abs(speed*spd)+0.03))); //set motor power based on given speed against dynamic spd and sets direction appropriately
+                motorRight.setPower(direction*(/*Math.sqrt*/(Math.abs(speed*spd)+0.03)));
 
                 //actual telemetry for diagnostics
                 Op.telemetry.addData("Error:", "%.5f", dis);
