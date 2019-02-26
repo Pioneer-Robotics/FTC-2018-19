@@ -78,6 +78,7 @@ public class CVManager extends Thread {
     int tar = 0;
     boolean go = true;
     int Status = 0;
+    float[] minDat = {0,0};
     boolean track = false;
     boolean disable = true;
     int st;
@@ -203,7 +204,7 @@ public class CVManager extends Thread {
                 float silverMineral1Y = -1;
                 float silverMineral2X = -1;
                 float silverMineral2Y = -1;
-                //like in checkthree, but pulls ys and xs from the minerals
+                //similar to the system in checkthree, but pulls ys and xs from the minerals
                 for (Recognition recognition : updatedRecognitions) {
                     if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                         goldMineralX = recognition.getLeft();
@@ -280,13 +281,8 @@ public class CVManager extends Thread {
             }
             float[] ret = {0,0};
             //return the mineral we found
-            if (goldX != 0) {
-                ret[0] = goldX;
-                ret[1] = goldY;
-            } else {
-                ret[0] = mineralX;
-                ret[1] = mineralY;
-            }
+            ret[0] = goldX;
+            ret[1] = goldY;
             return ret;
 
         }
@@ -334,19 +330,25 @@ public class CVManager extends Thread {
                     //filter checkThree to get information that we can pass on to the master thread
                     st = this.checkThree();
                     if (st != -1 && st != -2) {
-                        this.Status = st;
                         //stop the loop if we have retrieved the information we need
-                        if (disable && this.Status !=  -4) this.go = false;
+                        if (disable && this.Status !=  -4) {
+                            this.go = false;
+                            this.Status = 1;
+                            minDat[0] = st;
+                        }
                     } else if (st == -2) {
                         // backup case to manually find the gold mineral
                         float[] pos = this.findGold();
-                        this.mineralX = pos[0];
-                        this.mineralY = pos[1];
-                        this.Status = -3;
+                        if (pos[0] != 0) {
+                            minDat = pos;
+                            this.Status = 2;
+                        } else {
+                            this.Status = 3;
+                        }
                     }
                     // mode 1 == tracker for if minerals are in a row
                 } else if (mode == 1) {
-                    this.Status = this.tIaR();
+                    this.tar = this.tIaR();
                 } else {
                     // auto stop the loop if it is not doing anything
                     if (!track) go = false;
@@ -354,8 +356,12 @@ public class CVManager extends Thread {
                 if (track) {
                     //return mineral position to track the camera
                     float[] pos = this.findGold();
-                    this.mineralX = pos[0];
-                    this.mineralY = pos[1];
+                    if (pos[0] != 0) {
+                        minDat = pos;
+                        this.Status = 2;
+                    } else {
+                        this.Status = 3;
+                    }
                 }
             }
             tfod.shutdown();
