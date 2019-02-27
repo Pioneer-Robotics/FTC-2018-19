@@ -160,20 +160,7 @@ public class CraterAuto extends LinearOpMode {
         }
 
         // Tensorflow output stored into variable to choose where robot should go
-        if (tFlow.Status == 1) {
-            choose = (int) tFlow.minDat[0];
-        }
-        if (tFlow.Status == 2) {
-            if (tFlow.minDat[0]<233) {
-                choose = 1;
-            } else if (tFlow.minDat[0]<466) {
-                choose = 2;
-            } else if (tFlow.minDat[0]!=0) {
-                choose = 3;
-            } else {
-                choose = -4;
-            }
-        }
+        choose = (int) tFlow.minDat[0];
         camM.go = false;
         tFlow.go = false;
         telemetry.addData("Choose:", "%d", choose);

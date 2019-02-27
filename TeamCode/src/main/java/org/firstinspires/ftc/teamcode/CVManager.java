@@ -131,7 +131,7 @@ public class CVManager extends Thread {
         if (tfod != null) {
             // getUpdatedRecognitions() will return null if no new information is available since
             // the last time that call was made.
-            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+            List<Recognition> updatedRecognitions = tfod.getRecognitions();
             if (updatedRecognitions != null) {
                 // # of objects
                 List<Recognition> trimmedRecognitions = new ArrayList<>();
@@ -336,8 +336,10 @@ public class CVManager extends Thread {
                     //filter checkThree to get information that we can pass on to the master thread
                     st = this.checkThree();
                     if (st != -1 && st != -2) {
+                        camM.mode = 3;
                         this.Status = 1;
                         minDat[0] = st;
+                        minDat[1] = 0;
                         //stop the loop if we have retrieved the information we need
                         if (disable && this.Status != -4) this.go = false;
                     } else if (st == -1 && a.contains(minDat[0])) this.go = false;
@@ -345,12 +347,23 @@ public class CVManager extends Thread {
                         // backup case to manually find the gold mineral
                         float[] pos = this.findGold();
                         if (pos[0] != 0) {
-                            minDat = pos;
+                            if (pos[0]<233) {
+                                minDat[0] = 1;
+                            } else if (pos[0]<466) {
+                                minDat[0] = 2;
+                            } else if (pos[0]!=0) {
+                                minDat[0] = 3;
+                            } else {
+                                minDat[0] = -4;
+                            }
+                            minDat[1] = pos[0];
                             this.Status = 2;
-                            camM.mode = 0;
+                            camM.mode = 3;
                         } else {
                             this.Status = 3;
-                            camM.mode = 2;
+                            camM.mode = 1;
+                            camM.lBound=(float) 0.3;
+                            camM.rBound=(float) 0.7;
                         }
 
                     }
@@ -382,7 +395,6 @@ public class CVManager extends Thread {
             }
         }
     }
-
     /**
      * Initialize the Vuforia localization engine.
      */

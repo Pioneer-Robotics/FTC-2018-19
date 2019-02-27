@@ -26,6 +26,7 @@ public class CVTester extends LinearOpMode {
         tFlow.disable = true;
         waitForStart();
         tFlow.start();
+        camM.start();
 
         while (!robot.botSwitch.getState() && !robot.topSwitch.getState()) {
             robot.linearArm.setPower(1);
@@ -41,23 +42,17 @@ public class CVTester extends LinearOpMode {
         }
         robot.linearArm.setPower(0);
         sleep(100);
-        while (opModeIsActive() && !isStopRequested()) {
+        while (opModeIsActive()) {
             if (isStopRequested()) {
+                tFlow.go=false;
+                camM.go=false;
                 return;
             }
             if (tFlow.Status == 1) {
                 choose = (int) tFlow.minDat[0];
             }
             if (tFlow.Status == 2) {
-                if (tFlow.minDat[0]<233) {
-                    choose = 1;
-                } else if (tFlow.minDat[0]<466) {
-                    choose = 2;
-                } else if (tFlow.minDat[0]!=0) {
-                    choose = 3;
-                } else {
-                    choose = -4;
-                }
+
             }
             telemetry.addData("Choose:", "%d", choose);
             telemetry.addData("St:", "%d", tFlow.st);
