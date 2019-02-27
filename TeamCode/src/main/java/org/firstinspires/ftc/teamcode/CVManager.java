@@ -83,6 +83,8 @@ public class CVManager extends Thread {
     boolean disable = true;
     int st;
     int mode = 0;
+    List a =new ArrayList();
+    CamManager camM;
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -110,10 +112,14 @@ public class CVManager extends Thread {
      * Detection engine.
      */
     private TFObjectDetector tfod;
-    void init(CameraName cam, int hw) {
+    void init(CameraName cam, int hw, CamManager camM) {
         //give the CVManager class the hooks into the hardware (Camera, hardware identifier) it needs in order function properly
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
+        a.add(1);
+        a.add(2);
+        a.add(3);
+        this.camM = camM;
         this.initVuforia(cam);
         this.initTfod(hw);
         Status = 100;
@@ -330,21 +336,23 @@ public class CVManager extends Thread {
                     //filter checkThree to get information that we can pass on to the master thread
                     st = this.checkThree();
                     if (st != -1 && st != -2) {
+                        this.Status = 1;
+                        minDat[0] = st;
                         //stop the loop if we have retrieved the information we need
-                        if (disable && this.Status !=  -4) {
-                            this.go = false;
-                            this.Status = 1;
-                            minDat[0] = st;
-                        }
-                    } else if (st == -2) {
+                        if (disable && this.Status != -4) this.go = false;
+                    } else if (st == -1 && a.contains(minDat[0])) this.go = false;
+                    else if (st == -2) {
                         // backup case to manually find the gold mineral
                         float[] pos = this.findGold();
                         if (pos[0] != 0) {
                             minDat = pos;
                             this.Status = 2;
+                            camM.mode = 0;
                         } else {
                             this.Status = 3;
+                            camM.mode = 2;
                         }
+
                     }
                     // mode 1 == tracker for if minerals are in a row
                 } else if (mode == 1) {
@@ -361,6 +369,7 @@ public class CVManager extends Thread {
                         this.Status = 2;
                     } else {
                         this.Status = 3;
+
                     }
                 }
             }

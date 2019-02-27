@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 public class CVTester extends LinearOpMode {
     private HardwareInfinity robot = new HardwareInfinity();
     CVManager tFlow = new CVManager();
+    CamManager camM = new CamManager();
     ElapsedTime runtime = new ElapsedTime();
     int choose = 0;
     private static final double TETRIX_TICKS_PER_REV = 1440;
@@ -20,7 +21,8 @@ public class CVTester extends LinearOpMode {
     public void runOpMode() {
         robot.init(hardwareMap);
         tFlow.init(hardwareMap.get(WebcamName.class, "Webcam 1"), hardwareMap.appContext.getResources().getIdentifier(
-                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()),camM );
+        camM.init(robot, tFlow);
         tFlow.disable = true;
         waitForStart();
         tFlow.start();
@@ -61,6 +63,7 @@ public class CVTester extends LinearOpMode {
             telemetry.addData("St:", "%d", tFlow.st);
             telemetry.addData("Status:", "%d", tFlow.Status);
             telemetry.addData("Tar:","%d",tFlow.tar);
+            telemetry.addData("MinDat:", "{%.3f, %.3f}",tFlow.minDat[0],tFlow.minDat[1]);
             telemetry.addData("MineralX:", "%.5f", tFlow.mineralX);
             telemetry.addData("GO:", tFlow.go ? "True" : "False");
             if (gamepad1.a && !tFlow.go) {

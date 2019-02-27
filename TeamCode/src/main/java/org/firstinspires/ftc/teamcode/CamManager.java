@@ -43,15 +43,15 @@ public class CamManager extends Thread {
             //cam stays center while robot turns
         }
     }
-    private void scan() {
+    private void scan(float lBound,float rBound) {
         //move the camera back and forth to look for the gold
-        if (robot.Camera.getPosition()>= 1 || robot.Camera.getPosition() <= 0.5) {
+        if (robot.Camera.getPosition()>= rBound || robot.Camera.getPosition() <= lBound) {
             camSpeed = -camSpeed;
         }
-        if (robot.Camera.getPosition()+ camSpeed >=1) {
-            robot.Camera.setPosition(1);
-        } else if (robot.Camera.getPosition()+ camSpeed <=0.5) {
-            robot.Camera.setPosition(0.5);
+        if (robot.Camera.getPosition()+ camSpeed >=rBound) {
+            robot.Camera.setPosition(rBound);
+        } else if (robot.Camera.getPosition()+ camSpeed <=lBound) {
+            robot.Camera.setPosition(lBound);
         } else {
             robot.Camera.setPosition(robot.Camera.getPosition()+ camSpeed);
         }
@@ -89,7 +89,7 @@ public class CamManager extends Thread {
                 if (camSpeed == 0) {
                     camSpeed = 0.001;
                 }
-                scan();
+                scan(0,1);
             } else if (mode == 2) {
                 //track the gold in mode 2
                 if (!CamCV.isAlive()) {

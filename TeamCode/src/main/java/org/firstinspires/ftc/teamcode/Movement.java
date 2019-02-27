@@ -33,7 +33,7 @@ class Movement extends Thread {
         runtime = run;
         COUNTS_PER_INCH = CPI;
     }
-    void angleTurn(double speed, double angle, boolean backgrnd) {
+    void angleTurn(double speed, double angle, boolean abs, boolean backgrnd) {
         double targetAngle; //Self-explanatory
         double time; //diagnostics, read how long each iteration of turn takes
         double maxtime = 0;//diagnostics, max acquisition time
@@ -54,7 +54,8 @@ class Movement extends Thread {
             double mdis;
             Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES); //current angle of imu
             Orientation delta = angles; //delta of angle, essentially previous acquisition
-            targetAngle = angle + angles.firstAngle; //calculates target angle
+            if (abs) targetAngle = angle;
+            else targetAngle = angle + angles.firstAngle; //calculates target angle
             Op.telemetry.clearAll();
             if ((Math.abs((720-angles.firstAngle+targetAngle)%360))<(Math.abs((720-targetAngle+angles.firstAngle)%360))) { //calculates direction and distance to targetAngle
                 mdis = (Math.abs((720-angles.firstAngle+targetAngle)%360));
@@ -254,8 +255,12 @@ class Movement extends Thread {
         encoderDrive(speed, leftCM, rightCM, timeoutS, false);
     }
     //automatically removes the need for background parameter
+    void angleTurn(double speed, double angle, boolean abs) {
+        angleTurn(speed, angle, abs,false);
+    }
+
     void angleTurn(double speed, double angle) {
-        angleTurn(speed, angle,false);
+        angleTurn(speed, angle, false);
     }
 
     //controls code running in background
