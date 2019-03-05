@@ -80,7 +80,6 @@ public class TeleoPlayground extends LinearOpMode
             telemetry.
                     addData("TFlow says: ", "%d", tFlow.Status);
             telemetry.addData("TFlow mode: ", "%d", tFlow.mode);
-            telemetry.addData("TFlow saysX: ", "%.5f", tFlow.mineralX);
             telemetry.addData("TFlow saysY: ", "%.5f", tFlow.mineralY);
             if (gamepad2.a) {
                 tFlow.mode = (1 - tFlow.mode);

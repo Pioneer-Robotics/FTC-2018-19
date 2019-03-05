@@ -36,7 +36,6 @@ public class CVTester extends LinearOpMode {
             telemetry.addData("St:", "%d", tFlow.st);
             telemetry.addData("Status:", "%d", tFlow.Status);
             telemetry.addData("Tar:","%d",tFlow.tar);
-            telemetry.addData("MineralX:", "%.5f", tFlow.mineralX);
             telemetry.addData("GO:", tFlow.go ? "True" : "False");
             telemetry.update();
         }
@@ -59,7 +58,6 @@ public class CVTester extends LinearOpMode {
             telemetry.addData("Status:", "%d", tFlow.Status);
             telemetry.addData("Tar:","%d",tFlow.tar);
             telemetry.addData("MinDat:", "{%.3f, %.3f}",tFlow.minDat[0],tFlow.minDat[1]);
-            telemetry.addData("MineralX:", "%.5f", tFlow.mineralX);
             telemetry.addData("GO:", tFlow.go ? "True" : "False");
             if (gamepad1.a && !tFlow.go) {
                 tFlow.go = true;

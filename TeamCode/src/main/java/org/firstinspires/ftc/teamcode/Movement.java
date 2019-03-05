@@ -87,7 +87,6 @@ class Movement extends Thread {
                     dis =  (Math.abs((720-targetAngle+angles.firstAngle)%360));
                 }
                 // Calculate speed from distance to targetAngle
-                //spd=dis/((angles.firstAngle+360)%360); //slower
                 spd=dis/angle; //faster
                 motorLeft.setPower(-direction*(/*Math.sqrt*/(Math.abs(speed*spd)+0.03))); //set motor power based on given speed against dynamic spd and sets direction appropriately
                 motorRight.setPower(direction*(/*Math.sqrt*/(Math.abs(speed*spd)+0.03)));

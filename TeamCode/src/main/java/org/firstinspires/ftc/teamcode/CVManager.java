@@ -1,3 +1,4 @@
+
 /* Copyright (c) 2018 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -73,7 +74,6 @@ public class CVManager extends Thread {
     private List<VuforiaTrackable> allTrackables = new ArrayList<>();
     //Initialize all variables necessary to communicate with the other threads
     OpenGLMatrix location;
-    float mineralX = 0;
     float mineralY = 0;
     int tar = 0;
     boolean go = true;

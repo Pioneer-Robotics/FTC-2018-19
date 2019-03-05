@@ -85,7 +85,6 @@ public class TMAuto extends LinearOpMode {
             telemetry.addData("Choose:", "%d", choose);
             telemetry.addData("Status:","%d",tFlow.Status);
             telemetry.addData("Tar:","%d",tFlow.tar);
-            telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
             telemetry.update();
             robot.linearArm.setPower(1);
             if (robot.topSwitch.getState()) {
@@ -115,7 +114,6 @@ public class TMAuto extends LinearOpMode {
             telemetry.addData("Choose:", "%d", choose);
             telemetry.addData("Status:","%d",tFlow.Status);
             telemetry.addData("Tar:","%d",tFlow.tar);
-            telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
             telemetry.update();
 
         }
@@ -134,7 +132,6 @@ public class TMAuto extends LinearOpMode {
         telemetry.addData("Choose:", "%d", choose);
         telemetry.addData("Status:","%d",tFlow.Status);
         telemetry.addData("Tar:","%d",tFlow.tar);
-        telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
         telemetry.update();
 
         //Drive away
@@ -143,14 +140,12 @@ public class TMAuto extends LinearOpMode {
         telemetry.addData("Choose:", "%d", choose);
         telemetry.addData("Status:","%d",tFlow.Status);
         telemetry.addData("Tar:","%d",tFlow.tar);
-        telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
         telemetry.update();
         runtime.reset();
         while (tFlow.go && runtime.milliseconds() <= 2000) {
             telemetry.addData("Choose:", "%d", choose);
             telemetry.addData("Status:","%d",tFlow.Status);
             telemetry.addData("Tar:","%d",tFlow.tar);
-            telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
             telemetry.update();
             sleep(1);
         }
@@ -162,7 +157,6 @@ public class TMAuto extends LinearOpMode {
         telemetry.addData("Choose:", "%d", choose);
         telemetry.addData("Status:","%d",tFlow.Status);
         telemetry.addData("Tar:","%d",tFlow.tar);
-        telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
         telemetry.update();
 
         // Perform sampling and position for dropping team marker
