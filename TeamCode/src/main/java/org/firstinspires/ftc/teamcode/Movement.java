@@ -34,15 +34,24 @@ class Movement extends Thread {
         COUNTS_PER_INCH = CPI;
     }
     void angleTurn(double speed, double angle, boolean abs, boolean backgrnd) {
+        //Uses a PID algorithm
         double targetAngle; //Self-explanatory
         double time; //diagnostics, read how long each iteration of turn takes
         double maxtime = 0;//diagnostics, max acquisition time
         double maxdel = 0;//diagnostics, max delta (difference) of angles, angles/iteration
         //double start;
-        double spd; //dynamic (can change) speed of turn
+        double spd; //dynamic (can change) controller of turn speed
+        double prp; //proportional error
+        double itr = 0; //integral error
+        double der; //differential error
+        double pk = 1; //amplifier for proportion
+        double ik = 1; //amplifier for integral
+        double dk = 1; //amplifier for differential
         int direction; // -1 = cw, 1 = ccw. Determines the direction of the turn
         double dis; //distance to targetAngle
-        double mspd;
+        double mspd; //max speed
+        double prdis = 0; //previous distance
+        int prdir = 0; //previous direction
         if (Op.opModeIsActive()) {
             if (backgrnd) { //allows the program run in background as a separate task.
                 angleG = angle;
@@ -59,14 +68,18 @@ class Movement extends Thread {
             Op.telemetry.clearAll();
             if ((Math.abs((720-angles.firstAngle+targetAngle)%360))<(Math.abs((720-targetAngle+angles.firstAngle)%360))) { //calculates direction and distance to targetAngle
                 mdis = (Math.abs((720-angles.firstAngle+targetAngle)%360));
+                direction = -1;
             } else {
-                mdis =  (Math.abs((720-targetAngle+angles.firstAngle)%360));
+                mdis = (Math.abs((720-targetAngle+angles.firstAngle)%360));
+                direction = 1;
             }
             mspd=mdis/angle;
             motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            runtime.reset();
             double margin = 0.2;
+            runtime.reset();
+            dis = mdis;
+            prdir = direction;
             while (true) {
                 //calculations for deltas and times for telemetry diagnostics
 
@@ -79,41 +92,44 @@ class Movement extends Thread {
                     motorRight.setPower(0);
                     return;
                 }
+                prdir = direction;
+                prdis = dis;
                 if ((Math.abs((720-angles.firstAngle+targetAngle)%360))<(Math.abs((720-targetAngle+angles.firstAngle)%360))) { //calculates direction and distance to targetAngle
                     direction = -1;
                     dis = (Math.abs((720-angles.firstAngle+targetAngle)%360));
                 } else {
                     direction = 1;
-                    dis =  (Math.abs((720-targetAngle+angles.firstAngle)%360));
+                    dis = (Math.abs((720-targetAngle+angles.firstAngle)%360));
                 }
                 // Calculate speed from distance to targetAngle
-                spd=dis/angle; //faster
+                prp=dis/angle; //faster
+                itr=itr+dis*time;
+                der=(dis*direction-prdis*prdir)/time;
+                //der=(angles.firstAngle-delta.firstAngle)/time; // alternate derivative
+                spd=pk*prp+ik*itr+dk*der;
                 motorLeft.setPower(-direction*(/*Math.sqrt*/(Math.abs(speed*spd)+0.03))); //set motor power based on given speed against dynamic spd and sets direction appropriately
                 motorRight.setPower(direction*(/*Math.sqrt*/(Math.abs(speed*spd)+0.03)));
 
                 //actual telemetry for diagnostics
                 Op.telemetry.addData("Error:", "%.5f", dis);
                 Op.telemetry.addData("Max Speed:", "%.5f",mspd);
+                Op.telemetry.addData("P:", "%.5f",prp);
+                Op.telemetry.addData("I:", "%.5f",itr);
+                Op.telemetry.addData("D:", "%.5f",der);
+                Op.telemetry.addData("SPD:", "%.5f",spd);
                 Op.telemetry.addData("Initial Distance:", "%.5f",mdis);
                 Op.telemetry.addData("Left speed","%.5f",-direction*(Math.abs(speed*spd)));
                 Op.telemetry.addData("Right speed","%.5f",direction*(Math.abs(speed*spd)));
-                Op.telemetry.addData("+1D:", "%.5f",(Math.abs((angles.firstAngle-targetAngle+360)%360)));
-                Op.telemetry.addData("-1D:", "%.5f",(360-Math.abs((angles.firstAngle-targetAngle+360)%360)));
                 Op.telemetry.addData("Direction:", "%7d",direction);
                 Op.telemetry.addData("Speed:", direction*Math.abs(speed*spd));
-                Op.telemetry.addData("Margin:", "%.5f", margin * speed);
                 Op.telemetry.addData("IMU Heading:", "%.5f", ((angles.firstAngle+360)%360));
-                Op.telemetry.addData("min:", "%.5f", targetAngle - margin * speed);
                 Op.telemetry.addData("target:", "%.5f", targetAngle);
-                Op.telemetry.addData("max:", "%.5f", targetAngle + margin * speed);
                 Op.telemetry.addData("time: ", "%.2f",time);
                 Op.telemetry.addData("delta:", "%.2f", angles.firstAngle-delta.firstAngle);
-                Op.telemetry.addData("maxtime:", "%.2f", maxtime);
-                Op.telemetry.addData("maxdel:", "%.2f",maxdel);
                 Op.telemetry.update();
                 delta = angles; //slightly more calculations for the delta
                 angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES); //acquires current angle
-                if (dis < margin * speed) { //determines stop conditions
+                if (dis < margin * speed) { //determines stop conditions, not in while loop condition because of bug with Java
                     motorLeft.setPower(0);
                     motorRight.setPower(0);
                     break;
