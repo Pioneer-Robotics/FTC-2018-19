@@ -44,14 +44,14 @@ class Movement extends Thread {
         double prp; //proportional error
         double itr = 0; //integral error
         double der; //differential error
-        double pk = 1; //amplifier for proportion
-        double ik = 1; //amplifier for integral
-        double dk = 1; //amplifier for differential
+        double pk = 7; //amplifier for proportion
+        double ik = 0.1; //amplifier for integral
+        double dk = 4; //amplifier for differential
         int direction; // -1 = cw, 1 = ccw. Determines the direction of the turn
         double dis; //distance to targetAngle
         double mspd; //max speed
         double prdis = 0; //previous distance
-        int prdir = 0; //previous direction
+        int prdir = 0; //ed fcdfprevious direction
         if (Op.opModeIsActive()) {
             if (backgrnd) { //allows the program run in background as a separate task.
                 angleG = angle;
@@ -103,9 +103,9 @@ class Movement extends Thread {
                 }
                 // Calculate speed from distance to targetAngle
                 prp=dis/angle; //faster
-                itr=itr+dis*time;
-                der=(dis*direction-prdis*prdir)/time;
-                //der=(angles.firstAngle-delta.firstAngle)/time; // alternate derivative
+                itr=itr+direction*dis*time;
+                //der=(dis*direction-prdis*prdir)/time;
+                der=(angles.firstAngle-delta.firstAngle)/time; // alternate derivative
                 spd=pk*prp+ik*itr+dk*der;
                 motorLeft.setPower(-direction*(/*Math.sqrt*/(Math.abs(speed*spd)+0.03))); //set motor power based on given speed against dynamic spd and sets direction appropriately
                 motorRight.setPower(direction*(/*Math.sqrt*/(Math.abs(speed*spd)+0.03)));
@@ -137,6 +137,10 @@ class Movement extends Thread {
             }
             //further telemetry to keep displaying values.
             Op.telemetry.addData("Finished", "!");
+            Op.telemetry.addData("P:", "%.5f",prp);
+            Op.telemetry.addData("I:", "%.5f",itr);
+            Op.telemetry.addData("D:", "%.5f",der);
+            Op.telemetry.addData("SPD:", "%.5f",spd);
             Op.telemetry.addData("Error:", "%.5f", dis);
             Op.telemetry.addData("Max Speed:", "%.5f",mspd);
             Op.telemetry.addData("Initial Distance:", "%.5f",mdis);
