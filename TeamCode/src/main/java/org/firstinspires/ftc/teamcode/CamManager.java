@@ -17,6 +17,8 @@ public class CamManager extends Thread {
     boolean go = true;
     float reference;
     int mode = 0;
+    float lBound = 0;
+    float rBound = 1;
     private double camSpeed = 0.001;
     private DecimalFormat df = new DecimalFormat("#.###");
 
