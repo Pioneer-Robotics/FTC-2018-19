@@ -17,9 +17,9 @@ public class CamManager extends Thread {
     boolean go = true;
     float reference;
     int mode = 0;
-    float lBound = 0;
-    float rBound = 1;
     private double camSpeed = 0.001;
+    float lBound;
+    float rBound;
     private DecimalFormat df = new DecimalFormat("#.###");
 
 
@@ -58,6 +58,17 @@ public class CamManager extends Thread {
             robot.Camera.setPosition(robot.Camera.getPosition()+ camSpeed);
         }
     }
+    private void retur(final float angleZero) {
+        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        //find angle delta
+        float angleDiff = ( angles.firstAngle - angleZero );
+        if (((angles.firstAngle + angleDiff) >= angleZero - 150)  && ((angles.firstAngle + angleDiff) <= (angleZero + 150)) && robot.Camera.getPosition() >= 1-Math.abs( Float.parseFloat(df.format(angles.firstAngle)) * (0.5/90) - 0.55)) {
+            camSpeed = -Math.abs(camSpeed);
+        } else if (((angles.firstAngle + angleDiff) >= angleZero - 150)  && ((angles.firstAngle + angleDiff) <= (angleZero + 150))) {
+            camSpeed = Math.abs(camSpeed);
+        }
+        robot.Camera.setPosition(robot.Camera.getPosition()+ camSpeed);
+    }
     private void track(double goldX) {
         // move to the position of the gold
         //0 & 0 =left
@@ -89,9 +100,9 @@ public class CamManager extends Thread {
             } else if (mode == 1) {
                 //scan in mode one
                 if (camSpeed == 0) {
-                    camSpeed = 0.001;
+                    camSpeed = 0.0008;
                 }
-                scan(0,1);
+                scan(lBound,rBound);
             } else if (mode == 2) {
                 //track the gold in mode 2
                 if (!CamCV.isAlive()) {
@@ -100,6 +111,8 @@ public class CamManager extends Thread {
                 }
                 CamCV.track = true;
                 track(CamCV.minDat[0]);
+            } else if (mode == 3) {
+                retur(reference);
             }
             //Manage auto changing between the modes
             if (mode != 2) {
