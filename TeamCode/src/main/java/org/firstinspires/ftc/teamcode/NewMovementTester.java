@@ -19,21 +19,51 @@ public class NewMovementTester extends LinearOpMode {
         mov.init(robot.motorLeft,robot.motorRight,robot.imu,this,runtime, COUNTS_PER_INCH);
         waitForStart();
         sleep(100);
+        int var = 1;
         while (opModeIsActive() && !isStopRequested()) {
             while (!gamepad1.a) {
                 sleep(1);
+                if (gamepad1.dpad_down) {
+                    if (var==1) mov.pk-=0.05;
+                    if (var==2) mov.ik-=0.05;
+                    if (var==3) mov.dk-=0.05;
+                    telemetry.addData("Variable:", (var == 1) ? "Proportion" : (var == 2) ? "Integral" : "Derivative");
+                    telemetry.addData("Proportion:","%.5f",mov.pk);
+                    telemetry.addData("Integral:","%.5f",mov.ik);
+                    telemetry.addData("Derivative:","%.5f",mov.dk);
+                }
+                else if (gamepad1.dpad_up) {
+                    if (var==1) mov.pk+=0.05;
+                    if (var==2) mov.ik+=0.05;
+                    if (var==3) mov.dk+=0.05;
+                    telemetry.addData("Variable:", (var == 1) ? "Proportion" : (var == 2) ? "Integral" : "Derivative");
+                    telemetry.addData("Proportion:","%.5f",mov.pk);
+                    telemetry.addData("Integral:","%.5f",mov.ik);
+                    telemetry.addData("Derivative:","%.5f",mov.dk);
+                }
+                else if (gamepad1.dpad_right) {
+                    var +=1;
+                    var = (var%3)+1;
+                    telemetry.addData("Variable:", (var == 1) ? "Proportion" : (var == 2) ? "Integral" : "Derivative");
+                    telemetry.addData("Proportion:","%.5f",mov.pk);
+                    telemetry.addData("Integral:","%.5f",mov.ik);
+                    telemetry.addData("Derivative:","%.5f",mov.dk);
+                    sleep(100);
+                }
+                else if (gamepad1.dpad_right) {
+                    var +=2;
+                    var = (var%3)+1;
+                    telemetry.addData("Variable:", (var == 1) ? "Proportion" : (var == 2) ? "Integral" : "Derivative");
+                    telemetry.addData("Proportion:","%.5f",mov.pk);
+                    telemetry.addData("Integral:","%.5f",mov.ik);
+                    telemetry.addData("Derivative:","%.5f",mov.dk);
+                    sleep(100);
+                }
                 if (isStopRequested()) {
                     return;
                 }
             }
             mov.angleTurn(1,-90);
-            while (!gamepad1.a) {
-                sleep(1);
-                if (isStopRequested()) {
-                    return;
-                }
-            }
-            mov.encoderDrive(1,-50,30);
         }
     }
 }

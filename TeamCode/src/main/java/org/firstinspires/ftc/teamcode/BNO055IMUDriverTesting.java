@@ -60,12 +60,13 @@ public class BNO055IMUDriverTesting extends LinearOpMode {
     //----------------------------------------------------------------------------------------------
 
     // The IMU sensor object
-    BNO055IMU imu;
-
     // State used for updating telemetry
     Orientation angles;
+    Orientation angles1;
     Orientation oldAng;
+    Orientation oldAng1;
     //Acceleration gravity;
+    private HardwareInfinity robot = new HardwareInfinity();
     ElapsedTime runtime = new ElapsedTime();
     double time;
     double maxt;
@@ -76,25 +77,17 @@ public class BNO055IMUDriverTesting extends LinearOpMode {
     //----------------------------------------------------------------------------------------------
 
     @Override public void runOpMode() {
-
+        robot.init(hardwareMap);
         // Set up the parameters with which we will use our IMU. Note that integration
         // algorithm here just reports accelerations to the logcat log; it doesn't actually
         // provide positional information.
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-        parameters.loggingEnabled      = false;
-        parameters.loggingTag          = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
         // and named "imu".
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
-        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        oldAng = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        oldAng = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
         //BNO055IMU.Register reg = new BNO055IMU.Register();
         //reg.bVal = (byte)0xA0;
@@ -113,8 +106,10 @@ public class BNO055IMUDriverTesting extends LinearOpMode {
         // Loop and update the dashboard
         while (opModeIsActive()) {
             oldAng = angles;
+            oldAng1 = angles1;
             runtime.reset();
-            angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            angles   = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            angles1   = robot.imu1.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             time = runtime.milliseconds();
             if (time>maxt) maxt = time;
             if (angles.firstAngle - oldAng.firstAngle>maxt) maxd = angles.firstAngle - oldAng.firstAngle;
@@ -136,6 +131,19 @@ public class BNO055IMUDriverTesting extends LinearOpMode {
             telemetry.addLine()
                     .addData("Max Latency: ", "%.2f", maxt)
                     .addData("Max Delta: ", "%.2f", maxd);
+            telemetry.addLine()
+                    .addData("heading1", "%.5f", angles1.thirdAngle)
+                    .addData("roll1", "%.5f", angles1.thirdAngle)
+                    .addData("pitch1","%.5f", angles1.thirdAngle);
+            /*telemetry.addLine()
+                    .addData("nheading", "%.5f", imu.read())
+                    .addData("nroll", "%.5f", angles.thirdAngle)
+                    .addData("npitch","%.5f", angles.thirdAngle);*/
+            telemetry.addLine()
+                    .addData("Delta H1: ", "%.8f", angles1.firstAngle - oldAng1.firstAngle)
+                    .addData("Delta R1: ", "%.8f", angles1.secondAngle - oldAng1.secondAngle)
+                    .addData("Delta P1: ", "%.8f", angles1.thirdAngle - oldAng1.thirdAngle);
+            telemetry.addData("Drift:", ".10f", angles.firstAngle-angles1.firstAngle);
         }
     }
 
@@ -154,7 +162,8 @@ public class BNO055IMUDriverTesting extends LinearOpMode {
                 // three times the necessary expense.
                 oldAng = angles;
                 runtime.reset();
-                angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+                angles   = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+                angles1   = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
                 time = runtime.milliseconds();
                 //gravity  = imu.getGravity();
                 }
@@ -163,12 +172,12 @@ public class BNO055IMUDriverTesting extends LinearOpMode {
         telemetry.addLine()
             .addData("status", new Func<String>() {
                 @Override public String value() {
-                    return imu.getSystemStatus().toShortString();
+                    return robot.imu.getSystemStatus().toShortString();
                     }
                 })
             .addData("calib", new Func<String>() {
                 @Override public String value() {
-                    return imu.getCalibrationStatus().toString();
+                    return robot.imu.getCalibrationStatus().toString();
                     }
                 });
 

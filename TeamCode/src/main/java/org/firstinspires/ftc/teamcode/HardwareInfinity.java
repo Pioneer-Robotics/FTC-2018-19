@@ -31,6 +31,7 @@ class HardwareInfinity
     DigitalChannel topSwitch;
     TouchSensor trigger;
     BNO055IMU imu;
+    BNO055IMU imu1;
     private BNO055IMU.Parameters IParameters = new BNO055IMU.Parameters();
 
     //public Servo    rightClaw   = null;
@@ -77,12 +78,15 @@ class HardwareInfinity
         topSwitch.setMode(DigitalChannel.Mode.INPUT);
         botSwitch.setMode(DigitalChannel.Mode.INPUT);
         imu = hwMap.get(BNO055IMU.class, "imu");
+        imu1 = hwMap.get(BNO055IMU.class, "imu1");
         IParameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         IParameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         IParameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
         IParameters.loggingEnabled = true;
         IParameters.loggingTag = "IMU";
         imu.initialize(IParameters);
+        IParameters.loggingTag = "IMU1";
+        imu1.initialize(IParameters);
 
         // Set all motors to zero power
         motorLeft.setPower(0);

@@ -23,6 +23,10 @@ class Movement extends Thread {
     private double rightCMG;
     private double timeoutSG;
     private int mode;
+    double pk = 7; //gain for proportion
+    double ik = 0.1; //gain for integral
+    double dk = 4; //gain for differential
+
 
     void init(DcMotor motL, DcMotor motR, BNO055IMU im, LinearOpMode O, ElapsedTime run, double CPI) {
         //turns all the necessary robot parts into local variables as it is extremely tedious to have to write each as an argument for every individual function call.
@@ -44,9 +48,6 @@ class Movement extends Thread {
         double prp; //proportional error
         double itr = 0; //integral error
         double der; //differential error
-        double pk = 7; //amplifier for proportion
-        double ik = 0.1; //amplifier for integral
-        double dk = 4; //amplifier for differential
         int direction; // -1 = cw, 1 = ccw. Determines the direction of the turn
         double dis; //distance to targetAngle
         double mspd; //max speed
@@ -103,7 +104,7 @@ class Movement extends Thread {
                 }
                 // Calculate speed from distance to targetAngle
                 prp=dis/angle; //faster
-                itr=itr+direction*dis*time;
+                itr=itr+direction*(dis/angle)*time/1000;
                 //der=(dis*direction-prdis*prdir)/time;
                 der=(angles.firstAngle-delta.firstAngle)/time; // alternate derivative
                 spd=pk*prp+ik*itr+dk*der;
