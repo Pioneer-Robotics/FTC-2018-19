@@ -88,8 +88,8 @@ public class BNO055IMUDriverTesting extends LinearOpMode {
 
         angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         oldAng = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        angles1 = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        oldAng1 = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        angles1 = robot.imu1.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        oldAng1 = robot.imu1.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
         //BNO055IMU.Register reg = new BNO055IMU.Register();
         //reg.bVal = (byte)0xA0;
@@ -117,8 +117,8 @@ public class BNO055IMUDriverTesting extends LinearOpMode {
             if (angles.firstAngle - oldAng.firstAngle>maxt) maxd = angles.firstAngle - oldAng.firstAngle;
             telemetry.update();
             telemetry.addLine()
-                    .addData("heading", "%.5f", angles.thirdAngle)
-                    .addData("roll", "%.5f", angles.thirdAngle)
+                    .addData("heading", "%.5f", angles.firstAngle)
+                    .addData("roll", "%.5f", angles.secondAngle)
                     .addData("pitch","%.5f", angles.thirdAngle);
             /*telemetry.addLine()
                     .addData("nheading", "%.5f", imu.read())
