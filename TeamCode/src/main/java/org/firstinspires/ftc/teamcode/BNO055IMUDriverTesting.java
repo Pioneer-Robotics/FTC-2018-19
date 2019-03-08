@@ -53,7 +53,7 @@ import java.util.Locale;
  * @see <a href="http://www.adafruit.com/products/2472">Adafruit IMU</a>
  */
 @TeleOp(name = "BNO055 IMU Driver Test", group = "Sensor")
-@Disabled // Comment this out to add to the opmode list
+//@Disabled // Comment this out to add to the opmode list
 public class BNO055IMUDriverTesting extends LinearOpMode {
     //----------------------------------------------------------------------------------------------
     // State
@@ -88,6 +88,8 @@ public class BNO055IMUDriverTesting extends LinearOpMode {
 
         angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         oldAng = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        angles1 = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        oldAng1 = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
         //BNO055IMU.Register reg = new BNO055IMU.Register();
         //reg.bVal = (byte)0xA0;
@@ -132,8 +134,8 @@ public class BNO055IMUDriverTesting extends LinearOpMode {
                     .addData("Max Latency: ", "%.2f", maxt)
                     .addData("Max Delta: ", "%.2f", maxd);
             telemetry.addLine()
-                    .addData("heading1", "%.5f", angles1.thirdAngle)
-                    .addData("roll1", "%.5f", angles1.thirdAngle)
+                    .addData("heading1", "%.5f", angles1.firstAngle)
+                    .addData("roll1", "%.5f", angles1.secondAngle)
                     .addData("pitch1","%.5f", angles1.thirdAngle);
             /*telemetry.addLine()
                     .addData("nheading", "%.5f", imu.read())
@@ -143,7 +145,7 @@ public class BNO055IMUDriverTesting extends LinearOpMode {
                     .addData("Delta H1: ", "%.8f", angles1.firstAngle - oldAng1.firstAngle)
                     .addData("Delta R1: ", "%.8f", angles1.secondAngle - oldAng1.secondAngle)
                     .addData("Delta P1: ", "%.8f", angles1.thirdAngle - oldAng1.thirdAngle);
-            telemetry.addData("Drift:", ".10f", angles.firstAngle-angles1.firstAngle);
+            telemetry.addData("Drift:", "%.10f", angles.firstAngle-angles1.firstAngle);
         }
     }
 
