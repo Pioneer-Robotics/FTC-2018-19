@@ -16,7 +16,7 @@ public class NewMovementTester extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
-        mov.init(robot.motorLeft,robot.motorRight,robot.imu,this,runtime, COUNTS_PER_INCH);
+        mov.init(robot.motorLeft,robot.motorRight,robot.imu, robot.imu1, runtime, COUNTS_PER_INCH, this);
         waitForStart();
         sleep(100);
         int var = 1;

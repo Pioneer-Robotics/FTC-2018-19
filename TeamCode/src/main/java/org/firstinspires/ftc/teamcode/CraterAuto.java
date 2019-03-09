@@ -28,13 +28,6 @@ public class CraterAuto extends LinearOpMode {
     // State used for updating telemetry
     private int choose;
 
-
-    // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
-    // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
-    // and named "imu".
-
-
-
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
@@ -56,22 +49,22 @@ public class CraterAuto extends LinearOpMode {
         tFlow.init(hardwareMap.get(WebcamName.class, "Webcam 1"), hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()),camM );
         camM.init(robot, tFlow);
-        mov.init(robot.motorLeft,robot.motorRight,robot.imu,this,runtime, COUNTS_PER_INCH);
+        mov.init(robot.motorLeft,robot.motorRight,robot.imu, robot.imu1, runtime, COUNTS_PER_INCH, this);
         camM.reference = angles.firstAngle;
         tFlow.disable = true;
         camM.start();
-        tFlow.start();
+        camM.mode = 0;
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+        tFlow.start();
 
         telemetry.addData("Path0", "Starting at %7d:%7d",
                 robot.motorLeft.getCurrentPosition(), robot.motorRight.getCurrentPosition());
         telemetry.update();
-
 
         //Drop down off lander - lowering robot
 
@@ -283,7 +276,11 @@ public class CraterAuto extends LinearOpMode {
             telemetry.update();
         }*/
         //Tank(0,0);
+        angles   = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        Orientation angles1   = robot.imu1.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         telemetry.addData("Status: ", "Finished");
+        telemetry.addData("Drift:", "%.10f", angles.firstAngle-angles1.firstAngle);
         telemetry.update();
+        sleep(2000);
     }
 }

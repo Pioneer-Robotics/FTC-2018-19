@@ -55,7 +55,7 @@ public class TMAuto extends LinearOpMode {
         tFlow.init(hardwareMap.get(WebcamName.class, "Webcam 1"), hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()),camM);
         camM.init(robot, tFlow);
-        mov.init(robot.motorLeft,robot.motorRight,robot.imu,this,runtime, COUNTS_PER_INCH);
+        mov.init(robot.motorLeft,robot.motorRight,robot.imu, robot.imu1, runtime, COUNTS_PER_INCH, this);
         camM.reference = angles.firstAngle;
         camM.start();
         tFlow.disable = true;

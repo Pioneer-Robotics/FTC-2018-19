@@ -64,7 +64,7 @@ public class TeleoPlayground extends LinearOpMode
         tFlow.init(hardwareMap.get(WebcamName.class, "Webcam 1"), hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()),camM );
         robot.botSwitch.setMode(DigitalChannel.Mode.INPUT);
         camM.init(robot, tFlow);
-        mov.init(robot.motorLeft,robot.motorRight,robot.imu,this,runtime, COUNTS_PER_INCH);
+        mov.init(robot.motorLeft,robot.motorRight,robot.imu, robot.imu1, runtime, COUNTS_PER_INCH, this);
         tFlow.disable = false;
         telemetry.addData("Teleop", "Initiate");
         telemetry.update();

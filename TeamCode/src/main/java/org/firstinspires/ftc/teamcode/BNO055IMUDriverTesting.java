@@ -184,8 +184,8 @@ public class BNO055IMUDriverTesting extends LinearOpMode {
                 });
 
         telemetry.addLine()
-            .addData("heading", "%.5f", angles.thirdAngle)
-            .addData("roll", "%.5f", angles.thirdAngle)
+            .addData("heading", "%.5f", angles.firstAngle)
+            .addData("roll", "%.5f", angles.secondAngle)
             .addData("pitch","%.5f", angles.thirdAngle);
         telemetry.addLine()
                 .addData("Latency: ", "%.8f", time);
