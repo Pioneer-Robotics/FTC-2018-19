@@ -31,6 +31,8 @@ public class NewMovementTester extends LinearOpMode {
                     telemetry.addData("Proportion:","%.5f",mov.pk);
                     telemetry.addData("Integral:","%.5f",mov.ik);
                     telemetry.addData("Derivative:","%.5f",mov.dk);
+                    telemetry.update();
+                    sleep(100);
                 }
                 else if (gamepad1.dpad_up) {
                     if (var==1) mov.pk+=0.05;
@@ -40,24 +42,38 @@ public class NewMovementTester extends LinearOpMode {
                     telemetry.addData("Proportion:","%.5f",mov.pk);
                     telemetry.addData("Integral:","%.5f",mov.ik);
                     telemetry.addData("Derivative:","%.5f",mov.dk);
+                    telemetry.update();
+                    sleep(100);
                 }
                 else if (gamepad1.dpad_right) {
-                    var +=1;
-                    var = (var%3)+1;
+                    if (var==1) {
+                        var = 2;
+                    } else if (var == 2) {
+                        var = 3;
+                    } else {
+                        var = 1;
+                    }
                     telemetry.addData("Variable:", (var == 1) ? "Proportion" : (var == 2) ? "Integral" : "Derivative");
                     telemetry.addData("Proportion:","%.5f",mov.pk);
                     telemetry.addData("Integral:","%.5f",mov.ik);
                     telemetry.addData("Derivative:","%.5f",mov.dk);
-                    sleep(100);
+                    telemetry.update();
+                    sleep(200);
                 }
-                else if (gamepad1.dpad_right) {
-                    var +=2;
-                    var = (var%3)+1;
+                else if (gamepad1.dpad_left) {
+                    if (var==1) {
+                        var = 3;
+                    } else if (var == 2) {
+                        var = 1;
+                    } else {
+                        var = 2;
+                    }
                     telemetry.addData("Variable:", (var == 1) ? "Proportion" : (var == 2) ? "Integral" : "Derivative");
                     telemetry.addData("Proportion:","%.5f",mov.pk);
                     telemetry.addData("Integral:","%.5f",mov.ik);
                     telemetry.addData("Derivative:","%.5f",mov.dk);
-                    sleep(100);
+                    telemetry.update();
+                    sleep(200);
                 }
                 if (isStopRequested()) {
                     return;
