@@ -24,9 +24,9 @@ public class NewMovementTester extends LinearOpMode {
             while (!gamepad1.a) {
                 sleep(1);
                 if (gamepad1.dpad_down) {
-                    if (var==1) mov.pk-=0.05;
-                    if (var==2) mov.ik-=0.05;
-                    if (var==3) mov.dk-=0.05;
+                    if (var==1) mov.pk-=0.01;
+                    if (var==2) mov.ik-=0.01;
+                    if (var==3) mov.dk-=0.01;
                     telemetry.addData("Variable:", (var == 1) ? "Proportion" : (var == 2) ? "Integral" : "Derivative");
                     telemetry.addData("Proportion:","%.5f",mov.pk);
                     telemetry.addData("Integral:","%.5f",mov.ik);
@@ -35,9 +35,9 @@ public class NewMovementTester extends LinearOpMode {
                     sleep(100);
                 }
                 else if (gamepad1.dpad_up) {
-                    if (var==1) mov.pk+=0.05;
-                    if (var==2) mov.ik+=0.05;
-                    if (var==3) mov.dk+=0.05;
+                    if (var==1) mov.pk+=0.01;
+                    if (var==2) mov.ik+=0.01;
+                    if (var==3) mov.dk+=0.01;
                     telemetry.addData("Variable:", (var == 1) ? "Proportion" : (var == 2) ? "Integral" : "Derivative");
                     telemetry.addData("Proportion:","%.5f",mov.pk);
                     telemetry.addData("Integral:","%.5f",mov.ik);

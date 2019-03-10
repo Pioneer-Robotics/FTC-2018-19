@@ -24,9 +24,9 @@ class Movement extends Thread {
     private double rightCMG;
     private double timeoutSG;
     private int mode;
-    double pk = 7; //gain for proportion
-    double ik = 0; //gain for integral
-    double dk = 5; //gain for differential
+    double pk = 3; //gain for proportion
+    double ik = 0.2; //gain for integral
+    double dk = 0.3; //gain for differential
 
 
     void init(DcMotor motL, DcMotor motR, BNO055IMU im, BNO055IMU im1, ElapsedTime run, double CPI, LinearOpMode O) {
@@ -79,7 +79,7 @@ class Movement extends Thread {
             mspd=mdis/angle;
             motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            double margin = 0.2;
+            double margin = 0.15;
             runtime.reset();
             dis = mdis;
             prdir = direction;
@@ -108,7 +108,7 @@ class Movement extends Thread {
                 prp=dis/angle; //faster
                 itr=itr+direction*(dis/angle)*time/1000;
                 //der=(dis*direction-prdis*prdir)/time;
-                der=(angl-delta)/time; // alternate derivative
+                der=((dis*direction/angle)-(prdis*prdir/angle))*1000/time; // alternate derivative
                 spd=pk*prp+ik*itr+dk*der;
                 motorLeft.setPower(-direction*(/*Math.sqrt*/(Math.abs(speed*spd)+0.03))); //set motor power based on given speed against dynamic spd and sets direction appropriately
                 motorRight.setPower(direction*(/*Math.sqrt*/(Math.abs(speed*spd)+0.03)));

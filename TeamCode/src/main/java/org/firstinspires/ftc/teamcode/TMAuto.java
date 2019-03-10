@@ -48,6 +48,7 @@ public class TMAuto extends LinearOpMode {
         robot.motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.linearArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
 
         CVManager tFlow = new CVManager();
         CamManager camM = new CamManager();
@@ -57,15 +58,14 @@ public class TMAuto extends LinearOpMode {
         camM.init(robot, tFlow);
         mov.init(robot.motorLeft,robot.motorRight,robot.imu, robot.imu1, runtime, COUNTS_PER_INCH, this);
         camM.reference = angles.firstAngle;
-        camM.start();
         tFlow.disable = true;
-        tFlow.start();
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+        camM.start();
 
         telemetry.addData("Path0", "Starting at %7d:%7d",
                 robot.motorLeft.getCurrentPosition(), robot.motorRight.getCurrentPosition());
@@ -165,11 +165,11 @@ public class TMAuto extends LinearOpMode {
             case 1:
                 //Mineral on Left
                 mov.angleTurn(TURN_SPEED,36);
-                mov.encoderDrive(DRIVE_SPEED,30, 5);
+                mov.encoderDrive(DRIVE_SPEED,31, 5);
                 mov.angleTurn(TURN_SPEED, -86);
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive(DRIVE_SPEED,20, 5);
-                mov.angleTurn(TURN_SPEED, 85);
+                mov.encoderDrive(DRIVE_SPEED,10, 5);
+                //mov.angleTurn(TURN_SPEED, 85);
 
                 break;
             case 2:
@@ -177,7 +177,6 @@ public class TMAuto extends LinearOpMode {
                 //no turning movement is necessary to hit mineral
                 mov.encoderDrive(DRIVE_SPEED,38, 5);
 
-                mov.angleTurn(TURN_SPEED, 72);
                 break;
             case 3:
                 //Mineral on Right
@@ -185,8 +184,8 @@ public class TMAuto extends LinearOpMode {
                 mov.encoderDrive(DRIVE_SPEED,33, 5);
                 mov.angleTurn(TURN_SPEED, 70);
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                mov.encoderDrive(DRIVE_SPEED,18,5);
-                mov.angleTurn(TURN_SPEED, 30);
+                mov.encoderDrive(DRIVE_SPEED,5,5);
+                //mov.angleTurn(TURN_SPEED, 30);
 
                 //mov.angleTurn(0.2, 90, false);
                 //mov.encoderDrive( 0.5, 5,5,10, false);
@@ -217,22 +216,24 @@ public class TMAuto extends LinearOpMode {
 
         switch (choose) {
             case 1:
-                mov.encoderDrive(DRIVE_SPEED,-7, 5);
-                mov.angleTurn(TURN_SPEED, 35);
-                mov.encoderDrive(DRIVE_SPEED,-17, 5);
+                mov.angleTurn(TURN_SPEED, -35);
+                mov.encoderDrive(DRIVE_SPEED,17, 5);
                 mov.angleTurn(TURN_SPEED, -32);
+                mov.encoderDrive(1,52, 10);
                 break;
             case 2:
-                mov.encoderDrive(DRIVE_SPEED,-19, 5);
+                mov.angleTurn(TURN_SPEED, 72);
+                mov.encoderDrive(DRIVE_SPEED,-21, 5);
                 mov.angleTurn(TURN_SPEED, -34);
+                mov.encoderDrive(1,-52, 10);
                 break;
             case 3:
                 mov.encoderDrive(DRIVE_SPEED,-21, 5);
                 mov.angleTurn(TURN_SPEED, -35);
+                mov.encoderDrive(1,-52, 10);
                 break;
         }
         // Back up into crater at max speed
-        mov.encoderDrive(1,-52, 10);
 
         robot.Camera.setPosition(0);
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
