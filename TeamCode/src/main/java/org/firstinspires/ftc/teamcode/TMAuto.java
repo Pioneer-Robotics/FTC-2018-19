@@ -59,13 +59,14 @@ public class TMAuto extends LinearOpMode {
         mov.init(robot.motorLeft,robot.motorRight,robot.imu, robot.imu1, runtime, COUNTS_PER_INCH, this);
         camM.reference = angles.firstAngle;
         tFlow.disable = true;
+        camM.start();
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        camM.start();
+        tFlow.start();
 
         telemetry.addData("Path0", "Starting at %7d:%7d",
                 robot.motorLeft.getCurrentPosition(), robot.motorRight.getCurrentPosition());
