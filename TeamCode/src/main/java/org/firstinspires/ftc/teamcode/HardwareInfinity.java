@@ -136,6 +136,7 @@ class HardwareInfinity extends Thread
 
     }
     void angleTurn(double speed, double angle, boolean abs, boolean backgrnd) {
+        if (Op==null) return;
         //Uses a PID algorithm
         double targetAngle; //Self-explanatory
         double time; //diagnostics, read how long each iteration of turn takes
@@ -268,6 +269,7 @@ class HardwareInfinity extends Thread
     }
 
     void encoderDrive(double speed, double leftCM, double rightCM, double timeoutS, boolean backgrnd) {
+        if (Op==null) return;
         //initialize target variables for encoderDrive
         int newLeftTarget;
         int newRightTarget;
@@ -365,19 +367,23 @@ class HardwareInfinity extends Thread
     }
     //automatically removes the need for tank drive (leftCM and rightCM) and background parameters
     void encoderDrive(double speed, double distance, double timeoutS) {
+        if (Op==null) return;
         //if (experiment) experimentalDrive(speed,distance,timeoutS);
         encoderDrive(speed, distance, distance, timeoutS, false);
     }
     //automatically removes the need for background parameter
     void encoderDrive(double speed, double leftCM, double rightCM, double timeoutS) {
+        if (Op==null) return;
         encoderDrive(speed, leftCM, rightCM, timeoutS, false);
     }
     //automatically removes the need for background parameter
     void angleTurn(double speed, double angle, boolean abs) {
+        if (Op==null) return;
         angleTurn(speed, angle, abs,false);
     }
 
     void angleTurn(double speed, double angle) {
+        if (Op==null) return;
         angleTurn(speed, angle, false);
     }
 

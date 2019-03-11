@@ -33,7 +33,7 @@ public class Teleop extends OpMode
         motorLeft = hardwareMap.get(DcMotor.class, "motorLeft");*/
         //Acceleration gravity = imu.getGravity();
 
-        robot.init(hardwareMap, this, runtime, COUNTS_PER_INCH);
+        robot.init(hardwareMap, null, runtime, COUNTS_PER_INCH);
         telemetry.addData("Teleop", "Initiate");    //
         telemetry.update();
         robot.Camera.setPosition(0);
