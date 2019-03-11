@@ -30,7 +30,7 @@ public class CraterAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        robot.init(hardwareMap);
+        robot.init(hardwareMap, this, runtime, COUNTS_PER_INCH);
         //robot.imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
         Orientation angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         //Acceleration gravity = imu.getGravity();
@@ -45,11 +45,9 @@ public class CraterAuto extends LinearOpMode {
 
         CVManager tFlow = new CVManager();
         CamManager camM = new CamManager();
-        Movement mov = new Movement();
         tFlow.init(hardwareMap.get(WebcamName.class, "Webcam 1"), hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()),camM );
         camM.init(robot, tFlow);
-        mov.init(robot.motorLeft,robot.motorRight,robot.imu, robot.imu1, runtime, COUNTS_PER_INCH, this);
         camM.reference = angles.firstAngle;
         tFlow.disable = true;
         camM.start();
@@ -132,7 +130,7 @@ public class CraterAuto extends LinearOpMode {
         telemetry.update();
         sleep(500);
         //Drive away
-        mov.encoderDrive(DRIVE_SPEED,10,10,10);
+        robot.encoderDrive(DRIVE_SPEED,10,10,10);
 
         telemetry.addData("Choose:", "%d", choose);
         telemetry.addData("Status:","%d",tFlow.Status);
@@ -161,73 +159,73 @@ public class CraterAuto extends LinearOpMode {
         switch (choose) {
             case 1:
                 //left
-                mov.angleTurn(TURN_SPEED,38);
+                robot.angleTurn(TURN_SPEED,38);
 
-                mov.encoderDrive(DRIVE_SPEED, 17, 5);
+                robot.encoderDrive(DRIVE_SPEED, 17, 5);
                 sleep(100);
                 /*
-                mov.angleTurn(TURN_SPEED,40);
-                mov.angleTurn(TURN_SPEED,-40);
+                robot.angleTurn(TURN_SPEED,40);
+                robot.angleTurn(TURN_SPEED,-40);
                 */
-                mov.encoderDrive(DRIVE_SPEED, -18,5);
+                robot.encoderDrive(DRIVE_SPEED, -18,5);
 
-                mov.angleTurn(0.3,-38);
+                robot.angleTurn(0.3,-38);
 
                 break;
             case 2:
                 //middle
-                //theoretically no movement is necessary
-                mov.encoderDrive(DRIVE_SPEED,9, 5);
+                //theoretically no robotement is necessary
+                robot.encoderDrive(DRIVE_SPEED,9, 5);
                 sleep(100);
 
-                mov.angleTurn(TURN_SPEED,10);
+                robot.angleTurn(TURN_SPEED,10);
                 sleep(250);
-                mov.angleTurn(TURN_SPEED,-10);
+                robot.angleTurn(TURN_SPEED,-10);
 
-                mov.encoderDrive(DRIVE_SPEED,-9, 5);
+                robot.encoderDrive(DRIVE_SPEED,-9, 5);
 
 
                 break;
             case 3:
                 //right
-                mov.angleTurn(TURN_SPEED,-38);
+                robot.angleTurn(TURN_SPEED,-38);
 
-                mov.encoderDrive(DRIVE_SPEED,17, 5);
+                robot.encoderDrive(DRIVE_SPEED,17, 5);
                 sleep(100);
                 /*
-                mov.angleTurn(TURN_SPEED,-40);
-                mov.angleTurn(TURN_SPEED,40);
+                robot.angleTurn(TURN_SPEED,-40);
+                robot.angleTurn(TURN_SPEED,40);
                 */
-                mov.encoderDrive(DRIVE_SPEED, -17,5);
-                mov.angleTurn(0.2,38);
+                robot.encoderDrive(DRIVE_SPEED, -17,5);
+                robot.angleTurn(0.2,38);
 
                 break;
             default:
                 //error happened with TensorFlow
                 telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                // if tensor flow doesn't function, the robot will default to moving to the middle position
-                mov.encoderDrive(DRIVE_SPEED, 9,5);
-                mov.angleTurn(TURN_SPEED,20);
+                // if tensor flow doesn't function, the robot will default to roboting to the middle position
+                robot.encoderDrive(DRIVE_SPEED, 9,5);
+                robot.angleTurn(TURN_SPEED,20);
                 sleep(250);
-                mov.angleTurn(TURN_SPEED,-20);
+                robot.angleTurn(TURN_SPEED,-20);
 
-                mov.encoderDrive(DRIVE_SPEED, -9,5);
+                robot.encoderDrive(DRIVE_SPEED, -9,5);
                 break;
         }
 
         // Maneuver to depot to drop team marker
         //sleep(250);
-        mov.encoderDrive(0.2, 1 ,5);
+        robot.encoderDrive(0.2, 1 ,5);
 
-        mov.angleTurn(TURN_SPEED,68);
-        mov.encoderDrive(DRIVE_SPEED, 34,5);
-        mov.angleTurn(0.2,32);
-        mov.encoderDrive(DRIVE_SPEED, 14,5);
-        mov.angleTurn(0.2,10);
-        mov.encoderDrive(DRIVE_SPEED, 20,5);
+        robot.angleTurn(TURN_SPEED,68);
+        robot.encoderDrive(DRIVE_SPEED, 34,5);
+        robot.angleTurn(0.2,32);
+        robot.encoderDrive(DRIVE_SPEED, 14,5);
+        robot.angleTurn(0.2,10);
+        robot.encoderDrive(DRIVE_SPEED, 20,5);
 
         //sleep(500);
-        mov.angleTurn(0.3,90);
+        robot.angleTurn(0.3,90);
         telemetry.update();
         telemetry.addData("Status: ", "Dropping Team Marker");
         telemetry.update();
@@ -238,12 +236,12 @@ public class CraterAuto extends LinearOpMode {
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
 
         // Align with wall and back up into crater
-        mov.encoderDrive(DRIVE_SPEED, -2,5);
-        mov.angleTurn(TURN_SPEED,-90);
-        mov.encoderDrive(DRIVE_SPEED, -50, 5);
+        robot.encoderDrive(DRIVE_SPEED, -2,5);
+        robot.angleTurn(TURN_SPEED,-90);
+        robot.encoderDrive(DRIVE_SPEED, -50, 5);
 
-        //mov.angleTurn(TURN_SPEED,95, false);
-        //mov.encoderDrive(DRIVE_SPEED, 70, 20);
+        //robot.angleTurn(TURN_SPEED,95, false);
+        //robot.encoderDrive(DRIVE_SPEED, 70, 20);
 
         robot.Camera.setPosition(0);
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);

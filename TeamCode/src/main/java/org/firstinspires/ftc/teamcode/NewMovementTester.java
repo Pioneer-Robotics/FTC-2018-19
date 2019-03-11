@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @TeleOp(name="MovTest", group="FTCPio")
 public class NewMovementTester extends LinearOpMode {
     private HardwareInfinity robot = new HardwareInfinity();
-    private Movement mov = new Movement();
     private ElapsedTime runtime = new ElapsedTime();
     private static final double TETRIX_TICKS_PER_REV = 1440;
     private static final double DRIVE_GEAR_REDUCTION = 2.0;     // This is < 1.0 if geared UP
@@ -15,8 +14,7 @@ public class NewMovementTester extends LinearOpMode {
     private static final double COUNTS_PER_INCH = (TETRIX_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_CM * 3.1415);
     @Override
     public void runOpMode() {
-        robot.init(hardwareMap);
-        mov.init(robot.motorLeft,robot.motorRight,robot.imu, robot.imu1, runtime, COUNTS_PER_INCH, this);
+        robot.init(hardwareMap, this, runtime, COUNTS_PER_INCH);
         waitForStart();
         sleep(100);
         int var = 1;
@@ -24,24 +22,24 @@ public class NewMovementTester extends LinearOpMode {
             while (!gamepad1.a) {
                 sleep(1);
                 if (gamepad1.dpad_down) {
-                    if (var==1) mov.pk-=0.01;
-                    if (var==2) mov.ik-=0.01;
-                    if (var==3) mov.dk-=0.01;
+                    if (var==1) robot.pk-=0.01;
+                    if (var==2) robot.ik-=0.01;
+                    if (var==3) robot.dk-=0.01;
                     telemetry.addData("Variable:", (var == 1) ? "Proportion" : (var == 2) ? "Integral" : "Derivative");
-                    telemetry.addData("Proportion:","%.5f",mov.pk);
-                    telemetry.addData("Integral:","%.5f",mov.ik);
-                    telemetry.addData("Derivative:","%.5f",mov.dk);
+                    telemetry.addData("Proportion:","%.5f",robot.pk);
+                    telemetry.addData("Integral:","%.5f",robot.ik);
+                    telemetry.addData("Derivative:","%.5f",robot.dk);
                     telemetry.update();
                     sleep(100);
                 }
                 else if (gamepad1.dpad_up) {
-                    if (var==1) mov.pk+=0.01;
-                    if (var==2) mov.ik+=0.01;
-                    if (var==3) mov.dk+=0.01;
+                    if (var==1) robot.pk+=0.01;
+                    if (var==2) robot.ik+=0.01;
+                    if (var==3) robot.dk+=0.01;
                     telemetry.addData("Variable:", (var == 1) ? "Proportion" : (var == 2) ? "Integral" : "Derivative");
-                    telemetry.addData("Proportion:","%.5f",mov.pk);
-                    telemetry.addData("Integral:","%.5f",mov.ik);
-                    telemetry.addData("Derivative:","%.5f",mov.dk);
+                    telemetry.addData("Proportion:","%.5f",robot.pk);
+                    telemetry.addData("Integral:","%.5f",robot.ik);
+                    telemetry.addData("Derivative:","%.5f",robot.dk);
                     telemetry.update();
                     sleep(100);
                 }
@@ -54,9 +52,9 @@ public class NewMovementTester extends LinearOpMode {
                         var = 1;
                     }
                     telemetry.addData("Variable:", (var == 1) ? "Proportion" : (var == 2) ? "Integral" : "Derivative");
-                    telemetry.addData("Proportion:","%.5f",mov.pk);
-                    telemetry.addData("Integral:","%.5f",mov.ik);
-                    telemetry.addData("Derivative:","%.5f",mov.dk);
+                    telemetry.addData("Proportion:","%.5f",robot.pk);
+                    telemetry.addData("Integral:","%.5f",robot.ik);
+                    telemetry.addData("Derivative:","%.5f",robot.dk);
                     telemetry.update();
                     sleep(200);
                 }
@@ -69,9 +67,9 @@ public class NewMovementTester extends LinearOpMode {
                         var = 2;
                     }
                     telemetry.addData("Variable:", (var == 1) ? "Proportion" : (var == 2) ? "Integral" : "Derivative");
-                    telemetry.addData("Proportion:","%.5f",mov.pk);
-                    telemetry.addData("Integral:","%.5f",mov.ik);
-                    telemetry.addData("Derivative:","%.5f",mov.dk);
+                    telemetry.addData("Proportion:","%.5f",robot.pk);
+                    telemetry.addData("Integral:","%.5f",robot.ik);
+                    telemetry.addData("Derivative:","%.5f",robot.dk);
                     telemetry.update();
                     sleep(200);
                 }
@@ -79,7 +77,7 @@ public class NewMovementTester extends LinearOpMode {
                     return;
                 }
             }
-            mov.angleTurn(1,-90);
+            robot.angleTurn(1,-90);
         }
     }
 }
