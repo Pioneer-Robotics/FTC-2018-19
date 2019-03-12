@@ -39,7 +39,7 @@ class HardwareInfinity extends Thread
     TouchSensor trigger;
     BNO055IMU imu;
     BNO055IMU imu1;
-    LinearOpMode Op;
+    private LinearOpMode Op;
     WebcamName webCam;
     int tFlowId;
     private ElapsedTime runtime;
@@ -67,8 +67,6 @@ class HardwareInfinity extends Thread
     static final double DT_MIN = 0.5;
     static final double DT_MAX = 0.9;
 
-    /* local OpMode members. */
-    private HardwareMap hwMap;
     //private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
@@ -79,16 +77,16 @@ class HardwareInfinity extends Thread
     /* Initialize standard Hardware interfaces */
     void init(HardwareMap ahwMap, LinearOpMode aOp) {
         // Save reference to Hardware map
-        hwMap = ahwMap;
+        /* local OpMode members. */
         runtime = new ElapsedTime();
         // Define and Initialize Motors
         Op = aOp;
-        motorLeft  = hwMap.get(DcMotor.class, "motorLeft");
-        motorRight = hwMap.get(DcMotor.class, "motorRight");
-        linearArm  = hwMap.get(DcMotor.class, "linearArm");
-        armBase = hwMap.get(DcMotor.class, "armBase");
-        FBar = hwMap.get(DcMotor.class, "fBar");
-        Succq = hwMap.get(DcMotor.class, "succq");
+        motorLeft  = ahwMap.get(DcMotor.class, "motorLeft");
+        motorRight = ahwMap.get(DcMotor.class, "motorRight");
+        linearArm  = ahwMap.get(DcMotor.class, "linearArm");
+        armBase = ahwMap.get(DcMotor.class, "armBase");
+        FBar = ahwMap.get(DcMotor.class, "fBar");
+        Succq = ahwMap.get(DcMotor.class, "succq");
         linearArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -97,15 +95,15 @@ class HardwareInfinity extends Thread
         motorLeft.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         motorRight.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         FBar.setDirection(DcMotor.Direction.REVERSE);
-        botSwitch = hwMap.get(DigitalChannel.class, "botSwitch");
-        topSwitch = hwMap.get(DigitalChannel.class, "topSwitch");
-        trigger = hwMap.get(TouchSensor.class, "trigger");
+        botSwitch = ahwMap.get(DigitalChannel.class, "botSwitch");
+        topSwitch = ahwMap.get(DigitalChannel.class, "topSwitch");
+        trigger = ahwMap.get(TouchSensor.class, "trigger");
         topSwitch.setMode(DigitalChannel.Mode.INPUT);
         botSwitch.setMode(DigitalChannel.Mode.INPUT);
-        imu = hwMap.get(BNO055IMU.class, "imu");
-        imu1 = hwMap.get(BNO055IMU.class, "imu1");
-        webCam = hwMap.get(WebcamName.class, "Webcam 1");
-        tFlowId = hwMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hwMap.appContext.getPackageName());
+        imu = ahwMap.get(BNO055IMU.class, "imu");
+        imu1 = ahwMap.get(BNO055IMU.class, "imu1");
+        webCam = ahwMap.get(WebcamName.class, "Webcam 1");
+        tFlowId = ahwMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", ahwMap.appContext.getPackageName());
         IParameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         IParameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         IParameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
@@ -131,10 +129,10 @@ class HardwareInfinity extends Thread
         FBar.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Define and initialize ALL installed servos.
-        lunchBox  = hwMap.get(Servo.class, "lunchBox");
-        Latch  = hwMap.get(Servo.class, "Latch");
-        Camera = hwMap.get(Servo.class, "Camera");
-        dropTop = hwMap.get(Servo.class, "dropTop");
+        lunchBox  = ahwMap.get(Servo.class, "lunchBox");
+        Latch  = ahwMap.get(Servo.class, "Latch");
+        Camera = ahwMap.get(Servo.class, "Camera");
+        dropTop = ahwMap.get(Servo.class, "dropTop");
 
         lunchBox.setPosition(lunchBoxMAX_POSITION);
         Latch.setPosition(LatchMAX_POSITION);
@@ -160,8 +158,8 @@ class HardwareInfinity extends Thread
         int direction; // -1 = cw, 1 = ccw. Determines the direction of the turn
         double dis; //distance to targetAngle
         double mspd; //max speed
-        double prdis = 0; //previous distance
-        int prdir = 0; //ed fcdfprevious direction
+        double prdis; //previous distance
+        int prdir; //ed fcdfprevious direction
         if (Op.opModeIsActive()) {
             if (backgrnd) { //allows the program run in background as a separate task.
                 angleG = angle;

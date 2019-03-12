@@ -125,7 +125,7 @@ public class CraterAuto extends LinearOpMode {
         telemetry.update();
         sleep(500);
         //Drive away
-        robot.encoderDrive(DRIVE_SPEED,10,10,10);
+        robot.encoderDrive(DRIVE_SPEED,10,10);
 
         telemetry.addData("Choose:", "%d", choose);
         telemetry.addData("Status:","%d",tFlow.Status);
