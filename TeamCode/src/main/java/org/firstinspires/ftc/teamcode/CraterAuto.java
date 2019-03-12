@@ -17,12 +17,8 @@ public class CraterAuto extends LinearOpMode {
     private HardwareInfinity robot = new HardwareInfinity();
     private ElapsedTime runtime = new ElapsedTime();
 
-    private static final double TETRIX_TICKS_PER_REV = 1440;
-    private static final double DRIVE_GEAR_REDUCTION = 2.0;     // This is < 1.0 if geared UP
-    private static final double WHEEL_DIAMETER_CM = 4.0 * 2.54;     // For figuring circumference
-    private static final double COUNTS_PER_INCH = (TETRIX_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_CM * 3.1415);
     private static final double DRIVE_SPEED = 1;
-    private static final double TURN_SPEED = 0.5;
+    private static final double TURN_SPEED = 1;
     private static final boolean latch = true;
 
     // State used for updating telemetry
@@ -30,7 +26,7 @@ public class CraterAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        robot.init(hardwareMap, this, runtime, COUNTS_PER_INCH);
+        robot.init(hardwareMap, this);
         //robot.imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
         Orientation angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         //Acceleration gravity = imu.getGravity();
@@ -45,8 +41,7 @@ public class CraterAuto extends LinearOpMode {
 
         CVManager tFlow = new CVManager();
         CamManager camM = new CamManager();
-        tFlow.init(hardwareMap.get(WebcamName.class, "Webcam 1"), hardwareMap.appContext.getResources().getIdentifier(
-                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()),camM );
+        tFlow.init(robot.webCam, robot.tFlowId, camM);
         camM.init(robot, tFlow);
         camM.reference = angles.firstAngle;
         tFlow.disable = true;

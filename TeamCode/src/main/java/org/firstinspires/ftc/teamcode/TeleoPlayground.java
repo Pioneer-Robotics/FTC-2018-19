@@ -5,26 +5,19 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
 @Disabled
 @TeleOp(name="TeleoPlayground", group="FTCPio")
 public class TeleoPlayground extends LinearOpMode
 {
     /* Declare OpMode members. */
     private HardwareInfinity robot = new HardwareInfinity();
-    private ElapsedTime runtime = new ElapsedTime();
-    private static final double     TETRIX_TICKS_PER_REV    = 1440;
-    private static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;
-    private static final double     WHEEL_DIAMETER_CM   = 4.0*2.54 ;
-    private static final double     COUNTS_PER_INCH         = (TETRIX_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) /
-            (WHEEL_DIAMETER_CM * 3.1415);
-    private static final double DRIVE_SPEED = 0.5;
 
     // State used for updating telemetry
     private Orientation angles;
@@ -56,11 +49,11 @@ public class TeleoPlayground extends LinearOpMode
         TMAuto tm = new TMAuto();
         CVManager tFlow = new CVManager();
 
-        robot.init(hardwareMap, this, runtime, COUNTS_PER_INCH);
+        robot.init(hardwareMap, this);
 
         angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
-        tFlow.init(hardwareMap.get(WebcamName.class, "Webcam 1"), hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName()),camM );
+        tFlow.init(robot.webCam, robot.tFlowId, camM);
         robot.botSwitch.setMode(DigitalChannel.Mode.INPUT);
         camM.init(robot, tFlow);
         tFlow.disable = false;

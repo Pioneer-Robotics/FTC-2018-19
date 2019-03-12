@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -39,8 +40,13 @@ class HardwareInfinity extends Thread
     BNO055IMU imu;
     BNO055IMU imu1;
     LinearOpMode Op;
+    WebcamName webCam;
+    int tFlowId;
     private ElapsedTime runtime;
-    private double COUNTS_PER_INCH;
+    private static final double TETRIX_TICKS_PER_REV = 1440;
+    private static final double DRIVE_GEAR_REDUCTION = 2.0;     // This is < 1.0 if geared UP
+    private static final double WHEEL_DIAMETER_CM = 4.0 * 2.54;     // For figuring circumference
+    private static final double COUNTS_PER_INCH = (TETRIX_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_CM * 3.1415);
     private BNO055IMU.Parameters IParameters = new BNO055IMU.Parameters();
     private double speedG;
     private double angleG;
@@ -71,11 +77,10 @@ class HardwareInfinity extends Thread
     }
 
     /* Initialize standard Hardware interfaces */
-    void init(HardwareMap ahwMap, LinearOpMode aOp, ElapsedTime run, double CPI) {
+    void init(HardwareMap ahwMap, LinearOpMode aOp) {
         // Save reference to Hardware map
         hwMap = ahwMap;
-        runtime = run;
-        COUNTS_PER_INCH = CPI;
+        runtime = new ElapsedTime();
         // Define and Initialize Motors
         Op = aOp;
         motorLeft  = hwMap.get(DcMotor.class, "motorLeft");
@@ -99,6 +104,8 @@ class HardwareInfinity extends Thread
         botSwitch.setMode(DigitalChannel.Mode.INPUT);
         imu = hwMap.get(BNO055IMU.class, "imu");
         imu1 = hwMap.get(BNO055IMU.class, "imu1");
+        webCam = hwMap.get(WebcamName.class, "Webcam 1");
+        tFlowId = hwMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hwMap.appContext.getPackageName());
         IParameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         IParameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         IParameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
@@ -134,6 +141,9 @@ class HardwareInfinity extends Thread
         Camera.setPosition(0.5);
         dropTop.setPosition(DT_MAX);
 
+    }
+    void init(HardwareMap ahwMap) {
+        init(ahwMap, null);
     }
     void angleTurn(double speed, double angle, boolean abs, boolean backgrnd) {
         if (Op==null) return;
@@ -179,9 +189,8 @@ class HardwareInfinity extends Thread
             double margin = 0.15;
             runtime.reset();
             dis = mdis;
-            prdir = direction;
             while (true) {
-                //calculations for deltas and times for telemetry diagnostics
+                //Calculations for deltas and times for telemetry diagnostics
 
                 time = runtime.milliseconds();
                 if (time>maxtime) maxtime = time;
@@ -201,31 +210,31 @@ class HardwareInfinity extends Thread
                     direction = 1;
                     dis = (Math.abs((720-targetAngle+angl)%360));
                 }
-                // Calculate speed from distance to targetAngle
-                prp=dis/angle; //faster
+                //Calculate PID values from the error of distance/angle
+                prp=dis/angle;
                 itr=itr+direction*(dis/angle)*time/1000;
-                //der=(dis*direction-prdis*prdir)/time;
-                der=((dis*direction/angle)-(prdis*prdir/angle))*1000/time; // alternate derivative
+                der=((dis*direction/angle)-(prdis*prdir/angle))*1000/time;
+                //Calculate speed from distance to targetAngle
                 spd=pk*prp+ik*itr+dk*der;
                 motorLeft.setPower(-direction*(/*Math.sqrt*/(Math.abs(speed*spd)+0.03))); //set motor power based on given speed against dynamic spd and sets direction appropriately
                 motorRight.setPower(direction*(/*Math.sqrt*/(Math.abs(speed*spd)+0.03)));
 
                 //actual telemetry for diagnostics
                 Op.telemetry.addData("Error:", "%.5f", dis);
-                Op.telemetry.addData("Max Speed:", "%.5f",mspd);
-                Op.telemetry.addData("P:", "%.5f",prp);
-                Op.telemetry.addData("I:", "%.5f",itr);
-                Op.telemetry.addData("D:", "%.5f",der);
-                Op.telemetry.addData("SPD:", "%.5f",spd);
+                //Op.telemetry.addData("Max Speed:", "%.5f",mspd);
+                //Op.telemetry.addData("P:", "%.5f",prp);
+                //Op.telemetry.addData("I:", "%.5f",itr);
+                //Op.telemetry.addData("D:", "%.5f",der);
+                //Op.telemetry.addData("SPD:", "%.5f",spd);
                 //Op.telemetry.addData("Initial Distance:", "%.5f",mdis);
                 //Op.telemetry.addData("Left speed","%.5f",-direction*(Math.abs(speed*spd)));
                 //Op.telemetry.addData("Right speed","%.5f",direction*(Math.abs(speed*spd)));
                 //Op.telemetry.addData("Direction:", "%7d",direction);
-                Op.telemetry.addData("Speed:", direction*Math.abs(speed*spd));
-                Op.telemetry.addData("IMU Heading:", "%.5f", ((angl+720)%360));
+                //Op.telemetry.addData("Speed:", direction*Math.abs(speed*spd));
+                //Op.telemetry.addData("IMU Heading:", "%.5f", ((angl+720)%360));
                 //Op.telemetry.addData("target:", "%.5f", targetAngle);
-                Op.telemetry.addData("time: ", "%.2f",time);
-                Op.telemetry.addData("delta:", "%.2f", angl-delta);
+                //Op.telemetry.addData("time: ", "%.2f",time);
+                //Op.telemetry.addData("delta:", "%.2f", angl-delta);
                 Op.telemetry.update();
                 delta = angl; //slightly more calculations for the delta
                 angl = (imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle+imu1.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle)/2; //acquires current angle
@@ -262,9 +271,7 @@ class HardwareInfinity extends Thread
             motorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             try {//wait to account for jitter, momentum, etc.
                 sleep(100);
-            } catch (InterruptedException ignored) {
-
-            }
+            } catch (InterruptedException ignored) {}
         }
     }
 
@@ -359,9 +366,7 @@ class HardwareInfinity extends Thread
             //wait to prevent jitter
             try {
                 sleep(250);
-            } catch (InterruptedException ignored) {
-
-            }
+            } catch (InterruptedException ignored) {}
 
         }
     }

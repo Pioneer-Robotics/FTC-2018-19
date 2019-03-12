@@ -2,19 +2,13 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="MovTest", group="FTCPio")
 public class NewMovementTester extends LinearOpMode {
     private HardwareInfinity robot = new HardwareInfinity();
-    private ElapsedTime runtime = new ElapsedTime();
-    private static final double TETRIX_TICKS_PER_REV = 1440;
-    private static final double DRIVE_GEAR_REDUCTION = 2.0;     // This is < 1.0 if geared UP
-    private static final double WHEEL_DIAMETER_CM = 4.0 * 2.54;     // For figuring circumference
-    private static final double COUNTS_PER_INCH = (TETRIX_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_CM * 3.1415);
     @Override
     public void runOpMode() {
-        robot.init(hardwareMap, this, runtime, COUNTS_PER_INCH);
+        robot.init(hardwareMap, this);
         waitForStart();
         sleep(100);
         int var = 1;

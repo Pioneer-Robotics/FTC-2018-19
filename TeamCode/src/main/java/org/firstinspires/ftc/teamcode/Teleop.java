@@ -11,7 +11,6 @@ public class Teleop extends OpMode
     /* Declare OpMode members. */
     private HardwareInfinity robot = new HardwareInfinity();
     private ElapsedTime time = new ElapsedTime();
-    private ElapsedTime runtime = new ElapsedTime();
     private double pre_suq = 0;
     private boolean armBAuto;
     private boolean FBarAuto;
@@ -19,10 +18,6 @@ public class Teleop extends OpMode
     private boolean flipster = true;
     private boolean flippy;
     private boolean telemet = false;
-    private static final double TETRIX_TICKS_PER_REV = 1440;
-    private static final double DRIVE_GEAR_REDUCTION = 2.0;     // This is < 1.0 if geared UP
-    private static final double WHEEL_DIAMETER_CM = 4.0 * 2.54;     // For figuring circumference
-    private static final double COUNTS_PER_INCH = (TETRIX_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_CM * 3.1415);
 
     // State used for updating telemetry;
     @Override
@@ -33,7 +28,7 @@ public class Teleop extends OpMode
         motorLeft = hardwareMap.get(DcMotor.class, "motorLeft");*/
         //Acceleration gravity = imu.getGravity();
 
-        robot.init(hardwareMap, null, runtime, COUNTS_PER_INCH);
+        robot.init(hardwareMap);
         telemetry.addData("Teleop", "Initiate");    //
         telemetry.update();
         robot.Camera.setPosition(0);
