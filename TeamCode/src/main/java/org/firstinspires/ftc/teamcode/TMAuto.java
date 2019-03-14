@@ -18,7 +18,7 @@ public class TMAuto extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     private static final double DRIVE_SPEED = 1;
-    private static final double TURN_SPEED = 0.6;
+    private static final double TURN_SPEED = 0.5;
 
     // State used for updating telemetry
     private int choose;
@@ -160,10 +160,9 @@ public class TMAuto extends LinearOpMode {
                 //Mineral on Left
                 robot.angleTurn(TURN_SPEED,36);
                 robot.encoderDrive(DRIVE_SPEED,31, 5);
-                robot.angleTurn(TURN_SPEED, -86);
+                robot.angleTurn(0.3, -86);
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 robot.encoderDrive(DRIVE_SPEED,10, 5);
-                //robot.angleTurn(TURN_SPEED, 85);
 
                 break;
             case 2:
@@ -176,13 +175,10 @@ public class TMAuto extends LinearOpMode {
                 //Mineral on Right
                 robot.angleTurn(TURN_SPEED,-38);
                 robot.encoderDrive(DRIVE_SPEED,33, 5);
-                robot.angleTurn(TURN_SPEED, 65);
+                robot.angleTurn(0.3, 68);
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                robot.encoderDrive(DRIVE_SPEED,5,5);
-                //robot.angleTurn(TURN_SPEED, 30);
+                robot.encoderDrive(DRIVE_SPEED,7,5);
 
-                //robot.angleTurn(0.2, 90, false);
-                //robot.encoderDrive( 0.5, 5,5,10, false);
                 break;
             default:
                 //error happened with TensorFlow
@@ -210,21 +206,20 @@ public class TMAuto extends LinearOpMode {
 
         switch (choose) {
             case 1:
-                robot.angleTurn(TURN_SPEED, -35);
+                robot.angleTurn(0.3, -35);
                 robot.encoderDrive(DRIVE_SPEED,17, 5);
                 robot.angleTurn(TURN_SPEED, -32);
                 robot.encoderDrive(1,52, 10);
                 break;
             case 2:
                 robot.angleTurn(TURN_SPEED, 72);
-                robot.encoderDrive(DRIVE_SPEED,-21, 5);
-                robot.angleTurn(TURN_SPEED, -34);
+                robot.encoderDrive(DRIVE_SPEED,-23, 5);
+                robot.angleTurn(TURN_SPEED, -30);
                 robot.encoderDrive(1,-52, 10);
                 break;
             case 3:
-                //robot.encoderDrive(DRIVE_SPEED,-21, 5);
-                //robot.angleTurn(TURN_SPEED, -35);
-                robot.encoderDrive(1,-52, 10);
+                robot.angleTurn(TURN_SPEED, -3);
+                robot.encoderDrive(1,-55, 10);
                 break;
         }
         // Back up into crater at max speed

@@ -55,8 +55,8 @@ class HardwareInfinity extends Thread
     private double timeoutSG;
     private int mode;
     double pk = 3; //gain for proportion
-    double ik = 0.2; //gain for integral
-    double dk = 0.3; //gain for differential
+    double ik = 0.21; //gain for integral
+    double dk = 0.36; //gain for differential
 
     //public Servo    rightClaw   = null;
 

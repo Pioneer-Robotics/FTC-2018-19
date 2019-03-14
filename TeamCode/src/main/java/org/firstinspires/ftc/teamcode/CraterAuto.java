@@ -18,7 +18,7 @@ public class CraterAuto extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     private static final double DRIVE_SPEED = 1;
-    private static final double TURN_SPEED = 1;
+    private static final double TURN_SPEED = 0.5;
     private static final boolean latch = true;
 
     // State used for updating telemetry
@@ -156,13 +156,13 @@ public class CraterAuto extends LinearOpMode {
                 //left
                 robot.angleTurn(TURN_SPEED,38);
 
-                robot.encoderDrive(DRIVE_SPEED, 17, 5);
+                robot.encoderDrive(DRIVE_SPEED, 15, 5);
                 sleep(100);
                 /*
                 robot.angleTurn(TURN_SPEED,40);
                 robot.angleTurn(TURN_SPEED,-40);
                 */
-                robot.encoderDrive(DRIVE_SPEED, -18,5);
+                robot.encoderDrive(DRIVE_SPEED, -15,5);
 
                 robot.angleTurn(0.3,-38);
 
@@ -185,13 +185,13 @@ public class CraterAuto extends LinearOpMode {
                 //right
                 robot.angleTurn(TURN_SPEED,-38);
 
-                robot.encoderDrive(DRIVE_SPEED,17, 5);
+                robot.encoderDrive(DRIVE_SPEED,15, 5);
                 sleep(100);
                 /*
                 robot.angleTurn(TURN_SPEED,-40);
                 robot.angleTurn(TURN_SPEED,40);
                 */
-                robot.encoderDrive(DRIVE_SPEED, -17,5);
+                robot.encoderDrive(DRIVE_SPEED, -15,5);
                 robot.angleTurn(0.2,38);
 
                 break;
@@ -212,7 +212,7 @@ public class CraterAuto extends LinearOpMode {
         //sleep(250);
         robot.encoderDrive(0.2, 1 ,5);
 
-        robot.angleTurn(TURN_SPEED,68);
+        robot.angleTurn(0.2,68);
         robot.encoderDrive(DRIVE_SPEED, 34,5);
         robot.angleTurn(0.2,32);
         robot.encoderDrive(DRIVE_SPEED, 14,5);
@@ -220,7 +220,6 @@ public class CraterAuto extends LinearOpMode {
         robot.encoderDrive(DRIVE_SPEED, 20,5);
 
         //sleep(500);
-        robot.angleTurn(0.3,90);
         telemetry.update();
         telemetry.addData("Status: ", "Dropping Team Marker");
         telemetry.update();
@@ -232,7 +231,6 @@ public class CraterAuto extends LinearOpMode {
 
         // Align with wall and back up into crater
         robot.encoderDrive(DRIVE_SPEED, -2,5);
-        robot.angleTurn(TURN_SPEED,-90);
         robot.encoderDrive(DRIVE_SPEED, -50, 5);
 
         //robot.angleTurn(TURN_SPEED,95, false);
