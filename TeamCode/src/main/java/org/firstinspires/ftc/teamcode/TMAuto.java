@@ -18,7 +18,7 @@ public class TMAuto extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     private static final double DRIVE_SPEED = 1;
-    private static final double TURN_SPEED = 1;
+    private static final double TURN_SPEED = 0.6;
 
     // State used for updating telemetry
     private int choose;
@@ -176,7 +176,7 @@ public class TMAuto extends LinearOpMode {
                 //Mineral on Right
                 robot.angleTurn(TURN_SPEED,-38);
                 robot.encoderDrive(DRIVE_SPEED,33, 5);
-                robot.angleTurn(TURN_SPEED, 70);
+                robot.angleTurn(TURN_SPEED, 65);
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 robot.encoderDrive(DRIVE_SPEED,5,5);
                 //robot.angleTurn(TURN_SPEED, 30);
@@ -222,8 +222,8 @@ public class TMAuto extends LinearOpMode {
                 robot.encoderDrive(1,-52, 10);
                 break;
             case 3:
-                robot.encoderDrive(DRIVE_SPEED,-21, 5);
-                robot.angleTurn(TURN_SPEED, -35);
+                //robot.encoderDrive(DRIVE_SPEED,-21, 5);
+                //robot.angleTurn(TURN_SPEED, -35);
                 robot.encoderDrive(1,-52, 10);
                 break;
         }
