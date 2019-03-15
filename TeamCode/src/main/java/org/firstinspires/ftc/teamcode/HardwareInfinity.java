@@ -14,6 +14,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
+import java.util.ArrayList;
+
 /**
  * Motor channel:  Left  drive motor:        "motorLeft"
  * Motor channel:  Right drive motor:        "motorRight"
@@ -56,7 +58,7 @@ class HardwareInfinity extends Thread
     private int mode;
     double pk = 3; //gain for proportion
     double ik = 0.21; //gain for integral
-    double dk = 0.36; //gain for differential
+    double dk = 0.39; //gain for differential
 
     //public Servo    rightClaw   = null;
 
@@ -160,6 +162,13 @@ class HardwareInfinity extends Thread
         double mspd; //max speed
         double prdis; //previous distance
         int prdir; //ed fcdfprevious direction
+        ArrayList<Integer> prdi = new ArrayList<>();
+        prdi.add(1);
+        prdi.add(1);
+        prdi.add(1);
+        prdi.add(1);
+        prdi.add(1);
+        int yeet = 0; //yeet counter
         if (Op.opModeIsActive()) {
             if (backgrnd) { //allows the program run in background as a separate task.
                 angleG = angle;
@@ -200,6 +209,8 @@ class HardwareInfinity extends Thread
                     return;
                 }
                 prdir = direction;
+                prdi.add(direction);
+                if (prdi.size() >= 10) prdi.remove(0);
                 prdis = dis;
                 if ((Math.abs((720-angl+targetAngle)%360))<(Math.abs((720-targetAngle+angl)%360))) { //calculates direction and distance to targetAngle
                     direction = -1;
@@ -216,9 +227,23 @@ class HardwareInfinity extends Thread
                 spd=pk*prp+ik*itr+dk*der;
                 motorLeft.setPower(-direction*(/*Math.sqrt*/(Math.abs(speed*spd)+0.03))); //set motor power based on given speed against dynamic spd and sets direction appropriately
                 motorRight.setPower(direction*(/*Math.sqrt*/(Math.abs(speed*spd)+0.03)));
-
+                //counting the yeets
+                boolean inc = false;
+                for (int i = 0; i<prdi.size()-1;i++) {
+                    if (prdi.get(i) == -prdi.get(i+1)) inc = true;
+                }
+                if (inc) yeet += 1;
+                else yeet = 0;
                 //actual telemetry for diagnostics
                 Op.telemetry.addData("Error:", "%.5f", dis);
+                Op.telemetry.addData("Yeet Counter:", "%d", yeet);
+                Op.telemetry.addData("1:","%d",prdi.get(0));
+                Op.telemetry.addData("2:","%d",prdi.get(1));
+                Op.telemetry.addData("3:","%d",prdi.get(2));
+                Op.telemetry.addData("4:","%d",prdi.get(3));
+                Op.telemetry.addData("5:","%d",prdi.get(4));
+                Op.telemetry.addData("6:","%d",prdi.get(5));
+                Op.telemetry.addData("7:","%d",prdi.size());
                 //Op.telemetry.addData("Max Speed:", "%.5f",mspd);
                 //Op.telemetry.addData("P:", "%.5f",prp);
                 //Op.telemetry.addData("I:", "%.5f",itr);
@@ -236,11 +261,20 @@ class HardwareInfinity extends Thread
                 Op.telemetry.update();
                 delta = angl; //slightly more calculations for the delta
                 angl = (imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle+imu1.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle)/2; //acquires current angle
-                if (dis < margin * speed) { //determines stop conditions, not in while loop condition because of bug with Java
+                if (dis < margin || yeet >= 10) { //determines stop conditions, not in while loop condition because of bug with Java
                     motorLeft.setPower(0);
                     motorRight.setPower(0);
                     break;
                 }
+            }
+            if (dis > 5) {
+                Op.telemetry.addData("Take 2",1);
+                Op.telemetry.update();
+                try {//wait to account for jitter, momentum, etc.
+                    sleep(500);
+                } catch (InterruptedException ignored) {}
+                angleTurn(0.3, dis*direction);
+                return;
             }
             //further telemetry to keep displaying values.
             Op.telemetry.addData("Finished", "!");

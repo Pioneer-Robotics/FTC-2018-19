@@ -83,7 +83,7 @@ public class CVManager extends Thread {
     boolean disable = true;
     int st;
     int mode = 0;
-    List a =new ArrayList();
+    List<Integer> a = new ArrayList<>();
     CamManager camM;
 
     /*
