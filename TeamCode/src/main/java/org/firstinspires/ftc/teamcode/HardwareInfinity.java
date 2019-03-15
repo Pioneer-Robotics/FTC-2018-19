@@ -145,9 +145,10 @@ class HardwareInfinity extends Thread
     void init(HardwareMap ahwMap) {
         init(ahwMap, null);
     }
+
     void angleTurn(double speed, double angle, boolean abs, boolean backgrnd) {
         if (Op==null) return;
-        //Uses a PID algorithm
+        //Uses a PID algorithm to turn accurately on point
         double targetAngle; //Self-explanatory
         double time; //diagnostics, read how long each iteration of turn takes
         double maxtime = 0;//diagnostics, max acquisition time
@@ -163,12 +164,9 @@ class HardwareInfinity extends Thread
         double prdis; //previous distance
         int prdir; //ed fcdfprevious direction
         ArrayList<Integer> prdi = new ArrayList<>();
-        prdi.add(1);
-        prdi.add(1);
-        prdi.add(1);
-        prdi.add(1);
-        prdi.add(1);
         int yeet = 0; //yeet counter
+        double im1;
+        double im2;
         if (Op.opModeIsActive()) {
             if (backgrnd) { //allows the program run in background as a separate task.
                 angleG = angle;
@@ -237,12 +235,6 @@ class HardwareInfinity extends Thread
                 //actual telemetry for diagnostics
                 Op.telemetry.addData("Error:", "%.5f", dis);
                 Op.telemetry.addData("Yeet Counter:", "%d", yeet);
-                Op.telemetry.addData("1:","%d",prdi.get(0));
-                Op.telemetry.addData("2:","%d",prdi.get(1));
-                Op.telemetry.addData("3:","%d",prdi.get(2));
-                Op.telemetry.addData("4:","%d",prdi.get(3));
-                Op.telemetry.addData("5:","%d",prdi.get(4));
-                Op.telemetry.addData("6:","%d",prdi.get(5));
                 Op.telemetry.addData("7:","%d",prdi.size());
                 //Op.telemetry.addData("Max Speed:", "%.5f",mspd);
                 //Op.telemetry.addData("P:", "%.5f",prp);
@@ -260,7 +252,11 @@ class HardwareInfinity extends Thread
                 //Op.telemetry.addData("delta:", "%.2f", angl-delta);
                 Op.telemetry.update();
                 delta = angl; //slightly more calculations for the delta
-                angl = (imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle+imu1.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle)/2; //acquires current angle
+                im1 = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+                im2 = imu1.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+                if (im1 - im2 > 180) im2 += 360;
+                else if (im2 - im1 > 180) im1 += 360;
+                angl = ((im1+im2)/2)%360; //acquires current angle
                 if (dis < margin || yeet >= 10) { //determines stop conditions, not in while loop condition because of bug with Java
                     motorLeft.setPower(0);
                     motorRight.setPower(0);
@@ -427,7 +423,7 @@ class HardwareInfinity extends Thread
     //controls code running in background
     public void run() {
         if (mode == 1) {
-            angleTurn(speedG,angleG);//check to see if this works! originally, was angleTurn, not experimental
+            angleTurn(speedG,angleG);
         } else if (mode == 2) {
             encoderDrive(speedG, leftCMG, rightCMG, timeoutSG,false);
         }
