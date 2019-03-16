@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -56,7 +55,7 @@ public class TeleoPlayground extends LinearOpMode
         tFlow.init(robot.webCam, robot.tFlowId, camM);
         robot.botSwitch.setMode(DigitalChannel.Mode.INPUT);
         camM.init(robot, tFlow);
-        tFlow.disable = false;
+        tFlow.autoDisable = false;
         telemetry.addData("Teleop", "Initiate");
         telemetry.update();
         // Wait for the game to start (driver presses PLAY)
@@ -69,9 +68,8 @@ public class TeleoPlayground extends LinearOpMode
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             telemetry.
-                    addData("TFlow says: ", "%d", tFlow.Status);
+                    addData("TFlow says: ", "%d", tFlow.status);
             telemetry.addData("TFlow mode: ", "%d", tFlow.mode);
-            telemetry.addData("TFlow saysY: ", "%.5f", tFlow.mineralY);
             if (gamepad2.a) {
                 tFlow.mode = (1 - tFlow.mode);
                 sleep(100);

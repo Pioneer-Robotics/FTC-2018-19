@@ -148,7 +148,7 @@ class HardwareInfinity extends Thread
 
     void angleTurn(double speed, double angle, boolean abs, boolean backgrnd) {
         if (Op==null) return;
-        //Uses a PID algorithm to turn accurately on point
+        //Uses compList PID algorithm to turn accurately on point
         double targetAngle; //Self-explanatory
         double time; //diagnostics, read how long each iteration of turn takes
         double maxtime = 0;//diagnostics, max acquisition time
@@ -168,7 +168,7 @@ class HardwareInfinity extends Thread
         double im1;
         double im2;
         if (Op.opModeIsActive()) {
-            if (backgrnd) { //allows the program run in background as a separate task.
+            if (backgrnd) { //allows the program run in background as compList separate task.
                 angleG = angle;
                 speedG = speed;
                 mode = 1;

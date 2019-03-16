@@ -28,13 +28,13 @@ public class CamManager extends Thread {
         this.imu = robo_t.imu;
         this.robot = robo_t;
         this.CamCV = tf;
-        //this.CamCV.disable = false;
+        //this.CamCV.autoDisable = false;
         //if (!this.CamCV.isAlive() && canTrack) this.CamCV.start();
 
     }
 
     private void camVision(final float angleZero) {
-        //set the camera servo to a value relative to the IMU
+        //set the camera servo to compList value relative to the IMU
         //get IMU value
         Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         //find angle delta
@@ -118,9 +118,9 @@ public class CamManager extends Thread {
             if (mode != 2) {
                 CamCV.track = false;
             }
-            if (CamCV.Status == 3 && mode == 2) {
+            if (CamCV.status == 3 && mode == 2) {
                 mode = 1;
-            } else if (mode == 1 && CamCV.Status != 3) {
+            } else if (mode == 1 && CamCV.status != 3) {
                 mode = 2;
             }
         }

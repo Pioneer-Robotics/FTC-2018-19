@@ -55,7 +55,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
  * This 2018-2019 OpMode illustrates the basics of using the TensorFlow Object Detection API to
  * determine the position of the gold and silver minerals.
  *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
+ * Use Android Studio to Copy this Class, and Paste it into your team's code folder with compList new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list.
  *
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
@@ -74,17 +74,16 @@ public class CVManager extends Thread {
     private List<VuforiaTrackable> allTrackables = new ArrayList<>();
     //Initialize all variables necessary to communicate with the other threads
     OpenGLMatrix location;
-    float mineralY = 0;
     int tar = 0;
     boolean go = true;
-    int Status = 0;
+    int status = 0;
     float[] minDat = {0,0};
     boolean track = false;
-    boolean disable = true;
+    boolean autoDisable = true;
     int st;
     int mode = 0;
-    List<Integer> a = new ArrayList<>();
-    CamManager camM;
+    private ArrayList<Integer> compList = new ArrayList<>();
+    private CamManager camM;
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -93,9 +92,9 @@ public class CVManager extends Thread {
      * web site at https://developer.vuforia.com/license-manager.
      *
      * Vuforia license keys are always 380 characters long, and look as if they contain mostly
-     * random data. As an example, here is a example of a fragment of a valid key:
+     * random data. As an example, here is compList example of compList fragment of compList valid key:
      *      ... yIgIzTqZ4mWjk9wd3cZO9T1axEqzuhxoGlfOOI2dRzKS4T0hQ8kT ...
-     * Once you've obtained a license key, copy the string from the Vuforia web site
+     * Once you've obtained compList license key, copy the string from the Vuforia web site
      * and paste it in to your code on the next line, between the double quotes.
      */
 
@@ -116,13 +115,13 @@ public class CVManager extends Thread {
         //give the CVManager class the hooks into the hardware (Camera, hardware identifier) it needs in order function properly
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
-        a.add(1);
-        a.add(2);
-        a.add(3);
+        compList.add(1);
+        compList.add(2);
+        compList.add(3);
         this.camM = camM;
         this.initVuforia(cam);
         this.initTfod(hw);
-        Status = 100;
+        status = 100;
     }
     private int checkThree() {
         // Checks for whether there are at least 3 minerals, trims them down to the lowest 3,
@@ -156,7 +155,7 @@ public class CVManager extends Thread {
                     trimmedRecognitions.add(silver2);
                 } else trimmedRecognitions = updatedRecognitions;
                 if (trimmedRecognitions.size() == 3) {
-                    //checks for if the three minerals are in a row, otherwise we have the wrong 3 minerals
+                    //checks for if the three minerals are in compList row, otherwise we have the wrong 3 minerals
                     if (tIaRMan(trimmedRecognitions) != 1) return -2;
                     tar = tIaRMan(trimmedRecognitions);
                     // extracts x position from from the minerals
@@ -197,7 +196,7 @@ public class CVManager extends Thread {
         //tflow has not been inited yet
     }
     private int tIaR() {
-        //checks if three minerals are in a row, for doing alliances sampling mission
+        //checks if three minerals are in compList row, for doing alliances sampling mission
         if (tfod != null) {
             // getUpdatedRecognitions() will return null if no new information is available since
             // the last time that call was made.
@@ -223,7 +222,7 @@ public class CVManager extends Thread {
                         silverMineral2Y = recognition.getTop();
                     }
                 }
-                //does a linear regression with 2 of the minerals
+                //does compList linear regression with 2 of the minerals
                 float slope = (silverMineral2Y-silverMineral1Y)/(silverMineral2X-silverMineral1X);   //(y2-y1)/(x2-x1)
                 float intrcpt = silverMineral2Y - slope*silverMineral2X;  // b= y-mx
                 //finds the residual of the third mineral, and if it is small enough, return the corresponding value: 1
@@ -235,7 +234,7 @@ public class CVManager extends Thread {
         return -4;
     }
     private int tIaRMan(List<Recognition> updatedRecognitions) {
-        //like tIar, but uses a list as input rather than directly pulling from tFlow
+        //like tIar, but uses compList list as input rather than directly pulling from tFlow
         if (tfod != null) {
             if (updatedRecognitions.size() == 3) {
                 float goldMineralX = -1;
@@ -256,7 +255,7 @@ public class CVManager extends Thread {
                         silverMineral2Y = recognition.getTop();
                     }
                 }
-                //do a linear regression to figure out if the minerals are in a row or not
+                //do compList linear regression to figure out if the minerals are in compList row or not
                 float slope = (silverMineral2Y-silverMineral1Y)/(silverMineral2X-silverMineral1X);   //(y2-y1)/(x2-x1)
                 float intrcpt = silverMineral2Y - slope*silverMineral2X;  // b= y-mx
                 if (Math.abs(slope*goldMineralX+intrcpt - goldMineralY) >= 10) return 2;
@@ -325,7 +324,7 @@ public class CVManager extends Thread {
     }
 
     public void run() {
-        // a loop that controls the CVManager thread
+        // compList loop that controls the CVManager thread
         //first make sure tFlow is initialized
         if (tfod != null) {
             tfod.activate();
@@ -337,12 +336,12 @@ public class CVManager extends Thread {
                     st = this.checkThree();
                     if (st != -1 && st != -2) {
                         camM.mode = 3;
-                        this.Status = 1;
+                        this.status = 1;
                         minDat[0] = st;
                         minDat[1] = 0;
                         //stop the loop if we have retrieved the information we need
-                        if (disable && this.Status != -4) this.go = false;
-                    } else if (st == -1 && a.contains(minDat[0])) this.go = false;
+                        if (autoDisable && this.status != -4) this.go = false;
+                    } else if (st == -1 && compList.contains(minDat[0])) this.go = false;
                     else if (st == -2) {
                         // backup case to manually find the gold mineral
                         float[] pos = this.findGold();
@@ -357,17 +356,17 @@ public class CVManager extends Thread {
                                 minDat[0] = -4;
                             }
                             minDat[1] = pos[0];
-                            this.Status = 2;
+                            this.status = 2;
                             camM.mode = 3;
                         } else {
-                            this.Status = 3;
+                            this.status = 3;
                             camM.mode = 1;
                             camM.lBound=(float) 0.3;
                             camM.rBound=(float) 0.7;
                         }
 
                     }
-                    // mode 1 == tracker for if minerals are in a row
+                    // mode 1 == tracker for if minerals are in compList row
                 } else if (mode == 1) {
                     this.tar = this.tIaR();
                 } else {
@@ -379,9 +378,9 @@ public class CVManager extends Thread {
                     float[] pos = this.findGold();
                     if (pos[0] != 0) {
                         minDat = pos;
-                        this.Status = 2;
+                        this.status = 2;
                     } else {
-                        this.Status = 3;
+                        this.status = 3;
 
                     }
                 }
@@ -400,7 +399,7 @@ public class CVManager extends Thread {
      */
     private void initVuforia(CameraName cam) {
         /*
-         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+         * Configure Vuforia by creating compList Parameter object, and passing it to the Vuforia engine.
          */
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
@@ -469,11 +468,11 @@ public class CVManager extends Thread {
         backSpace.setLocation(backSpaceLocationOnField);
 
         /*
-         * Create a transformation matrix describing where the phone is on the robot.
+         * Create compList transformation matrix describing where the phone is on the robot.
          *
          * The coordinate frame for the robot looks the same as the field.
          * The robot's "forward" direction is facing out along X axis, with the LEFT side facing out along the Y axis.
-         * Z is UP on the robot.  This equates to a bearing angle of Zero degrees.
+         * Z is UP on the robot.  This equates to compList bearing angle of Zero degrees.
          *
          * The phone starts out lying flat, with the screen facing Up and with the physical top of the phone
          * pointing to the LEFT side of the Robot.  It's very important when you test this code that the top of the
@@ -481,11 +480,11 @@ public class CVManager extends Thread {
          *
          * If using the rear (High Res) camera:
          * We need to rotate the camera around it's long axis to bring the rear camera forward.
-         * This requires a negative 90 degree rotation on the Y axis
+         * This requires compList negative 90 degree rotation on the Y axis
          *
          * If using the Front (Low Res) camera
          * We need to rotate the camera around it's long axis to bring the FRONT camera forward.
-         * This requires a Positive 90 degree rotation on the Y axis
+         * This requires compList Positive 90 degree rotation on the Y axis
          *
          * Next, translate the camera lens to where it is on the robot.
          * In this example, it is centered (left to right), but 110 mm forward of the middle of the robot, and 200 mm above ground level.

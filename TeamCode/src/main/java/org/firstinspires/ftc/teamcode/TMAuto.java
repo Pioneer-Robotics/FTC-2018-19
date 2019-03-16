@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -25,7 +24,7 @@ public class TMAuto extends LinearOpMode {
 
 
     // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
-    // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+    // on compList Core Device Interface Module, configured to be compList sensor of type "AdaFruit IMU",
     // and named "imu".
 
 
@@ -51,10 +50,10 @@ public class TMAuto extends LinearOpMode {
         tFlow.init(robot.webCam, robot.tFlowId, camM);
         camM.init(robot, tFlow);
         camM.reference = angles.firstAngle;
-        tFlow.disable = true;
+        tFlow.autoDisable = true;
         camM.start();
 
-        telemetry.addData("Status", "Initialized");
+        telemetry.addData("status", "Initialized");
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
@@ -73,11 +72,11 @@ public class TMAuto extends LinearOpMode {
 
         while (robot.linearArm.getCurrentPosition()<= 13516)  /* Most effective detachment point might not be at the top*/ {
             //positive = up
-            telemetry.addData("Status: ", "Lowering robot");
+            telemetry.addData("status: ", "Lowering robot");
             telemetry.addData("Encoder: ", robot.linearArm.getCurrentPosition());
             telemetry.addData("Bottom is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
             telemetry.addData("Choose:", "%d", choose);
-            telemetry.addData("Status:","%d",tFlow.Status);
+            telemetry.addData("status:","%d",tFlow.status);
             telemetry.addData("Tar:","%d",tFlow.tar);
             telemetry.update();
             robot.linearArm.setPower(1);
@@ -98,7 +97,7 @@ public class TMAuto extends LinearOpMode {
         // Detach from lander
         robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);
         telemetry.addData("Latches", "Min");
-        telemetry.addData("Status: ", "Disengaging From Lander");
+        telemetry.addData("status: ", "Disengaging From Lander");
         telemetry.update();
         runtime.reset();
         while (!robot.botSwitch.getState() && !robot.topSwitch.getState() && runtime.milliseconds() < 3000) {
@@ -106,7 +105,7 @@ public class TMAuto extends LinearOpMode {
             telemetry.addData("Top is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
             telemetry.addData("Bottom is", robot.botSwitch.getState() ? "Pressed" : "not Pressed");
             telemetry.addData("Choose:", "%d", choose);
-            telemetry.addData("Status:","%d",tFlow.Status);
+            telemetry.addData("status:","%d",tFlow.status);
             telemetry.addData("Tar:","%d",tFlow.tar);
             telemetry.update();
 
@@ -116,7 +115,7 @@ public class TMAuto extends LinearOpMode {
         runtime.reset();
         while (tFlow.go && runtime.milliseconds() <= 10000) {
             telemetry.addData("Choose:", "%d", choose);
-            telemetry.addData("Status:","%d",tFlow.Status);
+            telemetry.addData("status:","%d",tFlow.status);
             telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
             telemetry.update();
             sleep(1);
@@ -124,7 +123,7 @@ public class TMAuto extends LinearOpMode {
         */
         sleep(100);
         telemetry.addData("Choose:", "%d", choose);
-        telemetry.addData("Status:","%d",tFlow.Status);
+        telemetry.addData("status:","%d",tFlow.status);
         telemetry.addData("Tar:","%d",tFlow.tar);
         telemetry.update();
 
@@ -132,13 +131,13 @@ public class TMAuto extends LinearOpMode {
         robot.encoderDrive(0.5,5,10);
 
         telemetry.addData("Choose:", "%d", choose);
-        telemetry.addData("Status:","%d",tFlow.Status);
+        telemetry.addData("status:","%d",tFlow.status);
         telemetry.addData("Tar:","%d",tFlow.tar);
         telemetry.update();
         runtime.reset();
         while (tFlow.go && runtime.milliseconds() <= 2000) {
             telemetry.addData("Choose:", "%d", choose);
-            telemetry.addData("Status:","%d",tFlow.Status);
+            telemetry.addData("status:","%d",tFlow.status);
             telemetry.addData("Tar:","%d",tFlow.tar);
             telemetry.update();
             sleep(1);
@@ -149,7 +148,7 @@ public class TMAuto extends LinearOpMode {
         camM.go = false;
         tFlow.go = false;
         telemetry.addData("Choose:", "%d", choose);
-        telemetry.addData("Status:","%d",tFlow.Status);
+        telemetry.addData("status:","%d",tFlow.status);
         telemetry.addData("Tar:","%d",tFlow.tar);
         telemetry.update();
 
@@ -161,7 +160,7 @@ public class TMAuto extends LinearOpMode {
                 robot.angleTurn(TURN_SPEED,33);
                 robot.encoderDrive(DRIVE_SPEED,31, 5);
                 robot.angleTurn(0.3, -83);
-                //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
+                //telemetry.addData("TFlow says: ", "%d",tFlow.status);
                 robot.encoderDrive(DRIVE_SPEED,13, 5);
 
                 break;
@@ -176,13 +175,13 @@ public class TMAuto extends LinearOpMode {
                 robot.angleTurn(TURN_SPEED,-38);
                 robot.encoderDrive(DRIVE_SPEED,33, 5);
                 robot.angleTurn(0.3, 59);
-                //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
+                //telemetry.addData("TFlow says: ", "%d",tFlow.status);
                 robot.encoderDrive(DRIVE_SPEED,7,5);
 
                 break;
             default:
                 //error happened with TensorFlow
-                telemetry.addData("TFlow says: ", "%d",tFlow.Status);
+                telemetry.addData("TFlow says: ", "%d",tFlow.status);
                 // if tensor flow doesn't function, the robot will default to roboting to the middle position
                 robot.encoderDrive(DRIVE_SPEED,13,5);
                 robot.encoderDrive(DRIVE_SPEED,10, 5);
@@ -191,11 +190,11 @@ public class TMAuto extends LinearOpMode {
                 sleep(2000);
                 break;
         }
-        telemetry.addData("Status: ", "Dropping Team Marker");
+        telemetry.addData("status: ", "Dropping Team Marker");
         telemetry.update();
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMIN_POSITION);
         sleep(500);
-        telemetry.addData("Status: ", "Dropped Team Marker");
+        telemetry.addData("status: ", "Dropped Team Marker");
         telemetry.update();
         //sleep(1500);
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
@@ -257,7 +256,7 @@ public class TMAuto extends LinearOpMode {
             telemetry.update();
         }*/
         //Tank(0,0);
-        telemetry.addData("Status: ", "Finished");
+        telemetry.addData("status: ", "Finished");
         telemetry.update();
     }
 }

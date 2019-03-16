@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
 @TeleOp(name="CVTest", group="FTCPio")
 public class CVTester extends LinearOpMode {
@@ -15,7 +14,7 @@ public class CVTester extends LinearOpMode {
         robot.init(hardwareMap, this);
         tFlow.init(robot.webCam, robot.tFlowId, camM);
         camM.init(robot, tFlow);
-        tFlow.disable = true;
+        tFlow.autoDisable = true;
         waitForStart();
         tFlow.start();
         camM.start();
@@ -26,7 +25,7 @@ public class CVTester extends LinearOpMode {
             telemetry.addData("Bottom is", robot.botSwitch.getState() ? "Pressed" : "not Pressed");
             telemetry.addData("Choose:", "%d", choose);
             telemetry.addData("St:", "%d", tFlow.st);
-            telemetry.addData("Status:", "%d", tFlow.Status);
+            telemetry.addData("status:", "%d", tFlow.status);
             telemetry.addData("Tar:","%d",tFlow.tar);
             telemetry.addData("GO:", tFlow.go ? "True" : "False");
             telemetry.update();
@@ -39,15 +38,15 @@ public class CVTester extends LinearOpMode {
                 camM.go=false;
                 return;
             }
-            if (tFlow.Status == 1) {
+            if (tFlow.status == 1) {
                 choose = (int) tFlow.minDat[0];
             }
-            if (tFlow.Status == 2) {
+            if (tFlow.status == 2) {
 
             }
             telemetry.addData("Choose:", "%d", choose);
             telemetry.addData("St:", "%d", tFlow.st);
-            telemetry.addData("Status:", "%d", tFlow.Status);
+            telemetry.addData("status:", "%d", tFlow.status);
             telemetry.addData("Tar:","%d",tFlow.tar);
             telemetry.addData("MinDat:", "{%.3f, %.3f}",tFlow.minDat[0],tFlow.minDat[1]);
             telemetry.addData("GO:", tFlow.go ? "True" : "False");

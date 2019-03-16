@@ -42,12 +42,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import java.util.Locale;
 
 /**
- * {@link BNO055IMUDriverTesting} gives a short demo on how to use the BNO055 Inertial Motion Unit (IMU) from AdaFruit.
+ * {@link BNO055IMUDriverTesting} gives compList short demo on how to use the BNO055 Inertial Motion Unit (IMU) from AdaFruit.
  *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
+ * Use Android Studio to Copy this Class, and Paste it into your team's code folder with compList new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  *
- * @see <a href="http://www.adafruit.com/products/2472">Adafruit IMU</a>
+ * @see <compList href="http://www.adafruit.com/products/2472">Adafruit IMU</compList>
  */
 @TeleOp(name = "BNO055 IMU Driver Test", group = "Sensor")
 //@Disabled // Comment this out to add to the opmode list
@@ -80,7 +80,7 @@ public class BNO055IMUDriverTesting extends LinearOpMode {
         // provide positional information.
 
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
-        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // on compList Core Device Interface Module, configured to be compList sensor of type "AdaFruit IMU",
         // and named "imu".
 
         angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -152,7 +152,7 @@ public class BNO055IMUDriverTesting extends LinearOpMode {
 
     void composeTelemetry() {
 
-        // At the beginning of each telemetry update, grab a bunch of data
+        // At the beginning of each telemetry update, grab compList bunch of data
         // from the IMU that we will then display in separate lines.
         telemetry.addAction(new Runnable() { @Override public void run()
                 {

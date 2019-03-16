@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -44,11 +43,11 @@ public class CraterAuto extends LinearOpMode {
         tFlow.init(robot.webCam, robot.tFlowId, camM);
         camM.init(robot, tFlow);
         camM.reference = angles.firstAngle;
-        tFlow.disable = true;
+        tFlow.autoDisable = true;
         camM.start();
         camM.mode = 0;
 
-        telemetry.addData("Status", "Initialized");
+        telemetry.addData("status", "Initialized");
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
@@ -69,11 +68,11 @@ public class CraterAuto extends LinearOpMode {
             robot.armBase.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             while (robot.linearArm.getCurrentPosition() <= 13516)  /* Most effective detachment point might not be at the top*/ {
                 //positive = up
-                telemetry.addData("Status: ", "Lowering robot");
+                telemetry.addData("status: ", "Lowering robot");
                 telemetry.addData("Encoder: ", robot.linearArm.getCurrentPosition());
                 telemetry.addData("Bottom is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
                 telemetry.addData("Choose:", "%d", choose);
-                telemetry.addData("Status:", "%d", tFlow.Status);
+                telemetry.addData("status:", "%d", tFlow.status);
                 telemetry.addData("Tar:","%d",tFlow.tar);
                 telemetry.update();
                 robot.linearArm.setPower(1);
@@ -96,7 +95,7 @@ public class CraterAuto extends LinearOpMode {
         // Detach from lander
             robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);
             telemetry.addData("Latches", "Min");
-            telemetry.addData("Status: ", "Disengaging From Lander");
+            telemetry.addData("status: ", "Disengaging From Lander");
             telemetry.update();
             runtime.reset();
             while (!robot.botSwitch.getState() && !robot.topSwitch.getState() && runtime.milliseconds() < 3000) {
@@ -104,7 +103,7 @@ public class CraterAuto extends LinearOpMode {
                 telemetry.addData("Top is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
                 telemetry.addData("Bottom is", robot.botSwitch.getState() ? "Pressed" : "not Pressed");
                 telemetry.addData("Choose:", "%d", choose);
-                telemetry.addData("Status:", "%d", tFlow.Status);
+                telemetry.addData("status:", "%d", tFlow.status);
                 telemetry.addData("Tar:","%d",tFlow.tar);
                 telemetry.update();
             }
@@ -113,14 +112,14 @@ public class CraterAuto extends LinearOpMode {
         runtime.reset();
         while (tFlow.go && runtime.milliseconds() <= 10000) {
             telemetry.addData("Choose:", "%d", choose);
-            telemetry.addData("Status:","%d",tFlow.Status);
+            telemetry.addData("status:","%d",tFlow.status);
             telemetry.addData("MineralX:","%.5f",tFlow.mineralX);
             telemetry.update();
             sleep(1);
         }
         */
         telemetry.addData("Choose:", "%d", choose);
-        telemetry.addData("Status:","%d",tFlow.Status);
+        telemetry.addData("status:","%d",tFlow.status);
         telemetry.addData("Tar:","%d",tFlow.tar);
         telemetry.update();
         sleep(500);
@@ -128,13 +127,13 @@ public class CraterAuto extends LinearOpMode {
         robot.encoderDrive(DRIVE_SPEED,5,10);
 
         telemetry.addData("Choose:", "%d", choose);
-        telemetry.addData("Status:","%d",tFlow.Status);
+        telemetry.addData("status:","%d",tFlow.status);
         telemetry.addData("Tar:","%d",tFlow.tar);
         telemetry.update();
         runtime.reset();
         while (tFlow.go && runtime.milliseconds() <= 2000) {
             telemetry.addData("Choose:", "%d", choose);
-            telemetry.addData("Status:","%d",tFlow.Status);
+            telemetry.addData("status:","%d",tFlow.status);
             telemetry.addData("Tar:","%d",tFlow.tar);
             telemetry.update();
             sleep(1);
@@ -145,7 +144,7 @@ public class CraterAuto extends LinearOpMode {
         camM.go = false;
         tFlow.go = false;
         telemetry.addData("Choose:", "%d", choose);
-        telemetry.addData("Status:","%d",tFlow.Status);
+        telemetry.addData("status:","%d",tFlow.status);
         telemetry.addData("Tar:","%d",tFlow.tar);
         telemetry.update();
         sleep(100);
@@ -192,7 +191,7 @@ public class CraterAuto extends LinearOpMode {
                 break;
             default:
                 //error happened with TensorFlow
-                telemetry.addData("TFlow says: ", "%d",tFlow.Status);
+                telemetry.addData("TFlow says: ", "%d",tFlow.status);
                 // if tensor flow doesn't function, the robot will default to roboting to the middle position
                 robot.encoderDrive(DRIVE_SPEED, 9,5);
                 robot.angleTurn(TURN_SPEED,20);
@@ -214,10 +213,10 @@ public class CraterAuto extends LinearOpMode {
 
         //sleep(500);
         telemetry.update();
-        telemetry.addData("Status: ", "Dropping Team Marker");
+        telemetry.addData("status: ", "Dropping Team Marker");
         telemetry.update();
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMIN_POSITION);
-        telemetry.addData("Status: ", "Dropped Team Marker");
+        telemetry.addData("status: ", "Dropped Team Marker");
         telemetry.update();
         sleep(500);
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
@@ -265,7 +264,7 @@ public class CraterAuto extends LinearOpMode {
         //Tank(0,0);
         angles   = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         Orientation angles1   = robot.imu1.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        telemetry.addData("Status: ", "Finished");
+        telemetry.addData("status: ", "Finished");
         telemetry.addData("Drift:", "%.10f", angles.firstAngle-angles1.firstAngle);
         telemetry.update();
         if (this.isStopRequested()) {
