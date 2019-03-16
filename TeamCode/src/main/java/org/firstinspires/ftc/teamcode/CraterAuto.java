@@ -125,7 +125,7 @@ public class CraterAuto extends LinearOpMode {
         telemetry.update();
         sleep(500);
         //Drive away
-        robot.encoderDrive(DRIVE_SPEED,10,10);
+        robot.encoderDrive(DRIVE_SPEED,5,10);
 
         telemetry.addData("Choose:", "%d", choose);
         telemetry.addData("Status:","%d",tFlow.Status);
@@ -156,28 +156,23 @@ public class CraterAuto extends LinearOpMode {
                 //left
                 robot.angleTurn(TURN_SPEED,38);
 
-                robot.encoderDrive(DRIVE_SPEED, 15, 5);
+                robot.encoderDrive(DRIVE_SPEED, 17, 5);
                 sleep(100);
                 /*
                 robot.angleTurn(TURN_SPEED,40);
                 robot.angleTurn(TURN_SPEED,-40);
                 */
-                robot.encoderDrive(DRIVE_SPEED, -15,5);
+                robot.encoderDrive(DRIVE_SPEED, -17,5);
 
                 robot.angleTurn(0.3,-38);
 
                 break;
             case 2:
                 //middle
-                //theoretically no robotement is necessary
-                robot.encoderDrive(DRIVE_SPEED,9, 5);
+                //theoretically no lateral movement is necessary
+                robot.encoderDrive(DRIVE_SPEED,12, 5);
                 sleep(100);
-
-                robot.angleTurn(TURN_SPEED,10);
-                sleep(250);
-                robot.angleTurn(TURN_SPEED,-10);
-
-                robot.encoderDrive(DRIVE_SPEED,-9, 5);
+                robot.encoderDrive(DRIVE_SPEED,-12, 5);
 
 
                 break;
@@ -185,13 +180,13 @@ public class CraterAuto extends LinearOpMode {
                 //right
                 robot.angleTurn(TURN_SPEED,-38);
 
-                robot.encoderDrive(DRIVE_SPEED,15, 5);
+                robot.encoderDrive(DRIVE_SPEED,17, 5);
                 sleep(100);
                 /*
                 robot.angleTurn(TURN_SPEED,-40);
                 robot.angleTurn(TURN_SPEED,40);
                 */
-                robot.encoderDrive(DRIVE_SPEED, -15,5);
+                robot.encoderDrive(DRIVE_SPEED, -17,5);
                 robot.angleTurn(0.2,38);
 
                 break;
@@ -210,14 +205,12 @@ public class CraterAuto extends LinearOpMode {
 
         // Maneuver to depot to drop team marker
         //sleep(250);
-        robot.encoderDrive(0.2, 1 ,5);
+        robot.encoderDrive(0.2, 3,5);
 
         robot.angleTurn(0.2,68);
         robot.encoderDrive(DRIVE_SPEED, 34,5);
-        robot.angleTurn(0.2,32);
-        robot.encoderDrive(DRIVE_SPEED, 14,5);
-        robot.angleTurn(0.2,10);
-        robot.encoderDrive(DRIVE_SPEED, 20,5);
+        robot.angleTurn(0.2,40);
+        robot.encoderDrive(DRIVE_SPEED, 34,5);
 
         //sleep(500);
         telemetry.update();
@@ -235,7 +228,10 @@ public class CraterAuto extends LinearOpMode {
 
         //robot.angleTurn(TURN_SPEED,95, false);
         //robot.encoderDrive(DRIVE_SPEED, 70, 20);
-
+        if (this.isStopRequested()) {
+            robot.linearArm.setPower(0);
+            return;
+        }
         robot.Camera.setPosition(0);
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
         robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);
@@ -247,7 +243,7 @@ public class CraterAuto extends LinearOpMode {
                 telemetry.update();
                 if (this.isStopRequested()) {
                     robot.linearArm.setPower(0);
-                    break;
+                    return;
                 }
 
             }
@@ -272,6 +268,9 @@ public class CraterAuto extends LinearOpMode {
         telemetry.addData("Status: ", "Finished");
         telemetry.addData("Drift:", "%.10f", angles.firstAngle-angles1.firstAngle);
         telemetry.update();
-        sleep(2000);
+        if (this.isStopRequested()) {
+            robot.linearArm.setPower(0);
+            return;
+        }
     }
 }

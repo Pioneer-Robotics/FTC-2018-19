@@ -158,9 +158,9 @@ public class TMAuto extends LinearOpMode {
         switch (choose) {
             case 1:
                 //Mineral on Left
-                robot.angleTurn(TURN_SPEED,36);
+                robot.angleTurn(TURN_SPEED,33);
                 robot.encoderDrive(DRIVE_SPEED,31, 5);
-                robot.angleTurn(0.3, -86);
+                robot.angleTurn(0.3, -83);
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 robot.encoderDrive(DRIVE_SPEED,13, 5);
 
@@ -175,7 +175,7 @@ public class TMAuto extends LinearOpMode {
                 //Mineral on Right
                 robot.angleTurn(TURN_SPEED,-38);
                 robot.encoderDrive(DRIVE_SPEED,33, 5);
-                robot.angleTurn(0.3, 68);
+                robot.angleTurn(0.3, 59);
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
                 robot.encoderDrive(DRIVE_SPEED,7,5);
 
@@ -206,9 +206,9 @@ public class TMAuto extends LinearOpMode {
 
         switch (choose) {
             case 1:
-                robot.angleTurn(0.3, -39);
+                robot.angleTurn(0.3, -36);
                 robot.encoderDrive(DRIVE_SPEED,19, 5);
-                robot.angleTurn(TURN_SPEED, -43);
+                robot.angleTurn(TURN_SPEED, -52);
                 robot.encoderDrive(1,52, 10);
                 break;
             case 2:
@@ -218,12 +218,15 @@ public class TMAuto extends LinearOpMode {
                 robot.encoderDrive(1,-55, 10);
                 break;
             case 3:
-                robot.angleTurn(TURN_SPEED, 3);
+                robot.angleTurn(0.1, 12);
                 robot.encoderDrive(1,-55, 10);
                 break;
         }
         // Back up into crater at max speed
-
+        if (this.isStopRequested()) {
+            robot.linearArm.setPower(0);
+            return;
+        }
         robot.Camera.setPosition(0);
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
         robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);
@@ -234,7 +237,7 @@ public class TMAuto extends LinearOpMode {
             telemetry.update();
             if (this.isStopRequested()) {
                 robot.linearArm.setPower(0);
-                break;
+                return;
             }
 
         }
