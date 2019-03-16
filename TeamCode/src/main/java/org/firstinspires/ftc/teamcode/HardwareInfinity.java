@@ -96,6 +96,7 @@ class HardwareInfinity extends Thread
         FBar.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         motorLeft.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         motorRight.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
+        linearArm.setDirection(DcMotor.Direction.REVERSE);
         FBar.setDirection(DcMotor.Direction.REVERSE);
         botSwitch = ahwMap.get(DigitalChannel.class, "botSwitch");
         topSwitch = ahwMap.get(DigitalChannel.class, "topSwitch");

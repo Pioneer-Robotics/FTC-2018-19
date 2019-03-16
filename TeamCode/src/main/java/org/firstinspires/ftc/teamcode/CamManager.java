@@ -23,10 +23,10 @@ public class CamManager extends Thread {
     private DecimalFormat df = new DecimalFormat("#.###");
 
 
-    void init(HardwareInfinity robo_t, CVManager tf) {
+    void init(HardwareInfinity arobot, CVManager tf) {
         //pass necessary classes and sensors from the main hardware class
-        this.imu = robo_t.imu;
-        this.robot = robo_t;
+        this.imu = arobot.imu;
+        this.robot = arobot;
         this.CamCV = tf;
         //this.CamCV.autoDisable = false;
         //if (!this.CamCV.isAlive() && canTrack) this.CamCV.start();

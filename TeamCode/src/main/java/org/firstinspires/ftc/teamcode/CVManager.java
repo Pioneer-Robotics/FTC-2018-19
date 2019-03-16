@@ -233,17 +233,17 @@ public class CVManager extends Thread {
         }
         return -4;
     }
-    private int tIaRMan(List<Recognition> updatedRecognitions) {
+    private int tIaRMan(List<Recognition> recognitions) {
         //like tIar, but uses compList list as input rather than directly pulling from tFlow
         if (tfod != null) {
-            if (updatedRecognitions.size() == 3) {
+            if (recognitions.size() == 3) {
                 float goldMineralX = -1;
                 float goldMineralY = -1;
                 float silverMineral1X = -1;
                 float silverMineral1Y = -1;
                 float silverMineral2X = -1;
                 float silverMineral2Y = -1;
-                for (Recognition recognition : updatedRecognitions) {
+                for (Recognition recognition : recognitions) {
                     if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                         goldMineralX = recognition.getLeft();
                         goldMineralY = recognition.getTop();
@@ -322,7 +322,7 @@ public class CVManager extends Thread {
         //extract position from an OpenGLMatrix
         return new double[]{loc.getTranslation().get(0), loc.getTranslation().get(1)};
     }
-
+    @Override
     public void run() {
         // compList loop that controls the CVManager thread
         //first make sure tFlow is initialized
