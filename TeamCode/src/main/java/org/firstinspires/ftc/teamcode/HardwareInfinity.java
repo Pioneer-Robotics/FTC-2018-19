@@ -176,7 +176,11 @@ class HardwareInfinity extends Thread
                 return;
             }
             double mdis;
-            double angl = (imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle+imu1.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle)/2; //current angle of imu
+            im1 = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+            im2 = imu1.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+            if (im1 - im2 > 180) im2 += 360;
+            else if (im2 - im1 > 180) im1 += 360;
+            double angl = ((im1+im2)/2)%360; //acquires current angle //current angle of imu
             double delta = angl; //delta of angle, essentially previous acquisition
             if (abs) targetAngle = angle;
             else targetAngle = angle + angl; //calculates target angle
@@ -269,7 +273,7 @@ class HardwareInfinity extends Thread
                 try {//wait to account for jitter, momentum, etc.
                     sleep(500);
                 } catch (InterruptedException ignored) {}
-                angleTurn(0.3, dis*direction);
+                angleTurn(0.3, targetAngle,true);
                 return;
             }
             //further telemetry to keep displaying values.

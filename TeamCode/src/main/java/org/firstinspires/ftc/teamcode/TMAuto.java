@@ -162,7 +162,7 @@ public class TMAuto extends LinearOpMode {
                 robot.encoderDrive(DRIVE_SPEED,31, 5);
                 robot.angleTurn(0.3, -86);
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
-                robot.encoderDrive(DRIVE_SPEED,10, 5);
+                robot.encoderDrive(DRIVE_SPEED,13, 5);
 
                 break;
             case 2:
@@ -206,19 +206,19 @@ public class TMAuto extends LinearOpMode {
 
         switch (choose) {
             case 1:
-                robot.angleTurn(0.3, -35);
-                robot.encoderDrive(DRIVE_SPEED,17, 5);
-                robot.angleTurn(TURN_SPEED, -32);
+                robot.angleTurn(0.3, -39);
+                robot.encoderDrive(DRIVE_SPEED,19, 5);
+                robot.angleTurn(TURN_SPEED, -43);
                 robot.encoderDrive(1,52, 10);
                 break;
             case 2:
                 robot.angleTurn(TURN_SPEED, 72);
                 robot.encoderDrive(DRIVE_SPEED,-23, 5);
-                robot.angleTurn(TURN_SPEED, -30);
-                robot.encoderDrive(1,-52, 10);
+                robot.angleTurn(TURN_SPEED, -31);
+                robot.encoderDrive(1,-55, 10);
                 break;
             case 3:
-                robot.angleTurn(TURN_SPEED, -3);
+                robot.angleTurn(TURN_SPEED, 3);
                 robot.encoderDrive(1,-55, 10);
                 break;
         }
