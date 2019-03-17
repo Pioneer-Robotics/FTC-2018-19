@@ -38,7 +38,6 @@ class HardwareInfinity extends Thread
     Servo dropTop;
     DigitalChannel botSwitch;
     DigitalChannel topSwitch;
-    TouchSensor trigger;
     BNO055IMU imu;
     BNO055IMU imu1;
     private LinearOpMode Op;
@@ -100,7 +99,6 @@ class HardwareInfinity extends Thread
         FBar.setDirection(DcMotor.Direction.REVERSE);
         botSwitch = ahwMap.get(DigitalChannel.class, "botSwitch");
         topSwitch = ahwMap.get(DigitalChannel.class, "topSwitch");
-        trigger = ahwMap.get(TouchSensor.class, "trigger");
         topSwitch.setMode(DigitalChannel.Mode.INPUT);
         botSwitch.setMode(DigitalChannel.Mode.INPUT);
         imu = ahwMap.get(BNO055IMU.class, "imu");

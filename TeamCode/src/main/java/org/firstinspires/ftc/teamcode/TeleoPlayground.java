@@ -100,15 +100,14 @@ public class TeleoPlayground extends LinearOpMode
             } else arm = 0;
             if (arm == 0) arm = gamepad2.left_trigger;
             if (arm == 0) arm = -gamepad2.right_trigger;
-            //telemetry.addData("Trigger is", robot.trigger.isPressed() ? "Pressed" : "not Pressed");
             telemetry.addData("Bottom is", robot.botSwitch.getState() ? "Pressed" : "not Pressed");
             telemetry.addData("Top is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
             // Output the safe vales to the motor drives.
-            if ((!robot.botSwitch.getState() && !robot.topSwitch.getState() && !robot.trigger.isPressed())) {
+            if (!robot.botSwitch.getState() && !robot.topSwitch.getState()) {
                 robot.linearArm.setPower(-arm);
-            } else if ((robot.botSwitch.getState() || robot.trigger.isPressed()) && arm < 0) {
+            } else if (robot.botSwitch.getState() && arm < 0) {
                 robot.linearArm.setPower(-arm);
-            } else if ((robot.botSwitch.getState() || robot.trigger.isPressed()) && arm >= 0) {
+            } else if (robot.botSwitch.getState() && arm >= 0) {
                 robot.linearArm.setPower(0);
             } else if (arm > 0) {
                 robot.linearArm.setPower(-arm);

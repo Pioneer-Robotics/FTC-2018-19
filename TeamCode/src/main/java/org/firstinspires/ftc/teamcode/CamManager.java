@@ -13,7 +13,7 @@ public class CamManager extends Thread {
     //initialize al of the necessary variables
     private BNO055IMU imu;
     private HardwareInfinity robot;
-    private CVManager CamCV = new CVManager();
+    private CVManager CamCV;
     boolean go = true;
     float reference;
     int mode = 0;
@@ -23,7 +23,7 @@ public class CamManager extends Thread {
     private DecimalFormat df = new DecimalFormat("#.###");
 
 
-    void init(HardwareInfinity arobot, CVManager tf) {
+    public void init(HardwareInfinity arobot, CVManager tf) {
         //pass necessary classes and sensors from the main hardware class
         this.imu = arobot.imu;
         this.robot = arobot;
