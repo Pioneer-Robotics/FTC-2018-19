@@ -71,7 +71,7 @@ public class NewMovementTester extends LinearOpMode {
                     return;
                 }
             }
-            robot.angleTurn(0.5,-90);
+            robot.angleTurn(0.5,-10);
         }
     }
 }

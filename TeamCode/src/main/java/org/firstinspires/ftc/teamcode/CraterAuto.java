@@ -66,7 +66,7 @@ public class CraterAuto extends LinearOpMode {
         if (latch) {
             robot.armBase.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             robot.armBase.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            while (robot.linearArm.getCurrentPosition() <= 13516)  /* Most effective detachment point might not be at the top*/ {
+            while (robot.linearArm.getCurrentPosition() <= 4700)  /* Most effective detachment point might not be at the top*/ {
                 //positive = up
                 telemetry.addData("status: ", "Lowering robot");
                 telemetry.addData("Encoder: ", robot.linearArm.getCurrentPosition());
@@ -208,7 +208,7 @@ public class CraterAuto extends LinearOpMode {
 
         robot.angleTurn(0.2,68);
         robot.encoderDrive(DRIVE_SPEED, 34,5);
-        robot.angleTurn(0.2,40);
+        robot.angleTurn(0.2,41);
         robot.encoderDrive(DRIVE_SPEED, 34,5);
 
         //sleep(500);
@@ -222,12 +222,14 @@ public class CraterAuto extends LinearOpMode {
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
 
         // Align with wall and back up into crater
+        robot.angleTurn(0.1, 10);
         robot.encoderDrive(DRIVE_SPEED, -2,5);
         robot.encoderDrive(DRIVE_SPEED, -50, 5);
 
         //robot.angleTurn(TURN_SPEED,95, false);
         //robot.encoderDrive(DRIVE_SPEED, 70, 20);
-        if (this.isStopRequested()) {
+        if (this.isStopRequested())
+        {
             robot.linearArm.setPower(0);
             return;
         }

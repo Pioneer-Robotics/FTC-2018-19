@@ -17,7 +17,7 @@ public class Teleop extends OpMode
     private boolean dmac = false;
     private boolean flipster = true;
     private boolean flippy;
-    private boolean telemet = false;
+    private boolean telemet = true;
 
     // State used for updating telemetry;
     @Override
