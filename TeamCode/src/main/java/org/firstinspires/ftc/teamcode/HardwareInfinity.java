@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -51,13 +50,14 @@ class HardwareInfinity extends Thread
     private BNO055IMU.Parameters IParameters = new BNO055IMU.Parameters();
     private double speedG;
     private double angleG;
+    private boolean absG;
     private double leftCMG;
     private double rightCMG;
     private double timeoutSG;
     private int mode;
     double pk = 3; //gain for proportion
     double ik = 0.21; //gain for integral
-    double dk = 0.39; //gain for differential
+    double dk = 0.69; //gain for differential
 
     //public Servo    rightClaw   = null;
 
@@ -170,6 +170,7 @@ class HardwareInfinity extends Thread
             if (backgrnd) { //allows the program run in background as compList separate task.
                 angleG = angle;
                 speedG = speed;
+                absG = abs;
                 mode = 1;
                 start();
                 return;
@@ -239,20 +240,7 @@ class HardwareInfinity extends Thread
                 Op.telemetry.addData("Error:", "%.5f", dis);
                 Op.telemetry.addData("Yeet Counter:", "%d", yeet);
                 Op.telemetry.addData("7:","%d",prdi.size());
-                //Op.telemetry.addData("Max Speed:", "%.5f",mspd);
-                //Op.telemetry.addData("P:", "%.5f",prp);
-                //Op.telemetry.addData("I:", "%.5f",itr);
-                //Op.telemetry.addData("D:", "%.5f",der);
-                //Op.telemetry.addData("SPD:", "%.5f",spd);
-                //Op.telemetry.addData("Initial Distance:", "%.5f",mdis);
-                //Op.telemetry.addData("Left speed","%.5f",-direction*(Math.abs(speed*spd)));
-                //Op.telemetry.addData("Right speed","%.5f",direction*(Math.abs(speed*spd)));
-                //Op.telemetry.addData("Direction:", "%7d",direction);
-                //Op.telemetry.addData("Speed:", direction*Math.abs(speed*spd));
-                //Op.telemetry.addData("IMU Heading:", "%.5f", ((angl+720)%360));
-                //Op.telemetry.addData("target:", "%.5f", targetAngle);
-                //Op.telemetry.addData("time: ", "%.2f",time);
-                //Op.telemetry.addData("delta:", "%.2f", angl-delta);
+
                 Op.telemetry.update();
                 delta = angl; //slightly more calculations for the delta
                 im1 = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
@@ -323,6 +311,7 @@ class HardwareInfinity extends Thread
                 timeoutSG = timeoutS;
                 mode = 2;
                 start();
+                return;
             }
             //calculates absolute point that we want to stop at.
             newLeftTarget = motorLeft.getCurrentPosition() - (int) (leftCM * COUNTS_PER_INCH);
@@ -426,9 +415,9 @@ class HardwareInfinity extends Thread
     //controls code running in background
     public void run() {
         if (mode == 1) {
-            angleTurn(speedG,angleG);
+            angleTurn(speedG,angleG, absG);
         } else if (mode == 2) {
-            encoderDrive(speedG, leftCMG, rightCMG, timeoutSG,false);
+            encoderDrive(speedG, leftCMG, rightCMG, timeoutSG);
         }
     }
 }
