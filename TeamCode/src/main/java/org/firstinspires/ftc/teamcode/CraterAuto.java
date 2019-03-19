@@ -20,6 +20,9 @@ public class CraterAuto extends LinearOpMode {
     private static final double TURN_SPEED = 0.5;
     private static final boolean latch = true;
 
+    CVManager tFlow = new CVManager();
+    CamManager camM = new CamManager();
+
     // State used for updating telemetry
     private int choose;
 
@@ -38,8 +41,6 @@ public class CraterAuto extends LinearOpMode {
         robot.motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.linearArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        CVManager tFlow = new CVManager();
-        CamManager camM = new CamManager();
         tFlow.init(robot.webCam, robot.tFlowId, camM);
         camM.init(robot, tFlow);
         camM.reference = angles.firstAngle;

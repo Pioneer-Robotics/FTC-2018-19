@@ -22,6 +22,9 @@ public class TMAuto extends LinearOpMode {
     // State used for updating telemetry
     private int choose;
 
+    CVManager tFlow = new CVManager();
+    CamManager camM = new CamManager();
+
 
     // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
     // on compList Core Device Interface Module, configured to be compList sensor of type "AdaFruit IMU",
@@ -45,8 +48,6 @@ public class TMAuto extends LinearOpMode {
         robot.linearArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
 
-        CVManager tFlow = new CVManager();
-        CamManager camM = new CamManager();
         tFlow.init(robot.webCam, robot.tFlowId, camM);
         camM.init(robot, tFlow);
         camM.reference = angles.firstAngle;
