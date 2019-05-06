@@ -361,8 +361,8 @@ public class CVManager extends Thread {
                         } else {
                             this.status = 3;
                             camM.mode = 1;
-                            camM.lBound=(float) 0.3;
-                            camM.rBound=(float) 0.7;
+                            camM.lBound=(float) 0.45;
+                            camM.rBound=(float) 0.55;
                         }
 
                     }

@@ -158,7 +158,7 @@ public class OTCTMAuto extends LinearOpMode
         switch (choose) {
             case 1:
                 //Mineral on Left
-                robot.angleTurn(TURN_SPEED,33);
+                robot.angleTurn(TURN_SPEED,33, true);
                 robot.encoderDrive(DRIVE_SPEED,31, 5);
                 robot.angleTurn(0.3, -83);
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
@@ -173,7 +173,7 @@ public class OTCTMAuto extends LinearOpMode
                 break;
             case 3:
                 //Mineral on Right
-                robot.angleTurn(TURN_SPEED,-38);
+                robot.angleTurn(TURN_SPEED,-38, true);
                 robot.encoderDrive(DRIVE_SPEED,33, 5);
                 robot.angleTurn(0.3, 63);
                 //telemetry.addData("TFlow says: ", "%d",tFlow.Status);
@@ -184,11 +184,8 @@ public class OTCTMAuto extends LinearOpMode
                 //error happened with TensorFlow
                 telemetry.addData("TFlow says: ", "%d",tFlow.status);
                 // if tensor flow doesn't function, the robot will default to roboting to the middle position
-                robot.encoderDrive(DRIVE_SPEED,13,5);
-                robot.encoderDrive(DRIVE_SPEED,10, 5);
+                robot.encoderDrive(DRIVE_SPEED,38, 5);
 
-                robot.angleTurn(TURN_SPEED, 90);
-                sleep(2000);
                 break;
         }
         telemetry.addData("Status: ", "Dropping Team Marker");
@@ -207,21 +204,27 @@ public class OTCTMAuto extends LinearOpMode
 
         switch (choose) {
             case 1:
-                robot.angleTurn(0.1, -12);
+                robot.angleTurn(0.1, -12, true);
                 robot.encoderDrive(1,-53, 10);
                 break;
             case 2:
                 robot.angleTurn(TURN_SPEED, 75);
                 robot.encoderDrive(DRIVE_SPEED,9, 5);
-                robot.angleTurn(TURN_SPEED, 35);
-                robot.encoderDrive(1,55, 10);
+                robot.angleTurn(TURN_SPEED, 35, true);
+                robot.encoderDrive(1,52, 10);
                 break;
             case 3:
                 robot.encoderDrive(DRIVE_SPEED, -5,5);
                 robot.angleTurn( TURN_SPEED, 40);
                 robot.encoderDrive(DRIVE_SPEED, 22, 5);
-                robot.angleTurn(TURN_SPEED, 35);
+                robot.angleTurn(TURN_SPEED, 35,true);
                 robot.encoderDrive(1,53, 10);
+                break;
+            default:
+                robot.angleTurn(TURN_SPEED, 75);
+                robot.encoderDrive(DRIVE_SPEED,9, 5);
+                robot.angleTurn(TURN_SPEED, 35, true);
+                robot.encoderDrive(1,52, 10);
                 break;
         }
         if (this.isStopRequested()) {
@@ -231,6 +234,7 @@ public class OTCTMAuto extends LinearOpMode
         robot.Camera.setPosition(0);
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
         robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);
+        /*
         while (!robot.botSwitch.getState()) {
             robot.linearArm.setPower(-1);
             telemetry.addData("Top is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
@@ -241,7 +245,7 @@ public class OTCTMAuto extends LinearOpMode
                 return;
             }
 
-        }
+        }*/
         robot.linearArm.setPower(0);
         telemetry.addData("Status: ", "Finished");
         telemetry.update();

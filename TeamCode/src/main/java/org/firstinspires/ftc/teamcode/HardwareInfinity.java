@@ -58,6 +58,9 @@ class HardwareInfinity extends Thread
     double pk = 3; //gain for proportion
     double ik = 0.21; //gain for integral
     double dk = 0.69; //gain for differential
+    double psk = 3;
+    double isk = 0.12;
+    double dsk = 0.32;
 
     //public Servo    rightClaw   = null;
 
@@ -145,7 +148,7 @@ class HardwareInfinity extends Thread
         init(ahwMap, null);
     }
 
-    void angleTurn(double speed, double angle, boolean abs, boolean backgrnd) {
+    void angleTurn(double speed, double angle, boolean small, boolean abs, boolean backgrnd) {
         if (Op==null) return;
         //Uses compList PID algorithm to turn accurately on point
         double targetAngle; //Self-explanatory
@@ -226,7 +229,7 @@ class HardwareInfinity extends Thread
                 itr=itr+direction*(dis/angle)*time/1000;
                 der=((dis*direction/angle)-(prdis*prdir/angle))*1000/time;
                 //Calculate speed from distance to targetAngle
-                spd=pk*prp+ik*itr+dk*der;
+                spd=(small ? psk : pk)*prp+(small ? isk : ik)*itr+(small ? dsk : dk)*der;
                 motorLeft.setPower(-direction*(/*Math.sqrt*/(Math.abs(speed*spd)+0.03))); //set motor power based on given speed against dynamic spd and sets direction appropriately
                 motorRight.setPower(direction*(/*Math.sqrt*/(Math.abs(speed*spd)+0.03)));
                 //counting the yeets
@@ -402,15 +405,19 @@ class HardwareInfinity extends Thread
         encoderDrive(speed, leftCM, rightCM, timeoutS, false);
     }
     //automatically removes the need for background parameter
-    void angleTurn(double speed, double angle, boolean abs) {
+    void angleTurn(double speed, double angle, boolean small, boolean abs) {
         if (Op==null) return;
-        angleTurn(speed, angle, abs,false);
+        angleTurn(speed, angle, small, abs, false);
     }
-
+    void angleTurn(double speed, double angle, boolean small) {
+        if (Op==null) return;
+        angleTurn(speed, angle, small, false);
+    }
     void angleTurn(double speed, double angle) {
         if (Op==null) return;
         angleTurn(speed, angle, false);
     }
+
 
     //controls code running in background
     public void run() {

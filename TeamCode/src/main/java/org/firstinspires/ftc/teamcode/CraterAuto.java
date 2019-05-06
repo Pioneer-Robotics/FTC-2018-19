@@ -154,7 +154,7 @@ public class CraterAuto extends LinearOpMode {
         switch (choose) {
             case 1:
                 //left
-                robot.angleTurn(TURN_SPEED,38);
+                robot.angleTurn(TURN_SPEED,38, true);
 
                 robot.encoderDrive(DRIVE_SPEED, 17, 5);
                 sleep(100);
@@ -178,7 +178,7 @@ public class CraterAuto extends LinearOpMode {
                 break;
             case 3:
                 //right
-                robot.angleTurn(TURN_SPEED,-38);
+                robot.angleTurn(TURN_SPEED,-38, true);
 
                 robot.encoderDrive(DRIVE_SPEED,17, 5);
                 sleep(100);
@@ -194,12 +194,9 @@ public class CraterAuto extends LinearOpMode {
                 //error happened with TensorFlow
                 telemetry.addData("TFlow says: ", "%d",tFlow.status);
                 // if tensor flow doesn't function, the robot will default to roboting to the middle position
-                robot.encoderDrive(DRIVE_SPEED, 9,5);
-                robot.angleTurn(TURN_SPEED,20);
-                sleep(250);
-                robot.angleTurn(TURN_SPEED,-20);
-
-                robot.encoderDrive(DRIVE_SPEED, -9,5);
+                robot.encoderDrive(DRIVE_SPEED,12, 5);
+                sleep(100);
+                robot.encoderDrive(DRIVE_SPEED,-12, 5);
                 break;
         }
 
@@ -223,9 +220,9 @@ public class CraterAuto extends LinearOpMode {
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
 
         // Align with wall and back up into crater
-        robot.angleTurn(0.1, 10);
+        //robot.angleTurn(0.1, 10);
         robot.encoderDrive(DRIVE_SPEED, -2,5);
-        robot.encoderDrive(DRIVE_SPEED, -50, 5);
+        robot.encoderDrive(DRIVE_SPEED, -60, 5);
 
         //robot.angleTurn(TURN_SPEED,95, false);
         //robot.encoderDrive(DRIVE_SPEED, 70, 20);
@@ -237,7 +234,7 @@ public class CraterAuto extends LinearOpMode {
         robot.Camera.setPosition(0);
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
         robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);
-        if (latch) {
+        if (false) {
             while (!robot.botSwitch.getState()) {
                 robot.linearArm.setPower(-1);
                 telemetry.addData("Top is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");

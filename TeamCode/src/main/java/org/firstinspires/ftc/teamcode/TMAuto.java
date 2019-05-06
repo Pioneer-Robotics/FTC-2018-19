@@ -158,7 +158,7 @@ public class TMAuto extends LinearOpMode {
         switch (choose) {
             case 1:
                 //Mineral on Left
-                robot.angleTurn(TURN_SPEED,33);
+                robot.angleTurn(TURN_SPEED,33, true);
                 robot.encoderDrive(DRIVE_SPEED,31, 5);
                 robot.angleTurn(0.3, -83);
                 //telemetry.addData("TFlow says: ", "%d",tFlow.status);
@@ -184,11 +184,8 @@ public class TMAuto extends LinearOpMode {
                 //error happened with TensorFlow
                 telemetry.addData("TFlow says: ", "%d",tFlow.status);
                 // if tensor flow doesn't function, the robot will default to roboting to the middle position
-                robot.encoderDrive(DRIVE_SPEED,13,5);
-                robot.encoderDrive(DRIVE_SPEED,10, 5);
+                robot.encoderDrive(DRIVE_SPEED,38, 5);
 
-                robot.angleTurn(TURN_SPEED, 90);
-                sleep(2000);
                 break;
         }
         telemetry.addData("status: ", "Dropping Team Marker");
@@ -208,17 +205,23 @@ public class TMAuto extends LinearOpMode {
             case 1:
                 robot.angleTurn(0.3, -36);
                 robot.encoderDrive(DRIVE_SPEED,19, 5);
-                robot.angleTurn(TURN_SPEED, -52);
+                robot.angleTurn(TURN_SPEED, -47);
                 robot.encoderDrive(1,52, 10);
                 break;
             case 2:
                 robot.angleTurn(TURN_SPEED, 72);
                 robot.encoderDrive(DRIVE_SPEED,-23, 5);
-                robot.angleTurn(TURN_SPEED, -31);
+                robot.angleTurn(TURN_SPEED, -31, true);
                 robot.encoderDrive(1,-55, 10);
                 break;
             case 3:
-                robot.angleTurn(0.1, 12);
+                robot.angleTurn(0.1, 30, true);
+                robot.encoderDrive(1,-55, 10);
+                break;
+            default:
+                robot.angleTurn(TURN_SPEED, 72);
+                robot.encoderDrive(DRIVE_SPEED,-23, 5);
+                robot.angleTurn(TURN_SPEED, -31, true);
                 robot.encoderDrive(1,-55, 10);
                 break;
         }
@@ -230,6 +233,7 @@ public class TMAuto extends LinearOpMode {
         robot.Camera.setPosition(0);
         robot.lunchBox.setPosition(HardwareInfinity.lunchBoxMAX_POSITION);
         robot.Latch.setPosition(HardwareInfinity.LatchMIN_POSITION);
+        /*
         while (!robot.botSwitch.getState()) {
             robot.linearArm.setPower(-1);
             telemetry.addData("Top is", robot.topSwitch.getState() ? "Pressed" : "not Pressed");
@@ -240,7 +244,7 @@ public class TMAuto extends LinearOpMode {
                 return;
             }
 
-        }
+        }*/
         robot.linearArm.setPower(0);
         //encoderDrive(1, 255,255,30);
 
