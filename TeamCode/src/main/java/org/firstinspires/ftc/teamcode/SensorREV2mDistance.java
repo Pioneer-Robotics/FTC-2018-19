@@ -56,11 +56,27 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class SensorREV2mDistance extends LinearOpMode {
 
     private DistanceSensor sensorRange;
+    private DistanceSensor ds1;
+    private DistanceSensor ds2;
+    double d1 = 0;
+    double d2 = 0;
+    double d3 = 0;
+    double x1 = 0;
+    double x2 = 0;
+    double x3 = 0;
+    double y1 = 0;
+    double y2 = 0;
+    double y3 = 0;
+    double width = 13*25.5;
+    double height = 13*25.5;
+    private static final double sq2 = Math.sqrt(2);
 
     @Override
     public void runOpMode() {
         // you can use this as a regular DistanceSensor.
         sensorRange = hardwareMap.get(DistanceSensor.class, "sensor_range");
+        ds1 = hardwareMap.get(DistanceSensor.class, "ds1");
+        ds2 = hardwareMap.get(DistanceSensor.class, "ds2");
 
         // you can also cast this to a Rev2mDistanceSensor if you want to use added
         // methods associated with the Rev2mDistanceSensor class.
@@ -73,14 +89,40 @@ public class SensorREV2mDistance extends LinearOpMode {
         while(opModeIsActive()) {
             // generic DistanceSensor methods.
             telemetry.addData("deviceName",sensorRange.getDeviceName() );
-            telemetry.addData("range", String.format("%.01f mm", sensorRange.getDistance(DistanceUnit.MM)));
-            telemetry.addData("range", String.format("%.01f cm", sensorRange.getDistance(DistanceUnit.CM)));
-            telemetry.addData("range", String.format("%.01f m", sensorRange.getDistance(DistanceUnit.METER)));
-            telemetry.addData("range", String.format("%.01f in", sensorRange.getDistance(DistanceUnit.INCH)));
+            d1 = sensorRange.getDistance(DistanceUnit.MM);
+            telemetry.addData("range", String.format("%.01f mm", d1));
+            y1 = height+d1/sq2;
+            x1 = -width-d1/sq2;
+            telemetry.addData("1:","%.2f, %.2f", y1, x1);
 
             // Rev2mDistanceSensor specific methods.
             telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
             telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
+
+            telemetry.addData("deviceName",ds1.getDeviceName() );
+            d2 = ds1.getDistance(DistanceUnit.MM);
+            telemetry.addData("range", String.format("%.01f mm", d2));
+            y2 = 0;
+            x2 = -width-d2;
+            telemetry.addData("2:","%.2f, %.2f", y2, x2);
+
+            // Rev2mDistanceSensor specific methods.
+            telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
+            telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
+
+            telemetry.addData("deviceName",ds2.getDeviceName() );
+            d3 = ds2.getDistance(DistanceUnit.MM);
+            telemetry.addData("range", String.format("%.01f mm", d3));
+            //say goodbye to cables
+            y3 = -height-d3/sq2;
+            x3 = -width-d3/sq2;
+            telemetry.addData("3:","%.2f, %.2f", y3, x3);
+            
+            // Rev2mDistanceSensor specific methods.
+            telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
+            telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
+
+            telemetry.addData("Slopes: ", "%.2f %.2f %.2f",(x3-x2)/(y3-y2),(x3-x1)/(y3-y1),(x2-x1)/(y2-y1));
 
             telemetry.update();
         }
