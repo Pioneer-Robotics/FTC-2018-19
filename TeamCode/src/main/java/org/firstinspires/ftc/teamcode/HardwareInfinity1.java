@@ -35,6 +35,7 @@ class HardwareInfinity1 extends Thread {
         backLeft.setDirection(DcMotor.Direction.REVERSE);
     }
     void MecDrive(double centimeters, double angle1, double speed) {
+
         //initialize target variables for encoderDrive
         double distance = centimeters*1000/22.55;
         double leftDiagTarget;
