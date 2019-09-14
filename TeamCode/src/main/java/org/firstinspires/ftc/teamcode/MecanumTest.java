@@ -46,7 +46,11 @@ public class MecanumTest extends Teleop {
         backLeft.setDirection(DcMotor.Direction.REVERSE);
     }
 
+    boolean lockToggle = false;
+
     @Override
+
+
     public void loop() {
         if (coordinate_system_lock) {
             angle = Math.toRadians(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) - imu_offset;
@@ -66,6 +70,8 @@ public class MecanumTest extends Teleop {
             coordinate_system_lock_transition_controller = true;
         }
         if (gamepad1.b) {
+
+
             frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

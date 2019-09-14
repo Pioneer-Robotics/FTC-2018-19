@@ -81,7 +81,6 @@ public class SensorREV2mDistance extends LinearOpMode {
         // you can also cast this to a Rev2mDistanceSensor if you want to use added
         // methods associated with the Rev2mDistanceSensor class.
         Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor)sensorRange;
-
         telemetry.addData(">>", "Press start to continue");
         telemetry.update();
 
