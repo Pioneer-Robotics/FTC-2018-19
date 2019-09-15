@@ -71,7 +71,10 @@ public class WallTrackTesting extends LinearOpMode {
             telemetry.addData("Left sensor data : ", sensors.getDistance(SensorTriplet.TripletType.Left, DistanceUnit.CM));
             telemetry.addData("Mid sensor data : ", sensors.getDistance(SensorTriplet.TripletType.Center, DistanceUnit.CM));
 
-            //TODO, add Mr.T math and figure out an async drive system
+           double wallAngle = ((bMath.pi() * 3) / 4) - Math.atan(sensors.getDistance(SensorTriplet.TripletType.Right, DistanceUnit.CM) / sensors.getDistance(SensorTriplet.TripletType.Left, DistanceUnit.CM));
+            telemetry.addData("Wall angle : ", wallAngle);
+            telemetry.update();
+
         }
 
     }
