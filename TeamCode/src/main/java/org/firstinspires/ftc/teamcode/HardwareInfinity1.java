@@ -18,6 +18,9 @@ class HardwareInfinity1 extends Thread {
     BNO055IMU imu;
     LinearOpMode Op;
 
+    //Toggles Op.telemetry output
+    boolean enableTelemetry = false;
+
     void init(HardwareMap ahwMap, LinearOpMode O) {
         Op = O;
         frontLeft = ahwMap.get(DcMotor.class, "Front Left");
@@ -33,10 +36,12 @@ class HardwareInfinity1 extends Thread {
         imu.initialize(IParameters);
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
+
     }
+
     void MecDrive(double centimeters, double angle1, double speed) {
         //initialize target variables for encoderDrive
-        double distance = centimeters*1000/22.55;
+        double distance = centimeters * 1000 / 22.55;
         double leftDiagTarget;
         double rightDiagTarget;
         double dynamicLeftDiagTarget;
@@ -51,13 +56,13 @@ class HardwareInfinity1 extends Thread {
         frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftDiagTarget = distance*(Math.sin(-angle)+Math.cos(-angle));
+        leftDiagTarget = distance * (Math.sin(-angle) + Math.cos(-angle));
 
-        rightDiagTarget = distance*(Math.sin(-angle)-Math.cos(-angle));
+        rightDiagTarget = distance * (Math.sin(-angle) - Math.cos(-angle));
 
-        dynamicLeftDiagTarget = distance*(Math.sin(-angle)+Math.cos(-angle));
+        dynamicLeftDiagTarget = distance * (Math.sin(-angle) + Math.cos(-angle));
 
-        dynamicRightDiagTarget = distance*(Math.sin(-angle)-Math.cos(-angle));
+        dynamicRightDiagTarget = distance * (Math.sin(-angle) - Math.cos(-angle));
 
         if (Math.abs(leftDiagTarget) < 0.01) leftDisable = true;
         if (Math.abs(rightDiagTarget) < 0.01) rightDisable = true;
@@ -72,47 +77,51 @@ class HardwareInfinity1 extends Thread {
 
         try {
             Thread.sleep(100);
-        } catch (InterruptedException ignored) { }
+        } catch (InterruptedException ignored) {
+        }
 
-        leftDiagPower = ((-Math.sin(angle)*speed + Math.cos(angle)*speed) / sq2);
-        rightDiagPower = ((-Math.sin(angle)*speed - Math.cos(angle)*speed) / sq2);
+        leftDiagPower = ((-Math.sin(angle) * speed + Math.cos(angle) * speed) / sq2);
+        rightDiagPower = ((-Math.sin(angle) * speed - Math.cos(angle) * speed) / sq2);
 
         frontLeft.setPower(leftDiagPower);
         frontRight.setPower(rightDiagPower);
         backLeft.setPower(rightDiagPower);
         backRight.setPower(leftDiagPower);
-        Op.telemetry.addData("LFE:", frontLeft.getCurrentPosition());
-        Op.telemetry.addData("RFE:", frontRight.getCurrentPosition());
-        Op.telemetry.addData("LDT:", leftDiagTarget);
-        Op.telemetry.addData("RDT:", rightDiagTarget);
-        Op.telemetry.addData("DLDT:", dynamicLeftDiagTarget);
-        Op.telemetry.addData("DRDT:", dynamicRightDiagTarget);
-        Op.telemetry.addData("C1:",Math.abs(frontLeft.getCurrentPosition() - leftDiagTarget));
-        Op.telemetry.addData("C2:",Math.abs(frontRight.getCurrentPosition() - rightDiagTarget));
-        Op.telemetry.update();
-
-        while ( (leftDisable || (10 < Math.abs(frontLeft.getCurrentPosition() - leftDiagTarget))) &&
-                (rightDisable || (10 < Math.abs(frontRight.getCurrentPosition() - rightDiagTarget))) &&
-                (leftDisable || ((Math.abs(dynamicLeftDiagTarget) + 10) >= Math.abs(frontLeft.getCurrentPosition() - leftDiagTarget))) &&
-                (rightDisable || ((Math.abs(dynamicRightDiagTarget) + 10) >= Math.abs(frontRight.getCurrentPosition() - rightDiagTarget)))) {
-
-
-            dynamicLeftDiagTarget = distance*(Math.sin(-angle)+Math.cos(-angle)) - frontLeft.getCurrentPosition();
-            dynamicRightDiagTarget = distance*(Math.sin(-angle)-Math.cos(-angle)) - frontRight.getCurrentPosition();
-            if (Op.isStopRequested()) { //prevents crashes when emergency stop is activated
-                frontLeft.setPower(0);
-                frontRight.setPower(0);
-                return;
-            }
+        if (enableTelemetry) {
             Op.telemetry.addData("LFE:", frontLeft.getCurrentPosition());
             Op.telemetry.addData("RFE:", frontRight.getCurrentPosition());
             Op.telemetry.addData("LDT:", leftDiagTarget);
             Op.telemetry.addData("RDT:", rightDiagTarget);
             Op.telemetry.addData("DLDT:", dynamicLeftDiagTarget);
             Op.telemetry.addData("DRDT:", dynamicRightDiagTarget);
-            Op.telemetry.addData("C1:",Math.abs(frontLeft.getCurrentPosition() - leftDiagTarget));
-            Op.telemetry.addData("C2:",Math.abs(frontRight.getCurrentPosition() - rightDiagTarget));
+            Op.telemetry.addData("C1:", Math.abs(frontLeft.getCurrentPosition() - leftDiagTarget));
+            Op.telemetry.addData("C2:", Math.abs(frontRight.getCurrentPosition() - rightDiagTarget));
             Op.telemetry.update();
+        }
+        while ((leftDisable || (10 < Math.abs(frontLeft.getCurrentPosition() - leftDiagTarget))) &&
+                (rightDisable || (10 < Math.abs(frontRight.getCurrentPosition() - rightDiagTarget))) &&
+                (leftDisable || ((Math.abs(dynamicLeftDiagTarget) + 10) >= Math.abs(frontLeft.getCurrentPosition() - leftDiagTarget))) &&
+                (rightDisable || ((Math.abs(dynamicRightDiagTarget) + 10) >= Math.abs(frontRight.getCurrentPosition() - rightDiagTarget)))) {
+
+
+            dynamicLeftDiagTarget = distance * (Math.sin(-angle) + Math.cos(-angle)) - frontLeft.getCurrentPosition();
+            dynamicRightDiagTarget = distance * (Math.sin(-angle) - Math.cos(-angle)) - frontRight.getCurrentPosition();
+            if (Op.isStopRequested()) { //prevents crashes when emergency stop is activated
+                frontLeft.setPower(0);
+                frontRight.setPower(0);
+                return;
+            }
+            if (enableTelemetry) {
+                Op.telemetry.addData("LFE:", frontLeft.getCurrentPosition());
+                Op.telemetry.addData("RFE:", frontRight.getCurrentPosition());
+                Op.telemetry.addData("LDT:", leftDiagTarget);
+                Op.telemetry.addData("RDT:", rightDiagTarget);
+                Op.telemetry.addData("DLDT:", dynamicLeftDiagTarget);
+                Op.telemetry.addData("DRDT:", dynamicRightDiagTarget);
+                Op.telemetry.addData("C1:", Math.abs(frontLeft.getCurrentPosition() - leftDiagTarget));
+                Op.telemetry.addData("C2:", Math.abs(frontRight.getCurrentPosition() - rightDiagTarget));
+                Op.telemetry.update();
+            }
         }
         frontLeft.setPower(0);
         frontRight.setPower(0);
@@ -121,7 +130,8 @@ class HardwareInfinity1 extends Thread {
 
         try {
             Thread.sleep(1000);
-        } catch (InterruptedException ignored) { }
+        } catch (InterruptedException ignored) {
+        }
 
 
     }
