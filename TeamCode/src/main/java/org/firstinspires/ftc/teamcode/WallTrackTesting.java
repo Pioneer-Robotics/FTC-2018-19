@@ -58,6 +58,10 @@ public class WallTrackTesting extends LinearOpMode {
         public DistanceSensor sensor(TripletType type) {
             return type == TripletType.Center ? distanceSensors[1] : (type == TripletType.Right ? distanceSensors[2] : distanceSensors[0]);
         }
+
+        public double getWallAngle() {
+            return ((bMath.pi() * 3) / 4) - Math.atan(getDistance(SensorTriplet.TripletType.Right, DistanceUnit.CM) / getDistance(SensorTriplet.TripletType.Left, DistanceUnit.CM));
+        }
         //</editor-fold>
     }
 
@@ -71,7 +75,7 @@ public class WallTrackTesting extends LinearOpMode {
             telemetry.addData("Left sensor data : ", sensors.getDistance(SensorTriplet.TripletType.Left, DistanceUnit.CM));
             telemetry.addData("Mid sensor data : ", sensors.getDistance(SensorTriplet.TripletType.Center, DistanceUnit.CM));
 
-           double wallAngle = ((bMath.pi() * 3) / 4) - Math.atan(sensors.getDistance(SensorTriplet.TripletType.Right, DistanceUnit.CM) / sensors.getDistance(SensorTriplet.TripletType.Left, DistanceUnit.CM));
+            double wallAngle = sensors.getWallAngle();
             telemetry.addData("Wall angle : ", wallAngle);
             telemetry.update();
 
