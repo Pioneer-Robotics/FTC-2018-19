@@ -29,7 +29,7 @@ public class WallTrackTesting extends LinearOpMode {
             Left
         }
 
-        //<editor-fold desc="Inits">
+        //<editor-fold desc="Init setups">
         //dL = the left most sensor
         //dC = the center sensor
         //dR = the right most sensor
@@ -79,6 +79,9 @@ public class WallTrackTesting extends LinearOpMode {
             telemetry.addData("Wall angle : ", wallAngle);
             telemetry.update();
 
+            //Move the robot away from what ever is in front of the mid sensor
+            hwInf.MecDriveWoke(1,180,0.25);
+//Uses woke mode to avoid sleeping and pausing the thread
         }
 
     }

@@ -136,4 +136,86 @@ class HardwareInfinity1 extends Thread {
 
 
     }
+
+    //Testing version of mec drive that does not use thread sleepingingningingnggn
+    //What could go wrong!
+    void MecDriveWoke(double centimeters, double angle1, double speed) {
+
+        //initialize target variables for encoderDrive
+        double distance = centimeters * 1000 / 22.55;
+        double leftDiagTarget;
+        double rightDiagTarget;
+        double dynamicLeftDiagTarget;
+        double dynamicRightDiagTarget;
+        double angle = Math.toRadians(-angle1);
+        boolean leftDisable = false;
+        boolean rightDisable = false;
+
+        //reset motors, ensuring they are completely stopped while doing so.
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftDiagTarget = distance * (Math.sin(-angle) + Math.cos(-angle));
+
+        rightDiagTarget = distance * (Math.sin(-angle) - Math.cos(-angle));
+
+        dynamicLeftDiagTarget = distance * (Math.sin(-angle) + Math.cos(-angle));
+
+        dynamicRightDiagTarget = distance * (Math.sin(-angle) - Math.cos(-angle));
+
+        if (Math.abs(leftDiagTarget) < 0.01) leftDisable = true;
+        if (Math.abs(rightDiagTarget) < 0.01) rightDisable = true;
+
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        double leftDiagPower = 0;
+        double rightDiagPower = 0;
+
+//        try {
+//            Thread.sleep(100);
+//        } catch (InterruptedException ignored) {
+//        }
+
+        leftDiagPower = ((-Math.sin(angle) * speed + Math.cos(angle) * speed) / sq2);
+        rightDiagPower = ((-Math.sin(angle) * speed - Math.cos(angle) * speed) / sq2);
+
+        frontLeft.setPower(leftDiagPower);
+        frontRight.setPower(rightDiagPower);
+        backLeft.setPower(rightDiagPower);
+        backRight.setPower(leftDiagPower);
+
+        while ((leftDisable || (10 < Math.abs(frontLeft.getCurrentPosition() - leftDiagTarget))) &&
+                (rightDisable || (10 < Math.abs(frontRight.getCurrentPosition() - rightDiagTarget))) &&
+                (leftDisable || ((Math.abs(dynamicLeftDiagTarget) + 10) >= Math.abs(frontLeft.getCurrentPosition() - leftDiagTarget))) &&
+                (rightDisable || ((Math.abs(dynamicRightDiagTarget) + 10) >= Math.abs(frontRight.getCurrentPosition() - rightDiagTarget)))) {
+
+
+            dynamicLeftDiagTarget = distance * (Math.sin(-angle) + Math.cos(-angle)) - frontLeft.getCurrentPosition();
+            dynamicRightDiagTarget = distance * (Math.sin(-angle) - Math.cos(-angle)) - frontRight.getCurrentPosition();
+            if (Op.isStopRequested()) { //prevents crashes when emergency stop is activated
+                frontLeft.setPower(0);
+                frontRight.setPower(0);
+                return;
+            }
+
+        }
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
+        backLeft.setPower(0);
+        backRight.setPower(0);
+
+//        try {
+//            Thread.sleep(1000);
+//        } catch (InterruptedException ignored) {
+//        }
+
+
+    }
+
+
 }
