@@ -9,7 +9,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 //As of 9.15.19.0706 this serves only to test sensor input
 
@@ -62,12 +65,14 @@ public class WallTrackTesting extends LinearOpMode {
         public double getWallAngle() {
             return ((bMath.pi() * 3) / 4) - Math.atan(getDistance(SensorTriplet.TripletType.Right, DistanceUnit.CM) / getDistance(SensorTriplet.TripletType.Left, DistanceUnit.CM));
         }
+
         //</editor-fold>
     }
 
     @Override
     public void runOpMode() throws InterruptedException {
         hwInf.init(hardwareMap, this);
+
         sensors = new SensorTriplet(this, "SENSOR_NAME_LEFT", "SENSOR_NAME_MID", "SENSOR_NAME_RIGHT");
 
         while (opModeIsActive()) {
@@ -76,12 +81,24 @@ public class WallTrackTesting extends LinearOpMode {
             telemetry.addData("Mid sensor data : ", sensors.getDistance(SensorTriplet.TripletType.Center, DistanceUnit.CM));
 
             double wallAngle = sensors.getWallAngle();
+            double currentAngle = hwInf.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
             telemetry.addData("Wall angle : ", wallAngle);
+            telemetry.addData("Difference in angle : ", (currentAngle - wallAngle));
+
             telemetry.update();
 
-            //Move the robot away from what ever is in front of the mid sensor
-            hwInf.MecDriveWoke(1,180,0.25);
-//Uses woke mode to avoid sleeping and pausing the thread
+            //Move the robot away from what ever is in front of a given sensor; mostly for testing angles of the robot
+            if (sensors.getDistance(SensorTriplet.TripletType.Center, DistanceUnit.CM) < 10) {
+                hwInf.MecDriveWoke(1, 0, 0.25);
+            }
+            if (sensors.getDistance(SensorTriplet.TripletType.Right, DistanceUnit.CM) < 10) {
+                hwInf.MecDriveWoke(1, 45, 0.25);
+            }
+            if (sensors.getDistance(SensorTriplet.TripletType.Left, DistanceUnit.CM) < 10) {
+                hwInf.MecDriveWoke(1, -45, 0.25);
+            }
+
+
         }
 
     }
