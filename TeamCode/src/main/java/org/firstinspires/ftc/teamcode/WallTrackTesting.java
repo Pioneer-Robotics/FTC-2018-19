@@ -60,6 +60,10 @@ public class WallTrackTesting extends LinearOpMode {
         }
 
         public double getWallAngle() {
+            return Math.toDegrees( getWallRad());
+        }
+
+        public double getWallRad() {
             return ((bMath.pi() * 3) / 4) - Math.atan(getDistance(SensorTriplet.TripletType.Right, DistanceUnit.CM) / getDistance(SensorTriplet.TripletType.Left, DistanceUnit.CM));
         }
         //</editor-fold>
@@ -79,9 +83,11 @@ public class WallTrackTesting extends LinearOpMode {
             telemetry.addData("Wall angle : ", wallAngle);
             telemetry.update();
 
-            //Move the robot away from what ever is in front of the mid sensor
-            hwInf.MecDriveWoke(1,180,0.25);
-//Uses woke mode to avoid sleeping and pausing the thread
+//If the bots near a wall track along it
+            if(sensors.getDistance(SensorTriplet.TripletType.Center,DistanceUnit.CM) < 15) {
+                hwInf.MecDrive(5, wallAngle + 90, 0.25);
+            }
+
         }
 
     }
