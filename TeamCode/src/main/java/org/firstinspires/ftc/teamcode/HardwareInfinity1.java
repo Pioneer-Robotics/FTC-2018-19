@@ -216,6 +216,68 @@ class HardwareInfinity1 extends Thread {
 
 
     }
+    void MecDriveStart(double centimeters, double angle1, double speed, boolean resetEncoders) {
+
+        //initialize target variables for encoderDrive
+        double distance = centimeters * 1000 / 22.55;
+        double leftDiagTarget;
+        double rightDiagTarget;
+        double dynamicLeftDiagTarget;
+        double dynamicRightDiagTarget;
+        double angle = Math.toRadians(-angle1);
+        boolean leftDisable = false;
+        boolean rightDisable = false;
+
+
+       if (resetEncoders) {
+           //reset motors, ensuring they are completely stopped while doing so.
+           frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+           backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+           frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+           backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+       }
+        leftDiagTarget = distance * (Math.sin(-angle) + Math.cos(-angle));
+
+        rightDiagTarget = distance * (Math.sin(-angle) - Math.cos(-angle));
+
+        dynamicLeftDiagTarget = distance * (Math.sin(-angle) + Math.cos(-angle));
+
+        dynamicRightDiagTarget = distance * (Math.sin(-angle) - Math.cos(-angle));
+
+        if (Math.abs(leftDiagTarget) < 0.01) leftDisable = true;
+        if (Math.abs(rightDiagTarget) < 0.01) rightDisable = true;
+
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        double leftDiagPower = 0;
+        double rightDiagPower = 0;
+
+
+        leftDiagPower = ((-Math.sin(angle) * speed + Math.cos(angle) * speed) / sq2);
+        rightDiagPower = ((-Math.sin(angle) * speed - Math.cos(angle) * speed) / sq2);
+
+        frontLeft.setPower(leftDiagPower);
+        frontRight.setPower(rightDiagPower);
+        backLeft.setPower(rightDiagPower);
+        backRight.setPower(leftDiagPower);
+        if (enableTelemetry) {
+            Op.telemetry.addData("LFE:", frontLeft.getCurrentPosition());
+            Op.telemetry.addData("RFE:", frontRight.getCurrentPosition());
+            Op.telemetry.addData("LDT:", leftDiagTarget);
+            Op.telemetry.addData("RDT:", rightDiagTarget);
+            Op.telemetry.addData("DLDT:", dynamicLeftDiagTarget);
+            Op.telemetry.addData("DRDT:", dynamicRightDiagTarget);
+            Op.telemetry.addData("C1:", Math.abs(frontLeft.getCurrentPosition() - leftDiagTarget));
+            Op.telemetry.addData("C2:", Math.abs(frontRight.getCurrentPosition() - rightDiagTarget));
+            Op.telemetry.update();
+        }
+
+
+
+    }
 
 
 }
