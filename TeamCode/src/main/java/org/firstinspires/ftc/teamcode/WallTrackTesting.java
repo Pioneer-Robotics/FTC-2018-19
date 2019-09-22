@@ -9,7 +9,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 //As of 9.15.19.0706 this serves only to test sensor input
 
@@ -60,33 +63,51 @@ public class WallTrackTesting extends LinearOpMode {
         }
 
         public double getWallAngle() {
-            return Math.toDegrees( getWallRad());
+            return Math.toDegrees(((bMath.pi() * 3) / 4) - Math.atan(getDistance(SensorTriplet.TripletType.Right, DistanceUnit.CM) / getDistance(SensorTriplet.TripletType.Left, DistanceUnit.CM)));
         }
 
-        public double getWallRad() {
-            return ((bMath.pi() * 3) / 4) - Math.atan(getDistance(SensorTriplet.TripletType.Right, DistanceUnit.CM) / getDistance(SensorTriplet.TripletType.Left, DistanceUnit.CM));
-        }
         //</editor-fold>
     }
 
     @Override
     public void runOpMode() throws InterruptedException {
         hwInf.init(hardwareMap, this);
-        sensors = new SensorTriplet(this, "SENSOR_NAME_LEFT", "SENSOR_NAME_MID", "SENSOR_NAME_RIGHT");
+
+        sensors = new SensorTriplet(this, "sensorL", "sensorM", "sensorR");
+
+        telemetry.addData("Right sensor data : ", sensors.getDistance(SensorTriplet.TripletType.Right, DistanceUnit.CM));
+        telemetry.addData("Left sensor data : ", sensors.getDistance(SensorTriplet.TripletType.Left, DistanceUnit.CM));
+        telemetry.addData("Mid sensor data : ", sensors.getDistance(SensorTriplet.TripletType.Center, DistanceUnit.CM));
+
+        double wallAngle = sensors.getWallAngle();
+        double currentAngle = hwInf.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+        telemetry.addData("Wall angle : ", wallAngle);
+        telemetry.addData("Difference in angle : ", (currentAngle - wallAngle));
+
+        telemetry.update();
+        hwInf.MecDriveStart(25, (currentAngle - wallAngle) + 180, 0.15, true);
 
         while (opModeIsActive()) {
+
+
             telemetry.addData("Right sensor data : ", sensors.getDistance(SensorTriplet.TripletType.Right, DistanceUnit.CM));
             telemetry.addData("Left sensor data : ", sensors.getDistance(SensorTriplet.TripletType.Left, DistanceUnit.CM));
             telemetry.addData("Mid sensor data : ", sensors.getDistance(SensorTriplet.TripletType.Center, DistanceUnit.CM));
 
-            double wallAngle = sensors.getWallAngle();
-            telemetry.addData("Wall angle : ", wallAngle);
-            telemetry.update();
+            double wa = sensors.getWallAngle();
+            double ca = hwInf.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+            telemetry.addData("Wall angle : ", wa);
+            telemetry.addData("Difference in angle : ", (ca - wa));
 
-//If the bots near a wall track along it
-            if(sensors.getDistance(SensorTriplet.TripletType.Center,DistanceUnit.CM) < 15) {
-                hwInf.MecDrive(5, wallAngle + 90, 0.25);
+            telemetry.update();
+//
+
+
+            if (sensors.getDistance(SensorTriplet.TripletType.Center, DistanceUnit.CM) < 50) {
+                hwInf.MecDriveStart(25, 90 - (wa), 0.15, false);
+
             }
+
 
         }
 
