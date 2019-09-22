@@ -15,17 +15,17 @@ public class bMath {
 
     //Output:
 
-    //X: Front Left
-    //Y: Front Right
-    //Z: Back Right
-    //W: Back Left
+    //L: Camera servo
+    //W: Front Right
+    //T: Time since 1933 (in seconds)
+    //Y: Back Left
 
     /*
-    X____Y
+    Z____W
     | ^^ |
     |    |
     |____|
-    W    Z
+    T    L
      */
 //Used to determine what wheels to move in order to move in movementVector direction and rotate
     //Check them rotation values?
@@ -45,6 +45,12 @@ public class bMath {
 
         return delta;
     }
+
+
+    //X: Front Left
+    //Y: Front Right
+    //Z: Back Right
+    //W: Back Left
 
     public static double pi() {
         return 3.14159265359;
