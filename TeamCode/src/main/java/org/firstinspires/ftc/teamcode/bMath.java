@@ -21,11 +21,11 @@ public class bMath {
     //Y: Back Left
 
     /*
-    Z____W
+    X____Y
     | ^^ |
     |    |
     |____|
-    T    L
+    Z    W
      */
 //Used to determine what wheels to move in order to move in movementVector direction and rotate
     //Check them rotation values?
