@@ -7,18 +7,17 @@ import android.renderscript.Double2;
 public class bMath {
 
     //Cached variables used in maths to avoid the evil GC monster, doubt this is a concern but what the hell
-    double leftMovementPower;
-    double rightMovementPower;
-    double leftRotatePower;
-    double rightRotatePower;
+    static double leftMovementPower;
+    static double rightMovementPower;
+    static double leftRotatePower;
+    static double rightRotatePower;
 
 
     //Output:
-
-    //L: Camera servo
-    //W: Front Right
-    //T: Time since 1933 (in seconds)
-    //Y: Back Left
+    //X: Front Left
+    //Y: Front Right
+    //Z: Back Right
+    //W: Back Left
 
     /*
     X____Y
@@ -29,7 +28,7 @@ public class bMath {
      */
 //Used to determine what wheels to move in order to move in movementVector direction and rotate
     //Check them rotation values?
-    public Double4 getMecMovement(Double2 movementVector, float rotation) {
+    public static Double4 getMecMovement(Double2 movementVector, double rotation) {
 
         Double4 delta = new Double4(0, 0, 0, 0);
 
@@ -46,11 +45,17 @@ public class bMath {
         return delta;
     }
 
+    public static Double2 degreesToHeadingVector(double angle)
+    {
+        double a = Math.toRadians(angle);
+        return radiansToHeadingVector(a);
+    }
 
-    //X: Front Left
-    //Y: Front Right
-    //Z: Back Right
-    //W: Back Left
+    public static Double2 radiansToHeadingVector(double angle)
+    {
+        return new Double2(Math.cos(angle),Math.sin(angle));
+    }
+
 
     public static double pi() {
         return 3.14159265359;

@@ -103,9 +103,10 @@ public class WallTrackTesting extends LinearOpMode {
 //
 
 
-            if (sensors.getDistance(SensorTriplet.TripletType.Center, DistanceUnit.CM) < 50) {
-                hwInf.MecDriveStart(25, 90 - (wa), 0.15, false);
-
+            if (sensors.getDistance(SensorTriplet.TripletType.Center, DistanceUnit.CM) < 65) {
+//                hwInf.MecDriveStart(25, (wa), 0.15, false);
+                //TODO: Set up some stuff to get be able to offset a heading angle by a vector2
+                hwInf.TestNewMovement(wa,10,0.5);
             }
 
 

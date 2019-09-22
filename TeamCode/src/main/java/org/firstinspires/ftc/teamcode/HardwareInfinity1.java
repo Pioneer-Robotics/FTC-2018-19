@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.renderscript.Double4;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -216,6 +218,7 @@ class HardwareInfinity1 extends Thread {
 
 
     }
+
     void MecDriveStart(double centimeters, double angle1, double speed, boolean resetEncoders) {
 
         //initialize target variables for encoderDrive
@@ -229,13 +232,13 @@ class HardwareInfinity1 extends Thread {
         boolean rightDisable = false;
 
 
-       if (resetEncoders) {
-           //reset motors, ensuring they are completely stopped while doing so.
-           frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-           backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-           frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-           backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-       }
+        if (resetEncoders) {
+            //reset motors, ensuring they are completely stopped while doing so.
+            frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
         leftDiagTarget = distance * (Math.sin(-angle) + Math.cos(-angle));
 
         rightDiagTarget = distance * (Math.sin(-angle) - Math.cos(-angle));
@@ -275,9 +278,18 @@ class HardwareInfinity1 extends Thread {
             Op.telemetry.update();
         }
 
-
-
     }
 
+    public void TestNewMovement(double movementAngle, double rotationAngleDelta, double speed) {
+        Double4 v = bMath.getMecMovement(bMath.degreesToHeadingVector(movementAngle), rotationAngleDelta);
+        SetPowerDouble4(v, speed);
+    }
+
+    public void SetPowerDouble4(Double4 v, double multiplier) {
+        frontLeft.setPower(v.x * multiplier);
+        frontRight.setPower(v.y * multiplier);
+        backLeft.setPower(v.z * multiplier);
+        backRight.setPower(v.w * multiplier);
+    }
 
 }
