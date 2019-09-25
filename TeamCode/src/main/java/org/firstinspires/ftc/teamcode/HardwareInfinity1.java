@@ -281,7 +281,7 @@ class HardwareInfinity1 extends Thread {
     }
 
     public void TestNewMovement(double movementAngle, double rotationAngleDelta, double speed) {
-        Double4 v = bMath.getMecMovement(bMath.degreesToHeadingVector(movementAngle), rotationAngleDelta);
+        Double4 v = bMath.getMecMovement(movementAngle, rotationAngleDelta);
         SetPowerDouble4(v, speed);
     }
 
@@ -292,4 +292,10 @@ class HardwareInfinity1 extends Thread {
         backRight.setPower(v.w * multiplier);
     }
 
+    public void SetDriveMode(DcMotor.RunMode mode) {
+        frontLeft.setMode(mode);
+        backLeft.setMode(mode);
+        frontRight.setMode(mode);
+        backRight.setMode(mode);
+    }
 }

@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -72,20 +73,18 @@ public class WallTrackTesting extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         hwInf.init(hardwareMap, this);
+        //Reset the encoders and them tell em to drive. Figure out what an encoder is at some point eh?
+        hwInf.SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hwInf.SetDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
 
         sensors = new SensorTriplet(this, "sensorL", "sensorM", "sensorR");
 
-        telemetry.addData("Right sensor data : ", sensors.getDistance(SensorTriplet.TripletType.Right, DistanceUnit.CM));
-        telemetry.addData("Left sensor data : ", sensors.getDistance(SensorTriplet.TripletType.Left, DistanceUnit.CM));
-        telemetry.addData("Mid sensor data : ", sensors.getDistance(SensorTriplet.TripletType.Center, DistanceUnit.CM));
-
-        double wallAngle = sensors.getWallAngle();
-        double currentAngle = hwInf.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-        telemetry.addData("Wall angle : ", wallAngle);
-        telemetry.addData("Difference in angle : ", (currentAngle - wallAngle));
-
-        telemetry.update();
-        hwInf.MecDriveStart(25, (currentAngle - wallAngle) + 180, 0.15, true);
+        //Declare var's out of the while loop to avoid that evil GC monster that hides under your desk at night,
+        double curDriveAngle = 0;
+        double wallAngle = 0;
+        double currentAngle = 0;
+        double distance = 0;
 
         while (opModeIsActive()) {
 
@@ -94,22 +93,22 @@ public class WallTrackTesting extends LinearOpMode {
             telemetry.addData("Left sensor data : ", sensors.getDistance(SensorTriplet.TripletType.Left, DistanceUnit.CM));
             telemetry.addData("Mid sensor data : ", sensors.getDistance(SensorTriplet.TripletType.Center, DistanceUnit.CM));
 
-            double wa = sensors.getWallAngle();
-            double ca = hwInf.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-            telemetry.addData("Wall angle : ", wa);
-            telemetry.addData("Difference in angle : ", (ca - wa));
-
+            wallAngle = sensors.getWallAngle();
+            currentAngle = hwInf.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+            telemetry.addData("Wall angle : ", wallAngle);
+            telemetry.addData("Difference in angle : ", (currentAngle - wallAngle));
             telemetry.update();
-//
+            distance = sensors.getDistance(SensorTriplet.TripletType.Center, DistanceUnit.CM);
 
-
-            if (sensors.getDistance(SensorTriplet.TripletType.Center, DistanceUnit.CM) < 65) {
-//                hwInf.MecDriveStart(25, (wa), 0.15, false);
-                //TODO: Set up some stuff to get be able to offset a heading angle by a vector2
-                hwInf.TestNewMovement(wa,10,0.5);
+            if (distance < 100) {
+                curDriveAngle = wallAngle + (distance < 60 ? 45 : (distance > 40 ? -45 : 0));
             }
-
-
+            //True == move along the wall within 40 - 60 centimeters, false == move forward and rotate like the little spastic robot know we are!
+            if (true) {
+                hwInf.TestNewMovement(curDriveAngle, 0, 0.5);
+            } else {
+                hwInf.TestNewMovement(0, 0.5, 0.5);
+            }
         }
 
     }

@@ -45,6 +45,13 @@ public class bMath {
         return delta;
     }
 
+//Hook for angle based movement
+    public static Double4 getMecMovement(double movementAngle, double rotation) {
+
+        Double2 movementVector = degreesToHeadingVector(movementAngle);
+        return getMecMovement(movementVector,rotation);
+    }
+
     public static Double2 degreesToHeadingVector(double angle)
     {
         double a = Math.toRadians(angle);
