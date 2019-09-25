@@ -63,6 +63,11 @@ public class bMath {
         return new Double2(Math.cos(angle),Math.sin(angle));
     }
 
+//    public static Double2 normilizeVector(Double2 vector){
+//        vector.x
+//
+//    }
+
 
     public static double pi() {
         return 3.14159265359;

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.renderscript.Double4;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -70,6 +72,7 @@ public class WallTrackTesting extends LinearOpMode {
         //</editor-fold>
     }
 
+
     @Override
     public void runOpMode() throws InterruptedException {
         hwInf.init(hardwareMap, this);
@@ -94,22 +97,25 @@ public class WallTrackTesting extends LinearOpMode {
             telemetry.addData("Mid sensor data : ", sensors.getDistance(SensorTriplet.TripletType.Center, DistanceUnit.CM));
 
             wallAngle = sensors.getWallAngle();
-            currentAngle = hwInf.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+//            currentAngle = hwInf.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
             telemetry.addData("Wall angle : ", wallAngle);
             telemetry.addData("Difference in angle : ", (currentAngle - wallAngle));
             telemetry.update();
             distance = sensors.getDistance(SensorTriplet.TripletType.Center, DistanceUnit.CM);
 
             if (distance < 100) {
-                curDriveAngle = wallAngle + (distance < 60 ? 45 : (distance > 40 ? -45 : 0));
+                curDriveAngle = wallAngle + (distance < 50 ? -10 : (distance > 45 ? 10 : 0));
             }
             //True == move along the wall within 40 - 60 centimeters, false == move forward and rotate like the little spastic robot know we are!
-            if (true) {
+            if (false) {
                 hwInf.TestNewMovement(curDriveAngle, 0, 0.5);
             } else {
-                hwInf.TestNewMovement(0, 0.5, 0.5);
+                hwInf.TestNewMovement(0.25, 0.25, 1);
+//                hwInf.SetPowerDouble4(new Double4(-1, 1, -1, 1), 1);
             }
         }
+        hwInf.SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
 
     }
 }
