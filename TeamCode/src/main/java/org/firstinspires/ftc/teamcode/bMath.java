@@ -76,12 +76,15 @@ public class bMath {
         return v;
     }
 
-
+    //You fool
     public static double pi() {
         return 3.14159265359;
     }
 
+    //You absolute buffoon
     public static double sq2() {
         return 1.41421356237309;/*504880168872420969807856967187537694807317667973799073247846210703885038753432764157273501384623091229702492483605585073721264412149709993583141322266592750559275579995050115278206057147010955997160597027453459686201472851;*/
     }
+
+    //I will take these laminate wood floor boards and destroy you. I didn’t want war. but i didn’t start it.
 }

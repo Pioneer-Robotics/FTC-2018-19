@@ -96,7 +96,6 @@ public class WallTrackTesting extends LinearOpMode {
         }
 
         public AvoidanceConfiguration() {
-
         }
 
         //Returns a number between -1 and 1 based on which way we need to move deh bot and how fast we need too
@@ -114,11 +113,12 @@ public class WallTrackTesting extends LinearOpMode {
             return factor;
         }
 
-        //The movementAngle that we wanna move in
+        //The angle that we wanna move in (additive)
         public Double targetDirection() {
             return CorrectionCoefficient() * correctionScale;
         }
 
+        //Called to update the current distance var
         public void SetCurrentDistance(double value) {
             currentDistance = value;
         }
@@ -128,11 +128,12 @@ public class WallTrackTesting extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         hwInf.init(hardwareMap, this);
+
         //Reset the encoders and them tell em to drive. Figure out what an encoder is at some point eh?
         hwInf.SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         hwInf.SetDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-
+//Init both the sensor set ups and the avoidance configs
         sensors = new SensorTriplet(this, "sensorL", "sensorM", "sensorR");
         avoidanceConfig = new AvoidanceConfiguration(50, 10, 25);
 
@@ -143,8 +144,8 @@ public class WallTrackTesting extends LinearOpMode {
         double currentAngle = 0;
         double distance = 0;
 
+        //Loopy loop loop that loops
         while (opModeIsActive()) {
-
 
             telemetry.addData("Right sensor data : ", sensors.getDistance(SensorTriplet.TripletType.Right, DistanceUnit.CM));
             telemetry.addData("Left sensor data : ", sensors.getDistance(SensorTriplet.TripletType.Left, DistanceUnit.CM));
@@ -160,11 +161,11 @@ public class WallTrackTesting extends LinearOpMode {
             distance = sensors.getDistance(SensorTriplet.TripletType.Center, DistanceUnit.CM);
             avoidanceConfig.SetCurrentDistance(distance);
 
-//Move thy self away from near by walls using a linear smoothed function (try parabalalalas if big bored strikes again?)
+            //Move thy self away from nearby walls using a linear smoothed function (try parabalalalas if big bored strikes again?)
             if (distance < 100) {
                 curDriveAngle = wallAngle + avoidanceConfig.targetDirection();
             }
-            //True == move along the wall within 40 - 60 centimeters, false == move forward and rotate like the little spastic robot know we are!
+            //True == wall track like a cool robot, false == move forward and rotate like the little spastic robot know deep down we are!
             if (true) {
                 hwInf.TestNewMovement(curDriveAngle, 0, 0.5);
             } else {
