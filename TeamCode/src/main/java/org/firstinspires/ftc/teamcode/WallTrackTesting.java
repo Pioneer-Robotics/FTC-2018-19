@@ -23,6 +23,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 public class WallTrackTesting extends LinearOpMode {
     HardwareInfinity1 hwInf = new HardwareInfinity1();
 
+    public AvoidanceConfiguration avoidanceConfig = new AvoidanceConfiguration();
+
     public SensorTriplet sensors = new SensorTriplet();
 
     public static class SensorTriplet {
@@ -72,6 +74,56 @@ public class WallTrackTesting extends LinearOpMode {
         //</editor-fold>
     }
 
+    public static class AvoidanceConfiguration {
+
+        public double currentDistance;
+
+        //Target distance to track too
+        public double range;
+
+        //Bounds around the range
+        //-b+[range]+b
+        public double bounds;
+
+        //The amount of degrees to move in order to correct movement, 45 = fast, 0 = no correction, 25 recommended
+        public double correctionScale;
+
+        //Init the config with range bounds and scale
+        public AvoidanceConfiguration(double _range, double _bounds, double _correctionScale) {
+            range = _range;
+            bounds = _bounds;
+            correctionScale = _correctionScale;
+        }
+
+        public AvoidanceConfiguration() {
+
+        }
+
+        //Returns a number between -1 and 1 based on which way we need to move deh bot and how fast we need too
+        public Double CorrectionCoefficient() {
+
+            double factor = 0;
+
+            factor = (Math.abs(currentDistance - range) - bounds) / bounds;
+
+            factor = bMath.Clamp(factor, 0, 1);
+
+            //Multiply by -1 if we need to move away from the wall
+            factor *= currentDistance > range ? 1 : -1;
+
+            return factor;
+        }
+
+        //The movementAngle that we wanna move in
+        public Double targetDirection() {
+            return CorrectionCoefficient() * correctionScale;
+        }
+
+        public void SetCurrentDistance(double value) {
+            currentDistance = value;
+        }
+
+    }
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -82,6 +134,8 @@ public class WallTrackTesting extends LinearOpMode {
 
 
         sensors = new SensorTriplet(this, "sensorL", "sensorM", "sensorR");
+        avoidanceConfig = new AvoidanceConfiguration(50, 10, 25);
+
 
         //Declare var's out of the while loop to avoid that evil GC monster that hides under your desk at night,
         double curDriveAngle = 0;
@@ -100,22 +154,26 @@ public class WallTrackTesting extends LinearOpMode {
 //            currentAngle = hwInf.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
             telemetry.addData("Wall angle : ", wallAngle);
             telemetry.addData("Difference in angle : ", (currentAngle - wallAngle));
-            telemetry.update();
-            distance = sensors.getDistance(SensorTriplet.TripletType.Center, DistanceUnit.CM);
 
+            telemetry.update();
+
+            distance = sensors.getDistance(SensorTriplet.TripletType.Center, DistanceUnit.CM);
+            avoidanceConfig.SetCurrentDistance(distance);
+
+//Move thy self away from near by walls using a linear smoothed function (try parabalalalas if big bored strikes again?)
             if (distance < 100) {
-                curDriveAngle = wallAngle + (distance < 50 ? -10 : (distance > 45 ? 10 : 0));
+                curDriveAngle = wallAngle + avoidanceConfig.targetDirection();
             }
             //True == move along the wall within 40 - 60 centimeters, false == move forward and rotate like the little spastic robot know we are!
-            if (false) {
+            if (true) {
                 hwInf.TestNewMovement(curDriveAngle, 0, 0.5);
             } else {
                 hwInf.TestNewMovement(0.25, 0.25, 1);
 //                hwInf.SetPowerDouble4(new Double4(-1, 1, -1, 1), 1);
             }
         }
+
+        //Stopping code
         hwInf.SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-
     }
 }

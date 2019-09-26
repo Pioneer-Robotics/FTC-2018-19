@@ -280,7 +280,7 @@ class HardwareInfinity1 extends Thread {
 
     }
 
-    public void TestNewMovement(double movementAngle, double rotationAngleDelta, double movementSpeed, double rotationSpeed) {
+    public void TestNewMovement(double movementAngle, double rotationAngleDelta, double movementSpeed) {
         Double4 v = bMath.getMecMovement(movementAngle, rotationAngleDelta);
         SetPowerDouble4(v, movementSpeed);
     }

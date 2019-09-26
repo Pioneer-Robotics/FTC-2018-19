@@ -45,28 +45,36 @@ public class bMath {
         return delta;
     }
 
-//Hook for angle based movement
+    //Hook for angle based movement
     public static Double4 getMecMovement(double movementAngle, double rotation) {
 
         Double2 movementVector = degreesToHeadingVector(movementAngle);
-        return getMecMovement(movementVector,rotation);
+        return getMecMovement(movementVector, rotation);
     }
 
-    public static Double2 degreesToHeadingVector(double angle)
-    {
+    public static Double2 degreesToHeadingVector(double angle) {
         double a = Math.toRadians(angle);
         return radiansToHeadingVector(a);
     }
 
-    public static Double2 radiansToHeadingVector(double angle)
-    {
-        return new Double2(Math.cos(angle),Math.sin(angle));
+    public static Double2 radiansToHeadingVector(double angle) {
+        return new Double2(Math.cos(angle), Math.sin(angle));
     }
 
-//    public static Double2 normilizeVector(Double2 vector){
-//        vector.x
-//
-//    }
+
+    //Why isnt this included in the default java math library?
+    public static double Clamp(double value, double min, double max) {
+        double v = value;
+
+        if (value >= max) {
+            v = max;
+        }
+        if (value <= min) {
+            v = min;
+        }
+
+        return v;
+    }
 
 
     public static double pi() {
