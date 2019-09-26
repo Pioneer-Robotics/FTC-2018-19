@@ -21,7 +21,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 @Autonomous(name = "WTest", group = "Sensor")
 public class WallTrackTesting extends LinearOpMode {
-    HardwareInfinity1 hwInf = new HardwareInfinity1();
+    HardwareInfinityMec hwInf = new HardwareInfinityMec();
 
     public AvoidanceConfiguration avoidanceConfig = new AvoidanceConfiguration();
 
@@ -167,14 +167,14 @@ public class WallTrackTesting extends LinearOpMode {
             }
             //True == wall track like a cool robot, false == move forward and rotate like the little spastic robot know deep down we are!
             if (true) {
-                hwInf.TestNewMovement(curDriveAngle, 0, 0.5);
+                hwInf.MoveSimple(curDriveAngle,1);
             } else {
-                hwInf.TestNewMovement(0.25, 0.25, 1);
+//                hwInf.TestNewMovement(0.25, 0.25, 1);
 //                hwInf.SetPowerDouble4(new Double4(-1, 1, -1, 1), 1);
             }
         }
 
-        //Stopping code
+        //Stop the motors when the robots done doin what its doin.
         hwInf.SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 }
