@@ -62,6 +62,10 @@ public class WallTrackTesting extends LinearOpMode {
             return sensor(type).getDistance(unit);
         }
 
+        public double getDistanceAverage(DistanceUnit unit) {
+            return (getDistance(TripletType.Center, unit) + getDistance(TripletType.Right, unit) + getDistance(TripletType.Left, unit)) / 3;
+        }
+
         //Return a distance sensor from type
         public DistanceSensor sensor(TripletType type) {
             return type == TripletType.Center ? distanceSensors[1] : (type == TripletType.Right ? distanceSensors[2] : distanceSensors[0]);
@@ -143,6 +147,8 @@ public class WallTrackTesting extends LinearOpMode {
         double wallAngle = 0;
         double currentAngle = 0;
         double distance = 0;
+        double distanceAvg = 0;
+
 
         //Loopy loop loop that loops
         while (opModeIsActive()) {
@@ -159,6 +165,7 @@ public class WallTrackTesting extends LinearOpMode {
             telemetry.update();
 
             distance = sensors.getDistance(SensorTriplet.TripletType.Center, DistanceUnit.CM);
+            distanceAvg = sensors.getDistanceAverage(DistanceUnit.CM);
             avoidanceConfig.SetCurrentDistance(distance);
 
             //Move thy self away from nearby walls using a linear smoothed function (try parabalalalas if big bored strikes again?)
@@ -167,7 +174,7 @@ public class WallTrackTesting extends LinearOpMode {
             }
             //True == wall track like a cool robot, false == move forward and rotate like the little spastic robot know deep down we are!
             if (true) {
-                hwInf.MoveSimple(curDriveAngle,1);
+                hwInf.MoveSimple(curDriveAngle, 1);
             } else {
 //                hwInf.TestNewMovement(0.25, 0.25, 1);
 //                hwInf.SetPowerDouble4(new Double4(-1, 1, -1, 1), 1);
