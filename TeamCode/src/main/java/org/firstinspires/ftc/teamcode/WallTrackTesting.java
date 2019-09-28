@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+
 import android.renderscript.Double4;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -139,7 +140,7 @@ public class WallTrackTesting extends LinearOpMode {
 
 //Init both the sensor set ups and the avoidance configs
         sensors = new SensorTriplet(this, "sensorL", "sensorM", "sensorR");
-        avoidanceConfig = new AvoidanceConfiguration(50, 10, 25);
+        avoidanceConfig = new AvoidanceConfiguration(50, 1, 25);
 
 
         //Declare var's out of the while loop to avoid that evil GC monster that hides under your desk at night,
@@ -148,10 +149,12 @@ public class WallTrackTesting extends LinearOpMode {
         double currentAngle = 0;
         double distance = 0;
         double distanceAvg = 0;
-
+        double weightedWallAngle = 0;
 
         //Loopy loop loop that loops
         while (opModeIsActive()) {
+
+            weightedWallAngle = bMath.MoveTowards(weightedWallAngle, Math.toRadians(wallAngle - 90), 0.1);
 
             telemetry.addData("Right sensor data : ", sensors.getDistance(SensorTriplet.TripletType.Right, DistanceUnit.CM));
             telemetry.addData("Left sensor data : ", sensors.getDistance(SensorTriplet.TripletType.Left, DistanceUnit.CM));
@@ -173,11 +176,12 @@ public class WallTrackTesting extends LinearOpMode {
                 curDriveAngle = wallAngle + avoidanceConfig.targetDirection();
             }
             //True == wall track like a cool robot, false == move forward and rotate like the little spastic robot know deep down we are!
-            if (true) {
-                hwInf.MoveSimple(curDriveAngle, 1);
+            if (false) {
+                hwInf.MoveSimple(curDriveAngle, 0.5);
             } else {
+                hwInf.MoveComplex(curDriveAngle, 0.5, weightedWallAngle);
 //                hwInf.TestNewMovement(0.25, 0.25, 1);
-//                hwInf.SetPowerDouble4(new Double4(-1, 1, -1, 1), 1);
+//                hwInf.SetPowerDouble4(new Double4(-1, 1, -1, 1), 0.25);
             }
         }
 

@@ -50,7 +50,12 @@ class HardwareInfinityMec extends Thread {
         SetPowerDouble4(v, movementSpeed);
     }
 
-    private void SetPowerDouble4(Double4 v, double multiplier) {
+    public void MoveComplex(double movementAngle, double movementSpeed, double angle) {
+        Double4 v = bMath.getMecMovement(movementAngle, angle);
+        SetPowerDouble4(v, movementSpeed);
+    }
+
+    public void SetPowerDouble4(Double4 v, double multiplier) {
         frontLeft.setPower(v.x * multiplier);
         frontRight.setPower(v.y * multiplier);
         backLeft.setPower(v.z * multiplier);

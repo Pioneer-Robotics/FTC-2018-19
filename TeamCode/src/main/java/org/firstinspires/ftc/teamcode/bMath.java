@@ -31,19 +31,22 @@ public class bMath {
 //Used to determine what wheels to move in order to move in movementVector direction and rotate
     //Check them rotation values?
     //ROTATION DOES NOT WORK!
-    public static Double4 getMecMovement(Double2 movementVector, double rotation) {
+    public static Double4 getMecMovement(Double2 movementVector, double angle) {
 
         Double4 delta = new Double4(0, 0, 0, 0);
 
-        leftMovementPower = ((-movementVector.y + movementVector.x) / sq2());
-        rightMovementPower = ((-movementVector.y - movementVector.x) / sq2());
-        leftRotatePower = rotation;
-        rightRotatePower = -rotation;
+        leftMovementPower = ((-movementVector.y - movementVector.x) / sq2() * Math.sin(angle) + ((-movementVector.y + movementVector.x) / sq2()) * Math.cos(angle));
+        rightMovementPower = ((-(-movementVector.y + movementVector.x) / sq2()) * Math.sin(angle) + ((-movementVector.y - movementVector.x) / sq2() * Math.cos(angle)));
+
+
+        leftRotatePower = angle;
+        rightRotatePower = -angle;
 
         delta.x = (leftMovementPower + leftRotatePower);
         delta.y = (rightMovementPower + rightRotatePower);
         delta.z = (rightMovementPower + leftRotatePower);
         delta.w = (leftMovementPower + rightRotatePower);
+
 
         return delta;
     }
@@ -122,4 +125,11 @@ public class bMath {
     }
     //</editor-fold>
 
+
+    public static double MoveTowards(double current, double target, double maxDelta) {
+        if (Math.abs(target - current) <= maxDelta) {
+            return target;
+        }
+        return current + (maxDelta * (target - current > 0 ? 1 : 0));
+    }
 }
