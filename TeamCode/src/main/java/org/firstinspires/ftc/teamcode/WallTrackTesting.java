@@ -19,7 +19,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 //As of 9.15.19.0706 this serves only to test sensor input
-
+//As of 10.1.19 1549 this serves to track along walls smoothly
+//TODO: Add curves smoothing to rotation values. Also using a paralabic function for movement smoothing could be cool?
 @Autonomous(name = "WTest", group = "Sensor")
 public class WallTrackTesting extends LinearOpMode {
     HardwareInfinityMec hwInf = new HardwareInfinityMec();
@@ -162,7 +163,7 @@ public class WallTrackTesting extends LinearOpMode {
             telemetry.addData("Mid sensor data : ", sensors.getDistance(SensorTriplet.TripletType.Center, DistanceUnit.CM));
 
             wallAngle = sensors.getWallAngle();
-            weightedWallAngle = bMath.MoveTowardsRadian(weightedWallAngle, Math.toRadians(wallAngle - 90), deltaTime.deltaTime() * 2);
+            weightedWallAngle = bMath.MoveTowardsRadian(weightedWallAngle, Math.toRadians(wallAngle - 90), deltaTime.deltaTime() * 3);
 
             //Snap to that angle if we are too far from the target angle (90deg)
             //REMOVE THIS AFTER MORE LAZERS
