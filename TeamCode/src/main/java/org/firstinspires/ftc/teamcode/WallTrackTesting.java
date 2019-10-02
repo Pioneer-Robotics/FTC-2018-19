@@ -150,7 +150,7 @@ public class WallTrackTesting extends LinearOpMode {
         double distance = 0;
         double weightedWallAngle = 0;
 
-        weightedWallAngle = sensors.getWallAngle();
+        weightedWallAngle = Math.toRadians(sensors.getWallAngle() - 90);
 
 
         //Loopy loop loop that loops
@@ -163,6 +163,12 @@ public class WallTrackTesting extends LinearOpMode {
 
             wallAngle = sensors.getWallAngle();
             weightedWallAngle = bMath.MoveTowards(weightedWallAngle, Math.toRadians(wallAngle - 90), 0.1);
+
+            //Snap to that angle if we are too far from the target angle (90deg)
+            if (Math.abs(weightedWallAngle - Math.toRadians(wallAngle - 90)) > bMath.pi() / 2) {
+                weightedWallAngle = Math.toRadians(wallAngle - 90);
+            }
+
 
 //            currentAngle = hwInf.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
             telemetry.addData("Wall angle : ", wallAngle);
