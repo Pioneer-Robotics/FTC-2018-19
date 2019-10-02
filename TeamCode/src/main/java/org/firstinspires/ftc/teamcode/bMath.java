@@ -105,6 +105,10 @@ public class bMath {
         return 3.14159265359;
     }
 
+    public static double pi2() {
+        return pi() * 2;
+    }
+
     //You absolute buffoon
     public static double sq2() {
         return 1.41421356237309;/*504880168872420969807856967187537694807317667973799073247846210703885038753432764157273501384623091229702492483605585073721264412149709993583141322266592750559275579995050115278206057147010955997160597027453459686201472851;*/
@@ -132,4 +136,10 @@ public class bMath {
         }
         return current + (maxDelta * (target - current > 0 ? 1 : 0));
     }
+
+    public static double Lerp(double a, double b, double lerpFactor) {
+        double result = ((1.f - lerpFactor) * a) + (lerpFactor * b);
+        return result;
+    }
+
 }

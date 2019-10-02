@@ -148,19 +148,22 @@ public class WallTrackTesting extends LinearOpMode {
         double wallAngle = 0;
         double currentAngle = 0;
         double distance = 0;
-        double distanceAvg = 0;
         double weightedWallAngle = 0;
+
+        weightedWallAngle = sensors.getWallAngle();
+
 
         //Loopy loop loop that loops
         while (opModeIsActive()) {
 
-            weightedWallAngle = bMath.MoveTowards(weightedWallAngle, Math.toRadians(wallAngle - 90), 0.1);
 
             telemetry.addData("Right sensor data : ", sensors.getDistance(SensorTriplet.TripletType.Right, DistanceUnit.CM));
             telemetry.addData("Left sensor data : ", sensors.getDistance(SensorTriplet.TripletType.Left, DistanceUnit.CM));
             telemetry.addData("Mid sensor data : ", sensors.getDistance(SensorTriplet.TripletType.Center, DistanceUnit.CM));
 
             wallAngle = sensors.getWallAngle();
+            weightedWallAngle = bMath.MoveTowards(weightedWallAngle, Math.toRadians(wallAngle - 90), 0.1);
+
 //            currentAngle = hwInf.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
             telemetry.addData("Wall angle : ", wallAngle);
             telemetry.addData("Difference in angle : ", (currentAngle - wallAngle));
@@ -168,7 +171,6 @@ public class WallTrackTesting extends LinearOpMode {
             telemetry.update();
 
             distance = sensors.getDistance(SensorTriplet.TripletType.Center, DistanceUnit.CM);
-            distanceAvg = sensors.getDistanceAverage(DistanceUnit.CM);
             avoidanceConfig.SetCurrentDistance(distance);
 
             //Move thy self away from nearby walls using a linear smoothed function (try parabalalalas if big bored strikes again?)
