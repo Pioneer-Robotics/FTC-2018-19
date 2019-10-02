@@ -129,6 +129,24 @@ public class bMath {
     }
     //</editor-fold>
 
+    public static double MoveTowardsRadian(double current, double target, double maxDelta) {
+        double offset = 0;
+        double distance = target - current;
+        if (distance < pi()) {
+            offset += maxDelta;
+        } else {
+            offset -= maxDelta;
+        }
+
+
+        offset = maxDelta;
+
+        if (Math.abs(target - current) <= maxDelta) {
+            return target;
+        }
+        return current + offset;
+    }
+
 
     public static double MoveTowards(double current, double target, double maxDelta) {
         if (Math.abs(target - current) <= maxDelta) {
