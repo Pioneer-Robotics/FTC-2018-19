@@ -27,6 +27,7 @@ public class WallTrackTesting extends LinearOpMode {
     public AvoidanceConfiguration avoidanceConfig = new AvoidanceConfiguration();
 
     public SensorTriplet sensors = new SensorTriplet();
+    public DeltaTime deltaTime = new DeltaTime();
 
     public static class SensorTriplet {
 
@@ -138,7 +139,7 @@ public class WallTrackTesting extends LinearOpMode {
         hwInf.SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         hwInf.SetDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-//Init both the sensor set ups and the avoidance configs
+        //Init both the sensor set ups and the avoidance configs
         sensors = new SensorTriplet(this, "sensorL", "sensorM", "sensorR");
         avoidanceConfig = new AvoidanceConfiguration(50, 1, 25);
 
@@ -155,14 +156,13 @@ public class WallTrackTesting extends LinearOpMode {
 
         //Loopy loop loop that loops
         while (opModeIsActive()) {
-
-
+            deltaTime.Start();
             telemetry.addData("Right sensor data : ", sensors.getDistance(SensorTriplet.TripletType.Right, DistanceUnit.CM));
             telemetry.addData("Left sensor data : ", sensors.getDistance(SensorTriplet.TripletType.Left, DistanceUnit.CM));
             telemetry.addData("Mid sensor data : ", sensors.getDistance(SensorTriplet.TripletType.Center, DistanceUnit.CM));
 
             wallAngle = sensors.getWallAngle();
-            weightedWallAngle = bMath.MoveTowards(weightedWallAngle, Math.toRadians(wallAngle - 90), 0.1);
+            weightedWallAngle = bMath.MoveTowardsRadian(weightedWallAngle, Math.toRadians(wallAngle - 90), deltaTime.deltaTime() * 2);
 
             //Snap to that angle if we are too far from the target angle (90deg)
             if (Math.abs(weightedWallAngle - Math.toRadians(wallAngle - 90)) > bMath.pi() / 2) {
@@ -170,7 +170,7 @@ public class WallTrackTesting extends LinearOpMode {
             }
 
 
-//            currentAngle = hwInf.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+            //currentAngle = hwInf.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
             telemetry.addData("Wall angle : ", wallAngle);
             telemetry.addData("Difference in angle : ", (currentAngle - wallAngle));
 
@@ -183,6 +183,7 @@ public class WallTrackTesting extends LinearOpMode {
             if (distance < 100) {
                 curDriveAngle = wallAngle + avoidanceConfig.targetDirection();
             }
+
             //True == wall track like a cool robot, false == move forward and rotate like the little spastic robot know deep down we are!
             if (false) {
                 hwInf.MoveSimple(curDriveAngle, 0.5);
@@ -191,9 +192,13 @@ public class WallTrackTesting extends LinearOpMode {
 //                hwInf.TestNewMovement(0.25, 0.25, 1);
 //                hwInf.SetPowerDouble4(new Double4(-1, 1, -1, 1), 0.25);
             }
+
+            deltaTime.Stop();
+
         }
 
         //Stop the motors when the robots done doin what its doin.
         hwInf.SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
+
 }
