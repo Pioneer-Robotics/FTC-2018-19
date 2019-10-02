@@ -165,6 +165,7 @@ public class WallTrackTesting extends LinearOpMode {
             weightedWallAngle = bMath.MoveTowardsRadian(weightedWallAngle, Math.toRadians(wallAngle - 90), deltaTime.deltaTime() * 2);
 
             //Snap to that angle if we are too far from the target angle (90deg)
+            //REMOVE THIS AFTER MORE LAZERS
             if (Math.abs(weightedWallAngle - Math.toRadians(wallAngle - 90)) > bMath.pi() / 2) {
                 weightedWallAngle = Math.toRadians(wallAngle - 90);
             }
