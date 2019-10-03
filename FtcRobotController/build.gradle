@@ -2,35 +2,26 @@
 // build.gradle in FtcRobotController
 //
 apply plugin: 'com.android.library'
+
 android {
-    signingConfigs {
-        config {
-            keyAlias 'key0'
-            keyPassword '12345678'
-            storePassword '12345678'
-        }
-    }
+
     defaultConfig {
         minSdkVersion 19
-        targetSdkVersion 19
+        targetSdkVersion 26
     }
-    compileSdkVersion 23
+
+    compileSdkVersion 28
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
-    buildTypes {
-        release {
-            signingConfig signingConfigs.config
-        }
-    }
 }
+
 repositories {
     flatDir {
         dirs '../libs'
     }
 }
-apply from: 'build.release.gradle'
 
-dependencies {
-}
+apply from: 'build.release.gradle'

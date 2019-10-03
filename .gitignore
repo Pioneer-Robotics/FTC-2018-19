@@ -19,16 +19,10 @@ Thumbs.db
 .DS_Store
 
 # Android Studio
-FtcRobotController/FtcRobotController.iml
-TeamCode/TeamCode.iml
 *.iml
 .idea
 .gradle
 build/
-TeamCode/build/
-FtcRobotController/build/
-tfod/build
-tfod/.externalNativeBuild
 
 *ASUS_PC_01*
 
