@@ -14,12 +14,13 @@ import org.tensorflow.lite.TensorFlowLite;
 @Autonomous(name = "Tensor FLOWS", group = "Sensor Testing")
 public class TisForTensorFlow extends LinearOpMode {
 
-    public TensorFlowLite tFlow;
-
 
     @Override
     public void runOpMode() throws InterruptedException {
-//        tFlow = new TensorFlowLite();
+
+        waitForStart();
+
+
     }
 
 }
