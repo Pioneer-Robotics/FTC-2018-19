@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 
+import android.renderscript.Double4;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -14,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
 //10.6.19, proof of concept to move the robot to look at a skystone
-@Autonomous(name = "WTest", group = "Sensor")
+@Autonomous(name = "LookAtDatSkyStone", group = "Sensor")
 public class TF_LookAtTest extends LinearOpMode {
     HardwareInfinityMec hwInf = new HardwareInfinityMec();
 
@@ -22,23 +24,38 @@ public class TF_LookAtTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+//        telemetry.addData(":", "STARTING");
+
         hwInf.init(hardwareMap, this);
-        TF_thread.startFromOpmode(this);
-        TF_thread.start();
+//        TF_thread.startFromOpmode(this);
+//        TF_thread.start();
 
         hwInf.SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         hwInf.SetDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        double rotationDelta = 0;
 
         //Loopy loop loop that loops
         while (opModeIsActive()) {
-            Recognition skystone = TF_thread.skyStone();
-            if (skystone != null) {
-                float factor = skystone.getRight() - skystone.getImageWidth();
-                double rotationDelta = factor / skystone.getImageWidth();
+            hwInf.SetPowerDouble4(new Double4(-1, -1, 1, 1), 1);
 
-                hwInf.MoveComplex(0, 0, hwInf.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle + rotationDelta);
-            }
+//            hwInf.MoveComplex(90, 1, 0);
+//            telemetry.addData("Velocity ", hwInf.imu.getVelocity());
+//            telemetry.update();
+//            Recognition skystone = TF_thread.skyStone();
+//            if (skystone != null) {
+//                telemetry.addData("Found skystone!", "TRUE");
+//                float factor = skystone.getRight() - (skystone.getImageWidth() / 2);
+//                telemetry.addData("Float factor found : ", factor);
+//                rotationDelta = bMath.MoveTowards(rotationDelta, factor / skystone.getImageWidth(), 1);
+//                telemetry.addData("Rotation factor found : ", rotationDelta);
+//
+//                hwInf.SetPowerDouble4(new Double4(rotationDelta, -rotationDelta, rotationDelta, -rotationDelta), 1);
+//
+//
+//                hwInf.MoveComplex(0, 0, hwInf.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle + rotationDelta);
+//                telemetry.update();
+//            }
 
         }
 
