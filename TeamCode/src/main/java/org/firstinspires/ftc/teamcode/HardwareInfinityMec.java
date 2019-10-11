@@ -4,6 +4,7 @@ import android.renderscript.Double4;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -21,10 +22,10 @@ class HardwareInfinityMec extends Thread {
 
     BNO055IMU imu;
 
-    LinearOpMode Op;
+    OpMode Op;
 
 
-    void init(HardwareMap ahwMap, LinearOpMode O) {
+    void init(HardwareMap ahwMap, OpMode O) {
         Op = O;
 
         frontLeft = ahwMap.get(DcMotor.class, "Front Left");

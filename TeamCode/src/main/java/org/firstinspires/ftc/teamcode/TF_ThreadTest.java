@@ -91,6 +91,7 @@ public class TF_ThreadTest extends Thread {
 
 
         initAll(camera, moniterID, 0.75);
+
     }
 
     public void initAll(WebcamName camera, int tfodMonitorViewId, double minConfidence) {
