@@ -9,9 +9,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-//As of 9.15.19.0706 this serves only to test sensor input
-//As of 10.1.19 1549 this serves to track along walls smoothly
-//TODO: Add curves smoothing to rotation values. Also using a paralabic function for movement smoothing could be cool?
+//
 @Autonomous(name = "WTest", group = "Sensor")
 public class LazerThreading extends Thread {
     HardwareInfinityMec robot = new HardwareInfinityMec();
