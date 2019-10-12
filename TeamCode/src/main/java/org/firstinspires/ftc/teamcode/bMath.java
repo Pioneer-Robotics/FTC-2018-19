@@ -15,7 +15,7 @@ public class bMath {
     static double rightRotatePower;
 
 
-    //Output:
+    //Output: What we think it is
     //X: Front Left
     //Y: Front Right
     //Z: Back Right
@@ -27,6 +27,13 @@ public class bMath {
     |    |
     |____|
     Z    W
+
+    //Output: What happened when we tested (front is 0 degrees is phone side)
+    //X: Back left
+    //Y: Front Left
+    //Z: Front right
+    //W: Back right
+    //(Joe)
      */
 //Used to determine what wheels to move in order to move in movementVector direction and rotate
     //Check them rotation values?
@@ -48,12 +55,14 @@ public class bMath {
         delta.w = (leftMovementPower + rightRotatePower);
 
 
-        return delta;
+        return delta; //delta is the 4 component variable, Double4 delta (Joe)
     }
 
     //Hook for angle based movement
+    //Hook means the output from this is the input to another function of the same name (Joe)
     public static Double4 getMecMovement(double movementAngle, double rotation) {
         Double2 movementVector = degreesToHeadingVector(movementAngle);
+        //input movementAngle into degreesToHeadingVector and the output is movementVector
         return getMecMovement(movementVector, rotation);
     }
     //</editor-fold>

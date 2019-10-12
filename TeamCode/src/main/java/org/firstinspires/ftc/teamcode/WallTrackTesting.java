@@ -78,6 +78,22 @@ public class WallTrackTesting extends LinearOpMode {
             return Math.toDegrees(((bMath.pi() * 3) / 4) - Math.atan(getDistance(SensorTriplet.TripletType.Right, DistanceUnit.CM) / getDistance(SensorTriplet.TripletType.Left, DistanceUnit.CM)));
         }
 
+        public boolean isLine() {
+            double error = 0.05;
+            double sinPiOver4 = java.lang.Math.sqrt(2);
+            double e = getDistance(TripletType.Left, DistanceUnit.CM) * sinPiOver4;
+            double w = getDistance(TripletType.Center, DistanceUnit.CM);
+            double q = getDistance(TripletType.Right, DistanceUnit.CM) * sinPiOver4;
+            double difference = java.lang.Math.abs((q-w)/q - (w-e)/e);
+            if(difference <= error) {
+                return true;
+            } else {
+                return false;
+            }
+
+        }
+
+
         //</editor-fold>
     }
 
