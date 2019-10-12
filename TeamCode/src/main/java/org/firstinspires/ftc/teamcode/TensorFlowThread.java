@@ -27,7 +27,7 @@ public class TensorFlowThread extends Thread {
     //Used by the thread to ensure it keeps running
     public boolean running;
 
-    private Recognition currentRecognition;
+    public Recognition currentRecognition;
 
     public Recognition getCurrentRecognition() {
         return currentRecognition;
@@ -38,19 +38,19 @@ public class TensorFlowThread extends Thread {
     }
 
     //The a number between -1 and 1 representing how close the recognition is to the center of the camera
-    public double getCurrentXFactor() {
-        return (getXPosition() - (currentRecognition.getImageWidth() / 2)) / currentRecognition.getImageWidth();
+    public double getCurrentXFactor(Recognition recognition) {
+        return (getXPosition(recognition) - (recognition.getImageWidth() / 2)) / recognition.getImageWidth();
     }
 
     //Returns the average between the left bound and right bound
-    public float getXPosition() {
-        float factor = (currentRecognition.getLeft() + currentRecognition.getRight()) / 2;
+    public float getXPosition(Recognition recognition) {
+        float factor = (recognition.getLeft() + recognition.getRight()) / 2;
         return factor;
     }
 
     //Returns the current width
-    public float getWidth() {
-        return currentRecognition.getWidth();
+    public float getWidth(Recognition recognition) {
+        return recognition.getWidth();
     }
 
     //Called on a new thread by start()
@@ -120,6 +120,6 @@ public class TensorFlowThread extends Thread {
         tfodParameters.minimumConfidence = minConfidence;
 
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, TARGET_LABEL);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, "Stone", "Skystone");
     }
 }
