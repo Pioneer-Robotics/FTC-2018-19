@@ -39,16 +39,18 @@ public class TensorFlowThread extends Thread {
 
     //The a number between -1 and 1 representing how close the recognition is to the center of the camera
     public double getCurrentXFactor() {
-        return (getCenterXPosition() - (currentRecognition.getImageWidth() / 2)) / currentRecognition.getImageWidth();
+        return (getXPosition() - (currentRecognition.getImageWidth() / 2)) / currentRecognition.getImageWidth();
     }
 
-    public float getCenterXPosition() {
-        if (getCurrentRecognition() != null) {
-//            float factor = currentRecognition.getLeft() + ((currentRecognition.getRight() - currentRecognition.getLeft()) / 2);
-            float factor = (currentRecognition.getLeft() + currentRecognition.getRight()) / 2;
-            return factor;
-        }
-        return -1;
+    //Returns the average between the left bound and right bound
+    public float getXPosition() {
+        float factor = (currentRecognition.getLeft() + currentRecognition.getRight()) / 2;
+        return factor;
+    }
+
+    //Returns the current width
+    public float getWidth() {
+        return currentRecognition.getWidth();
     }
 
     //Called on a new thread by start()
