@@ -4,8 +4,13 @@ import android.renderscript.Double4;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 class HardwareInfinityMec extends Thread {
     private BNO055IMU.Parameters IParameters = new BNO055IMU.Parameters();
@@ -17,10 +22,10 @@ class HardwareInfinityMec extends Thread {
 
     BNO055IMU imu;
 
-    LinearOpMode Op;
+    OpMode Op;
 
 
-    void init(HardwareMap ahwMap, LinearOpMode O) {
+    void init(HardwareMap ahwMap, OpMode O) {
         Op = O;
 
         frontLeft = ahwMap.get(DcMotor.class, "Front Left");
@@ -67,5 +72,10 @@ class HardwareInfinityMec extends Thread {
         backLeft.setMode(mode);
         frontRight.setMode(mode);
         backRight.setMode(mode);
+    }
+
+    //Returns IMU rotation on the zed axies
+    public double GetRotation() {
+        return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
     }
 }
