@@ -21,9 +21,11 @@ public class SkystoneAutoTest extends LinearOpMode {
 
     public TensorFlowThread tensorFlowThread = new TensorFlowThread();
 
+    public SkystoneThreads actions = new SkystoneThreads();
+
     @Override
     public void runOpMode() {
-
+        actions.alignWithSkyStone.start();
         //Init the hardware and spawn a TF thread for skystonez
         robot.init(hardwareMap, this);
         tensorFlowThread.startThread(this, "Skystone", 0.5);
@@ -47,7 +49,7 @@ public class SkystoneAutoTest extends LinearOpMode {
                 skystoneOffset = bMath.MoveTowards(skystoneOffset, tensorFlowThread.getCurrentXFactor(r) * 45, 0.1);
 
                 lerpFactor = 1 - (stopWidth - tensorFlowThread.getWidth(r)) / stopWidth;
-                forwardMovementFactor = bMath.Lerp(90, 0, lerpFactor);
+                forwardMovementFactor = bMath.Lerp(0.5, 0, lerpFactor);
 
 
                 telemetry.addData("Lerping factor", lerpFactor);
@@ -55,7 +57,7 @@ public class SkystoneAutoTest extends LinearOpMode {
                 telemetry.addData("Skystone movement offset", tensorFlowThread.getCurrentXFactor(r) * 45);
                 telemetry.addData("Skystone mid X factor", tensorFlowThread.getCurrentXFactor(r));
                 telemetry.update();
-                robot.MoveSimple(90 + tensorFlowThread.getCurrentXFactor(r) * 45, 0.5);
+                robot.MoveSimple(tensorFlowThread.getCurrentXFactor(r) * 90, 0.5);
 
             } else {
                 robot.SetPowerDouble4(new Double4(0, 0, 0, 0), 0);

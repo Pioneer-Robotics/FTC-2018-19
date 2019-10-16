@@ -78,14 +78,15 @@ public class WallTrackTesting extends LinearOpMode {
             return Math.toDegrees(((bMath.pi() * 3) / 4) - Math.atan(getDistance(SensorTriplet.TripletType.Right, DistanceUnit.CM) / getDistance(SensorTriplet.TripletType.Left, DistanceUnit.CM)));
         }
 
-        public boolean isLine() {
+        //Returns true if the three sensors have hit a perfect (with in 5%, see "error") line, this can be used to check if there's another robot or obstacle near us
+        public boolean isValid() {
             double error = 0.05;
-            double sinPiOver4 = java.lang.Math.sqrt(2);
+            double sinPiOver4 = bMath.sq2() / 2;
             double e = getDistance(TripletType.Left, DistanceUnit.CM) * sinPiOver4;
             double w = getDistance(TripletType.Center, DistanceUnit.CM);
             double q = getDistance(TripletType.Right, DistanceUnit.CM) * sinPiOver4;
-            double difference = java.lang.Math.abs((q-w)/q - (w-e)/e);
-            if(difference <= error) {
+            double difference = Math.abs((q - w) / q - (w - e) / e);
+            if (difference <= error) {
                 return true;
             } else {
                 return false;
