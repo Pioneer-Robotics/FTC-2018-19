@@ -3,14 +3,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-
-import java.util.List;
-
 
 //A base thread class that has basic start and stop functions. override methods as they fit your needs
 public class bThread extends Thread {
@@ -33,23 +25,17 @@ public class bThread extends Thread {
 
     //Called from an OpMode to start bThread
     public void startFromOpmode(LinearOpMode op) {
-        Init(op);
-        startThread();
+        StartThread();
     }
 
     //Starts the thread (calls 'run')
-    public void startThread() {
+    public void StartThread() {
         start();
     }
 
-    //Starting stuffs before we run the thread
-    public void Init(LinearOpMode op) {
-
-    }
 
     //Main loop called from the thread run
     public void Loop() {
-
 
     }
 

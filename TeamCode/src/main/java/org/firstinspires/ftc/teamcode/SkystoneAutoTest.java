@@ -19,53 +19,13 @@ public class SkystoneAutoTest extends LinearOpMode {
 
     HardwareInfinityMec robot = new HardwareInfinityMec();
 
-    public TensorFlowThread tensorFlowThread = new TensorFlowThread();
+    public TensorFlow_bThread tensorFlowThread = new TensorFlow_bThread();
 
-//    public SkystoneThreads actions = new SkystoneThreads();
+    public JobsTesting jobs = new JobsTesting();
 
     @Override
     public void runOpMode() {
-//        actions.alignWithSkyStone.start();
-        //Init the hardware and spawn a TF thread for skystonez
-        robot.init(hardwareMap, this);
-        tensorFlowThread.startThread(this, "Skystone", 0.85);
-
-        //Set up the movement motors
-        robot.SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.SetDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        double skystoneOffset = 0;
-        double forwardMovementFactor = 90;
-
-        //Stop moving once this width is reached by the skystone
-        double stopWidth = 250;
-        double lerpFactor = 0;
-
-        while (opModeIsActive()) {
-            Recognition r = tensorFlowThread.currentRecognition;
-            if (r != null) {
-//                skystoneOffset = tensorFlowThread.getCurrentXFactor(r) * 45;
-
-                skystoneOffset = bMath.MoveTowards(skystoneOffset, tensorFlowThread.getCurrentXFactor(r) * 45, 0.1);
-
-                lerpFactor = 1 - (stopWidth - tensorFlowThread.getWidth(r)) / stopWidth;
-                forwardMovementFactor = bMath.Lerp(0.5, 0, lerpFactor);
-
-
-                telemetry.addData("Move angle", tensorFlowThread.getCurrentXFactor(r) * 90);
-                telemetry.update();
-                robot.MoveSimple(tensorFlowThread.getCurrentXFactor(r) * 90, 0.15);
-
-            } else {
-                robot.SetPowerDouble4(new Double4(0, 0, 0, 0), 0);
-
-            }
-
-
-        }
-
-
-        tensorFlowThread.stopThread();
-        robot.SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //This should do pretty much everything we need to line up with a sky stone
+        jobs.findSkystoneJob.Start(this);
     }
 }
