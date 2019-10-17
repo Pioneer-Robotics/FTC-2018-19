@@ -25,16 +25,16 @@ class HardwareInfinityMec extends Thread {
     OpMode Op;
 
 
-    void init(HardwareMap ahwMap, OpMode O) {
-        Op = O;
+    void init(HardwareMap hardwareMap, OpMode opmode) {
+        Op = opmode;
 
-        frontLeft = ahwMap.get(DcMotor.class, "Front Left");
-        frontRight = ahwMap.get(DcMotor.class, "Front Right");
-        backLeft = ahwMap.get(DcMotor.class, "Back Left");
-        backRight = ahwMap.get(DcMotor.class, "Back Right");
+        frontLeft = hardwareMap.get(DcMotor.class, "Front Left");
+        frontRight = hardwareMap.get(DcMotor.class, "Front Right");
+        backLeft = hardwareMap.get(DcMotor.class, "Back Left");
+        backRight = hardwareMap.get(DcMotor.class, "Back Right");
 
 
-        imu = ahwMap.get(BNO055IMU.class, "imu");
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
         IParameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         IParameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         IParameters.calibrationDataFile = "BNO055IMUCalibration.json";
@@ -61,6 +61,15 @@ class HardwareInfinityMec extends Thread {
     }
 
     public void SetPowerDouble4(Double4 v, double multiplier) {
+        frontLeft.setPower(v.x * multiplier);
+        frontRight.setPower(v.y * multiplier);
+        backLeft.setPower(v.z * multiplier);
+        backRight.setPower(v.w * multiplier);
+    }
+
+    public void SetPowerDouble4(double x, double y, double z, double w, double multiplier) {
+        Double4 v = new Double4(x, y, z, w);
+
         frontLeft.setPower(v.x * multiplier);
         frontRight.setPower(v.y * multiplier);
         backLeft.setPower(v.z * multiplier);

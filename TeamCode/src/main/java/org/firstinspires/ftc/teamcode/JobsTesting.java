@@ -27,7 +27,7 @@ public class JobsTesting {
 
 }
 
-//Simple loop that is either running or not running, needs an LinearOpMode to function
+//Simple sub op mode, needs an LinearOpMode to function
 class Job {
 
     public LinearOpMode opMode;
@@ -106,10 +106,13 @@ class FindSkystoneJob extends NavigationJob {
     Recognition recognition;
 
     //the
-    double xFactor;
+    double xFactor = 0;
+
+    //Move speed, will scale in proportion to how close we are to the stone
+    double moveSpeed = 0;
 
     //Time since we've last seen the skystone
-    double lostRecognitionTimer;
+    double lostRecognitionTimer = 0;
 
 
     @Override
@@ -125,12 +128,14 @@ class FindSkystoneJob extends NavigationJob {
             xFactor = tensorFlowThread.getCurrentXFactor(recognition) > 0.1 ? 1 : 0;
             xFactor = tensorFlowThread.getCurrentXFactor(recognition) < -0.1 ? -1 : 0;
 
+            moveSpeed = bMath.MoveTowards(moveSpeed, tensorFlowThread.getCurrentXFactor(recognition) * 0.25, deltaTime.deltaTime());
+
             //If we are lined up nicely stop the job, if not then move to be
             if (tensorFlowThread.getCurrentXFactor(recognition) < 0.1) {
                 Stop();
             } else {
                 //Move left or right (strafe) until we are lined up with the skystone
-                robot.MoveSimple(xFactor * 90, 0.5);
+                robot.MoveSimple((xFactor * 90) - 90, moveSpeed);
             }
 
 

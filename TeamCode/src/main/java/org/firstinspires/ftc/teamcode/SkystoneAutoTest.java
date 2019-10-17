@@ -17,9 +17,9 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 @Autonomous(name = "Skystone", group = "Auto Testing")
 public class SkystoneAutoTest extends LinearOpMode {
 
-    HardwareInfinityMec robot = new HardwareInfinityMec();
+//    HardwareInfinityMec robot = new HardwareInfinityMec();
 
-    public TensorFlow_bThread tensorFlowThread = new TensorFlow_bThread();
+//    public TensorFlow_bThread tensorFlowThread = new TensorFlow_bThread();
 
     public JobsTesting jobs = new JobsTesting();
 
