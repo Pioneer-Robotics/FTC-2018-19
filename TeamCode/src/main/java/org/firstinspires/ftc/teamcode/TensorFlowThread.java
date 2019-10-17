@@ -44,7 +44,7 @@ public class TensorFlowThread extends Thread {
 
     //Returns the average between the left bound and right bound
     public float getXPosition(Recognition recognition) {
-        float factor = (recognition.getLeft() + recognition.getRight()) / 2;
+        float factor = (recognition.getLeft() + (getWidth(recognition) / 2));
         return factor;
     }
 
