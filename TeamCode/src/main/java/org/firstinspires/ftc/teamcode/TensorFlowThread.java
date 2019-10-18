@@ -39,7 +39,7 @@ public class TensorFlowThread extends Thread {
 
     //The a number between -1 and 1 representing how close the recognition is to the center of the camera
     public double getCurrentXFactor(Recognition recognition) {
-        return 2 * ((getXPosition(recognition) - (recognition.getImageWidth() / 2)) / recognition.getImageWidth());
+        return  ((getXPosition(recognition) - (recognition.getImageWidth() / 2)) / recognition.getImageWidth());
     }
 
     //Returns the average between the left bound and right bound
@@ -48,7 +48,7 @@ public class TensorFlowThread extends Thread {
         return factor;
     }
 
-    //Returns the current width
+    //Returns the current width of our recognition
     public float getWidth(Recognition recognition) {
         return recognition.getWidth();
     }

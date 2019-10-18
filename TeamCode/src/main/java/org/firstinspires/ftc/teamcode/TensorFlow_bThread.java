@@ -31,6 +31,10 @@ public class TensorFlow_bThread extends bThread {
 
     List<Recognition> recognitions;
 
+    @Override
+    public void run() {
+        super.run();
+    }
 
     @Override
     public void StartThread() {
@@ -81,8 +85,7 @@ public class TensorFlow_bThread extends bThread {
             startTensorFlow(moniterID, minConfidence);
         }
 
-        //Starts the thread
-        StartThread();
+
     }
 
     private void startVuforia(WebcamName camera) {
@@ -100,8 +103,12 @@ public class TensorFlow_bThread extends bThread {
 
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, "Stone", "Skystone");
-    }
 
+
+        //Starts the thread
+
+        start();
+    }
 
 
     //<editor-fold desc="External Calls?">

@@ -25,6 +25,7 @@ public class SkystoneAutoTest extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        waitForStart();
         //This should do pretty much everything we need to line up with a sky stone
         jobs.findSkystoneJob.Start(this);
     }

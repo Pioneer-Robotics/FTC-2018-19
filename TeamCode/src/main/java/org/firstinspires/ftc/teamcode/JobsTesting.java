@@ -32,7 +32,7 @@ class Job {
 
     public LinearOpMode opMode;
 
-    public DeltaTime deltaTime;
+    public DeltaTime deltaTime = new DeltaTime();
 
     public boolean running = false;
 
@@ -100,7 +100,7 @@ class NavigationJob extends Job {
 class FindSkystoneJob extends NavigationJob {
 
     //Our wee little TF thread
-    public TensorFlow_bThread tensorFlowThread = new TensorFlow_bThread();
+    public TensorFlowThread tensorFlowThread = new TensorFlowThread();
 
     //current recognition
     Recognition recognition;
@@ -125,19 +125,24 @@ class FindSkystoneJob extends NavigationJob {
             lostRecognitionTimer = 0;
 
             //Find how far left/right the skystone is relative to the camera (-1 == left, 1 == right) with a tolerance of 1/10 the screen
-            xFactor = tensorFlowThread.getCurrentXFactor(recognition) > 0.1 ? 1 : 0;
-            xFactor = tensorFlowThread.getCurrentXFactor(recognition) < -0.1 ? -1 : 0;
+            xFactor = tensorFlowThread.getCurrentXFactor(recognition) > 0.5 ? 1 : 0;
+            xFactor = tensorFlowThread.getCurrentXFactor(recognition) < 0.5 ? -1 : 0;
 
             moveSpeed = bMath.MoveTowards(moveSpeed, tensorFlowThread.getCurrentXFactor(recognition) * 0.25, deltaTime.deltaTime());
 
+            opMode.telemetry.addData("XFactor ", xFactor);
+            opMode.telemetry.addData("Movement Factor ", (-xFactor * 90));
+            opMode.telemetry.addData("cFactor ", tensorFlowThread.getCurrentXFactor(recognition));
+
+            opMode.telemetry.update();
+
             //If we are lined up nicely stop the job, if not then move to be
-            if (tensorFlowThread.getCurrentXFactor(recognition) < 0.1) {
+            if (Math.abs(tensorFlowThread.getCurrentXFactor(recognition)) < 0.1) {
                 Stop();
             } else {
                 //Move left or right (strafe) until we are lined up with the skystone
-                robot.MoveSimple((xFactor * 90) - 90, moveSpeed);
+                robot.MoveSimple((-xFactor * 90), 0.5);
             }
-
 
         } else {
 
@@ -168,10 +173,10 @@ class FindSkystoneJob extends NavigationJob {
     @Override
     public void OnStart(LinearOpMode op) {
         super.OnStart(op);
-
         //Starts up a tensor flow thread
-        tensorFlowThread.StartTensorFlow(op, "Skystone", 0.75);
-
+        tensorFlowThread.startThread(op, "Skystone", 0.75);
+//        tensorFlowThread.StartTensorFlow(op, "Skystone", 0.75);
+//        tensorFlowThread.start();
         PrepareMotors();
     }
 }

@@ -27,8 +27,11 @@ public class TestingOpMode extends LinearOpMode {
         hwInf.SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         hwInf.SetDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        hwInf.SetPowerDouble4(new Double4 (1,1,1,1),1);
-        sleep(3000);
+        while (opModeIsActive()) {
+            hwInf.SetRotation(90, 5);
+
+        }
+//        hwInf.SetPowerDouble4(new Double4 (1,1,1,1),1);
 /*
         hwInf.SetPowerDouble4(new Double4(1,0,0,0), 1);
         sleep(3000);

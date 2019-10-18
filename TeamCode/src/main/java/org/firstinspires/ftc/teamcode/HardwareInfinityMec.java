@@ -87,4 +87,12 @@ class HardwareInfinityMec extends Thread {
     public double GetRotation() {
         return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
     }
+
+    public void SetRotation(double rotation, double threshold) {
+        while (Math.abs(GetRotation() - rotation) > threshold) {
+            MoveComplex(0, 0, rotation);
+
+        }
+
+    }
 }
