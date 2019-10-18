@@ -6,13 +6,17 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 class HardwareInfinityMec extends Thread {
+
+
     private BNO055IMU.Parameters IParameters = new BNO055IMU.Parameters();
 
     DcMotor frontLeft;
@@ -92,6 +96,36 @@ class HardwareInfinityMec extends Thread {
         while (Math.abs(GetRotation() - rotation) > threshold) {
             MoveComplex(0, 0, rotation);
 
+        }
+
+    }
+
+
+
+
+    public class bDistanceSensor {
+
+        //The actual sensor
+        DistanceSensor distanceSensor;
+
+        //The angle that this sensor is at relative to the phone
+        double angle = 0;
+
+        public double distance;
+
+        public double distanceSmoothed;
+
+        private final double smoothingStep = 1;
+
+        public bDistanceSensor(DistanceSensor _sensor, double _angle) {
+            distanceSensor = _sensor;
+            angle = _angle;
+        }
+
+        //Called externally to tick the senor smoothing and update distance values
+        public void Update() {
+            distance = distanceSensor.getDistance(DistanceUnit.CM);
+            distanceSmoothed = bMath.MoveTowards(distanceSmoothed, distance, smoothingStep);
         }
 
     }
