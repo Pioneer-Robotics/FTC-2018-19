@@ -33,12 +33,11 @@ public class TensorFlow_bThread extends bThread {
 
     @Override
     public void run() {
-        super.run();
-    }
-
-    @Override
-    public void StartThread() {
-        super.StartThread();
+        running = true;
+        while (running) {
+            Loop();
+        }
+        OnThreadStop();
     }
 
     @Override
@@ -85,7 +84,7 @@ public class TensorFlow_bThread extends bThread {
             startTensorFlow(moniterID, minConfidence);
         }
 
-
+        this.start();
     }
 
     private void startVuforia(WebcamName camera) {
@@ -103,11 +102,6 @@ public class TensorFlow_bThread extends bThread {
 
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, "Stone", "Skystone");
-
-
-        //Starts the thread
-
-        start();
     }
 
 
@@ -122,7 +116,7 @@ public class TensorFlow_bThread extends bThread {
 
     //The a number between -1 and 1 representing how close the recognition is to the center of the camera
     public double getCurrentXFactor(Recognition recognition) {
-        return 2 * ((getXPosition(recognition) - (recognition.getImageWidth() / 2)) / recognition.getImageWidth());
+        return (getXPosition(recognition) - (recognition.getImageWidth() / 2)) / (recognition.getImageWidth() / 2);
     }
 
     //Returns the average between the left bound and right bound

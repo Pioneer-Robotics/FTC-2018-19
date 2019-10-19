@@ -41,7 +41,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 /**
- * {@link SensorREV2mDistance} illustrates how to use the REV Robotics
+ * {@link SenorREV2mDistance} illustrates how to use the REV Robotics
  * Time-of-Flight Range Sensor.
  *
  * The op mode assumes that the range sensor is configured with a name of "sensor_range".

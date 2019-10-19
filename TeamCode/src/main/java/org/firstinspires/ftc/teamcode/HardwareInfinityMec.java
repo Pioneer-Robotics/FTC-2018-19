@@ -14,8 +14,22 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+//TODO: clean up the canmove system
 class HardwareInfinityMec extends Thread {
 
+    //The eight lasers of navigationness! Right now we only have 3 so its slightly less impressive I suppose
+    public bDistanceSensor[] lasers = new bDistanceSensor[3];
+
+    //This delta time is only for the navigation helper thread
+    public DeltaTime deltaTime = new DeltaTime();
+
+    //Timer for canmove
+    public double canMoveTimer;
+
+    //If we are allowed to move
+    public Boolean canMove() {
+        return canMoveTimer < 0;
+    }
 
     private BNO055IMU.Parameters IParameters = new BNO055IMU.Parameters();
 
@@ -28,6 +42,7 @@ class HardwareInfinityMec extends Thread {
 
     OpMode Op;
 
+    Boolean running;
 
     void init(HardwareMap hardwareMap, OpMode opmode) {
         Op = opmode;
@@ -51,6 +66,51 @@ class HardwareInfinityMec extends Thread {
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
 
+        //Current lasers on bot, all facing away from the phone
+        lasers[0] = new bDistanceSensor(opmode, "sensor180", 180);
+        lasers[1] = new bDistanceSensor(opmode, "sensor225", 225);
+        lasers[2] = new bDistanceSensor(opmode, "sensor135", 135);
+
+        //Start 'run'
+        start();
+
+    }
+
+
+    //Threaded run method
+    public void run() {
+        running = true;
+
+        double closestLaserDistance = 0;
+        double laserAngle = 0;
+
+        while (running) {
+            deltaTime.Start();
+
+            closestLaserDistance = 50000;
+
+            //Finds the laser nearest to an object and which way its facing
+            for (bDistanceSensor laser : lasers) {
+                if (laser.distance < closestLaserDistance) {
+                    closestLaserDistance = laser.distance;
+                    laserAngle = laser.angle;
+                }
+            }
+
+            //GOAL: If the nearest laser is within 100 of hitting somthing then move away from that somthing
+            //Right now just turn off the motors to avoid collision and wait for the object to move
+            if (closestLaserDistance < 100) {
+                canMoveTimer = 2.5;
+            }
+
+            //Count down the can move timer
+            canMoveTimer -= deltaTime.deltaTime();
+
+            if (!canMove()) {
+                SetPowerDouble4(0, 0, 0, 0, 0);
+            }
+            deltaTime.Stop();
+        }
     }
 
 
@@ -101,14 +161,12 @@ class HardwareInfinityMec extends Thread {
     }
 
 
-
-
     public class bDistanceSensor {
 
         //The actual sensor
         DistanceSensor distanceSensor;
 
-        //The angle that this sensor is at relative to the phone
+        //The angle that this sensors laser goes relative to the phone facing side  (-180 <=> 180)
         double angle = 0;
 
         public double distance;
@@ -117,8 +175,8 @@ class HardwareInfinityMec extends Thread {
 
         private final double smoothingStep = 1;
 
-        public bDistanceSensor(DistanceSensor _sensor, double _angle) {
-            distanceSensor = _sensor;
+        public bDistanceSensor(OpMode op, String _sensor, double _angle) {
+            distanceSensor = op.hardwareMap.get(DistanceSensor.class, _sensor);
             angle = _angle;
         }
 
