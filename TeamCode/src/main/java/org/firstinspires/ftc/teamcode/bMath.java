@@ -107,9 +107,6 @@ public class bMath {
 
     //<editor-fold desc="Misc">
 
-    //Moderately interesting insect facts:
-
-    //You fool
     public static double pi() {
         return 3.14159265359;
     }
@@ -118,12 +115,10 @@ public class bMath {
         return pi() * 2;
     }
 
-    //You absolute buffoon
     public static double sq2() {
         return 1.41421356237309;/*504880168872420969807856967187537694807317667973799073247846210703885038753432764157273501384623091229702492483605585073721264412149709993583141322266592750559275579995050115278206057147010955997160597027453459686201472851;*/
     }
 
-    //You bumbling idiot
     public static double Clamp(double value, double min, double max) {
         double v = value;
 
@@ -165,7 +160,7 @@ public class bMath {
     }
 
     public static double Lerp(double a, double b, double lerpFactor) {
-        double result = ((1.f - lerpFactor) * a) + (lerpFactor * b);
+        double result = ((1 - lerpFactor) * a) + (lerpFactor * b);
         return result;
     }
 

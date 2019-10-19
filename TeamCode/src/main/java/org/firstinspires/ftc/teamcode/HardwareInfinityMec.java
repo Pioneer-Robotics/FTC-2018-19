@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.renderscript.Double2;
 import android.renderscript.Double4;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -20,16 +21,19 @@ class HardwareInfinityMec extends Thread {
     //The eight lasers of navigationness! Right now we only have 3 so its slightly less impressive I suppose
     public bDistanceSensor[] lasers = new bDistanceSensor[3];
 
-    //This delta time is only for the navigation helper thread
-    public DeltaTime deltaTime = new DeltaTime();
+//    //This delta time is only for the navigation helper thread
+//    public DeltaTime deltaTime = new DeltaTime();
+//
+//    //Timer for canmove
+//    public double canMoveTimer;
+//
+//    //If we are allowed to move
+//    public Boolean canMove() {
+//        return canMoveTimer < 0;
+//    }
 
-    //Timer for canmove
-    public double canMoveTimer;
-
-    //If we are allowed to move
-    public Boolean canMove() {
-        return canMoveTimer < 0;
-    }
+    //The current IMU rotation, threaded
+    double rotation;
 
     private BNO055IMU.Parameters IParameters = new BNO055IMU.Parameters();
 
@@ -85,32 +89,48 @@ class HardwareInfinityMec extends Thread {
         double laserAngle = 0;
 
         while (running) {
-            deltaTime.Start();
+//            deltaTime.Start();
+//
+//            //region Avoidance
+//            closestLaserDistance = 50000;
+//
+//            //Finds the laser nearest to an object and which way its facing
+//            for (bDistanceSensor laser : lasers) {
+//                if (laser.distance < closestLaserDistance) {
+//                    closestLaserDistance = laser.distance;
+//                    laserAngle = laser.angle;
+//                }
+//            }
+//
+//            //GOAL: If the nearest laser is within 100 of hitting something then suspend movement in that direction briefly
+//            //Right now just turn off the motors to avoid collision and wait for the object to move
+//            if (closestLaserDistance < 100) {
+//                canMoveTimer = 2.5;
+//            }
+//
+//            //Count down the can move timer
+//            canMoveTimer -= deltaTime.deltaTime();
+//
+//            if (!canMove()) {
+//                SetPowerDouble4(0, 0, 0, 0, 0);
+//            }
+//            //endregion
+//
+//
+//            deltaTime.Stop();
 
-            closestLaserDistance = 50000;
-
-            //Finds the laser nearest to an object and which way its facing
-            for (bDistanceSensor laser : lasers) {
-                if (laser.distance < closestLaserDistance) {
-                    closestLaserDistance = laser.distance;
-                    laserAngle = laser.angle;
-                }
-            }
-
-            //GOAL: If the nearest laser is within 100 of hitting somthing then move away from that somthing
-            //Right now just turn off the motors to avoid collision and wait for the object to move
-            if (closestLaserDistance < 100) {
-                canMoveTimer = 2.5;
-            }
-
-            //Count down the can move timer
-            canMoveTimer -= deltaTime.deltaTime();
-
-            if (!canMove()) {
-                SetPowerDouble4(0, 0, 0, 0, 0);
-            }
-            deltaTime.Stop();
+            BackgroundRotation();
         }
+    }
+
+    public void BackgroundRotation() {
+        //Updates the current rotation
+        rotation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+    }
+
+
+    public void Stop() {
+        running = false;
     }
 
 
@@ -122,6 +142,11 @@ class HardwareInfinityMec extends Thread {
     public void MoveComplex(double movementAngle, double movementSpeed, double angle) {
         Double4 v = bMath.getMecMovement(movementAngle, angle);
         SetPowerDouble4(v, movementSpeed);
+    }
+
+    public void Rotate(double angle, double rotationSpeed) {
+        Double4 v = bMath.getMecMovement(new Double2(0, 0), angle);
+        SetPowerDouble4(v, rotationSpeed);
     }
 
     public void SetPowerDouble4(Double4 v, double multiplier) {
@@ -149,13 +174,48 @@ class HardwareInfinityMec extends Thread {
 
     //Returns IMU rotation on the zed axies
     public double GetRotation() {
-        return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+        //returns the threaded rotation values for speeeed
+        return rotation;
     }
 
-    public void SetRotation(double rotation, double threshold) {
-        while (Math.abs(GetRotation() - rotation) > threshold) {
-            MoveComplex(0, 0, rotation);
+    public void SetRotation(double rotation, double threshold, double speed) {
+        double difference = GetRotation() - rotation;
 
+        //Rotate to 'rotation'
+        while (Math.abs(difference) > threshold) {
+            Rotate(GetRotation() + difference, speed);
+        }
+
+        //Let the bot settle for 200ms
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+
+        }
+
+        //Check the rotation again
+        difference = GetRotation() - rotation;
+
+        //Settle again
+        while (Math.abs(difference) > threshold) {
+            Rotate(GetRotation() + difference, speed / 3);
+        }
+    }
+
+    //Experimental version of set rotation without sleep (PID?)
+    public void SetRotationExperimental(double rotation, double threshold, double speed) {
+        double difference = GetRotation() - rotation;
+        double initialDifference = difference;
+        double rotationSpeed;
+
+        //Rotate to 'rotation'
+        while (Math.abs(difference) > threshold) {
+            //Check the rotation again
+            difference = GetRotation() - rotation;
+            rotationSpeed = bMath.Lerp(0, speed, difference / initialDifference);
+
+
+            Rotate(GetRotation() + difference, rotationSpeed);
         }
 
     }
