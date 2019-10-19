@@ -31,8 +31,11 @@ public class TensorFlow_bThread extends bThread {
 
     List<Recognition> recognitions;
 
+    public LinearOpMode opMode;
+
     @Override
     public void run() {
+        super.run();
         running = true;
         while (running) {
             Loop();
@@ -43,15 +46,21 @@ public class TensorFlow_bThread extends bThread {
     @Override
     public void Loop() {
         super.Loop();
+
+        opMode.telemetry.addData("Loooopy looping", "");
+
         recognitions = tfod.getRecognitions();
 
         currentRecognition = null;
         for (Recognition recognition : recognitions) {
+            opMode.telemetry.addData("Checking Recognitions : ", recognition);
+            opMode.telemetry.addData("Checking Recognition Name", TARGET_LABEL);
+
             if (recognition.getLabel() == TARGET_LABEL) {
                 currentRecognition = recognition;
             }
         }
-
+        opMode.telemetry.update();
     }
 
     @Override
@@ -83,7 +92,7 @@ public class TensorFlow_bThread extends bThread {
             //minConfidence should be a number between 0 and 1 (1 = 100% certain that the object is what we want, 60-80 seems reasonable)
             startTensorFlow(moniterID, minConfidence);
         }
-
+        opMode = op;
         this.start();
     }
 

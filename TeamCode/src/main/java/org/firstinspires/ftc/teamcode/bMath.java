@@ -58,6 +58,26 @@ public class bMath {
         return delta; //delta is the 4 component variable, Double4 delta (Joe)
     }
 
+    public static Double4 getMecRotation(double angle, double speed) {
+
+        Double4 delta = new Double4(0, 0, 0, 0);
+
+//        leftMovementPower =  Math.sin(angle) + ((-movementVector.y + movementVector.x) / sq2()) * Math.cos(angle));
+//        rightMovementPower = ((-(-movementVector.y + movementVector.x) / sq2()) * Math.sin(angle) + ((-movementVector.y - movementVector.x) / sq2() * Math.cos(angle)));
+
+
+        leftRotatePower = angle * speed;
+        rightRotatePower = -angle * speed;
+
+        delta.x = (leftRotatePower);
+        delta.y = (rightRotatePower);
+        delta.z = (leftRotatePower);
+        delta.w = (rightRotatePower);
+
+
+        return delta; //delta is the 4 component variable, Double4 delta (Joe)
+    }
+
     //Hook for angle based movement
     //Hook means the output from this is the input to another function of the same name (Joe)
     public static Double4 getMecMovement(double movementAngle, double rotation) {

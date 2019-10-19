@@ -21,16 +21,16 @@ class HardwareInfinityMec extends Thread {
     //The eight lasers of navigationness! Right now we only have 3 so its slightly less impressive I suppose
     public bDistanceSensor[] lasers = new bDistanceSensor[3];
 
-//    //This delta time is only for the navigation helper thread
-//    public DeltaTime deltaTime = new DeltaTime();
-//
-//    //Timer for canmove
-//    public double canMoveTimer;
-//
-//    //If we are allowed to move
-//    public Boolean canMove() {
-//        return canMoveTimer < 0;
-//    }
+    //This delta time is only for the navigation helper thread
+    public DeltaTime deltaTime = new DeltaTime();
+
+    //Timer for canmove
+    public double canMoveTimer;
+
+    //If we are allowed to move
+    public Boolean canMove() {
+        return canMoveTimer < 0;
+    }
 
     //The current IMU rotation, threaded
     double rotation;
@@ -70,10 +70,10 @@ class HardwareInfinityMec extends Thread {
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
 
-        //Current lasers on bot, all facing away from the phone
-        lasers[0] = new bDistanceSensor(opmode, "sensor180", 180);
-        lasers[1] = new bDistanceSensor(opmode, "sensor225", 225);
-        lasers[2] = new bDistanceSensor(opmode, "sensor135", 135);
+//        Current lasers on bot, all facing away from the phone
+//        lasers[0] = new bDistanceSensor(opmode, "sensor135", 135);
+//        lasers[1] = new bDistanceSensor(opmode, "sensor180", 180);
+//        lasers[2] = new bDistanceSensor(opmode, "sensor225", 225);
 
         //Start 'run'
         start();
@@ -145,7 +145,13 @@ class HardwareInfinityMec extends Thread {
     }
 
     public void Rotate(double angle, double rotationSpeed) {
-        Double4 v = bMath.getMecMovement(new Double2(0, 0), angle);
+//        Double4 v = new Double4(1, -1, 1, -1);
+
+        Double4 v = bMath.getMecRotation(angle, rotationSpeed);
+//        Op.telemetry.addData("Vector ", v);
+//        Op.telemetry.addData("multiplier ", rotationSpeed);
+//        Op.telemetry.update();
+
         SetPowerDouble4(v, rotationSpeed);
     }
 
@@ -208,14 +214,19 @@ class HardwareInfinityMec extends Thread {
         double initialDifference = difference;
         double rotationSpeed;
 
+
         //Rotate to 'rotation'
         while (Math.abs(difference) > threshold) {
             //Check the rotation again
             difference = GetRotation() - rotation;
-            rotationSpeed = bMath.Lerp(0, speed, difference / initialDifference);
+            rotationSpeed = bMath.Lerp(-speed, speed, (difference) / initialDifference);
 
+            Op.telemetry.addData("diff ", difference);
+            Op.telemetry.addData("rotationSpeed ", rotationSpeed * 2);
 
-            Rotate(GetRotation() + difference, rotationSpeed);
+            Op.telemetry.update();
+
+            Rotate(-1, rotationSpeed);
         }
 
     }

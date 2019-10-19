@@ -1,22 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 
 
-import android.renderscript.Double4;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
-@Autonomous(name = "TestingOpMode", group = "Sensor")
-public class TestingOpMode extends LinearOpMode {
+@Autonomous(name = "TestingOpMode2", group = "Sensor")
+public class TestingOpMode2 extends LinearOpMode {
     HardwareInfinityMec robot = new HardwareInfinityMec();
 
 
     public DeltaTime deltaTime = new DeltaTime();
+
+    public JobsTesting j = new JobsTesting();
 
 
     @Override
@@ -27,9 +23,7 @@ public class TestingOpMode extends LinearOpMode {
         robot.SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.SetDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        robot.SetRotationExperimental(90, -5, 1);
-//        sleep(1000);
-//        robot.SetRotationExperimental(100, 5, 0.25);
+        j.debuggingJob.Start(this);
 
 
         robot.Stop();
