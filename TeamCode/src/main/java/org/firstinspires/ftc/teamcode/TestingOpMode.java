@@ -27,7 +27,7 @@ public class TestingOpMode extends LinearOpMode {
         robot.SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.SetDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        robot.SetRotation(100, 5, 0.25);
+        robot.SetRotationExperimental(100, 5, 0.25);
 
 
         robot.Stop();
