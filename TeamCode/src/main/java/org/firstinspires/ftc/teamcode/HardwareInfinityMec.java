@@ -1,10 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.renderscript.Double2;
 import android.renderscript.Double4;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -14,9 +12,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Helpers.DeltaTime;
+import org.firstinspires.ftc.teamcode.Helpers.bMath;
 
 //TODO: clean up the canmove system
-class HardwareInfinityMec extends Thread {
+public class HardwareInfinityMec extends Thread {
 
     //The eight lasers of navigationness! Right now we only have 3 so its slightly less impressive I suppose
     public bDistanceSensor[] lasers = new bDistanceSensor[3];
@@ -42,13 +42,13 @@ class HardwareInfinityMec extends Thread {
     DcMotor backLeft;
     DcMotor backRight;
 
-    BNO055IMU imu;
+    public BNO055IMU imu;
 
     OpMode Op;
 
     Boolean running;
 
-    void init(HardwareMap hardwareMap, OpMode opmode) {
+    public void init(HardwareMap hardwareMap, OpMode opmode) {
         Op = opmode;
 
         frontLeft = hardwareMap.get(DcMotor.class, "Front Left");
