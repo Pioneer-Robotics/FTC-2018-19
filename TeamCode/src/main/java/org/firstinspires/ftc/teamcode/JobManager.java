@@ -5,6 +5,7 @@ package org.firstinspires.ftc.teamcode;
 import android.renderscript.Double4;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
@@ -29,6 +30,11 @@ import org.firstinspires.ftc.teamcode.Helpers.bMath;
 //Holds all of the current jobs for using in other scripts
 public class JobManager {
     public FindSkystoneJob findSkystoneJob = new FindSkystoneJob();
+
+    //Inits all job's
+    public void initAll(LinearOpMode op) {
+        findSkystoneJob.Init(op);
+    }
 }
 
 //Simple sub op mode, needs an LinearOpMode to function
@@ -40,6 +46,12 @@ class Job {
     public DeltaTime deltaTime = new DeltaTime();
 
     public boolean running = false;
+
+    //Called when the JobManager is set up, this should have all init stuffs that we don't wanna run durring the automode
+    public void Init(LinearOpMode op) {
+
+    }
+
 
     public final void Start(LinearOpMode op) {
         OnStart(op);
@@ -53,6 +65,10 @@ class Job {
             deltaTime.Start();
             Loop();
             deltaTime.Stop();
+
+            if (!opMode.opModeIsActive()) {
+                running = false;
+            }
         }
         OnStop();
     }
@@ -86,9 +102,14 @@ class NavigationJob extends Job {
     HardwareInfinityMec robot = new HardwareInfinityMec();
 
     @Override
+    public void Init(LinearOpMode op) {
+        super.Init(op);
+        robot.init(op.hardwareMap, op);
+    }
+
+    @Override
     public void OnStart(LinearOpMode op) {
         super.OnStart(op);
-        robot.init(op.hardwareMap, op);
     }
 
     //Sets up the motors for actual encoder use

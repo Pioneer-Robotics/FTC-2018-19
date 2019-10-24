@@ -19,5 +19,8 @@ public class SkystoneAutoTest extends LinearOpMode {
 
         //Start by lining up with the skystones
         jobs.findSkystoneJob.Start(this);
+        telemetry.addData("stopped", "");
+        telemetry.update();
     }
+
 }

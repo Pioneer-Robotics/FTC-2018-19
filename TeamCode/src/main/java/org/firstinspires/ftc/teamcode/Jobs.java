@@ -5,6 +5,7 @@ package org.firstinspires.ftc.teamcode;
 import android.renderscript.Double4;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
@@ -42,6 +43,8 @@ class FindSkystoneJob extends NavigationJob {
     //After the robot is aligned it will set settle to true, wait, and then recheck its alignment (to see if the bots shifted at all)
     boolean settled = false;
 
+    double settledTimer = 0;
+
     @Override
     public void Loop() {
         super.Loop();
@@ -59,24 +62,22 @@ class FindSkystoneJob extends NavigationJob {
             xFactor = tensorFlowThread.getCurrentXFactor(recognition) < 0 ? -1 : 0;
 
             //Lerp the move speed
-            moveSpeed = bMath.MoveTowards(moveSpeed, bMath.Clamp(tensorFlowThread.getCurrentXFactor(recognition), 0.1, 1), deltaTime.deltaTime());
+            moveSpeed = bMath.MoveTowards(moveSpeed, bMath.Clamp(Math.abs(tensorFlowThread.getCurrentXFactor(recognition)), 0.1, 1), deltaTime.deltaTime());
 
             opMode.telemetry.addData("XFactor ", xFactor);
-            opMode.telemetry.addData("Movement Factor ", (-xFactor * 90));
+            opMode.telemetry.addData("Movement Factor ", tensorFlowThread.getCurrentXFactor(recognition) > 0 ? 180 : 0);
             opMode.telemetry.addData("cFactor ", tensorFlowThread.getCurrentXFactor(recognition));
 
 
             //TODO: After stopping double check that we are lined up after 250ms
             //If we are lined up nicely stop the job, if not then move to be
-            if (Math.abs(tensorFlowThread.getCurrentXFactor(recognition)) < 0.05) {
+            if (Math.abs(tensorFlowThread.getCurrentXFactor(recognition)) < 0.1) {
 
                 if (!settled) {
-                    try {
-                        wait(250);
-                    } catch (InterruptedException e) {
-
+                    settledTimer += deltaTime.deltaTime();
+                    if (settledTimer > 0.25) {
+                        settled = true;
                     }
-                    settled = true;
                 } else {
 //If we've settled then stop this job
                     Stop();
@@ -98,8 +99,8 @@ class FindSkystoneJob extends NavigationJob {
             lostRecognitionTimer += deltaTime.deltaTime();
 
 
-            //If we've lost sight of the stone for more than 0.25 seconds stop moving (to avoid issues while testing, ei running over my feets)
-            if (lostRecognitionTimer >= 0.25) {
+            //If we've lost sight of the stone for more than 0.75 seconds stop moving (to avoid issues while testing, ei running over my feets)
+            if (lostRecognitionTimer >= 0.75) {
                 opMode.telemetry.addData("Lost sight, stopping ", "");
 
                 robot.SetPowerDouble4(new Double4(0, 0, 0, 0), 0);
@@ -116,7 +117,7 @@ class FindSkystoneJob extends NavigationJob {
 
         //Disposes of the thread
         tensorFlowThread.stopThread();
-
+        robot.Stop();
         //Stop motorz
         StopMotors();
     }
@@ -124,11 +125,16 @@ class FindSkystoneJob extends NavigationJob {
     @Override
     public void OnStart(LinearOpMode op) {
         super.OnStart(op);
+
         //Starts up a tensor flow thread
-        tensorFlowThread.startThread(op, "Skystone", 0.75);
 //        tensorFlowThread.StartTensorFlow(op, "Skystone", 0.75);
 //        tensorFlowThread.start();
         PrepareMotors();
+    }
+
+    @Override
+    public void Init(LinearOpMode op) {
+        tensorFlowThread.startThread(op, "Skystone", 0.75);
     }
 }
 
