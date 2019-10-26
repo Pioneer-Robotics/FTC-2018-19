@@ -28,6 +28,9 @@ class FindSkystoneJob extends NavigationJob {
     //Our wee little TF thread
     public TensorFlowThread tensorFlowThread = new TensorFlowThread();
 
+    //New tensor flow aJOB (wip)
+    public TensorFlowaJob tensorFlowaJob = new TensorFlowaJob();
+
     //current recognition
     Recognition recognition;
 
@@ -136,6 +139,11 @@ class FindSkystoneJob extends NavigationJob {
     public void Init(LinearOpMode op) {
         tensorFlowThread.startThread(op, "Skystone", 0.75);
     }
+}
+
+class TensorFlowaJob extends aJob implements Runnable{
+
+
 }
 
 /*

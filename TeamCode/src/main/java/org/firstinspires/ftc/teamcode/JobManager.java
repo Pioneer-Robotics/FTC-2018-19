@@ -31,7 +31,11 @@ import org.firstinspires.ftc.teamcode.Helpers.bMath;
 public class JobManager {
     public FindSkystoneJob findSkystoneJob = new FindSkystoneJob();
 
+//    //This job is used in other jobs
+//    public TensorFlowaJob tensorFlowaJob = new TensorFlowaJob();
+
     //Inits all job's
+    //The idea here is that all jobs have there init stuff pre loaded before they need to run; this is to avoid waiting for 10 seconds of our auto period on loading tensorflow
     public void initAll(LinearOpMode op) {
         findSkystoneJob.Init(op);
     }
@@ -133,6 +137,12 @@ class aJob implements Runnable {
 
     public boolean running = false;
 
+    //Called when the JobManager is set up, this should have all init stuffs that we don't wanna run durring the automode
+    public void Init(LinearOpMode op) {
+
+    }
+
+
     public final void Start(LinearOpMode op) {
 
         //Passes op to OnStart
@@ -179,10 +189,17 @@ class aJob implements Runnable {
 class aJobNavigation extends aJob implements Runnable {
     HardwareInfinityMec robot = new HardwareInfinityMec();
 
+
+    @Override
+    public void Init(LinearOpMode op) {
+        super.Init(op);
+        robot.init(op.hardwareMap, op);
+
+    }
+
     @Override
     public void OnStart(LinearOpMode op) {
         super.OnStart(op);
-        robot.init(op.hardwareMap, op);
     }
 
     //Sets up the motors for actual encoder use
