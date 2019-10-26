@@ -19,6 +19,9 @@ public class SkystoneAutoTest extends LinearOpMode {
 
         waitForStart();
 
+//        jobs.wallTrackJob.StartValues(25,5,25,new WallTrack.SensorTriplet());
+        jobs.wallTrackJob.Start(this);
+
         //Start by lining up with the skystones
         jobs.findSkystoneJob.Start(this);
         telemetry.addData("stopped", "");

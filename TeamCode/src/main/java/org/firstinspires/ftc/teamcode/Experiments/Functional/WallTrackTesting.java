@@ -73,8 +73,9 @@ public class WallTrackTesting extends LinearOpMode {
         }
 
         //Returns true if the three sensors have hit a perfect (with in 5%, see "error") line, this can be used to check if there's another robot or obstacle near us
-        public boolean isValid() {
-            double error = 0.05;
+        //Get bounds to work on the sensors
+        //Error is between 0 (0%) and 1 (100%)
+        public boolean isValid(double error) {
             double sinPiOver4 = bMath.sq2() / 2;
             double e = getDistance(TripletType.Left, DistanceUnit.CM) * sinPiOver4;
             double w = getDistance(TripletType.Center, DistanceUnit.CM);

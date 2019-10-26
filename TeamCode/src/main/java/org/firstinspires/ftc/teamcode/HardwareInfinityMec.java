@@ -18,8 +18,8 @@ import org.firstinspires.ftc.teamcode.Helpers.bMath;
 //TODO: clean up the canmove system
 public class HardwareInfinityMec extends Thread {
 
-    //The eight lasers of navigationness! Right now we only have 3 so its slightly less impressive I suppose
-    public bDistanceSensor[] lasers = new bDistanceSensor[3];
+    //The eight lasers of navigationness! Right now we only have 6 so its slightly less impressive I suppose
+    public bDistanceSensor[] lasers = new bDistanceSensor[6];
 
     //This delta time is only for the navigation helper thread
     public DeltaTime deltaTime = new DeltaTime();
@@ -70,10 +70,15 @@ public class HardwareInfinityMec extends Thread {
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
 
-//        Current lasers on bot, all facing away from the phone
-//        lasers[0] = new bDistanceSensor(opmode, "sensor135", 135);
-//        lasers[1] = new bDistanceSensor(opmode, "sensor180", 180);
-//        lasers[2] = new bDistanceSensor(opmode, "sensor225", 225);
+        //Current lasers on bot, all facing away from the phone
+        lasers[0] = new bDistanceSensor(opmode, "sensor315", -45);
+        lasers[1] = new bDistanceSensor(opmode, "sensor0", 0);
+        lasers[2] = new bDistanceSensor(opmode, "sensor45", 45);
+
+
+        lasers[3] = new bDistanceSensor(opmode, "sensor45", 45);
+        lasers[4] = new bDistanceSensor(opmode, "sensor90", 90);
+        lasers[5] = new bDistanceSensor(opmode, "sensor135", 135);
 
         //Start 'run'
         start();
@@ -123,6 +128,7 @@ public class HardwareInfinityMec extends Thread {
         }
     }
 
+
     public void BackgroundRotation() {
         //Updates the current rotation
         rotation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
@@ -134,6 +140,7 @@ public class HardwareInfinityMec extends Thread {
     }
 
 
+    //<editor-fold desc="Movement">
     public void MoveSimple(double movementAngle, double movementSpeed) {
         Double4 v = bMath.getMecMovementSimple(movementAngle);
         SetPowerDouble4(v, movementSpeed);
@@ -145,13 +152,7 @@ public class HardwareInfinityMec extends Thread {
     }
 
     public void Rotate(double angle, double rotationSpeed) {
-//        Double4 v = new Double4(1, -1, 1, -1);
-
         Double4 v = bMath.getMecRotation(angle, rotationSpeed);
-//        Op.telemetry.addData("Vector ", v);
-//        Op.telemetry.addData("multiplier ", rotationSpeed);
-//        Op.telemetry.update();
-
         SetPowerDouble4(v, rotationSpeed);
     }
 
@@ -183,53 +184,7 @@ public class HardwareInfinityMec extends Thread {
         //returns the threaded rotation values for speeeed
         return rotation;
     }
-
-    public void SetRotation(double rotation, double threshold, double speed) {
-        double difference = GetRotation() - rotation;
-
-        //Rotate to 'rotation'
-        while (Math.abs(difference) > threshold) {
-            Rotate(GetRotation() + difference, speed);
-        }
-
-        //Let the bot settle for 200ms
-        try {
-            Thread.sleep(200);
-        } catch (InterruptedException e) {
-
-        }
-
-        //Check the rotation again
-        difference = GetRotation() - rotation;
-
-        //Settle again
-        while (Math.abs(difference) > threshold) {
-            Rotate(GetRotation() + difference, speed / 3);
-        }
-    }
-
-    //Experimental version of set rotation without sleep (PID?)
-    public void SetRotationExperimental(double rotation, double threshold, double speed) {
-        double difference = GetRotation() - rotation;
-        double initialDifference = difference;
-        double rotationSpeed;
-
-
-        //Rotate to 'rotation'
-        while (Math.abs(difference) > threshold) {
-            //Check the rotation again
-            difference = GetRotation() - rotation;
-            rotationSpeed = bMath.Lerp(-speed, speed, (difference) / initialDifference);
-
-            Op.telemetry.addData("diff ", difference);
-            Op.telemetry.addData("rotationSpeed ", rotationSpeed * 2);
-
-            Op.telemetry.update();
-
-            Rotate(-1, rotationSpeed);
-        }
-
-    }
+    //</editor-fold>
 
 
     public class bDistanceSensor {
