@@ -15,6 +15,8 @@ public class SkystoneAutoTest extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        jobs.initAll(this);
+
         waitForStart();
 
         //Start by lining up with the skystones
