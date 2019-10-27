@@ -165,7 +165,7 @@ public class RobotWallTrack {
         //Add's K/V to the dictionary
         sensorIDGroupPairs.put(groupID.Group90, new SensorGroup(op, "sensor 45", "sensor 90", "sensor 135"));
         sensorIDGroupPairs.put(groupID.Group180, new SensorGroup(op, "sensor 135", "sensor 180", "sensor 225"));
-        sensorIDGroupPairs.put(groupID.Group180, new SensorGroup(op, "sensor 225", "sensor 270", "sensor 315"));
+        sensorIDGroupPairs.put(groupID.Group270, new SensorGroup(op, "sensor 225", "sensor 270", "sensor 315"));
 
     }
 
@@ -195,6 +195,14 @@ public class RobotWallTrack {
 
         //MOVE
         robot.MoveSimple(curDriveAngle, speed);
+    }
+
+
+    //Returns if the current group is on a line, check this before moving along a line
+    //group == teh group we want to verify
+    //error == the amount of error we can accept, between 0 and 1 (1 being 100%)
+    public boolean CheckWallValidity(groupID group, double error) {
+        return sensorIDGroupPairs.get(group).isValid(error);
     }
 
 //    public void MoveAlongWall(groupID group) {
