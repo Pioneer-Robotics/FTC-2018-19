@@ -179,6 +179,7 @@ class TensorFlowaJob extends aJob implements Runnable {
     public void Loop() {
         super.Loop();
 
+
         //Fetch all of TF's current recognitions
         recognitions = tfod.getRecognitions();
 

@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import org.firstinspires.ftc.teamcode.Helpers.DeltaTime;
 
@@ -23,8 +24,26 @@ public class TestingOpMode extends LinearOpMode {
         robot.SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.SetDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        robot.SetRotationExperimental(90, -5, 1);
-//        sleep(1000);
+        waitForStart();
+
+        while (opModeIsActive()) {
+            telemetry.addData("sensor 90", hardwareMap.get(DistanceSensor.class, "sensor 90"));
+            telemetry.update();
+
+        }
+
+//        robot.SetPowerDouble4(1, 1, 1, 1, 1);
+
+//        robot.MoveSimple(90, 1);
+//        robot.MoveComplex(45,1,robot.GetRotation() + 5);
+
+
+//        robot.SetRotationPID(90, 5);
+
+//        telemetry.addData("")
+
+
+//        sleep(10000);
 //        robot.SetRotationExperimental(100, 5, 0.25);
 
 

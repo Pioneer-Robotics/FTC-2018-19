@@ -57,6 +57,7 @@ public class HardwareInfinityMec extends Thread {
         backRight = hardwareMap.get(DcMotor.class, "Back Right");
 
 
+        //IMU
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         IParameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         IParameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -71,14 +72,14 @@ public class HardwareInfinityMec extends Thread {
         backLeft.setDirection(DcMotor.Direction.REVERSE);
 
         //Current lasers on bot, all facing away from the phone
-        lasers[0] = new bDistanceSensor(opmode, "sensor315", -45);
-        lasers[1] = new bDistanceSensor(opmode, "sensor0", 0);
-        lasers[2] = new bDistanceSensor(opmode, "sensor45", 45);
-
-
-        lasers[3] = new bDistanceSensor(opmode, "sensor45", 45);
-        lasers[4] = new bDistanceSensor(opmode, "sensor90", 90);
-        lasers[5] = new bDistanceSensor(opmode, "sensor135", 135);
+//        lasers[0] = new bDistanceSensor(opmode, "sensor 315", -45);
+//        lasers[1] = new bDistanceSensor(opmode, "sensor0", 0);
+//        lasers[2] = new bDistanceSensor(opmode, "sensor45", 45);
+//
+//
+//        lasers[3] = new bDistanceSensor(opmode, "sensor45", 45);
+//        lasers[4] = new bDistanceSensor(opmode, "sensor90", 90);
+//        lasers[5] = new bDistanceSensor(opmode, "sensor135", 135);
 
         //Start 'run'
         start();
@@ -132,6 +133,11 @@ public class HardwareInfinityMec extends Thread {
     public void BackgroundRotation() {
         //Updates the current rotation
         rotation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+
+        //Display debug stuffs
+
+//        Op.telemetry.addData("IMU rotation ", rotation);
+//        Op.telemetry.update();
     }
 
 
@@ -210,6 +216,98 @@ public class HardwareInfinityMec extends Thread {
         public void Update() {
             distance = distanceSensor.getDistance(DistanceUnit.CM);
             distanceSmoothed = bMath.MoveTowards(distanceSmoothed, distance, smoothingStep);
+        }
+
+    }
+
+    public void SetRotation(double rotation, double threshold, double speed) {
+        double difference = GetRotation() - rotation;
+
+        //Rotate to 'rotation'
+        while (Math.abs(difference) > threshold) {
+            Rotate(GetRotation() + difference, speed);
+        }
+
+        //Let the bot settle for 200ms
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+
+        }
+
+        //Check the rotation again
+        difference = rotation - GetRotation();
+
+        //Settle again
+        while (Math.abs(difference) > threshold) {
+            difference = GetRotation() - rotation;
+
+            Rotate(GetRotation() + difference, speed / 3);
+        }
+    }
+
+    //Experimental version of set rotation without sleep (PID?)
+//    public void SetRotationExperimental(double rotation, double threshold, double speed) {
+//        double difference = GetRotation() - rotation;
+//        double initialDifference = difference;
+//        double rotationSpeed;
+//
+//
+//        //Rotate to 'rotation'
+//        while (Math.abs(difference) > threshold) {
+//            //Check the rotation again
+//            difference = GetRotation() - rotation;
+//            rotationSpeed = bMath.Lerp(-speed, speed, (difference) / initialDifference);
+//
+//            Op.telemetry.addData("diff ", difference);
+//            Op.telemetry.addData("rotationSpeed ", rotationSpeed * 2);
+//
+//            Op.telemetry.update();
+//
+//            Rotate(-1, rotationSpeed);
+//        }
+//
+//    }
+
+    //Experimental version of set rotation without sleep (PID?)
+    public void SetRotationPID(double rotation, double threshold) {
+
+        //Tuning values
+        double P = 1, I = 1, D = 1;
+
+        double difference = rotation - GetRotation();
+        double lastDifference = rotation - GetRotation();
+        double initialDifference = difference;
+        double rotationSpeed;
+
+        double integral = 0;
+        double derivative = 0;
+
+        DeltaTime dt = new DeltaTime();
+
+        //Rotate to 'rotation'
+        while (Math.abs(difference) > threshold) {
+            dt.Start();
+
+            //Check the rotation again
+            difference = rotation - GetRotation();
+
+            integral += difference * dt.deltaTime();
+            derivative = (difference - lastDifference) / dt.deltaTime();
+
+            rotationSpeed = difference;
+
+            Op.telemetry.addData("diff ", difference);
+            Op.telemetry.addData("rotationSpeed ", rotationSpeed * 2);
+
+            Op.telemetry.update();
+
+            Rotate(1, rotationSpeed);
+
+            lastDifference = (P * difference) + (I * integral) + (D * derivative);
+
+            dt.Stop();
+
         }
 
     }
