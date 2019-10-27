@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Robot;
 
 import android.renderscript.Double4;
 
@@ -17,6 +17,12 @@ import org.firstinspires.ftc.teamcode.Helpers.bMath;
 
 //TODO: clean up the canmove system
 public class Robot extends Thread {
+
+    //Static instance. Only have one robot at a time and access it from here (THERE CAN BE ONLY ONE)
+    public static Robot instance;
+
+    //Our wee little wall tracker
+    public RobotWallTrack wallTrack;
 
     //The eight lasers of navigationness! Right now we only have 6 so its slightly less impressive I suppose
     public bDistanceSensor[] lasers = new bDistanceSensor[6];
@@ -49,45 +55,42 @@ public class Robot extends Thread {
     Boolean running;
 
     public void init(HardwareMap hardwareMap, OpMode opmode) {
+        //Set up the instance (safety checks might be a good idea at some point)
+        instance = this;
+
+        //Set the opmode
         Op = opmode;
 
+
+        //Find the motors
         frontLeft = hardwareMap.get(DcMotor.class, "Front Left");
         frontRight = hardwareMap.get(DcMotor.class, "Front Right");
         backLeft = hardwareMap.get(DcMotor.class, "Back Left");
         backRight = hardwareMap.get(DcMotor.class, "Back Right");
 
+        //Set the left wheels to run backwards because of math?
+        frontLeft.setDirection(DcMotor.Direction.REVERSE);
+        backLeft.setDirection(DcMotor.Direction.REVERSE);
 
-        //IMU
+        //Set up the IMU(s)
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         IParameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         IParameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         IParameters.calibrationDataFile = "BNO055IMUCalibration.json";
         IParameters.loggingEnabled = true;
         IParameters.loggingTag = "IMU";
-
         imu.initialize(IParameters);
 
+        //Set up the wall tracker, this uses ALL the lasers so make sure they all work before running this
+        wallTrack.Start(opmode);
 
-        frontLeft.setDirection(DcMotor.Direction.REVERSE);
-        backLeft.setDirection(DcMotor.Direction.REVERSE);
-
-        //Current lasers on bot, all facing away from the phone
-//        lasers[0] = new bDistanceSensor(opmode, "sensor 315", -45);
-//        lasers[1] = new bDistanceSensor(opmode, "sensor0", 0);
-//        lasers[2] = new bDistanceSensor(opmode, "sensor45", 45);
-//
-//
-//        lasers[3] = new bDistanceSensor(opmode, "sensor45", 45);
-//        lasers[4] = new bDistanceSensor(opmode, "sensor90", 90);
-//        lasers[5] = new bDistanceSensor(opmode, "sensor135", 135);
-
-        //Start 'run'
+        //Starts the 'run' thread
         start();
 
     }
 
 
-    //Threaded run method
+    //Threaded run method, right now this is just for IMU stuff, at some point we might put some avoidance stuff in here (background wall tracking?) (average out 2IMU's for extra strain of the thread?)
     public void run() {
         running = true;
 
@@ -124,20 +127,17 @@ public class Robot extends Thread {
 //
 //
 //            deltaTime.Stop();
-
+            //Update our 'rotation' value
             BackgroundRotation();
         }
     }
 
 
     public void BackgroundRotation() {
+
         //Updates the current rotation
         rotation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
 
-        //Display debug stuffs
-
-//        Op.telemetry.addData("IMU rotation ", rotation);
-//        Op.telemetry.update();
     }
 
 
@@ -148,17 +148,17 @@ public class Robot extends Thread {
 
     //<editor-fold desc="Movement">
     public void MoveSimple(double movementAngle, double movementSpeed) {
-        Double4 v = bMath.getMecMovementSimple(movementAngle - 90);
+        Double4 v = bMath.getMecMovementSimple(movementAngle);
         SetPowerDouble4(v, movementSpeed);
     }
 
     public void MoveComplex(double movementAngle, double movementSpeed, double angle) {
-        Double4 v = bMath.getMecMovement(movementAngle - 90, angle - 90);
+        Double4 v = bMath.getMecMovement(movementAngle, angle);
         SetPowerDouble4(v, movementSpeed);
     }
 
     public void Rotate(double angle, double rotationSpeed) {
-        Double4 v = bMath.getMecRotation(angle - 90, rotationSpeed - 90);
+        Double4 v = bMath.getMecRotation(angle, rotationSpeed);
         SetPowerDouble4(v, rotationSpeed);
     }
 
@@ -220,6 +220,8 @@ public class Robot extends Thread {
 
     }
 
+
+    //wip
     public void SetRotation(double rotation, double threshold, double speed) {
         double difference = GetRotation() - rotation;
 

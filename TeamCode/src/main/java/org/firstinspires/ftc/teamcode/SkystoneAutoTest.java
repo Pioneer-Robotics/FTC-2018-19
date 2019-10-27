@@ -3,11 +3,14 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.Robot.Robot;
+
 //10.11.19: Moves towards any skystone it sees!
 @Autonomous(name = "Skystone", group = "Auto Testing")
 public class SkystoneAutoTest extends LinearOpMode {
 
-//    Robot robot = new Robot();
+    //This robot is the one used for all jobs!
+    Robot robot = new Robot();
 
 //    public TensorFlow_bThread tensorFlowThread = new TensorFlow_bThread();
 
@@ -16,27 +19,30 @@ public class SkystoneAutoTest extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        telemetry.addData("Status: ", "Running initiating all jobs.");
+        print("Status: Initiating robot.");
+
+        //init the bot! This sets up the static references for the bot as well so make sure to run this early
+        robot.init(hardwareMap, this);
 
         print("Status: Initiating all jobs.");
 
-
+        //Init's all of jobs we can use in the OpMode
         jobs.initAll(this);
 
         print("Status: Starting TensorFlow Thread.");
 
-
-        //Start the TF thread after it's inited
+        //Start the TF thread after it's init
         jobs.tensorFlowaJob.Start(this);
 
         print("Status: Awaiting start. You are cleared for release.");
 
+        //Wait for the driver to start the op mode
         waitForStart();
 
         print("Status: Mission started");
 
 
-//        jobs.wallTrackJob.StartValues(25,5,25,new WallTrack.SensorTriplet());
+//        jobs.wallTrackJob.StartValues(25,5,25,new WallTrack.SensorGroup());
 //        jobs.wallTrackJob.Start(this);
 
         print("Status: Searching for Skystone.");
@@ -45,10 +51,6 @@ public class SkystoneAutoTest extends LinearOpMode {
         jobs.findSkystoneJob.Start(this);
 
         print("Status: Skystone found.");
-
-
-        telemetry.addData("stopped", "");
-        telemetry.update();
     }
 
     //Sends the 'message' to telemetry and updates it, mostly for C#-ness

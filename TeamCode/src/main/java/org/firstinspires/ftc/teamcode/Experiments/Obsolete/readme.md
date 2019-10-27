@@ -1,0 +1,1 @@
+This directory is for scripts n functions n systems that we have since replaced! Most of them are now (a)job's.

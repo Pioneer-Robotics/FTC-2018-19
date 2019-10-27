@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Experiments.QuickTests;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Helpers.DeltaTime;
+import org.firstinspires.ftc.teamcode.Robot.Robot;
 
 @Autonomous(name = "TestingOpMode", group = "Sensor")
 public class TestingOpMode extends LinearOpMode {

@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Helpers.DeltaTime;
+import org.firstinspires.ftc.teamcode.Robot.Robot;
 
 //A lovely picture of the robot
 //
@@ -73,11 +74,14 @@ class Job {
         while (running) {
             deltaTime.Start();
             Loop();
-            deltaTime.Stop();
 
+            //Stops the loop if the opmode is shut down
             if (!opMode.opModeIsActive()) {
                 running = false;
             }
+
+            deltaTime.Stop();
+
         }
         OnStop();
     }
@@ -105,19 +109,29 @@ class Job {
 }
 
 //A job that includes a robot!
-//Cool things: Has a built in Robot, has some motor functions for stopping/starting
+//Cool things: Has a built in Robot, has some motor functions for stopping/starting, MAKE SURE TO CALL SET ROBOT
 class NavigationJob extends Job {
 
     Robot robot;
 
-    //Assigns the robot, make sure to do this before starting
-    public void SetRobot(Robot bot) {
-        robot = bot;
+    @Override
+    public void Init(LinearOpMode op) {
+        super.Init(op);
+
+        //Assign bot instance
+        robot = Robot.instance;
     }
+
+    //Obsolete for now, uses Robot.instance.
+//    //Assigns the robot, make sure to do this before starting
+//    public void SetRobot(Robot bot) {
+//        robot = bot;
+//    }
 
     @Override
     public void OnStart(LinearOpMode op) {
         super.OnStart(op);
+
     }
 
     //Sets up the motors for actual encoder use
@@ -163,6 +177,12 @@ class aJob implements Runnable {
         while (running) {
             deltaTime.Start();
             Loop();
+
+            //Stops the loop if the opmode is shut down
+            if (!opMode.opModeIsActive()) {
+                running = false;
+            }
+
             deltaTime.Stop();
         }
         OnStop();
