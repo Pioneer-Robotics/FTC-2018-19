@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.Helpers.DeltaTime;
 import org.firstinspires.ftc.teamcode.Helpers.bMath;
 
 //TODO: clean up the canmove system
-public class HardwareInfinityMec extends Thread {
+public class Robot extends Thread {
 
     //The eight lasers of navigationness! Right now we only have 6 so its slightly less impressive I suppose
     public bDistanceSensor[] lasers = new bDistanceSensor[6];

@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.HardwareInfinityMec;
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.Helpers.DeltaTime;
 import org.firstinspires.ftc.teamcode.Helpers.bMath;
 
@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.Helpers.bMath;
 //TODO: Add curves smoothing to rotation values. Also using a paralabic function for movement smoothing could be cool?
 @Autonomous(name = "WTest", group = "Sensor")
 public class WallTrackTesting extends LinearOpMode {
-    HardwareInfinityMec hwInf = new HardwareInfinityMec();
+    Robot hwInf = new Robot();
 
     public AvoidanceConfiguration avoidanceConfig = new AvoidanceConfiguration();
 

@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Helpers.DeltaTime;
 
 @Autonomous(name = "TestingOpMode", group = "Sensor")
 public class TestingOpMode extends LinearOpMode {
-    HardwareInfinityMec robot = new HardwareInfinityMec();
+    Robot robot = new Robot();
 
 
     public DeltaTime deltaTime = new DeltaTime();

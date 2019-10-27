@@ -2,15 +2,10 @@
 package org.firstinspires.ftc.teamcode;
 
 
-import android.renderscript.Double4;
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.Helpers.DeltaTime;
-import org.firstinspires.ftc.teamcode.Helpers.bMath;
 
 //A lovely picture of the robot
 //
@@ -28,7 +23,7 @@ import org.firstinspires.ftc.teamcode.Helpers.bMath;
 
 
 //Holds all of the current jobs for using in other scripts
- public class JobManager {
+public class JobManager {
     public FindSkystoneJob findSkystoneJob = new FindSkystoneJob();
 
     //This aJob is used in all other jobs that use tensor flow
@@ -110,15 +105,14 @@ class Job {
 }
 
 //A job that includes a robot!
-//Cool things: Has a built in HardwareInfinityMec, has some motor functions for stopping/starting
+//Cool things: Has a built in Robot, has some motor functions for stopping/starting
 class NavigationJob extends Job {
 
-    HardwareInfinityMec robot = new HardwareInfinityMec();
+    Robot robot;
 
-    @Override
-    public void Init(LinearOpMode op) {
-        super.Init(op);
-        robot.init(op.hardwareMap, op);
+    //Assigns the robot, make sure to do this before starting
+    public void SetRobot(Robot bot) {
+        robot = bot;
     }
 
     @Override
@@ -195,9 +189,9 @@ class aJob implements Runnable {
 
 }
 
-//aJob version of NavigationJob, has robot access and motor commands
+//aJob version of NavigationJob, has robot access and motor commands. DO NOT USE IT DO NOT DO THE WORKING VERY WELL
 class aJobNavigation extends aJob implements Runnable {
-    HardwareInfinityMec robot = new HardwareInfinityMec();
+    Robot robot = new Robot();
 
 
     @Override
