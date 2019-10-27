@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Helpers.DeltaTime;
 
 @Autonomous(name = "TestingOpMode", group = "Sensor")
@@ -27,7 +28,7 @@ public class TestingOpMode extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            telemetry.addData("sensor 90", hardwareMap.get(DistanceSensor.class, "sensor 90"));
+            telemetry.addData("sensor 90", hardwareMap.get(DistanceSensor.class, "sensor 90").getDistance(DistanceUnit.CM));
             telemetry.update();
 
         }
