@@ -17,8 +17,10 @@ public class SkystoneAutoTest extends LinearOpMode {
     public void runOpMode() {
         jobs.initAll(this);
 
-        waitForStart();
+        //Start TF
+        jobs.tensorFlowaJob.Start(this);
 
+        waitForStart();
 
 
 //        jobs.wallTrackJob.StartValues(25,5,25,new WallTrack.SensorTriplet());

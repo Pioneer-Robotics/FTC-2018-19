@@ -34,9 +34,6 @@ import java.util.List;
 //The idea here is that we can have a bunch of functions here, like move to sky stone or navigate to center and then call them in a modular fashion in other programs
 class FindSkystoneJob extends NavigationJob {
 
-    //Our wee little TF thread
-    public TensorFlowThread tensorFlowThread = new TensorFlowThread();
-
     //New tensor flow aJOB (wip)
     public TensorFlowaJob tensorFlowaJob = new TensorFlowaJob();
 
@@ -63,27 +60,27 @@ class FindSkystoneJob extends NavigationJob {
 
         opMode.telemetry.addData("Loop called!", "");
         moveSpeed = 0;
-        recognition = tensorFlowThread.getCurrentRecognition();
+        recognition = tensorFlowaJob.getCurrentRecognition();
 
         //if we can see a skystone
         if (recognition != null) {
             lostRecognitionTimer = 0;
 
             //Find how far left/right the skystone is relative to the camera (-1 == left, 1 == right) with a tolerance of 1/10 the screen
-            xFactor = tensorFlowThread.getCurrentXFactor(recognition) > 0 ? 1 : 0;
-            xFactor = tensorFlowThread.getCurrentXFactor(recognition) < 0 ? -1 : 0;
+            xFactor = tensorFlowaJob.getCurrentXFactor(recognition) > 0 ? 1 : 0;
+            xFactor = tensorFlowaJob.getCurrentXFactor(recognition) < 0 ? -1 : 0;
 
             //Lerp the move speed
-            moveSpeed = bMath.MoveTowards(moveSpeed, bMath.Clamp(Math.abs(tensorFlowThread.getCurrentXFactor(recognition)), 0.1, 1), deltaTime.deltaTime());
+            moveSpeed = bMath.MoveTowards(moveSpeed, bMath.Clamp(Math.abs(tensorFlowaJob.getCurrentXFactor(recognition)), 0.1, 1), deltaTime.deltaTime());
 
             opMode.telemetry.addData("XFactor ", xFactor);
-            opMode.telemetry.addData("Movement Factor ", tensorFlowThread.getCurrentXFactor(recognition) > 0 ? 180 : 0);
-            opMode.telemetry.addData("cFactor ", tensorFlowThread.getCurrentXFactor(recognition));
+            opMode.telemetry.addData("Movement Factor ", tensorFlowaJob.getCurrentXFactor(recognition) > 0 ? 180 : 0);
+            opMode.telemetry.addData("cFactor ", tensorFlowaJob.getCurrentXFactor(recognition));
 
 
             //TODO: After stopping double check that we are lined up after 250ms
             //If we are lined up nicely stop the job, if not then move to be
-            if (Math.abs(tensorFlowThread.getCurrentXFactor(recognition)) < 0.1) {
+            if (Math.abs(tensorFlowaJob.getCurrentXFactor(recognition)) < 0.1) {
 
                 if (!settled) {
                     settledTimer += deltaTime.deltaTime();
@@ -101,7 +98,7 @@ class FindSkystoneJob extends NavigationJob {
 
 
                 //Move left or right (strafe) until we are lined up with the skystone
-                robot.MoveSimple(tensorFlowThread.getCurrentXFactor(recognition) > 0 ? 180 : 0, moveSpeed);
+                robot.MoveSimple(tensorFlowaJob.getCurrentXFactor(recognition) > 0 ? 180 : 0, moveSpeed);
 
             }
 
@@ -128,7 +125,7 @@ class FindSkystoneJob extends NavigationJob {
         super.OnStop();
 
         //Disposes of the thread
-        tensorFlowThread.stopThread();
+        tensorFlowaJob.Stop();
         robot.Stop();
         //Stop motorz
         StopMotors();
@@ -138,6 +135,7 @@ class FindSkystoneJob extends NavigationJob {
     public void OnStart(LinearOpMode op) {
         super.OnStart(op);
 
+
         //Starts up a tensor flow thread
 //        tensorFlowThread.StartTensorFlow(op, "Skystone", 0.75);
 //        tensorFlowThread.start();
@@ -146,7 +144,9 @@ class FindSkystoneJob extends NavigationJob {
 
     @Override
     public void Init(LinearOpMode op) {
-        tensorFlowThread.startThread(op, "Skystone", 0.75);
+        tensorFlowaJob = JobManager.tensorFlowaJob;
+
+        tensorFlowaJob.Start(op);
     }
 }
 
@@ -167,6 +167,30 @@ class TensorFlowaJob extends aJob implements Runnable {
 
     List<Recognition> recognitions;
 
+    //<editor-fold desc="External Calls?">
+    public Recognition getCurrentRecognition() {
+        return currentRecognition;
+    }
+
+    public Boolean hasRecognition() {
+        return currentRecognition != null;
+    }
+
+    //The a number between -1 and 1 representing how close the recognition is to the center of the camera
+    public double getCurrentXFactor(Recognition recognition) {
+        return (getXPosition(recognition) - (recognition.getImageWidth() / 2)) / (recognition.getImageWidth() / 2);
+    }
+
+    //Returns the average between the left bound and right bound
+    public float getXPosition(Recognition recognition) {
+        float factor = (recognition.getLeft() + (getWidth(recognition) / 2));
+        return factor;
+    }
+
+    //Returns the current width of our recognition
+    public float getWidth(Recognition recognition) {
+        return recognition.getWidth();
+    }
 
     @Override
     public void Init(LinearOpMode op) {
@@ -199,7 +223,6 @@ class TensorFlowaJob extends aJob implements Runnable {
     @Override
     public void OnStart(LinearOpMode op) {
         super.OnStart(op);
-
         //Make sure TF is started before we boot up the thread
         if (tfod != null) {
 

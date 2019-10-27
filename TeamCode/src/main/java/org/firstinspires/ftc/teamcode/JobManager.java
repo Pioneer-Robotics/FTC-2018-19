@@ -28,11 +28,11 @@ import org.firstinspires.ftc.teamcode.Helpers.bMath;
 
 
 //Holds all of the current jobs for using in other scripts
-public class JobManager {
+ public class JobManager {
     public FindSkystoneJob findSkystoneJob = new FindSkystoneJob();
 
     //This aJob is used in all other jobs that use tensor flow
-    public TensorFlowaJob tensorFlowaJob = new TensorFlowaJob();
+    public static TensorFlowaJob tensorFlowaJob = new TensorFlowaJob();
 
     public WallTrack wallTrackJob = new WallTrack();
 

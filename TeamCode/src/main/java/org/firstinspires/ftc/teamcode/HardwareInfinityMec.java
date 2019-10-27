@@ -148,17 +148,17 @@ public class HardwareInfinityMec extends Thread {
 
     //<editor-fold desc="Movement">
     public void MoveSimple(double movementAngle, double movementSpeed) {
-        Double4 v = bMath.getMecMovementSimple(movementAngle);
+        Double4 v = bMath.getMecMovementSimple(movementAngle - 90);
         SetPowerDouble4(v, movementSpeed);
     }
 
     public void MoveComplex(double movementAngle, double movementSpeed, double angle) {
-        Double4 v = bMath.getMecMovement(movementAngle, angle);
+        Double4 v = bMath.getMecMovement(movementAngle - 90, angle - 90);
         SetPowerDouble4(v, movementSpeed);
     }
 
     public void Rotate(double angle, double rotationSpeed) {
-        Double4 v = bMath.getMecRotation(angle, rotationSpeed);
+        Double4 v = bMath.getMecRotation(angle - 90, rotationSpeed - 90);
         SetPowerDouble4(v, rotationSpeed);
     }
 
