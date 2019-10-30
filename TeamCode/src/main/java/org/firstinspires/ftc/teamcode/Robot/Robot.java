@@ -22,9 +22,9 @@ public class Robot extends Thread {
     public static Robot instance;
 
     //Our wee little wall tracker
-    public RobotWallTrack wallTrack;
+    public RobotWallTrack wallTrack = new RobotWallTrack();
 
-    //The eight lasers of navigationness! Right now we only have 6 so its slightly less impressive I suppose
+    //The eight lasers of navigationness! Right now we only have 6 so it's slightly less impressive, I suppose
     public bDistanceSensor[] lasers = new bDistanceSensor[6];
 
     //This delta time is only for the navigation helper thread
@@ -81,9 +81,14 @@ public class Robot extends Thread {
         IParameters.loggingTag = "IMU";
         imu.initialize(IParameters);
 
+
+        opmode.telemetry.addData("Setting up wall track", "");
+        opmode.telemetry.update();
         //Set up the wall tracker, this uses ALL the lasers so make sure they all work before running this
         wallTrack.Start(opmode);
 
+        opmode.telemetry.addData("track", "");
+        opmode.telemetry.update();
         //Starts the 'run' thread
         start();
 

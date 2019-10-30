@@ -3,16 +3,14 @@ package org.firstinspires.ftc.teamcode.Experiments.QuickTests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.Helpers.DeltaTime;
+import org.firstinspires.ftc.teamcode.Experiments.Functional.WallTrackTesting;
 import org.firstinspires.ftc.teamcode.Robot.Robot;
 import org.firstinspires.ftc.teamcode.Robot.RobotWallTrack;
 
-@Autonomous(name = "TestingOpMode1", group = "Sensor")
-public class TestingOpMode1 extends LinearOpMode {
+@Autonomous(name = "TestingOpMode2y", group = "Sensor")
+public class TestingOpMode2 extends LinearOpMode {
 
     Robot robot = new Robot();
 
@@ -22,8 +20,9 @@ public class TestingOpMode1 extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            robot.wallTrack.MoveAlongWallSimple(RobotWallTrack.groupID.Group90, 0.1, 50, 1, 25);
+            telemetry.addData("Input bus 0", hardwareMap.get(DistanceSensor.class, "sensor 90"));
+            telemetry.update();
         }
-    }
 
+    }
 }

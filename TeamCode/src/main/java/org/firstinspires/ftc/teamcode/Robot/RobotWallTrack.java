@@ -16,7 +16,42 @@ public class RobotWallTrack {
 
     //List of all of our laser groups, mainly for ease of access
     //Side note, what the hell is java's dictionary system smoking
-    public Dictionary<groupID, SensorGroup> sensorIDGroupPairs;
+    public Dictionary<groupID, SensorGroup> sensorIDGroupPairs = new Dictionary<groupID, SensorGroup>() {
+        @Override
+        public int size() {
+            return 0;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
+        @Override
+        public Enumeration<groupID> keys() {
+            return null;
+        }
+
+        @Override
+        public Enumeration<SensorGroup> elements() {
+            return null;
+        }
+
+        @Override
+        public SensorGroup get(Object o) {
+            return null;
+        }
+
+        @Override
+        public SensorGroup put(groupID groupID, SensorGroup sensorGroup) {
+            return null;
+        }
+
+        @Override
+        public SensorGroup remove(Object o) {
+            return null;
+        }
+    };
 
     public Robot robot;
 
@@ -185,10 +220,10 @@ public class RobotWallTrack {
         currentGroup = sensorIDGroupPairs.get(group);
 
         //Get the current sensors wall angle
-        wallAngle = currentGroup.getWallAngle();
+        wallAngle = sensorIDGroupPairs.get(group).getWallAngle();
 
         //send our current world distance to the avoidance config
-        avoidanceConfig.SetCurrentDistance(currentGroup.getDistance(SensorGroup.TripletType.Center, DistanceUnit.CM));
+        avoidanceConfig.SetCurrentDistance(sensorIDGroupPairs.get(group).getDistance(SensorGroup.TripletType.Center, DistanceUnit.CM));
 
         //Add the avoidance offset to our wall angle (to maintain the 'distance' from the wall)
         curDriveAngle = wallAngle + avoidanceConfig.targetDirection();
