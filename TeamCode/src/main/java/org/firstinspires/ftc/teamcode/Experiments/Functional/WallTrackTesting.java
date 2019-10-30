@@ -75,20 +75,42 @@ public class WallTrackTesting extends LinearOpMode {
         //Returns true if the three sensors have hit a perfect (with in 5%, see "error") line, this can be used to check if there's another robot or obstacle near us
         //Get bounds to work on the sensors
         //Error is between 0 (0%) and 1 (100%)
-        public boolean isValid(double error) {
+        //OLD
+
+//        public boolean isValid(double error) {
+//            double sinPiOver4 = bMath.sq2() / 2;
+//            double e = getDistance(TripletType.Left, DistanceUnit.CM) * sinPiOver4;
+//            double w = getDistance(TripletType.Center, DistanceUnit.CM);
+//            double q = getDistance(TripletType.Right, DistanceUnit.CM) * sinPiOver4;
+//            double difference = Math.abs((q - w) / q - (w - e) / e);
+//            if (difference <= error) {
+//                return true;
+//            } else {
+//                return false;
+//            }
+//
+//        }
+
+        //NEW
+//Returns true if the three sensors have hit a perfect (with in 5%, see "error") line, this can be used to check if there's another robot or obstacle near us
+        public boolean isValid(double error) {//Error edited by Noah, may completely break the function
             double sinPiOver4 = bMath.sq2() / 2;
-            double e = getDistance(TripletType.Left, DistanceUnit.CM) * sinPiOver4;
-            double w = getDistance(TripletType.Center, DistanceUnit.CM);
-            double q = getDistance(TripletType.Right, DistanceUnit.CM) * sinPiOver4;
-            double difference = Math.abs((q - w) / q - (w - e) / e);
-            if (difference <= error) {
+            double l = getDistance(TripletType.Left, DistanceUnit.CM);
+            double c = getDistance(TripletType.Center, DistanceUnit.CM);
+            double r = getDistance(TripletType.Right, DistanceUnit.CM);
+            double r2 = ((r + error) * sinPiOver4 - (c + error)) / ((r + error) * sinPiOver4); //greater than r1
+            double r1 = (r * sinPiOver4 - c) / (r * sinPiOver4);
+            double r0 = ((r - error) * sinPiOver4 - (c - error)) / ((r - error) * sinPiOver4); //less than r1
+            double l0 = ((c + error) - (l + error) * sinPiOver4) / ((l + error) * sinPiOver4); //less than l1
+            double l1 = (c - l * sinPiOver4) / (l * sinPiOver4);
+            double l2 = ((c - error) - (l - error) * sinPiOver4) / ((l - error) * sinPiOver4); //greater than l1
+            if (r2 >= r1 && r0 <= r1 && l2 >= l1 && l0 <= l1) {
                 return true;
             } else {
                 return false;
             }
 
         }
-
 
         //</editor-fold>
     }
