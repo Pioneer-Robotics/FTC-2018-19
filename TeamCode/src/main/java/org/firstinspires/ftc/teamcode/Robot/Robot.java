@@ -24,9 +24,6 @@ public class Robot extends Thread {
     //Our wee little wall tracker
     public RobotWallTrack wallTrack = new RobotWallTrack();
 
-    //The eight lasers of navigationness! Right now we only have 6 so it's slightly less impressive, I suppose
-    public bDistanceSensor[] lasers = new bDistanceSensor[6];
-
     //This delta time is only for the navigation helper thread
     public DeltaTime deltaTime = new DeltaTime();
 
@@ -196,34 +193,6 @@ public class Robot extends Thread {
         return rotation;
     }
     //</editor-fold>
-
-
-    public class bDistanceSensor {
-
-        //The actual sensor
-        DistanceSensor distanceSensor;
-
-        //The angle that this sensors laser goes relative to the phone facing side  (-180 <=> 180)
-        double angle = 0;
-
-        public double distance;
-
-        public double distanceSmoothed;
-
-        private final double smoothingStep = 1;
-
-        public bDistanceSensor(OpMode op, String _sensor, double _angle) {
-            distanceSensor = op.hardwareMap.get(DistanceSensor.class, _sensor);
-            angle = _angle;
-        }
-
-        //Called externally to tick the senor smoothing and update distance values
-        public void Update() {
-            distance = distanceSensor.getDistance(DistanceUnit.CM);
-            distanceSmoothed = bMath.MoveTowards(distanceSmoothed, distance, smoothingStep);
-        }
-
-    }
 
 
     //wip
