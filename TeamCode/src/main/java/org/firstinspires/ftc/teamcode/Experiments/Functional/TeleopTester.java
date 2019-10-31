@@ -1,19 +1,15 @@
-package org.firstinspires.ftc.teamcode.Experiments.QuickTests;
+package org.firstinspires.ftc.teamcode.Experiments.Functional;
 
 
 import android.renderscript.Double2;
-import android.renderscript.Double4;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 
-import org.firstinspires.ftc.teamcode.Experiments.Functional.WallTrackTesting;
 import org.firstinspires.ftc.teamcode.Robot.Robot;
-import org.firstinspires.ftc.teamcode.Robot.RobotWallTrack;
 
-@Autonomous(name = "TestingOpMode2y", group = "Sensor")
-public class TestingOpMode2 extends LinearOpMode {
+@Autonomous(name = "Teleop", group = "Sensor")
+public class TeleopTester extends LinearOpMode {
 
     Robot robot = new Robot();
 

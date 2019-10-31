@@ -8,51 +8,17 @@ import org.firstinspires.ftc.teamcode.Helpers.bMath;
 
 import java.util.Dictionary;
 import java.util.Enumeration;
+import java.util.HashMap;
 
 
 //Called by the Robot.java to track along a flat surface. This surface is identified by inputting an angle value which correlates to the sensor group that will be used for tracking (look at the tape on the robot for anglez)
 //Make sure to Trial and Error the hell out of this one!
+//Might be fun to put this in Robot 'run'
 public class RobotWallTrack {
 
     //List of all of our laser groups, mainly for ease of access
     //Side note, what the hell is java's dictionary system smoking
-    public Dictionary<groupID, SensorGroup> sensorIDGroupPairs = new Dictionary<groupID, SensorGroup>() {
-        @Override
-        public int size() {
-            return 0;
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return false;
-        }
-
-        @Override
-        public Enumeration<groupID> keys() {
-            return null;
-        }
-
-        @Override
-        public Enumeration<SensorGroup> elements() {
-            return null;
-        }
-
-        @Override
-        public SensorGroup get(Object o) {
-            return null;
-        }
-
-        @Override
-        public SensorGroup put(groupID groupID, SensorGroup sensorGroup) {
-            return null;
-        }
-
-        @Override
-        public SensorGroup remove(Object o) {
-            return null;
-        }
-    };
-
+    public HashMap<groupID, SensorGroup> sensorIDGroupPairs = new HashMap<groupID, SensorGroup>();
     public Robot robot;
 
 
@@ -208,7 +174,7 @@ public class RobotWallTrack {
     //speed == how fast we move along the wall, also in which direction
     //distance == how far away from the wall should we be
     //bounds == +-distance how far are we allowed to be before correction (5cm seems reasonable)
-    //correctionScale == think of it as how fast we correct out self (its an angle measure), leave it around 25.
+    //correctionScale == think of it as how fast we correct our self (its an angle measure: 0 = no correction, 90 == max correction), leave it around 25.
     public void MoveAlongWallSimple(groupID group, double speed, double distance, double bounds, double correctionScale) {
 
         //Configure the avoidance config
@@ -220,10 +186,10 @@ public class RobotWallTrack {
         currentGroup = sensorIDGroupPairs.get(group);
 
         //Get the current sensors wall angle
-        wallAngle = sensorIDGroupPairs.get(group).getWallAngle();
+        wallAngle = currentGroup.getWallAngle();
 
         //send our current world distance to the avoidance config
-        avoidanceConfig.SetCurrentDistance(sensorIDGroupPairs.get(group).getDistance(SensorGroup.TripletType.Center, DistanceUnit.CM));
+        avoidanceConfig.SetCurrentDistance(currentGroup.getDistance(SensorGroup.TripletType.Center, DistanceUnit.CM));
 
         //Add the avoidance offset to our wall angle (to maintain the 'distance' from the wall)
         curDriveAngle = wallAngle + avoidanceConfig.targetDirection();

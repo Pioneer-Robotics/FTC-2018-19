@@ -24,7 +24,7 @@ public class bMath {
     /*
     X____Y
     | ^^ |
-    |    |
+    |    ||
     |____|
     Z    W
 
@@ -114,6 +114,7 @@ public class bMath {
 
 
     //<editor-fold desc="toHeadingVector">
+    //ALL ANGLES SHOULD BE -180 to 180
     public static Double2 degreesToHeadingVector(double angle) {
         double a = Math.toRadians(angle);
         return radiansToHeadingVector(a);

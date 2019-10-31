@@ -15,6 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.Helpers.bMath;
+import org.firstinspires.ftc.teamcode.Robot.RobotWallTrack;
 
 import java.util.List;
 
@@ -95,7 +96,12 @@ class FindSkystoneJob extends NavigationJob {
 
 
                 //Move left or right (strafe) until we are lined up with the skystone
-                robot.MoveSimple(tensorFlowaJob.getCurrentXFactor(recognition) > 0 ? 180 : 0, moveSpeed);
+//                robot.MoveSimple(tensorFlowaJob.getCurrentXFactor(recognition) > 0 ? 180 : 0, moveSpeed);
+
+                //Move left or right (positive/negative) relative to the wall that is at angle 180
+                robot.wallTrack.MoveAlongWallSimple(RobotWallTrack.groupID.Group180, moveSpeed * (tensorFlowaJob.getCurrentXFactor(recognition) > 0 ? 1 : -1), 50, 1, 25)
+                ;
+
 
             }
 
