@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.Experiments.Functional.WallTrackTesting;
 import org.firstinspires.ftc.teamcode.Robot.Robot;
 import org.firstinspires.ftc.teamcode.Robot.RobotWallTrack;
 
-@Autonomous(name = "TestingOpMode2y", group = "Sensor")
+@Autonomous(name = "TestingOpMode2", group = "Sensor")
 public class TestingOpMode2 extends LinearOpMode {
 
     Robot robot = new Robot();
@@ -25,8 +25,7 @@ public class TestingOpMode2 extends LinearOpMode {
 
         while (opModeIsActive()) {
             //Move via joystick and maintain rotation
-            robot.MoveComplex(new Double2(gamepad1.left_stick_x, gamepad1.left_stick_y), gamepad1.a ? 1 : 0.1, robot.GetRotation());
-
+//            robot.SetRotationPID(90, 1);
 
         }
 

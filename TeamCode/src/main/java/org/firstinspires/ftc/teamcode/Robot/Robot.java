@@ -310,10 +310,7 @@ public class Robot extends Thread {
 //    }
 
     //Experimental version of set rotation without sleep (PID?)
-    public void SetRotationPID(double rotation, double threshold) {
-
-        //Tuning values
-        double P = 1, I = 1, D = 1;
+    public void SetRotationPID(double rotation, double threshold,double P, double I, double D) {
 
         double difference = rotation - GetRotation();
         double lastDifference = rotation - GetRotation();
