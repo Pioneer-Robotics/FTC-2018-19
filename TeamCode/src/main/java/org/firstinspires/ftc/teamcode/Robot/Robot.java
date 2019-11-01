@@ -181,7 +181,7 @@ public class Robot extends Thread {
      * Uses
      *
      * @param movementVector The vector (relative to the phoneside of the bot) that we want to move along
-     * @param movementSpeed How fast we want to move to move along 'movementAngle'. 1 is very fast, 0 is anti-fast (brakes).
+     * @param movementSpeed  How fast we want to move to move along 'movementAngle'. 1 is very fast, 0 is anti-fast (brakes).
      */
 
     public void MoveSimple(Double2 movementVector, double movementSpeed) {
@@ -201,10 +201,10 @@ public class Robot extends Thread {
 
     /**
      * @param movementVector The vector (relative to the phoneside of the bot) that we want to move along
-     * @param movementSpeed How fast we want to move to move along 'movementAngle'. 1 is very fast, 0 is anti-fast (brakes).
-     * @param angle         The angle that we want the robot to rotate too. It's actually witchcraft and might need some more research/testing
+     * @param movementSpeed  How fast we want to move to move along 'movementAngle'. 1 is very fast, 0 is anti-fast (brakes).
+     * @param angle          The angle that we want the robot to rotate too. It's actually witchcraft and might need some more research/testing
      */
-    public void MoveComplex(Double2 movementVector,  double movementSpeed, double angle) {
+    public void MoveComplex(Double2 movementVector, double movementSpeed, double angle) {
         Double4 v = bMath.getMecMovement(movementVector, angle);
         SetPowerDouble4(v, movementSpeed);
     }
@@ -234,6 +234,14 @@ public class Robot extends Thread {
         backLeft.setPower(v.z * multiplier);
         backRight.setPower(v.w * multiplier);
     }
+
+    public void SetPersistentVector(Double2 vector, double imu) {
+
+    }
+
+    public void SetPersistentRotation(double relativeAngle) {
+    }
+
 
     public void SetPowerDouble4(double x, double y, double z, double w, double multiplier) {
         Double4 v = new Double4(x, y, z, w);
@@ -310,7 +318,7 @@ public class Robot extends Thread {
 //    }
 
     //Experimental version of set rotation without sleep (PID?)
-    public void SetRotationPID(double rotation, double threshold,double P, double I, double D) {
+    public void SetRotationPID(double rotation, double threshold, double P, double I, double D) {
 
         double difference = rotation - GetRotation();
         double lastDifference = rotation - GetRotation();
