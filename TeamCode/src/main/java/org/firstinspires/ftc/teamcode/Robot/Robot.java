@@ -6,9 +6,11 @@ import android.renderscript.Double4;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -44,15 +46,18 @@ public class Robot extends Thread {
     public BNO055IMU imu;
 
     //Hardware!
-    DcMotor frontLeft;
-    DcMotor frontRight;
-    DcMotor backLeft;
-    DcMotor backRight;
+    public DcMotor frontLeft;
+    public DcMotor frontRight;
+    public DcMotor backLeft;
+    public DcMotor backRight;
 
     //Used for testing
-    public Servo armServo;
+    public Servo gripServo;
 
-    OpMode Op;
+    //Used for testing
+    public DcMotor armWintch;
+
+    public OpMode Op;
 
     Boolean running;
 
@@ -71,11 +76,15 @@ public class Robot extends Thread {
         backLeft = hardwareMap.get(DcMotor.class, "Back Left");
         backRight = hardwareMap.get(DcMotor.class, "Back Right");
 
+        gripServo = hardwareMap.get(Servo.class, "Grip");
+        armWintch = hardwareMap.get(DcMotor.class, "Arm");
+
         //Set the left wheels to run backwards because of math?
 
         //Those wheels are reversed so power 1,1,1,1 moves us forward
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
+
 
         //Init the motors for use. NTS: If you don't do this the robot does not like to move with math
         SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -250,6 +259,11 @@ public class Robot extends Thread {
         frontRight.setPower(v.y * multiplier);
         backLeft.setPower(v.z * multiplier);
         backRight.setPower(v.w * multiplier);
+
+//        backRight.setPower(v.x * multiplier);
+//        frontLeft.setPower(v.w * multiplier);
+//        frontRight.setPower(v.z * multiplier);
+//        backLeft.setPower(v.y * multiplier);
     }
 
     public void SetDriveMode(DcMotor.RunMode mode) {

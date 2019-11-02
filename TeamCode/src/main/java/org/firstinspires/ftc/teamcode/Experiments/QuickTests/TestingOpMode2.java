@@ -23,11 +23,14 @@ public class TestingOpMode2 extends LinearOpMode {
 
         waitForStart();
 
-        while (opModeIsActive()) {
-            //Move via joystick and maintain rotation
-//            robot.SetRotationPID(90, 1);
-
-        }
+        robot.SetPowerDouble4(1.0, 0, 0, 0, 0.1);
+        sleep(2500);
+        robot.SetPowerDouble4(0, 1.0, 0, 0, 0.1);
+        sleep(2500);
+        robot.SetPowerDouble4(0, 0, 1.0, 0, 0.1);
+        sleep(2500);
+        robot.SetPowerDouble4(0, 0, 0, 1.0, 0.1);
+        sleep(2500);
 
     }
 }

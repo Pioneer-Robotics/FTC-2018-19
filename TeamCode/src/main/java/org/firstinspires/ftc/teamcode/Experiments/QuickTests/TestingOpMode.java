@@ -29,7 +29,9 @@ public class TestingOpMode extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
+            telemetry.addData("sensor 45", hardwareMap.get(DistanceSensor.class, "sensor 45").getDistance(DistanceUnit.CM));
             telemetry.addData("sensor 90", hardwareMap.get(DistanceSensor.class, "sensor 90").getDistance(DistanceUnit.CM));
+            telemetry.addData("sensor 135", hardwareMap.get(DistanceSensor.class, "sensor 135 ").getDistance(DistanceUnit.CM));
             telemetry.update();
 
         }

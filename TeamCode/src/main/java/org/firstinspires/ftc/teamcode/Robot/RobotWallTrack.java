@@ -25,7 +25,7 @@ public class RobotWallTrack {
     //<editor-fold desc="Runtime data">
     AvoidanceConfiguration avoidanceConfig = new AvoidanceConfiguration();
 
-    SensorGroup currentGroup = new SensorGroup();
+    public SensorGroup currentGroup = new SensorGroup();
 
     double curDriveAngle = 0;
     double wallAngle = 0;
@@ -33,7 +33,7 @@ public class RobotWallTrack {
 
     public static class SensorGroup {
 
-        DistanceSensor[] distanceSensors = new DistanceSensor[3];
+        public DistanceSensor[] distanceSensors = new DistanceSensor[3];
 
         enum TripletType {
             Right,
@@ -192,10 +192,17 @@ public class RobotWallTrack {
         avoidanceConfig.SetCurrentDistance(currentGroup.getDistance(SensorGroup.TripletType.Center, DistanceUnit.CM));
 
         //Add the avoidance offset to our wall angle (to maintain the 'distance' from the wall)
-        curDriveAngle = wallAngle + avoidanceConfig.targetDirection();
+        curDriveAngle = wallAngle + avoidanceConfig.targetDirection() + 90;
 
         //MOVE
         robot.MoveSimple(curDriveAngle, speed);
+
+
+        Robot.instance.Op.telemetry.addData("45", currentGroup.distanceSensors[0].getDistance(DistanceUnit.CM));
+        Robot.instance.Op.telemetry.addData("90", currentGroup.distanceSensors[1].getDistance(DistanceUnit.CM));
+        Robot.instance.Op.telemetry.addData("135", currentGroup.distanceSensors[2].getDistance(DistanceUnit.CM));
+        Robot.instance.Op.telemetry.update();
+
     }
 
 

@@ -42,10 +42,10 @@ public class bMath {
 
         Double4 delta = new Double4(0, 0, 0, 0);
 
-        leftMovementPower = ((-movementVector.y - movementVector.x) / sq2() * Math.sin(angle) + ((-movementVector.y + movementVector.x) / sq2()) * Math.cos(angle));
-        rightMovementPower = ((-(-movementVector.y + movementVector.x) / sq2()) * Math.sin(angle) + ((-movementVector.y - movementVector.x) / sq2() * Math.cos(angle)));
-
-
+        leftMovementPower = (movementVector.x + movementVector.y)*Math.cos(angle)/sq2()-(movementVector.x+movementVector.y)/sq2()*Math.sin(angle);
+                //it used to be this, but should be equivalent: ((-movementVector.y - movementVector.x) / sq2() * Math.sin(angle) + ((-movementVector.y + movementVector.x) / sq2()) * Math.cos(angle));
+        rightMovementPower = (movementVector.y-movementVector.x)/sq2()*Math.sin(angle)-(movementVector.y+movementVector.x)/sq2()*Math.cos(angle);
+                //it used to be this, should be equivalent: ((-(-movementVector.y + movementVector.x) / sq2()) * Math.sin(angle) + ((-movementVector.y - movementVector.x) / sq2() * Math.cos(angle)));
         leftRotatePower = angle;
         rightRotatePower = -angle;
 
@@ -55,7 +55,7 @@ public class bMath {
         delta.w = (leftMovementPower + rightRotatePower);
 
 
-        return delta; //delta is the 4 component variable, Double4 delta (Joe)
+        return delta; //delta is the 4 compo'"":"nent variable, Double4 delta (Joe)
     }
 
     public static Double4 getMecRotation(double angle, double speed) {
@@ -93,7 +93,7 @@ public class bMath {
 
         Double4 delta = new Double4(0, 0, 0, 0);
 
-        leftMovementPower = ((-movementVector.y + movementVector.x) / sq2());
+        leftMovementPower = ((movementVector.x - movementVector.y) / sq2());
         rightMovementPower = ((-movementVector.y - movementVector.x) / sq2());
 
 
