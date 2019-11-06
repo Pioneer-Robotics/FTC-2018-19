@@ -33,11 +33,10 @@ public class RobotWallTrack {
 
     public static class SensorGroup {
 
-        public DistanceSensor[] distanceSensors = new DistanceSensor[3];
+        public DistanceSensor[] distanceSensors = new DistanceSensor[2];
 
         enum TripletType {
             Right,
-            Center,
             Left
         }
 
@@ -45,16 +44,14 @@ public class RobotWallTrack {
         //dL = the left most sensor
         //dC = the center sensor
         //dR = the right most sensor
-        public SensorGroup(DistanceSensor dL, DistanceSensor dC, DistanceSensor dR) {
+        public SensorGroup(DistanceSensor dL, DistanceSensor dR) {
             distanceSensors[0] = dL;
-            distanceSensors[1] = dC;
-            distanceSensors[2] = dR;
+            distanceSensors[1] = dR;
         }
 
-        public SensorGroup(OpMode opMode, String dL, String dC, String dR) {
+        public SensorGroup(OpMode opMode, String dL, String dR) {
             distanceSensors[0] = opMode.hardwareMap.get(DistanceSensor.class, dL);
-            distanceSensors[1] = opMode.hardwareMap.get(DistanceSensor.class, dC);
-            distanceSensors[2] = opMode.hardwareMap.get(DistanceSensor.class, dR);
+            distanceSensors[1] = opMode.hardwareMap.get(DistanceSensor.class, dR);
         }
 
         public SensorGroup() {
@@ -67,33 +64,25 @@ public class RobotWallTrack {
         }
 
         public double getDistanceAverage(DistanceUnit unit) {
-            return (getDistance(SensorGroup.TripletType.Center, unit) + getDistance(SensorGroup.TripletType.Right, unit) + getDistance(SensorGroup.TripletType.Left, unit)) / 3;
+            return (getDistance(SensorGroup.TripletType.Right, unit) + getDistance(SensorGroup.TripletType.Left, unit)) / 2;
         }
 
         //Return a distance sensor from type
         public DistanceSensor sensor(SensorGroup.TripletType type) {
-            return type == SensorGroup.TripletType.Center ? distanceSensors[1] : (type == SensorGroup.TripletType.Right ? distanceSensors[2] : distanceSensors[0]);
+            return (type == SensorGroup.TripletType.Right ? distanceSensors[1] : distanceSensors[0]);
         }
 
         public double getWallAngle() {
-            return Math.toDegrees(((bMath.pi() * 3) / 4) - Math.atan(getDistance(SensorGroup.TripletType.Right, DistanceUnit.CM) / getDistance(SensorGroup.TripletType.Left, DistanceUnit.CM)));
+            //5 == the dist between sensors
+            return (Math.atan(getDistance(SensorGroup.TripletType.Right, DistanceUnit.CM) - getDistance(SensorGroup.TripletType.Left, DistanceUnit.CM)) / 5) + Math.toDegrees((bMath.pi() * 3) / 4);
+
         }
 
         //Returns true if the three sensors have hit a perfect (with in 5%, see "error") line, this can be used to check if there's another robot or obstacle near us
         //Get bounds to work on the sensors
         //Error is between 0 (0%) and 1 (100%)
         public boolean isValid(double error) {
-            double sinPiOver4 = bMath.sq2() / 2;
-            double e = getDistance(SensorGroup.TripletType.Left, DistanceUnit.CM) * sinPiOver4;
-            double w = getDistance(SensorGroup.TripletType.Center, DistanceUnit.CM);
-            double q = getDistance(SensorGroup.TripletType.Right, DistanceUnit.CM) * sinPiOver4;
-            double difference = Math.abs((q - w) / q - (w - e) / e);
-            if (difference <= error) {
-                return true;
-            } else {
-                return false;
-            }
-
+            return true;
         }
 
 
@@ -163,10 +152,10 @@ public class RobotWallTrack {
         robot = Robot.instance;
 
         //put!?
-        //Add's K/V to the dictionary
-        sensorIDGroupPairs.put(groupID.Group90, new SensorGroup(op, "sensor 45", "sensor 90", "sensor 135"));
-        sensorIDGroupPairs.put(groupID.Group180, new SensorGroup(op, "sensor 135", "sensor 180", "sensor 225"));
-        sensorIDGroupPairs.put(groupID.Group270, new SensorGroup(op, "sensor 225", "sensor 270", "sensor 315"));
+        //Add's K/V to the hashMap
+        sensorIDGroupPairs.put(groupID.Group90, new SensorGroup(op, "sensor 90A", "sensor 90B"));
+        sensorIDGroupPairs.put(groupID.Group180, new SensorGroup(op, "sensor 180A", "sensor 180B"));
+        sensorIDGroupPairs.put(groupID.Group270, new SensorGroup(op, "sensor 270A", "sensor 270B"));
 
     }
 
@@ -189,7 +178,7 @@ public class RobotWallTrack {
         wallAngle = currentGroup.getWallAngle();
 
         //send our current world distance to the avoidance config
-        avoidanceConfig.SetCurrentDistance(currentGroup.getDistance(SensorGroup.TripletType.Center, DistanceUnit.CM));
+        avoidanceConfig.SetCurrentDistance(currentGroup.getDistanceAverage(DistanceUnit.CM));
 
         //Add the avoidance offset to our wall angle (to maintain the 'distance' from the wall)
         curDriveAngle = wallAngle + avoidanceConfig.targetDirection() + 90;
