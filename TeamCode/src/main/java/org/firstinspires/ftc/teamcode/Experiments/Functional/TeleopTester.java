@@ -25,8 +25,8 @@ public class TeleopTester extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         robot.init(hardwareMap, this);
 
-        robot.armWintch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.armWintch.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        robot.armWintch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        robot.armWintch.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         waitForStart();
 
@@ -43,14 +43,14 @@ public class TeleopTester extends LinearOpMode {
 //            robot.MoveComplex(new Double2(gamepad1.left_stick_x, gamepad1.left_stick_y), gamepad1.a ? 1 : 0.1, Math.toRadians(targetRotation));
 
             if (gamepad1.dpad_right) {
-                robot.gripServo.setPosition(1);
+//                robot.gripServo.setPosition(1);
             }
             if (gamepad1.dpad_left) {
-                robot.gripServo.setPosition(-1);
+//                robot.gripServo.setPosition(-1);
             }
-            telemetry.addData("encoder value", robot.armWintch.getCurrentPosition());
-            telemetry.update();
-            robot.armWintch.setPower(-gamepad1.left_trigger + gamepad1.right_trigger);
+//            telemetry.addData("encoder value", robot.armWintch.getCurrentPosition());
+//            telemetry.update();
+//            robot.armWintch.setPower(-gamepad1.left_trigger + gamepad1.right_trigger);
 
             targetRotation = 0;
             deltaTime.Stop();

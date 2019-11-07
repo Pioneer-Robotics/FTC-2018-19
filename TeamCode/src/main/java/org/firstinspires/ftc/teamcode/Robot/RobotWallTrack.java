@@ -74,7 +74,7 @@ public class RobotWallTrack {
 
         public double getWallAngle() {
             //5 == the dist between sensors
-            return (Math.atan(getDistance(SensorGroup.TripletType.Right, DistanceUnit.CM) - getDistance(SensorGroup.TripletType.Left, DistanceUnit.CM)) / 5) + Math.toDegrees((bMath.pi() * 3) / 4);
+            return (Math.atan(getDistance(SensorGroup.TripletType.Right, DistanceUnit.CM) - getDistance(SensorGroup.TripletType.Left, DistanceUnit.CM)) / 32.5) + Math.toDegrees((bMath.pi() * 3) / 4);
 
         }
 
@@ -155,7 +155,7 @@ public class RobotWallTrack {
         //Add's K/V to the hashMap
         sensorIDGroupPairs.put(groupID.Group90, new SensorGroup(op, "sensor 90A", "sensor 90B"));
         sensorIDGroupPairs.put(groupID.Group180, new SensorGroup(op, "sensor 180A", "sensor 180B"));
-        sensorIDGroupPairs.put(groupID.Group270, new SensorGroup(op, "sensor 270A", "sensor 270B"));
+//        sensorIDGroupPairs.put(groupID.Group270, new SensorGroup(op, "sensor 270A", "sensor 270B"));
 
     }
 
@@ -187,9 +187,9 @@ public class RobotWallTrack {
         robot.MoveSimple(curDriveAngle, speed);
 
 
-        Robot.instance.Op.telemetry.addData("45", currentGroup.distanceSensors[0].getDistance(DistanceUnit.CM));
-        Robot.instance.Op.telemetry.addData("90", currentGroup.distanceSensors[1].getDistance(DistanceUnit.CM));
-        Robot.instance.Op.telemetry.addData("135", currentGroup.distanceSensors[2].getDistance(DistanceUnit.CM));
+        Robot.instance.Op.telemetry.addData("90A", currentGroup.distanceSensors[0].getDistance(DistanceUnit.CM));
+        Robot.instance.Op.telemetry.addData("90B", currentGroup.distanceSensors[1].getDistance(DistanceUnit.CM));
+        Robot.instance.Op.telemetry.addData("Angle", currentGroup.getWallAngle());
         Robot.instance.Op.telemetry.update();
 
     }

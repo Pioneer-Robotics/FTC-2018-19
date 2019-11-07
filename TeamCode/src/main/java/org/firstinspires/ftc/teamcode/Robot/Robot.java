@@ -51,11 +51,11 @@ public class Robot extends Thread {
     public DcMotor backLeft;
     public DcMotor backRight;
 
-    //Used for testing
-    public Servo gripServo;
-
-    //Used for testing
-    public DcMotor armWintch;
+//    //Used for testing
+//    public Servo gripServo;
+//
+//    //Used for testing
+//    public DcMotor armWintch;
 
     public OpMode Op;
 
@@ -76,12 +76,10 @@ public class Robot extends Thread {
         backLeft = hardwareMap.get(DcMotor.class, "Back Left");
         backRight = hardwareMap.get(DcMotor.class, "Back Right");
 
-        gripServo = hardwareMap.get(Servo.class, "Grip");
-        armWintch = hardwareMap.get(DcMotor.class, "Arm");
+//        gripServo = hardwareMap.get(Servo.class, "Grip");
+//        armWintch = hardwareMap.get(DcMotor.class, "Arm");
 
-        //Set the left wheels to run backwards because of math?
-
-        //Those wheels are reversed so power 1,1,1,1 moves us forward
+        //Left wheels are reversed so power 1,1,1,1 moves us forward
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
 

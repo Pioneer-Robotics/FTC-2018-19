@@ -23,14 +23,18 @@ public class TestingOpMode2 extends LinearOpMode {
 
         waitForStart();
 
-        robot.SetPowerDouble4(1.0, 0, 0, 0, 0.1);
-        sleep(2500);
-        robot.SetPowerDouble4(0, 1.0, 0, 0, 0.1);
-        sleep(2500);
-        robot.SetPowerDouble4(0, 0, 1.0, 0, 0.1);
-        sleep(2500);
-        robot.SetPowerDouble4(0, 0, 0, 1.0, 0.1);
-        sleep(2500);
+        robot.SetPowerDouble4(1, 1, 1, 1, 0.1);
+
+
+
+//        robot.SetPowerDouble4(1.0, 0, 0, 0, 0.1);
+//        sleep(2500);
+//        robot.SetPowerDouble4(0, 1.0, 0, 0, 0.1);
+//        sleep(2500);
+//        robot.SetPowerDouble4(0, 0, 1.0, 0, 0.1);
+//        sleep(2500);
+//        robot.SetPowerDouble4(0, 0, 0, 1.0, 0.1);
+//        sleep(2500);
 
     }
 }
