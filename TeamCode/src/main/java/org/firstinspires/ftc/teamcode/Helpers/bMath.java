@@ -42,10 +42,8 @@ public class bMath {
 
         Double4 delta = new Double4(0, 0, 0, 0);
 
-        leftMovementPower = (movementVector.x + movementVector.y)*Math.cos(angle)/sq2()-(movementVector.x+movementVector.y)/sq2()*Math.sin(angle);
-                //it used to be this, but should be equivalent: ((-movementVector.y - movementVector.x) / sq2() * Math.sin(angle) + ((-movementVector.y + movementVector.x) / sq2()) * Math.cos(angle));
-        rightMovementPower = (movementVector.y-movementVector.x)/sq2()*Math.sin(angle)-(movementVector.y+movementVector.x)/sq2()*Math.cos(angle);
-                //it used to be this, should be equivalent: ((-(-movementVector.y + movementVector.x) / sq2()) * Math.sin(angle) + ((-movementVector.y - movementVector.x) / sq2() * Math.cos(angle)));
+        leftMovementPower = ((-movementVector.y - movementVector.x) / sq2() * Math.sin(angle) + ((-movementVector.y + movementVector.x) / sq2()) * Math.cos(angle));
+        rightMovementPower = ((-(-movementVector.y + movementVector.x) / sq2()) * Math.sin(angle) + ((-movementVector.y - movementVector.x) / sq2() * Math.cos(angle)));
         leftRotatePower = angle;
         rightRotatePower = -angle;
 

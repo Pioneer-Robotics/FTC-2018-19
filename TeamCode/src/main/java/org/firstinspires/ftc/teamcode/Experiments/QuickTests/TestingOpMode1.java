@@ -22,7 +22,7 @@ public class TestingOpMode1 extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-
+//            robot.MoveSimple(0, 0.25);
             robot.wallTrack.MoveAlongWallSimple(RobotWallTrack.groupID.Group90, 0.1, 50, 1, 25);
         }
     }

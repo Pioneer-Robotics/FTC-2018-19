@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.Experiments.Functional;
 
 import android.renderscript.Double2;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -12,19 +12,24 @@ import org.firstinspires.ftc.teamcode.Robot.Robot;
 
 import java.nio.ReadOnlyBufferException;
 
-@Autonomous(name = "Teleop", group = "Sensor")
+@TeleOp(name = "Teleop", group = "Sensor")
 public class TeleopTester extends LinearOpMode {
 
     Robot robot = new Robot();
 
     DeltaTime deltaTime = new DeltaTime();
 
+    int last_bl;
+
+    int last_br;
+
     double targetRotation;
 
     @Override
     public void runOpMode() throws InterruptedException {
         robot.init(hardwareMap, this);
-
+        robot.SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.SetDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        robot.armWintch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        robot.armWintch.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -39,8 +44,10 @@ public class TeleopTester extends LinearOpMode {
             targetRotation = 25 * gamepad1.right_stick_x * deltaTime.deltaTime();
 
             //Move via joystick and maintain target rotation, rotation might not work
-            robot.MoveSimple(new Double2(gamepad1.left_stick_x, gamepad1.left_stick_y), gamepad1.a ? 1 : 0.1);
+            robot.MoveComplex(new Double2(gamepad1.left_stick_x, gamepad1.left_stick_y), gamepad1.a ? 1 : 0.1, 0);
 //            robot.MoveComplex(new Double2(gamepad1.left_stick_x, gamepad1.left_stick_y), gamepad1.a ? 1 : 0.1, Math.toRadians(targetRotation));
+
+
 
             if (gamepad1.dpad_right) {
 //                robot.gripServo.setPosition(1);

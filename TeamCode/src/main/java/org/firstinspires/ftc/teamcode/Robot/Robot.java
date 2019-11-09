@@ -85,8 +85,8 @@ public class Robot extends Thread {
 
 
         //Init the motors for use. NTS: If you don't do this the robot does not like to move with math
-        SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        SetDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        SetDriveMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
         //Set up the IMU(s)
