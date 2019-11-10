@@ -18,27 +18,27 @@ public class bIMU {
 
     OpMode op;
 
-    public void Start(OpMode opMode) {
+    public void Start(OpMode opMode, String imu_0_name, String imu_1_name) {
         op = opMode;
 
         //Start up the first IMU
-        imu_0 = opMode.hardwareMap.get(BNO055IMU.class, "imu");
+        imu_0 = opMode.hardwareMap.get(BNO055IMU.class, imu_0_name);
         IParameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         IParameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         IParameters.calibrationDataFile = "BNO055IMUCalibration.json";
         IParameters.loggingEnabled = true;
-        IParameters.loggingTag = "IMU";
+        IParameters.loggingTag = "IMU 0";
 
         imu_0.initialize(IParameters);
 
 
         //Start up the first IMU
-        imu_1 = opMode.hardwareMap.get(BNO055IMU.class, "imu");
+        imu_1 = opMode.hardwareMap.get(BNO055IMU.class, imu_1_name);
         IParameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         IParameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         IParameters.calibrationDataFile = "BNO055IMUCalibration.json";
         IParameters.loggingEnabled = true;
-        IParameters.loggingTag = "IMU";
+        IParameters.loggingTag = "IMU 1";
 
         imu_1.initialize(IParameters);
     }

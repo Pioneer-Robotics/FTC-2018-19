@@ -33,6 +33,8 @@ public class RobotWallTrack {
 
     public static class SensorGroup {
 
+        public double distance;
+
         public DistanceSensor[] distanceSensors = new DistanceSensor[2];
 
         enum TripletType {
@@ -44,14 +46,16 @@ public class RobotWallTrack {
         //dL = the left most sensor
         //dC = the center sensor
         //dR = the right most sensor
-        public SensorGroup(DistanceSensor dL, DistanceSensor dR) {
+        public SensorGroup(DistanceSensor dL, DistanceSensor dR, Double dist) {
             distanceSensors[0] = dL;
             distanceSensors[1] = dR;
+            distance = dist;
         }
 
-        public SensorGroup(OpMode opMode, String dL, String dR) {
+        public SensorGroup(OpMode opMode, String dL, String dR, Double dist) {
             distanceSensors[0] = opMode.hardwareMap.get(DistanceSensor.class, dL);
             distanceSensors[1] = opMode.hardwareMap.get(DistanceSensor.class, dR);
+            distance = dist;
         }
 
         public SensorGroup() {
@@ -74,16 +78,16 @@ public class RobotWallTrack {
 
         public double getWallAngle() {
             //5 == the dist between sensors
-            return (Math.atan(getDistance(SensorGroup.TripletType.Right, DistanceUnit.CM) - getDistance(SensorGroup.TripletType.Left, DistanceUnit.CM)) / 32.5) + Math.toDegrees((bMath.pi() * 3) / 4);
+            return (Math.atan(getDistance(SensorGroup.TripletType.Right, DistanceUnit.CM) - getDistance(SensorGroup.TripletType.Left, DistanceUnit.CM)) / distance) + Math.toDegrees((bMath.pi() * 3) / 4);
 
         }
 
-        //Returns true if the three sensors have hit a perfect (with in 5%, see "error") line, this can be used to check if there's another robot or obstacle near us
-        //Get bounds to work on the sensors
-        //Error is between 0 (0%) and 1 (100%)
-        public boolean isValid(double error) {
-            return true;
-        }
+//        //Returns true if the three sensors have hit a perfect (with in 5%, see "error") line, this can be used to check if there's another robot or obstacle near us
+//        //Get bounds to work on the sensors
+//        //Error is between 0 (0%) and 1 (100%)
+//        public boolean isValid(double error) {
+//            return true;
+//        }
 
 
         //</editor-fold>
@@ -153,8 +157,8 @@ public class RobotWallTrack {
 
         //put!?
         //Add's K/V to the hashMap
-        sensorIDGroupPairs.put(groupID.Group90, new SensorGroup(op, "sensor 90A", "sensor 90B"));
-        sensorIDGroupPairs.put(groupID.Group180, new SensorGroup(op, "sensor 180A", "sensor 180B"));
+        sensorIDGroupPairs.put(groupID.Group90, new SensorGroup(op, RobotConfiguration.distanceSensor_90A, RobotConfiguration.distanceSensor_90B, RobotConfiguration.distance_90AB));
+        sensorIDGroupPairs.put(groupID.Group180, new SensorGroup(op, RobotConfiguration.distanceSensor_180A, RobotConfiguration.distanceSensor_180B, RobotConfiguration.distance_180AB));
 //        sensorIDGroupPairs.put(groupID.Group270, new SensorGroup(op, "sensor 270A", "sensor 270B"));
 
     }
@@ -164,7 +168,7 @@ public class RobotWallTrack {
     //distance == how far away from the wall should we be
     //bounds == +-distance how far are we allowed to be before correction (5cm seems reasonable)
     //correctionScale == think of it as how fast we correct our self (its an angle measure: 0 = no correction, 90 == max correction), leave it around 25.
-    public void MoveAlongWallSimple(groupID group, double speed, double distance, double bounds, double correctionScale) {
+    public void MoveAlongWallSimple(groupID group, double speed, double distance, double bounds, double correctionScale, double angleOffset) {
 
         //Configure the avoidance config
         avoidanceConfig.range = distance;
@@ -181,39 +185,18 @@ public class RobotWallTrack {
         avoidanceConfig.SetCurrentDistance(currentGroup.getDistanceAverage(DistanceUnit.CM));
 
         //Add the avoidance offset to our wall angle (to maintain the 'distance' from the wall)
-        curDriveAngle = wallAngle + avoidanceConfig.targetDirection() + 90;
+        curDriveAngle = wallAngle + avoidanceConfig.targetDirection() + 90 + angleOffset;
 
         //MOVE
         robot.MoveSimple(curDriveAngle, speed);
 
 
-        Robot.instance.Op.telemetry.addData("90A", currentGroup.distanceSensors[0].getDistance(DistanceUnit.CM));
-        Robot.instance.Op.telemetry.addData("90B", currentGroup.distanceSensors[1].getDistance(DistanceUnit.CM));
-        Robot.instance.Op.telemetry.addData("Angle", currentGroup.getWallAngle());
+        Robot.instance.Op.telemetry.addData("Current Measure A", currentGroup.distanceSensors[0].getDistance(DistanceUnit.CM));
+        Robot.instance.Op.telemetry.addData("Current Measure B", currentGroup.distanceSensors[1].getDistance(DistanceUnit.CM));
+        Robot.instance.Op.telemetry.addData("Current Measure Angle", currentGroup.getWallAngle());
         Robot.instance.Op.telemetry.update();
 
     }
 
 
-    //Returns if the current group is on a line, check this before moving along a line
-    //group == teh group we want to verify
-    //error == the amount of error we can accept, between 0 and 1 (1 being 100%)
-    public boolean CheckWallValidity(groupID group, double error) {
-        return sensorIDGroupPairs.get(group).isValid(error);
-    }
-
-//    public void MoveAlongWall(groupID group) {
-//
-//        currentGroup = sensorIDGroupPairs.get(group);
-//
-//        wallAngle = currentGroup.getWallAngle();
-//        weightedWallAngle = bMath.MoveTowardsRadian(weightedWallAngle, Math.toRadians(wallAngle - 90), deltaTime.deltaTime() * 3);
-//
-//        distance = currentGroup.getDistance(SensorTriplet.TripletType.Center, DistanceUnit.CM);
-//        avoidanceConfig.SetCurrentDistance(distance);
-//
-//        curDriveAngle = wallAngle + avoidanceConfig.targetDirection();
-//
-//        robot.MoveComplex(curDriveAngle, 0.5, weightedWallAngle);
-//    }
 }

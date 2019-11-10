@@ -18,6 +18,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Helpers.DeltaTime;
 import org.firstinspires.ftc.teamcode.Helpers.bMath;
+import org.firstinspires.ftc.teamcode.Helpers.bTelemetry;
 import org.firstinspires.ftc.teamcode.Input.bIMU;
 
 //TODO: clean up the canmove system
@@ -63,18 +64,23 @@ public class Robot extends Thread {
 
 
     public void init(HardwareMap hardwareMap, OpMode opmode) {
+
+        //Start the printer
+        bTelemetry.Start(opmode);
+
         //Set up the instance (safety checks might be a good idea at some point)
         instance = this;
+        bTelemetry.Print("Robot instance assigned.");
 
         //Set the opmode
         Op = opmode;
 
-
         //Find the motors
-        frontLeft = hardwareMap.get(DcMotor.class, "Front Left");
-        frontRight = hardwareMap.get(DcMotor.class, "Front Right");
-        backLeft = hardwareMap.get(DcMotor.class, "Back Left");
-        backRight = hardwareMap.get(DcMotor.class, "Back Right");
+        frontLeft = hardwareMap.get(DcMotor.class, RobotConfiguration.wheel_frontLeft);
+        frontRight = hardwareMap.get(DcMotor.class, RobotConfiguration.wheel_frontRight);
+        backLeft = hardwareMap.get(DcMotor.class, RobotConfiguration.wheel_backLeft);
+        backRight = hardwareMap.get(DcMotor.class, RobotConfiguration.wheel_backRight);
+        bTelemetry.Print("Robot wheels assigned.");
 
 //        gripServo = hardwareMap.get(Servo.class, "Grip");
 //        armWintch = hardwareMap.get(DcMotor.class, "Arm");
@@ -87,24 +93,22 @@ public class Robot extends Thread {
         //Init the motors for use. NTS: If you don't do this the robot does not like to move with math
         SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         SetDriveMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        bTelemetry.Print("Wheel encoders initialized.");
 
 
         //Set up the IMU(s)
-        imu.Start(opmode);
+        imu.Start(opmode, RobotConfiguration.imu_0, RobotConfiguration.imu_1);
+        bTelemetry.Print("IMU's initialized.");
 
-
-        opmode.telemetry.addData("Setting up wall track", "");
-        opmode.telemetry.update();
         //Set up the wall tracker, this uses ALL the lasers so make sure they all work before running this
         wallTrack.Start(opmode);
-
-        opmode.telemetry.addData("track", "");
-        opmode.telemetry.update();
-
+        bTelemetry.Print("Walltracker initialized.");
 
         //Starts the 'run' thread
         start();
+        bTelemetry.Print("Robot thread initialized.");
 
+        bTelemetry.Print("Robot start up successful. Ready to operate!");
     }
 
 
