@@ -18,6 +18,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Helpers.DeltaTime;
 import org.firstinspires.ftc.teamcode.Helpers.bMath;
+import org.firstinspires.ftc.teamcode.Input.bIMU;
 
 //TODO: clean up the canmove system
 public class Robot extends Thread {
@@ -42,8 +43,7 @@ public class Robot extends Thread {
     //The current IMU rotation, threaded
     double rotation;
 
-    private BNO055IMU.Parameters IParameters = new BNO055IMU.Parameters();
-    public BNO055IMU imu;
+    public bIMU imu;
 
     //Hardware!
     public DcMotor frontLeft;
@@ -85,18 +85,12 @@ public class Robot extends Thread {
 
 
         //Init the motors for use. NTS: If you don't do this the robot does not like to move with math
-//        SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        SetDriveMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        SetDriveMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
         //Set up the IMU(s)
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        IParameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        IParameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        IParameters.calibrationDataFile = "BNO055IMUCalibration.json";
-        IParameters.loggingEnabled = true;
-        IParameters.loggingTag = "IMU";
-        imu.initialize(IParameters);
+        imu.Start(opmode);
 
 
         opmode.telemetry.addData("Setting up wall track", "");
@@ -151,6 +145,7 @@ public class Robot extends Thread {
 //
 //
 //            deltaTime.Stop();
+
             //Update our 'rotation' value
             BackgroundRotation();
         }
@@ -158,10 +153,8 @@ public class Robot extends Thread {
 
 
     public void BackgroundRotation() {
-
         //Updates the current rotation
-        rotation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-
+        rotation = imu.getRotation(AngleUnit.DEGREES);
     }
 
 
