@@ -109,6 +109,7 @@ public class Robot extends Thread {
         bTelemetry.Print("Robot thread initialized.");
 
         bTelemetry.Print("Robot start up successful. Ready to operate!");
+
     }
 
 
