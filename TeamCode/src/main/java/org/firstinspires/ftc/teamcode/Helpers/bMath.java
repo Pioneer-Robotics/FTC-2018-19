@@ -56,16 +56,13 @@ public class bMath {
         return delta; //delta is the 4 compo'"":"nent variable, Double4 delta (Joe)
     }
 
-    public static Double4 getMecRotation(double angle, double speed) {
+    public static Double4 getRotationSimple(double speed) {
 
         Double4 delta = new Double4(0, 0, 0, 0);
 
-//        leftMovementPower =  Math.sin(angle) + ((-movementVector.y + movementVector.x) / sq2()) * Math.cos(angle));
-//        rightMovementPower = ((-(-movementVector.y + movementVector.x) / sq2()) * Math.sin(angle) + ((-movementVector.y - movementVector.x) / sq2() * Math.cos(angle)));
 
-
-        leftRotatePower = angle * speed;
-        rightRotatePower = -angle * speed;
+        leftRotatePower = speed;
+        rightRotatePower = -speed;
 
         delta.x = (leftRotatePower);
         delta.y = (rightRotatePower);

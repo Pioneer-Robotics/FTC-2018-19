@@ -7,8 +7,6 @@ public class PID {
     public long dt;
 
     public long lastLoopTime;
-
-    public double targetState;
     public double integral;
     public double derivative;
     public double lastError;
@@ -25,7 +23,7 @@ public class PID {
     }
 
     //Double spits out the PID'd value
-    public double Loop(double currentState) {
+    public double Loop(double targetState, double currentState) {
 
 
         dt = 1000 * (lastLoopTime - System.currentTimeMillis());

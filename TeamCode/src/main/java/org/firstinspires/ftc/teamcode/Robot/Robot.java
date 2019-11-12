@@ -17,6 +17,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Helpers.DeltaTime;
+import org.firstinspires.ftc.teamcode.Helpers.PID;
 import org.firstinspires.ftc.teamcode.Helpers.bMath;
 import org.firstinspires.ftc.teamcode.Helpers.bTelemetry;
 import org.firstinspires.ftc.teamcode.Input.bIMU;
@@ -214,11 +215,26 @@ public class Robot extends Thread {
         SetPowerDouble4(v, movementSpeed);
     }
 
-    public void Rotate(double angle, double rotationSpeed) {
-        Double4 v = bMath.getMecRotation(angle, rotationSpeed);
+    public void RotateSimple(double rotationSpeed) {
+        Double4 v = bMath.getRotationSimple(rotationSpeed);
         SetPowerDouble4(v, rotationSpeed);
     }
 
+    PID rotationPID_test = new PID();
+
+    public void RotatePID(double angle, double rotationSpeed, int cycles) {
+
+        rotationPID_test.Start(0.1f, 0, 0);
+
+        int ticker = 0;
+
+        while (ticker < cycles) {
+            ticker++;
+            double rotationPower = rotationPID_test.Loop(angle, rotation);
+            RotateSimple(rotationPower * rotationSpeed);
+        }
+
+    }
 
     /**
      * @param v          this is the vector that represents our wheels power! Create a new Double4 like so:
@@ -278,31 +294,31 @@ public class Robot extends Thread {
 
 
     //wip
-    public void SetRotation(double rotation, double threshold, double speed) {
-        double difference = GetRotation() - rotation;
-
-        //Rotate to 'rotation'
-        while (Math.abs(difference) > threshold) {
-            Rotate(GetRotation() + difference, speed);
-        }
-
-        //Let the bot settle for 200ms
-        try {
-            Thread.sleep(200);
-        } catch (InterruptedException e) {
-
-        }
-
-        //Check the rotation again
-        difference = rotation - GetRotation();
-
-        //Settle again
-        while (Math.abs(difference) > threshold) {
-            difference = GetRotation() - rotation;
-
-            Rotate(GetRotation() + difference, speed / 3);
-        }
-    }
+//    public void SetRotation(double rotation, double threshold, double speed) {
+//        double difference = GetRotation() - rotation;
+//
+//        //Rotate to 'rotation'
+//        while (Math.abs(difference) > threshold) {
+//            Rotate(GetRotation() + difference, speed);
+//        }
+//
+//        //Let the bot settle for 200ms
+//        try {
+//            Thread.sleep(200);
+//        } catch (InterruptedException e) {
+//
+//        }
+//
+//        //Check the rotation again
+//        difference = rotation - GetRotation();
+//
+//        //Settle again
+//        while (Math.abs(difference) > threshold) {
+//            difference = GetRotation() - rotation;
+//
+//            Rotate(GetRotation() + difference, speed / 3);
+//        }
+//    }
 
     //Experimental version of set rotation without sleep (PID?)
 //    public void SetRotationExperimental(double rotation, double threshold, double speed) {
@@ -327,44 +343,44 @@ public class Robot extends Thread {
 //
 //    }
 
-    //Experimental version of set rotation without sleep (PID?)
-    public void SetRotationPID(double rotation, double threshold, double P, double I, double D) {
-
-        double difference = rotation - GetRotation();
-        double lastDifference = rotation - GetRotation();
-        double initialDifference = difference;
-        double rotationSpeed;
-
-        double integral = 0;
-        double derivative = 0;
-
-        DeltaTime dt = new DeltaTime();
-
-        //Rotate to 'rotation'
-        while (Math.abs(difference) > threshold) {
-            dt.Start();
-
-            //Check the rotation again
-            difference = rotation - GetRotation();
-
-            integral += difference * dt.deltaTime();
-            derivative = (difference - lastDifference) / dt.deltaTime();
-
-            rotationSpeed = difference;
-
-            Op.telemetry.addData("diff ", difference);
-            Op.telemetry.addData("rotationSpeed ", rotationSpeed * 2);
-
-            Op.telemetry.update();
-
-            Rotate(1, rotationSpeed);
-
-            lastDifference = (P * difference) + (I * integral) + (D * derivative);
-
-            dt.Stop();
-
-        }
-
-
-    }
+//    //Experimental version of set rotation without sleep (PID?)
+//    public void SetRotationPID(double rotation, double threshold, double P, double I, double D) {
+//
+//        double difference = rotation - GetRotation();
+//        double lastDifference = rotation - GetRotation();
+//        double initialDifference = difference;
+//        double rotationSpeed;
+//
+//        double integral = 0;
+//        double derivative = 0;
+//
+//        DeltaTime dt = new DeltaTime();
+//
+//        //Rotate to 'rotation'
+//        while (Math.abs(difference) > threshold) {
+//            dt.Start();
+//
+//            //Check the rotation again
+//            difference = rotation - GetRotation();
+//
+//            integral += difference * dt.deltaTime();
+//            derivative = (difference - lastDifference) / dt.deltaTime();
+//
+//            rotationSpeed = difference;
+//
+//            Op.telemetry.addData("diff ", difference);
+//            Op.telemetry.addData("rotationSpeed ", rotationSpeed * 2);
+//
+//            Op.telemetry.update();
+//
+//            Rotate(1, rotationSpeed);
+//
+//            lastDifference = (P * difference) + (I * integral) + (D * derivative);
+//
+//            dt.Stop();
+//
+//        }
+//
+//
+//    }
 }
