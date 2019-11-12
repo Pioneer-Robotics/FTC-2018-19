@@ -22,7 +22,7 @@ public class RobotConfiguration {
     public static final String distanceSensor_180A = "sensor 180A";
     public static final String distanceSensor_180B = "sensor 180B";
 
-    //The distance between the two sensors along side 90, used for walltrack math. In CM
+    //The distance between the two sensors along side 90, used for walltrack math. In CM. Estements, please messure
     public static final double distance_90AB = 32.5;
 
     //The distance between the two sensors along side 180, used for walltrack math. In CM
