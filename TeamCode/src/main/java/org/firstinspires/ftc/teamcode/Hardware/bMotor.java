@@ -50,19 +50,19 @@ public class bMotor {
         deltaTime.Start();
     }
 
-    public void SetPower(double power) {
+    public void setPower(double power) {
         motor.setPower(power * powerCoefficent);
     }
 
-    public void SetMode(DcMotor.RunMode mode) {
+    public void setMode(DcMotor.RunMode mode) {
         motor.setMode(mode);
     }
 
-    public void SetDirection(DcMotor.Direction direction) {
+    public void setDirection(DcMotor.Direction direction) {
         motor.setDirection(direction);
     }
 
-    public void SetZeroPowerBehavior(DcMotor.ZeroPowerBehavior behavior) {
+    public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior behavior) {
         motor.setZeroPowerBehavior(behavior);
     }
 }

@@ -40,10 +40,12 @@ public class Robot extends Thread {
     public bIMU imu;
 
     //Hardware!
-    public DcMotor frontLeft;
-    public DcMotor frontRight;
-    public DcMotor backLeft;
-    public DcMotor backRight;
+    public RobotDriveManager driveManager;
+
+//    public DcMotor frontLeft;
+//    public DcMotor frontRight;
+//    public DcMotor backLeft;
+//    public DcMotor backRight;
 
 //    //Used for testing
 //    public Servo gripServo;
@@ -69,18 +71,21 @@ public class Robot extends Thread {
         Op = opmode;
 
         //Find the motors
-        frontLeft = hardwareMap.get(DcMotor.class, RobotConfiguration.wheel_frontLeft);
-        frontRight = hardwareMap.get(DcMotor.class, RobotConfiguration.wheel_frontRight);
-        backLeft = hardwareMap.get(DcMotor.class, RobotConfiguration.wheel_backLeft);
-        backRight = hardwareMap.get(DcMotor.class, RobotConfiguration.wheel_backRight);
+        driveManager = new RobotDriveManager(opmode, RobotConfiguration.wheel_frontLeft, RobotConfiguration.wheel_frontRight, RobotConfiguration.wheel_backLeft, RobotConfiguration.wheel_backRight);
+
+//        frontLeft = hardwareMap.get(DcMotor.class, RobotConfiguration.wheel_frontLeft);
+//        frontRight = hardwareMap.get(DcMotor.class, RobotConfiguration.wheel_frontRight);
+//        backLeft = hardwareMap.get(DcMotor.class, RobotConfiguration.wheel_backLeft);
+//        backRight = hardwareMap.get(DcMotor.class, RobotConfiguration.wheel_backRight);
         bTelemetry.Print("Robot wheels assigned.");
+        bTelemetry.Print("Robot motors configured in the DriveManager.");
 
 //        gripServo = hardwareMap.get(Servo.class, "Grip");
 //        armWintch = hardwareMap.get(DcMotor.class, "Arm");
 
         //Left wheels are reversed so power 1,1,1,1 moves us forward
-        frontLeft.setDirection(DcMotor.Direction.REVERSE);
-        backLeft.setDirection(DcMotor.Direction.REVERSE);
+        driveManager.frontLeft.setDirection(DcMotor.Direction.REVERSE);
+        driveManager.backLeft.setDirection(DcMotor.Direction.REVERSE);
 
 
         //Init the motors for use. NTS: If you don't do this the robot does not like to move with math
@@ -146,6 +151,9 @@ public class Robot extends Thread {
 
             //Update our 'rotation' value
             BackgroundRotation();
+
+            //Update our driver
+            driveManager.Update();
         }
     }
 
@@ -242,10 +250,10 @@ public class Robot extends Thread {
      */
 
     public void SetPowerDouble4(Double4 v, double multiplier) {
-        frontLeft.setPower(v.x * multiplier);
-        frontRight.setPower(v.y * multiplier);
-        backLeft.setPower(v.z * multiplier);
-        backRight.setPower(v.w * multiplier);
+        driveManager.frontLeft.setPower(v.x * multiplier);
+        driveManager.frontRight.setPower(v.y * multiplier);
+        driveManager.backLeft.setPower(v.z * multiplier);
+        driveManager.backRight.setPower(v.w * multiplier);
     }
 
     public void SetPersistentVector(Double2 vector, double imu) {
@@ -259,10 +267,10 @@ public class Robot extends Thread {
     public void SetPowerDouble4(double x, double y, double z, double w, double multiplier) {
         Double4 v = new Double4(x, y, z, w);
 
-        frontLeft.setPower(v.x * multiplier);
-        frontRight.setPower(v.y * multiplier);
-        backLeft.setPower(v.z * multiplier);
-        backRight.setPower(v.w * multiplier);
+        driveManager.frontLeft.setPower(v.x * multiplier);
+        driveManager.frontRight.setPower(v.y * multiplier);
+        driveManager.backLeft.setPower(v.z * multiplier);
+        driveManager.backRight.setPower(v.w * multiplier);
 
 //        backRight.setPower(v.x * multiplier);
 //        frontLeft.setPower(v.w * multiplier);
@@ -271,10 +279,10 @@ public class Robot extends Thread {
     }
 
     public void SetDriveMode(DcMotor.RunMode mode) {
-        frontLeft.setMode(mode);
-        backLeft.setMode(mode);
-        frontRight.setMode(mode);
-        backRight.setMode(mode);
+        driveManager.frontLeft.setMode(mode);
+        driveManager.backLeft.setMode(mode);
+        driveManager.frontRight.setMode(mode);
+        driveManager.backRight.setMode(mode);
     }
 
     //Returns IMU rotation on the zed axies
