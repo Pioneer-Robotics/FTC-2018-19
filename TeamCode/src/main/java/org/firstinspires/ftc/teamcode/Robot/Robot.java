@@ -37,7 +37,7 @@ public class Robot extends Thread {
     //The current IMU rotation, threaded
     double rotation;
 
-    public bIMU imu;
+    public bIMU imu = new bIMU();
 
     //Hardware!
     public RobotDriveManager driveManager;
@@ -154,6 +154,8 @@ public class Robot extends Thread {
 
             //Update our driver
             driveManager.Update();
+
+            Op.telemetry.update();
         }
     }
 

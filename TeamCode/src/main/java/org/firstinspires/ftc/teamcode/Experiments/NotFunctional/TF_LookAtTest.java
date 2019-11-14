@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.Experiments.NotFunctional;
 import android.renderscript.Double4;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -16,6 +17,7 @@ import org.firstinspires.ftc.teamcode.Helpers.bMath;
 
 //10.6.19, proof of concept to move the robot to look at a skystone
 @Autonomous(name = "LookAtDatSkyStone", group = "Sensor")
+@Disabled
 public class TF_LookAtTest extends LinearOpMode {
     Robot hwInf = new Robot();
 
@@ -39,7 +41,7 @@ public class TF_LookAtTest extends LinearOpMode {
 //            hwInf.SetPowerDouble4(new Double4(-1, -1, 1, 1), 1);
 
             hwInf.MoveComplex(90, 1, 0);
-            telemetry.addData("Velocity ", hwInf.imu.getVelocity());
+//            telemetry.addData("Velocity ", hwInf.imu.getVelocity());
             telemetry.update();
             Recognition skystone = TF_thread.skyStone();
             if (skystone != null) {
@@ -52,7 +54,7 @@ public class TF_LookAtTest extends LinearOpMode {
                 hwInf.SetPowerDouble4(new Double4(rotationDelta, -rotationDelta, rotationDelta, -rotationDelta), 1);
 
 
-                hwInf.MoveComplex(0, 0, hwInf.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle + rotationDelta);
+//                hwInf.MoveComplex(0, 0, hwInf.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle + rotationDelta);
                 telemetry.update();
             }
 

@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.Experiments.QuickTests;
 
 
+import android.renderscript.Double2;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -31,34 +34,7 @@ public class TestingOpMode2 extends LinearOpMode {
 
 
         while (opModeIsActive()) {
-            deltaTime.Start();
-
-
-            robot.SetPowerDouble4(1, 1, 1, 1, gamepad1.left_stick_y);
-
-
-            last_bl = robot.backLeft.getCurrentPosition();
-            last_br = robot.backRight.getCurrentPosition();
-
-            telemetry.addData("Encoder Position, BL", robot.backLeft.getPower());
-            telemetry.addData("Encoder Position, BL", robot.backLeft.getCurrentPosition());
-            telemetry.addData("Encoder Delta, BL", (last_bl - robot.backLeft.getCurrentPosition()) / deltaTime.deltaTime());
-
-            telemetry.addData("Encoder Position, BR", robot.backRight.getPower());
-            telemetry.addData("Encoder Position, BR", robot.backRight.getCurrentPosition());
-            telemetry.addData("Encoder Delta, BR", (last_br - robot.backRight.getCurrentPosition()) / deltaTime.deltaTime());
-            telemetry.update();
-            deltaTime.Stop();
-
-//            robot.SetPowerDouble4(1, 0, 0, 0, 0.5);
-//            sleep(10000);
-//            robot.SetPowerDouble4(0, 0, 0, 0, 0.5);
-//            sleep(10000);
-//            robot.SetPowerDouble4(-1, 0, 0, 0, 0.5);
-//            sleep(10000);
-//            robot.SetPowerDouble4(0, 0, 0, 0, 0.5);
-//            sleep(10000);
-
+//            robot.MoveSimple(new Double2(gamepad1.left_stick_x,gamepad1.left_stick_y), gamepad1.a ? ` `);
         }
 //        robot.SetPowerDouble4(0, 1, 0, 0, 0.1);
 //        sleep(1000);

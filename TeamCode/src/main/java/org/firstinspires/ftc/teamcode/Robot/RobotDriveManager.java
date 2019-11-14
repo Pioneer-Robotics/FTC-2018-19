@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Hardware.bMotor;
 
+import java.util.HashSet;
+
 //The idea here is that we have encoders that are able to set a speed but the encoder never gardeners that ALL wheels are able to move a the same speeds
 //This class takes the weakest motor and sets other motors power relative to that one
 public class RobotDriveManager {
@@ -27,25 +29,27 @@ public class RobotDriveManager {
         backLeft = new bMotor(bL, op);
         backRight = new bMotor(bR, op);
 
-        driveMotors[0] = frontLeft;
-        driveMotors[1] = frontRight;
-        driveMotors[2] = backLeft;
-        driveMotors[3] = backRight;
+        driveMotors.add(frontLeft);
+        driveMotors.add(frontRight);
+        driveMotors.add(backLeft);
+        driveMotors.add(backRight);
     }
 
     //An array of all of the above motors in that order
-    public bMotor[] driveMotors = new bMotor[4];
+    public HashSet<bMotor> driveMotors = new HashSet<bMotor>();
 
     public void Update() {
         lowestRatio = 100000000;
-        for (int i = 0; i < driveMotors.length; i++) {
-            driveMotors[i].Update(targetRatio);
-            double ratio = driveMotors[i].powerEncoderRatio;
+        for (bMotor motor : driveMotors) {
+
+            motor.Update(targetRatio);
+            double ratio = motor.powerEncoderRatio;
 
             if (ratio < lowestRatio) {
                 lowestRatio = ratio;
             }
         }
+
         targetRatio = lowestRatio;
     }
 }

@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.teamcode.Robot.RobotConfiguration;
 
 
 //Used in place of BNO055IMU, it takes the average of both IMU's for readings
@@ -22,7 +23,7 @@ public class bIMU {
         op = opMode;
 
         //Start up the first IMU
-        imu_0 = opMode.hardwareMap.get(BNO055IMU.class, imu_0_name);
+        imu_0 = opMode.hardwareMap.get(BNO055IMU.class, RobotConfiguration.imu_0);
         IParameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         IParameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         IParameters.calibrationDataFile = "BNO055IMUCalibration.json";
@@ -33,7 +34,7 @@ public class bIMU {
 
 
         //Start up the first IMU
-        imu_1 = opMode.hardwareMap.get(BNO055IMU.class, imu_1_name);
+        imu_1 = opMode.hardwareMap.get(BNO055IMU.class, RobotConfiguration.imu_1);
         IParameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         IParameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         IParameters.calibrationDataFile = "BNO055IMUCalibration.json";
@@ -57,6 +58,9 @@ public class bIMU {
         } else if (imuRotation_1 - imuRotation_0 > 180) {
             imuRotation_0 += 360;
         }
+
+        op.telemetry.addData("IMU AVG: ", ((imuRotation_0 + imuRotation_1) / 2) % 360);
+
 
         return ((imuRotation_0 + imuRotation_1) / 2) % 360;
     }

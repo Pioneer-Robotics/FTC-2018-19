@@ -17,7 +17,6 @@ import java.util.HashMap;
 public class RobotWallTrack {
 
     //List of all of our laser groups, mainly for ease of access
-    //Side note, what the hell is java's dictionary system smoking
     public HashMap<groupID, SensorGroup> sensorIDGroupPairs = new HashMap<groupID, SensorGroup>();
     public Robot robot;
 

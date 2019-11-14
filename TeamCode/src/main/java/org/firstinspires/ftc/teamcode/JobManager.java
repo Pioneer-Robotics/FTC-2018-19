@@ -30,9 +30,6 @@ public class JobManager {
     //This aJob is used in all other jobs that use tensor flow
     public static TensorFlowaJob tensorFlowaJob = new TensorFlowaJob();
 
-    public WallTrack wallTrackJob = new WallTrack();
-
-
     //Inits all job's
     //The idea here is that all jobs have there init stuff pre loaded before they need to run; this is to avoid waiting for 10 seconds of our auto period on loading tensorflow
     public void initAll(LinearOpMode op) {
@@ -41,9 +38,6 @@ public class JobManager {
 
         //Setup the skystone job
         findSkystoneJob.Init(op);
-
-        //Doesnt do anything
-        wallTrackJob.Init(op);
     }
 }
 

@@ -69,7 +69,7 @@ RotationPIDTuning extends LinearOpMode {
 
         while (opModeIsActive()) {
             //Move via joystick and maintain rotation
-            robot.SetRotationPID(90, 1, PID.x, PID.y, PID.z);
+//            robot.SetRotationPID(90, 1, PID.x, PID.y, PID.z);
 
         }
 

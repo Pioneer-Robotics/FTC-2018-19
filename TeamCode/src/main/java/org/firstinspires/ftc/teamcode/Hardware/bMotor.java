@@ -9,16 +9,16 @@ import org.firstinspires.ftc.teamcode.Helpers.DeltaTime;
 public class bMotor {
 
     //The ratio between how fast we are moving the motor and how much power we are using
-    public double powerEncoderRatio;
+    public double powerEncoderRatio = 1;
 
     //This is set by the DriveManager and is responsible for ensuring that all power values don't exceed a motors capacity
-    public double powerCoefficent;
+    public double powerCoefficent = 1;
 
     DcMotor motor;
 
-    DeltaTime deltaTime;
+    DeltaTime deltaTime = new DeltaTime();
 
-    double encoderDelta;
+    double encoderDelta = 1;
 
     int lastEncoderReading;
 
@@ -38,15 +38,19 @@ public class bMotor {
         //Figure out how fast this wheel/motor is moving in encoder units per second
         encoderDelta = (motor.getCurrentPosition() - lastEncoderReading) / deltaTime.deltaTime();
 
-        //Set the ratio
-        powerEncoderRatio = encoderDelta / motor.getPower();
+        if (Math.abs(motor.getPower()) > 0 && deltaTime.deltaTime() > 0 && encoderDelta != 0) {
 
-        powerCoefficent = targetMaxRatio / powerEncoderRatio;
+            //Set the ratio
+            powerEncoderRatio = encoderDelta / motor.getPower();
 
-        opMode.telemetry.addData(name, powerEncoderRatio);
+            powerCoefficent = targetMaxRatio / powerEncoderRatio;
 
-        //Set the new last encoder position to the current position for later use
-        lastEncoderReading = motor.getCurrentPosition();
+            opMode.telemetry.addData(name, powerEncoderRatio);
+
+            //Set the new last encoder position to the current position for later use
+            lastEncoderReading = motor.getCurrentPosition();
+        }
+
         deltaTime.Start();
     }
 
