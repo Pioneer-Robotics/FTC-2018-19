@@ -18,7 +18,7 @@ public class bMotor {
 
     DeltaTime deltaTime = new DeltaTime();
 
-    double encoderDelta = 1;
+    double encoderDelta = 0;
 
     int lastEncoderReading;
 
@@ -38,7 +38,7 @@ public class bMotor {
         //Figure out how fast this wheel/motor is moving in encoder units per second
         encoderDelta = (motor.getCurrentPosition() - lastEncoderReading) / deltaTime.deltaTime();
 
-        if (Math.abs(motor.getPower()) > 0 && deltaTime.deltaTime() > 0 && encoderDelta != 0) {
+        if (Math.abs(motor.getPower()) > 0 && deltaTime.deltaTime() > 0 && Math.abs(encoderDelta) > 0) {
 
             //Set the ratio
             powerEncoderRatio = encoderDelta / motor.getPower();

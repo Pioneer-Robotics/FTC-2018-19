@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Hardware.bMotor;
+import org.firstinspires.ftc.teamcode.Helpers.DeltaTime;
+import org.firstinspires.ftc.teamcode.Helpers.bMath;
 
 import java.util.HashSet;
 
@@ -11,7 +13,9 @@ import java.util.HashSet;
 //This class takes the weakest motor and sets other motors power relative to that one
 public class RobotDriveManager {
 
-    public double targetRatio;
+    DeltaTime deltaTime = new DeltaTime();
+
+    public double targetRatio = 2;
 
     double lowestRatio;
 
@@ -39,6 +43,7 @@ public class RobotDriveManager {
     public HashSet<bMotor> driveMotors = new HashSet<bMotor>();
 
     public void Update() {
+        deltaTime.Stop();
         lowestRatio = 100000000;
         for (bMotor motor : driveMotors) {
 
@@ -49,7 +54,11 @@ public class RobotDriveManager {
                 lowestRatio = ratio;
             }
         }
+        //Lock the ratio, we don't want the robot to set the max speed to 0
+        lowestRatio = bMath.Clamp(lowestRatio, 0.5, 3);
 
-        targetRatio = lowestRatio;
+        //Lerp the target ratio ratio
+        targetRatio = bMath.Lerp(targetRatio, lowestRatio, deltaTime.deltaTime() * 0.5);
+        deltaTime.Start();
     }
 }
