@@ -25,7 +25,7 @@ public class TestingOpMode extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            robot.SetPowerDouble4(1, 1, 1, 1, 1);
+            robot.SetPowerDouble4(1, 1, 1, 1, 0.5);
         }
 
         robot.Stop();

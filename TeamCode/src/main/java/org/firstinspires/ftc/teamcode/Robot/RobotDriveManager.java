@@ -46,28 +46,40 @@ public class RobotDriveManager {
     //An array of all of the above motors in that order
     public HashSet<bMotor> driveMotors = new HashSet<bMotor>();
 
+    bMotor problemChild;
+
     public void Update() {
         deltaTime.Stop();
+
         lowestRatio = 100000000;
         for (bMotor motor : driveMotors) {
 
             motor.Update(targetRatio);
             double ratio = motor.powerEncoderRatio;
 
+            problemChild = null;
+
             if (ratio < lowestRatio) {
                 lowestRatio = ratio;
             }
         }
+
         //Lock the ratio, we don't want the robot to set the max speed to 0
-        lowestRatio = bMath.Clamp(lowestRatio, 0.5, 3);
+//        lowestRatio = bMath.Clamp(lowestRatio, 0.5, 3);
 
         //Lerp the target ratio ratio
-        targetRatio = bMath.Lerp(targetRatio, lowestRatio, deltaTime.deltaTime() * 0.5);
+//        targetRatio = bMath.Lerp(targetRatio, lowestRatio, deltaTime.deltaTime() * 0.5);
+        targetRatio = lowestRatio;
+//        targetRatio = bMath.Lerp(targetRatio, lowestRatio < 500 ? 500 : lowestRatio, deltaTime.deltaTime() * 0.5);
+
 
         opMode.telemetry.addData("Lowest Ratio Target", lowestRatio);
         opMode.telemetry.addData("Current Ratio Target", targetRatio);
 
-
         deltaTime.Start();
+    }
+
+    public void UpdateZoomer() {
+
     }
 }

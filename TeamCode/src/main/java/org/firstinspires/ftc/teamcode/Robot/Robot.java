@@ -42,6 +42,10 @@ public class Robot extends Thread {
     //Hardware!
     public RobotDriveManager driveManager;
 
+    double threadTimer;
+
+    public DeltaTime threadDeltaTime = new DeltaTime();
+
 //    public DcMotor frontLeft;
 //    public DcMotor frontRight;
 //    public DcMotor backLeft;
@@ -152,11 +156,19 @@ public class Robot extends Thread {
             //Update our 'rotation' value
             BackgroundRotation();
 
-            //Update our driver
-            driveManager.Update();
+            threadDeltaTime.Start();
+            threadTimer += threadDeltaTime.deltaTime();
+            if (threadTimer > 1) {
+                threadTimer = 0;
 
+                //Update our driver
+                driveManager.Update();
+            }
+            threadDeltaTime.Stop();
             Op.telemetry.update();
         }
+
+
     }
 
 
@@ -385,4 +397,16 @@ public class Robot extends Thread {
 //
 //
 //    }
+
+//    public void CalibrateWheels() {
+//        driveManager.calibrating = true;
+//
+//        SetPowerDouble4(1, 1, 1, 1, 1);
+//
+//
+//        driveManager.calibrating = false;
+//
+//    }
+
+
 }

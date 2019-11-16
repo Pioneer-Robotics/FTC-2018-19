@@ -26,6 +26,6 @@ public class DeltaTime {
     }
 
     public Double deltaTime() {
-        return (double) deltaTimeLong;
+        return (double) deltaTimeLong / 1000;
     }
 }

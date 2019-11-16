@@ -34,6 +34,7 @@ public class TestingOpMode2 extends LinearOpMode {
 
 
         while (opModeIsActive()) {
+            robot.RotatePID(0, 0.05, 1000);
 //            robot.MoveSimple(new Double2(gamepad1.left_stick_x,gamepad1.left_stick_y), gamepad1.a ? ` `);
         }
 //        robot.SetPowerDouble4(0, 1, 0, 0, 0.1);
