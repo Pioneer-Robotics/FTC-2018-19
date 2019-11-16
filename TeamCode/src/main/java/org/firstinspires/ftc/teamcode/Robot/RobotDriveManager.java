@@ -27,6 +27,8 @@ public class RobotDriveManager {
 
     public bMotor backRight;
 
+    public OpMode opMode;
+
     public RobotDriveManager(OpMode op, String fL, String fR, String bL, String bR) {
         frontLeft = new bMotor(fL, op);
         frontRight = new bMotor(fR, op);
@@ -37,6 +39,8 @@ public class RobotDriveManager {
         driveMotors.add(frontRight);
         driveMotors.add(backLeft);
         driveMotors.add(backRight);
+
+        opMode = op;
     }
 
     //An array of all of the above motors in that order
@@ -59,6 +63,11 @@ public class RobotDriveManager {
 
         //Lerp the target ratio ratio
         targetRatio = bMath.Lerp(targetRatio, lowestRatio, deltaTime.deltaTime() * 0.5);
+
+        opMode.telemetry.addData("Lowest Ratio Target", lowestRatio);
+        opMode.telemetry.addData("Current Ratio Target", targetRatio);
+
+
         deltaTime.Start();
     }
 }
