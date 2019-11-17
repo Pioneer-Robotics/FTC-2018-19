@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.Helpers.bMath;
 
 import java.util.HashSet;
 
-//The idea here is that we have encoders that are able to set a speed but the encoder never gardeners that ALL wheels are able to move a the same speeds
+//The idea here is that we have encoders that are able to assign a specific speed to a motor. But the encoder never grantees that ALL motors are able to move at the same speeds (ei if one motors weaker than all of the others we need to adjust the stronger motors max speeds to work within the bounds of the weakest motor)
 //This class takes the weakest motor and sets other motors power relative to that one
 public class RobotDriveManager {
 
@@ -43,10 +43,8 @@ public class RobotDriveManager {
         opMode = op;
     }
 
-    //An array of all of the above motors in that order
+    //An array of all of the above motors
     public HashSet<bMotor> driveMotors = new HashSet<bMotor>();
-
-    bMotor problemChild;
 
     public void Update() {
         deltaTime.Stop();
@@ -57,29 +55,25 @@ public class RobotDriveManager {
             motor.Update(targetRatio);
             double ratio = motor.powerEncoderRatio;
 
-            problemChild = null;
-
             if (ratio < lowestRatio) {
                 lowestRatio = ratio;
             }
         }
 
-        //Lock the ratio, we don't want the robot to set the max speed to 0
-//        lowestRatio = bMath.Clamp(lowestRatio, 0.5, 3);
+        //Clamp the ratio between one rotation per second and the max rotation
+        lowestRatio = bMath.Clamp(lowestRatio, RobotConfiguration.wheel_ticksPerRotation, RobotConfiguration.wheel_maxTicksPerSecond);
 
-        //Lerp the target ratio ratio
-//        targetRatio = bMath.Lerp(targetRatio, lowestRatio, deltaTime.deltaTime() * 0.5);
+        //Update the target ratio
         targetRatio = lowestRatio;
-//        targetRatio = bMath.Lerp(targetRatio, lowestRatio < 500 ? 500 : lowestRatio, deltaTime.deltaTime() * 0.5);
 
+        //Update all motors with the latest ratio, this might not be needed but should prevent off by one cycle issues
+        for (bMotor motor : driveMotors) {
+            motor.Update(targetRatio);
+        }
 
         opMode.telemetry.addData("Lowest Ratio Target", lowestRatio);
         opMode.telemetry.addData("Current Ratio Target", targetRatio);
 
         deltaTime.Start();
-    }
-
-    public void UpdateZoomer() {
-
     }
 }

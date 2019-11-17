@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Robot;
 
-//This class has all of the names for all of the things in one place for easy of access / sanity!
+//This class has all of the names and data for all of the things in one place for easy of access / sanity!
 public class RobotConfiguration {
 
     //The IMU's names
@@ -13,6 +13,13 @@ public class RobotConfiguration {
     public static final String wheel_frontLeft = "Front Left";
     public static final String wheel_backRight = "Back Right";
     public static final String wheel_backLeft = "Back Left";
+
+    //The amount of encoder ticks per motor rotation
+    public static final int wheel_ticksPerRotation = 1440;
+
+    //The max speed our wheel motors will ever rotate (in ticks per second), might be able to up this too 3000 or so
+    public static final int wheel_maxTicksPerSecond = 2400;
+
 
     //Distance sensor 90 names
     public static final String distanceSensor_90A = "sensor 90A";

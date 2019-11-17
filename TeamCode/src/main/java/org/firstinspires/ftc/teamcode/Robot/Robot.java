@@ -153,17 +153,21 @@ public class Robot extends Thread {
 //
 //            deltaTime.Stop();
 
+            threadDeltaTime.Start();
+
             //Update our 'rotation' value
             BackgroundRotation();
 
-            threadDeltaTime.Start();
-            threadTimer += threadDeltaTime.deltaTime();
+
+            //Only update the drive manager every one second or so.
+            //This is done at such a low rate to ensure the wheels have moved enough to give an accurate average reading
             if (threadTimer > 1) {
                 threadTimer = 0;
 
-                //Update our driver
                 driveManager.Update();
             }
+            threadTimer += threadDeltaTime.deltaTime();
+
             threadDeltaTime.Stop();
             Op.telemetry.update();
         }
