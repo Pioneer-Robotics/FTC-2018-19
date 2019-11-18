@@ -7,12 +7,37 @@ public class RobotConfiguration {
     public static final String imu_0 = "imu";
     public static final String imu_1 = "imu1";
 
+    /* Our sexy robot configuration, needs verification
+      ________
+    |X|      |Y|
+    | |  ^^  | |
+    | |      | |
+    |Z|______|W|
+
+    Verified by _______ on the _______ of _______, _________
+
+
+         0
+      ________
+    |X|      |Y|
+    | |  ^^  | |
+270 | |      | |   90
+    |Z|______|W|
+
+        180
+
+
+    Verified by _______ on the _______ of _______, _________
+
+
+     */
+
 
     //Configuration names for all of our wheels
-    public static final String wheel_frontRight = "Front Right";
-    public static final String wheel_frontLeft = "Front Left";
-    public static final String wheel_backRight = "Back Right";
-    public static final String wheel_backLeft = "Back Left";
+    public static final String wheel_frontLeft = "Front Left";//This wheel should correspond to the X component of movement
+    public static final String wheel_frontRight = "Front Right";//This wheel should correspond to the Y component of movement
+    public static final String wheel_backLeft = "Back Left";//This wheel should correspond to the Z component of movement
+    public static final String wheel_backRight = "Back Right";//This wheel should correspond to the Z component of movement
 
     //The amount of encoder ticks per motor rotation
     public static final int wheel_ticksPerRotation = 1440;
