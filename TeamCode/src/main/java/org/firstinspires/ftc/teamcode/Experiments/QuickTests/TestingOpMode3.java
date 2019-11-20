@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.Helpers.bDeltaValue;
 import org.firstinspires.ftc.teamcode.Robot.Robot;
 
 @Autonomous(name = "Wheel Testing", group = "Debugging")
-//Used to make sure all wheels are set up correctly
+//Used to ensure that all wheels are set up correctly
 public class TestingOpMode3 extends LinearOpMode {
 
     Robot robot = new Robot();
