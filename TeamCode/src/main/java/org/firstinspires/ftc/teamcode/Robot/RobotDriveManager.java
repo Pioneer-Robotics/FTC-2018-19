@@ -52,7 +52,6 @@ public class RobotDriveManager {
         lowestRatio = 100000000;
         for (bMotor motor : driveMotors) {
 
-            motor.Update(targetRatio);
             double ratio = motor.powerEncoderRatio;
 
             if (ratio < lowestRatio) {
@@ -66,13 +65,6 @@ public class RobotDriveManager {
         //Update the target ratio
         targetRatio = lowestRatio;
 
-        //Update all motors with the latest ratio, this might not be needed but should prevent off by one cycle issues
-        for (bMotor motor : driveMotors) {
-            motor.Update(targetRatio);
-        }
-
-        opMode.telemetry.addData("Lowest Ratio Target", lowestRatio);
-        opMode.telemetry.addData("Current Ratio Target", targetRatio);
 
         deltaTime.Start();
     }

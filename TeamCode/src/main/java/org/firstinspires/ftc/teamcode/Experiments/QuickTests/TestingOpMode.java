@@ -24,14 +24,23 @@ public class TestingOpMode extends LinearOpMode {
 
         waitForStart();
 
-        while (opModeIsActive()) {
-            robot.SetPowerDouble4(1, 1, 1, 1, 0.5);
-        }
+        robot.RotatePID(90, 0.1f, 1000);
+
+//        while (opModeIsActive()) {
+//            sleep(5000);
+//
+//            robot.SetPowerDouble4(1, 0, 0, 0, 0.25);
+//            sleep(1000);
+//            robot.SetPowerDouble4(0, 1, 0, 0, 0.25);
+//            sleep(1000);
+//            robot.SetPowerDouble4(0, 0, 1, 0, 0.25);
+//            sleep(1000);
+//
+//            robot.SetPowerDouble4(0, 0, 0, 1, 0.25);
+//            sleep(1000);
+//        }
 
         robot.Stop();
-
-        //Stop the motors when the robots done doin what its doin.
-        robot.SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
 }

@@ -4,9 +4,7 @@ import android.renderscript.Double2;
 
 public class PID {
 
-    public long dt;
-
-    public long lastLoopTime;
+    public DeltaTime deltaTime = new DeltaTime();
     public double integral;
     public double derivative;
     public double lastError;
@@ -24,16 +22,14 @@ public class PID {
 
     //Double spits out the PID'd value
     public double Loop(double targetState, double currentState) {
+        deltaTime.Stop();
 
-
-        dt = 1000 * (lastLoopTime - System.currentTimeMillis());
         error = targetState - currentState;
-        integral += error * dt;
-        derivative = (error - lastError) / dt;
+        integral += error * deltaTime.deltaTime();
+        derivative = (error - lastError) / deltaTime.deltaTime();
         lastError = error;
 
-        lastLoopTime = System.currentTimeMillis();
-
+        deltaTime.Start();
         return (P * error) + (I * integral) + (D * derivative);
     }
 

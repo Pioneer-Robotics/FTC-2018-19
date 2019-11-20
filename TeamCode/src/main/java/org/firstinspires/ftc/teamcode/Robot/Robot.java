@@ -8,11 +8,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.Hardware.bMotor;
 import org.firstinspires.ftc.teamcode.Helpers.DeltaTime;
 import org.firstinspires.ftc.teamcode.Helpers.PID;
 import org.firstinspires.ftc.teamcode.Helpers.bMath;
 import org.firstinspires.ftc.teamcode.Helpers.bTelemetry;
 import org.firstinspires.ftc.teamcode.Hardware.bIMU;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 //TODO: clean up the canmove system
 public class Robot extends Thread {
@@ -25,14 +28,6 @@ public class Robot extends Thread {
 
     //This delta time is only for the navigation helper thread
     public DeltaTime deltaTime = new DeltaTime();
-
-    //Timer for canmove
-    public double canMoveTimer;
-
-    //If we are allowed to move
-    public Boolean canMove() {
-        return canMoveTimer < 0;
-    }
 
     //The current IMU rotation, threaded
     double rotation;
@@ -59,7 +54,8 @@ public class Robot extends Thread {
 
     public OpMode Op;
 
-    Boolean running;
+    //If our thread is running, using atomics to avoid thread conflicts. Might not be completely necessary
+    AtomicBoolean threadRunning = new AtomicBoolean();
 
 
     public void init(HardwareMap hardwareMap, OpMode opmode) {
@@ -117,12 +113,12 @@ public class Robot extends Thread {
 
     //Threaded run method, right now this is just for IMU stuff, at some point we might put some avoidance stuff in here (background wall tracking?) (average out 2IMU's for extra strain of the thread?)
     public void run() {
-        running = true;
+        threadRunning.set(true);
 
         double closestLaserDistance = 0;
         double laserAngle = 0;
 
-        while (running) {
+        while (threadRunning.get()) {
 //            deltaTime.Start();
 //
 //            //region Avoidance
@@ -161,15 +157,23 @@ public class Robot extends Thread {
 
             //Only update the drive manager every one second or so.
             //This is done at such a low rate to ensure the wheels have moved enough to give an accurate average reading
-            if (threadTimer > 1) {
+            if (threadTimer > 0.25) {
                 threadTimer = 0;
 
                 driveManager.Update();
             }
+
+            for (bMotor motor : driveManager.driveMotors) {
+                motor.Update(driveManager.targetRatio);
+            }
+
+//            Op.telemetry.addData("Lowest Ratio Target", driveManager.lowestRatio);
+//            Op.telemetry.addData("Thread DT", threadDeltaTime.deltaTime());
+
             threadTimer += threadDeltaTime.deltaTime();
+//            Op.telemetry.update();
 
             threadDeltaTime.Stop();
-            Op.telemetry.update();
         }
 
 
@@ -183,7 +187,9 @@ public class Robot extends Thread {
 
 
     public void Stop() {
-        running = false;
+        threadRunning.set(false);
+        SetPowerDouble4(0, 0, 0, 0, 0);
+        SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
 
@@ -242,7 +248,8 @@ public class Robot extends Thread {
 
     public void RotatePID(double angle, double rotationSpeed, int cycles) {
 
-        rotationPID_test.Start(0.1f, 0, 0);
+        rotationPID_test.Start(0.01, 0, 0);
+
 
         int ticker = 0;
 
@@ -250,6 +257,10 @@ public class Robot extends Thread {
             ticker++;
             double rotationPower = rotationPID_test.Loop(angle, rotation);
             RotateSimple(rotationPower * rotationSpeed);
+            Op.telemetry.addData("Rotation ", rotation);
+            Op.telemetry.addData("rotationPower ", rotationPower);
+            Op.telemetry.addData("rotationSpeed ", rotationSpeed);
+            Op.telemetry.update();
         }
 
     }
@@ -258,20 +269,15 @@ public class Robot extends Thread {
      * @param v          this is the vector that represents our wheels power! Create a new Double4 like so:
      *                   new Double4(x,y,z,w)
      *                   <p>
-     *                   X____Y
-     *                   | ^^ |
-     *                   |    ||
-     *                   |____|
-     *                   Z    W
-     *                   robot (not up to date with newest drive train)
+     *                   See RobotConfiguration for more information
      * @param multiplier the coefficient of 'v'
      */
 
     public void SetPowerDouble4(Double4 v, double multiplier) {
-        driveManager.frontLeft.setPower(v.x * multiplier);
-        driveManager.frontRight.setPower(v.y * multiplier);
-        driveManager.backLeft.setPower(v.z * multiplier);
-        driveManager.backRight.setPower(v.w * multiplier);
+        driveManager.frontLeft.motor.setPower(v.x * multiplier);
+        driveManager.frontRight.motor.setPower(v.y * multiplier);
+        driveManager.backLeft.motor.setPower(v.z * multiplier);
+        driveManager.backRight.motor.setPower(v.w * multiplier);
     }
 
     public void SetPersistentVector(Double2 vector, double imu) {

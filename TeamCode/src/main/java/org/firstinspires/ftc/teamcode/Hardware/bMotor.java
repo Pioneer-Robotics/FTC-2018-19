@@ -49,11 +49,11 @@ public class bMotor {
         encoderDelta = Math.abs(motorPosition - lastEncoderReading) / deltaTime.deltaTime();
 
 
-        opMode.telemetry.addData(name + " power", assignedPower);
-        opMode.telemetry.addData(name + " delta", encoderDelta);
-        opMode.telemetry.addData(name + " position", motorPosition);
-        opMode.telemetry.addData(name + " dt", deltaTime.deltaTime());
-        opMode.telemetry.addData(name + " ratio", powerEncoderRatio);
+//        opMode.telemetry.addData(name + " power", assignedPower);
+//        opMode.telemetry.addData(name + " delta", encoderDelta);
+//        opMode.telemetry.addData(name + " position", motorPosition);
+//        opMode.telemetry.addData(name + " dt", deltaTime.deltaTime());
+//        opMode.telemetry.addData(name + " ratio", powerEncoderRatio);
 
 
         //Avoid division by zero
@@ -65,7 +65,7 @@ public class bMotor {
             //sets up the power coefficient that is used in all power assignment. Used to match the targetMaxRatio
             powerCoefficent = targetMaxRatio / powerEncoderRatio;
 
-            opMode.telemetry.addData(name, powerEncoderRatio);
+//            opMode.telemetry.addData(name, powerEncoderRatio);
         }
 
         //Set the new last encoder position to the current position for later use

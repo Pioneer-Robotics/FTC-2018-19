@@ -15,10 +15,10 @@ public class TestingOpMode3 extends LinearOpMode {
 
     Robot robot = new Robot();
 
-    public bDeltaValue frontLeft;
-    public bDeltaValue frontRight;
-    public bDeltaValue backLeft;
-    public bDeltaValue backRight;
+    public bDeltaValue frontLeft = new bDeltaValue();
+    public bDeltaValue frontRight = new bDeltaValue();
+    public bDeltaValue backLeft = new bDeltaValue();
+    public bDeltaValue backRight = new bDeltaValue();
 
 
     @Override
@@ -26,39 +26,40 @@ public class TestingOpMode3 extends LinearOpMode {
         robot.init(hardwareMap, this);
 
 
-        while (!opModeIsActive()) {
-            frontLeft.Assign(robot.driveManager.frontLeft.motor.getCurrentPosition());
-            frontRight.Assign(robot.driveManager.frontRight.motor.getCurrentPosition());
-            backLeft.Assign(robot.driveManager.backLeft.motor.getCurrentPosition());
-            backRight.Assign(robot.driveManager.backRight.motor.getCurrentPosition());
-
-            telemetry.addData("Front Left Encoder Delta", frontLeft.delta());
-            telemetry.addData("Front Right Encoder Delta", frontRight.delta());
-            telemetry.addData("Back Left Encoder Delta", backLeft.delta());
-            telemetry.addData("Back Right Encoder Delta", backRight.delta());
-
-            telemetry.update();
-        }
+//        while (!opModeIsActive()) {
+//            frontLeft.Assign(robot.driveManager.frontLeft.motor.getCurrentPosition());
+//            frontRight.Assign(robot.driveManager.frontRight.motor.getCurrentPosition());
+//            backLeft.Assign(robot.driveManager.backLeft.motor.getCurrentPosition());
+//            backRight.Assign(robot.driveManager.backRight.motor.getCurrentPosition());
+//
+//            telemetry.addData("Front Left Encoder Delta", frontLeft.delta());
+//            telemetry.addData("Front Right Encoder Delta", frontRight.delta());
+//            telemetry.addData("Back Left Encoder Delta", backLeft.delta());
+//            telemetry.addData("Back Right Encoder Delta", backRight.delta());
+//
+//            telemetry.update();
+//        }
 
         waitForStart();
 
         while (opModeIsActive()) {
-            robot.SetPowerDouble4(1, 1, 1, 1, 0.25);
+            robot.SetPowerDouble4(1, 1, 1, 1, 1);
 
-            frontLeft.Assign(robot.driveManager.frontLeft.motor.getCurrentPosition());
-            frontRight.Assign(robot.driveManager.frontRight.motor.getCurrentPosition());
-            backLeft.Assign(robot.driveManager.backLeft.motor.getCurrentPosition());
-            backRight.Assign(robot.driveManager.backRight.motor.getCurrentPosition());
+//            frontLeft.Assign(robot.driveManager.frontLeft.motor.getCurrentPosition());
+//            frontRight.Assign(robot.driveManager.frontRight.motor.getCurrentPosition());
+//            backLeft.Assign(robot.driveManager.backLeft.motor.getCurrentPosition());
+//            backRight.Assign(robot.driveManager.backRight.motor.getCurrentPosition());
+//
+//            telemetry.addData("Front Left Encoder Delta", frontLeft.delta());
+//            telemetry.addData("Front Right Encoder Delta", frontRight.delta());
+//            telemetry.addData("Back Left Encoder Delta", backLeft.delta());
+//            telemetry.addData("Back Right Encoder Delta", backRight.delta());
 
-            telemetry.addData("Front Left Encoder Delta", frontLeft.delta());
-            telemetry.addData("Front Right Encoder Delta", frontRight.delta());
-            telemetry.addData("Back Left Encoder Delta", backLeft.delta());
-            telemetry.addData("Back Right Encoder Delta", backRight.delta());
+//            telemetry.addData("Drive Train Target Ratio", robot.driveManager.targetRatio);
+//            telemetry.addData("Drive Train Target Ratio", robot.driveManager.);
 
 
-            telemetry.update();
-
-            sleep(250);
+//            telemetry.update();
 
         }
 

@@ -7,7 +7,7 @@ public class RobotConfiguration {
     public static final String imu_0 = "imu";
     public static final String imu_1 = "imu1";
 
-    /* Our sexy robot configuration, needs verification
+    /* Our cool robot configuration
       ________
     |X|      |Y|
     | |  ^^  | |
@@ -39,6 +39,7 @@ public class RobotConfiguration {
     public static final String wheel_backLeft = "Back Left";//This wheel should correspond to the Z component of movement
     public static final String wheel_backRight = "Back Right";//This wheel should correspond to the Z component of movement
 
+
     //The amount of encoder ticks per motor rotation
     public static final int wheel_ticksPerRotation = 1440;
 
@@ -54,9 +55,19 @@ public class RobotConfiguration {
     public static final String distanceSensor_180A = "sensor 180A";
     public static final String distanceSensor_180B = "sensor 180B";
 
-    //The distance between the two sensors along side 90, used for walltrack math. In CM. Estements, please messure
+    //Distance sensor 270 names
+    public static final String distanceSensor_270A = "sensor 270A";
+    public static final String distanceSensor_270B = "sensor 270B";
+
+    //The distance between the two sensors along side 90, used for wall-tracking math. In CM.
+    //Verified __________ by ___________
     public static final double distance_90AB = 32.5;
 
-    //The distance between the two sensors along side 180, used for walltrack math. In CM
-    public static final double distance_180AB = 32.5;
+    //The distance between the two sensors along side 180, used for wall-tracking math. In CM
+    //Verified __________ by ___________
+    public static final double distance_180AB = -1;
+
+    //The distance between the two sensors along side 180, used for wall-tracking math. In CM
+    //Verified __________ by ___________
+    public static final double distance_270AB = -1;
 }
