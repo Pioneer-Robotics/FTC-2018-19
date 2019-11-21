@@ -40,7 +40,7 @@ public class bMotor {
         name = motorName;
     }
 
-    public void Update(double targetMaxRatio) {
+    public void Calibrate(double targetMaxRatio) {
         deltaTime.Stop();
 
         //Fetches the motors real world position

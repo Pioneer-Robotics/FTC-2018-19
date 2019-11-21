@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Robot;
 
+import android.content.Context;
 import android.renderscript.Double2;
 import android.renderscript.Double4;
 
@@ -11,9 +12,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Hardware.bMotor;
 import org.firstinspires.ftc.teamcode.Helpers.DeltaTime;
 import org.firstinspires.ftc.teamcode.Helpers.PID;
+import org.firstinspires.ftc.teamcode.Helpers.bDataManger;
 import org.firstinspires.ftc.teamcode.Helpers.bMath;
 import org.firstinspires.ftc.teamcode.Helpers.bTelemetry;
 import org.firstinspires.ftc.teamcode.Hardware.bIMU;
+import org.firstinspires.ftc.teamcode.R;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -40,6 +43,8 @@ public class Robot extends Thread {
     double threadTimer;
 
     public DeltaTime threadDeltaTime = new DeltaTime();
+
+    public bDataManger dataManger = new bDataManger();
 
 //    public DcMotor frontLeft;
 //    public DcMotor frontRight;
@@ -106,72 +111,105 @@ public class Robot extends Thread {
         start();
         bTelemetry.Print("Robot thread initialized.");
 
-        bTelemetry.Print("Robot start up successful. Ready to operate!");
+        bTelemetry.Print("Robot start up successful. Preparing to read wheel calibration data...");
+
+        dataManger.Start();
+
+        bTelemetry.Print("bDataManager started.");
+
+
+        driveManager.frontLeft.powerCoefficent = dataManger.readData("wheel_front_left_powerCo", -1);
+        bTelemetry.Print("      Front Left  : " + driveManager.frontLeft.powerCoefficent);
+        driveManager.frontRight.powerCoefficent = dataManger.readData("wheel_front_right_powerCo", -1);
+        bTelemetry.Print("      Front Right : " + driveManager.frontRight.powerCoefficent);
+        driveManager.backLeft.powerCoefficent = dataManger.readData("wheel_back_left_powerCo", -1);
+        bTelemetry.Print("      Back Left   : " + driveManager.backLeft.powerCoefficent);
+        driveManager.backRight.powerCoefficent = dataManger.readData("wheel_back_right_powerCo", -1);
+        bTelemetry.Print("      Back Right  : " + driveManager.backRight.powerCoefficent);
+
+        bTelemetry.Print("Wheel boot successful. Ready to operate!");
 
     }
 
+
+    //A fancy version of init used for calibrating the robot, not to be used in any offical match as calibration will take anywhere from 10 to 30 seconds
+    public void initCalibration(HardwareMap hardwareMap, OpMode opmode) {
+
+        //Start the printer
+        bTelemetry.Start(opmode);
+
+        //Set up the instance (safety checks might be a good idea at some point)
+        instance = this;
+        bTelemetry.Print("Robot instance assigned.");
+
+        //Set the opmode
+        Op = opmode;
+
+        //Find the motors
+        driveManager = new RobotDriveManager(opmode, RobotConfiguration.wheel_frontLeft, RobotConfiguration.wheel_frontRight, RobotConfiguration.wheel_backLeft, RobotConfiguration.wheel_backRight);
+
+        bTelemetry.Print("Robot wheels assigned.");
+        bTelemetry.Print("Robot motors configured in the DriveManager.");
+
+        //Left wheels are reversed so power 1,1,1,1 moves us forward
+        driveManager.frontLeft.setDirection(DcMotor.Direction.REVERSE);
+        driveManager.backLeft.setDirection(DcMotor.Direction.REVERSE);
+
+
+        //Init the motors for use. NTS: If you don't do this the robot does not like to move with math
+        SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        SetDriveMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        bTelemetry.Print("Wheel encoders initialized.");
+
+
+        //Set up the IMU(s)
+        imu.Start(opmode, RobotConfiguration.imu_0, RobotConfiguration.imu_1);
+        bTelemetry.Print("IMU's initialized.");
+
+        //Set up the wall tracker, this uses ALL the lasers so make sure they all work before running this
+        wallTrack.Start(opmode);
+        bTelemetry.Print("Walltracker initialized.");
+
+        //Starts the 'run' thread
+        start();
+        bTelemetry.Print("Robot thread initialized.");
+
+        bTelemetry.Print("Robot start up successful. Preparing for initial wheel calibration!");
+
+        dataManger.Start();
+
+        bTelemetry.Print("bDataManager started.");
+
+        bTelemetry.Print("Robot start up successful. Running initial wheel calibration...");
+
+        driveManager.PreformInitalCalibration();
+
+        bTelemetry.Print("Wheel boot successful. Writing results...");
+
+        dataManger.writeData("wheel_front_left_powerCo", driveManager.frontLeft.powerCoefficent);
+        dataManger.writeData("wheel_front_right_powerCo", driveManager.frontRight.powerCoefficent);
+        dataManger.writeData("wheel_back_left_powerCo", driveManager.backLeft.powerCoefficent);
+        dataManger.writeData("wheel_back_right_powerCo", driveManager.backRight.powerCoefficent);
+
+        bTelemetry.Print("Wheel write successful.");
+
+        bTelemetry.Print("Calibration complete, pleasure doing business with you.");
+
+
+    }
 
     //Threaded run method, right now this is just for IMU stuff, at some point we might put some avoidance stuff in here (background wall tracking?) (average out 2IMU's for extra strain of the thread?)
     public void run() {
         threadRunning.set(true);
 
-        double closestLaserDistance = 0;
-        double laserAngle = 0;
-
         while (threadRunning.get()) {
-//            deltaTime.Start();
-//
-//            //region Avoidance
-//            closestLaserDistance = 50000;
-//
-//            //Finds the laser nearest to an object and which way its facing
-//            for (bDistanceSensor laser : lasers) {
-//                if (laser.distance < closestLaserDistance) {
-//                    closestLaserDistance = laser.distance;
-//                    laserAngle = laser.angle;
-//                }
-//            }
-//
-//            //GOAL: If the nearest laser is within 100 of hitting something then suspend movement in that direction briefly
-//            //Right now just turn off the motors to avoid collision and wait for the object to move
-//            if (closestLaserDistance < 100) {
-//                canMoveTimer = 2.5;
-//            }
-//
-//            //Count down the can move timer
-//            canMoveTimer -= deltaTime.deltaTime();
-//
-//            if (!canMove()) {
-//                SetPowerDouble4(0, 0, 0, 0, 0);
-//            }
-//            //endregion
-//
-//
-//            deltaTime.Stop();
-
             threadDeltaTime.Start();
 
             //Update our 'rotation' value
             BackgroundRotation();
 
-
-            //Only update the drive manager every one second or so.
-            //This is done at such a low rate to ensure the wheels have moved enough to give an accurate average reading
-            if (threadTimer > 0.25) {
-                threadTimer = 0;
-
-                driveManager.Update();
-            }
-
-            for (bMotor motor : driveManager.driveMotors) {
-                motor.Update(driveManager.targetRatio);
-            }
-
-//            Op.telemetry.addData("Lowest Ratio Target", driveManager.lowestRatio);
-//            Op.telemetry.addData("Thread DT", threadDeltaTime.deltaTime());
-
             threadTimer += threadDeltaTime.deltaTime();
-            Op.telemetry.update();
+//            Op.telemetry.update();
 
             threadDeltaTime.Stop();
         }

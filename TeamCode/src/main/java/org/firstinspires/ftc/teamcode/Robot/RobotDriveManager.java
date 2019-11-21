@@ -46,7 +46,34 @@ public class RobotDriveManager {
     //An array of all of the above motors
     public HashSet<bMotor> driveMotors = new HashSet<bMotor>();
 
-    public void Update() {
+    public void PreformInitalCalibration() {
+
+        for (bMotor motor : driveMotors) {
+            motor.setPower(1);
+        }
+        for (int i = 0; i < 100; i++) {
+            //TODO adda delay here so calibration is more accurate
+
+            UpdateCalibration();
+
+            opMode.telemetry.addData("Current Target Ratio", targetRatio);
+            opMode.telemetry.addData("Tick ", i);
+
+            for (bMotor motor : driveMotors) {
+                motor.Calibrate(targetRatio);
+            }
+
+            opMode.telemetry.update();
+        }
+
+        for (bMotor motor : driveMotors) {
+            motor.setPower(0);
+        }
+
+    }
+
+
+    public void UpdateCalibration() {
         deltaTime.Stop();
 
         lowestRatio = 100000000;
@@ -67,5 +94,9 @@ public class RobotDriveManager {
 
 
         deltaTime.Start();
+    }
+
+    public void UpdateMotorDrive() {
+
     }
 }
