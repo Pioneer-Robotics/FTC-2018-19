@@ -43,7 +43,7 @@ public class TestingOpMode3 extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            robot.SetPowerDouble4(1, 1, 1, 1, 1);
+            robot.SetPowerDouble4(1, 1, 1, 1, gamepad1.right_stick_y);
 
 //            frontLeft.Assign(robot.driveManager.frontLeft.motor.getCurrentPosition());
 //            frontRight.Assign(robot.driveManager.frontRight.motor.getCurrentPosition());

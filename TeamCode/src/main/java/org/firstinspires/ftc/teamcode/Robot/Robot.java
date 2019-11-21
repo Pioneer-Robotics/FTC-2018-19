@@ -171,7 +171,7 @@ public class Robot extends Thread {
 //            Op.telemetry.addData("Thread DT", threadDeltaTime.deltaTime());
 
             threadTimer += threadDeltaTime.deltaTime();
-//            Op.telemetry.update();
+            Op.telemetry.update();
 
             threadDeltaTime.Stop();
         }
@@ -274,10 +274,10 @@ public class Robot extends Thread {
      */
 
     public void SetPowerDouble4(Double4 v, double multiplier) {
-        driveManager.frontLeft.motor.setPower(v.x * multiplier);
-        driveManager.frontRight.motor.setPower(v.y * multiplier);
-        driveManager.backLeft.motor.setPower(v.z * multiplier);
-        driveManager.backRight.motor.setPower(v.w * multiplier);
+        driveManager.frontLeft.setPower(v.x * multiplier);
+        driveManager.frontRight.setPower(v.y * multiplier);
+        driveManager.backLeft.setPower(v.z * multiplier);
+        driveManager.backRight.setPower(v.w * multiplier);
     }
 
     public void SetPersistentVector(Double2 vector, double imu) {

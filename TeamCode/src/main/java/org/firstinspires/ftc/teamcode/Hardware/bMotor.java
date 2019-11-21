@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Helpers.DeltaTime;
 import org.firstinspires.ftc.teamcode.Helpers.bMath;
+import org.firstinspires.ftc.teamcode.Robot.RobotConfiguration;
 
 import java.sql.Time;
 
@@ -49,24 +50,30 @@ public class bMotor {
         encoderDelta = Math.abs(motorPosition - lastEncoderReading) / deltaTime.deltaTime();
 
 
-//        opMode.telemetry.addData(name + " power", assignedPower);
-//        opMode.telemetry.addData(name + " delta", encoderDelta);
-//        opMode.telemetry.addData(name + " position", motorPosition);
-//        opMode.telemetry.addData(name + " dt", deltaTime.deltaTime());
-//        opMode.telemetry.addData(name + " ratio", powerEncoderRatio);
+        opMode.telemetry.addData("", "===========|" + name + "|===========");
+        opMode.telemetry.addData(name + " power     :", assignedPower);
+        opMode.telemetry.addData(name + " delta     :", encoderDelta);
+        opMode.telemetry.addData(name + " ratio     :", powerEncoderRatio);
+        opMode.telemetry.addData(name + " position  :", motorPosition);
+        opMode.telemetry.addData(name + " dt        :", deltaTime.deltaTime());
+        opMode.telemetry.addData("", "==================================");
 
+
+        if (powerEncoderRatio < 0 || Double.isNaN(powerEncoderRatio)) {
+//            powerEncoderRatio = RobotConfiguration.wheel_ticksPerRotation;
+            encoderDelta = 2500;
+        }
 
         //Avoid division by zero
-        if (assignedPower != 0 && encoderDelta != 0) {
+        if (assignedPower > 0 && encoderDelta > 0) {
 
             //Sets up the ratio between the real speed and the applied power
             powerEncoderRatio = encoderDelta / assignedPower;
 
             //sets up the power coefficient that is used in all power assignment. Used to match the targetMaxRatio
             powerCoefficent = targetMaxRatio / powerEncoderRatio;
-
-//            opMode.telemetry.addData(name, powerEncoderRatio);
         }
+
 
         //Set the new last encoder position to the current position for later use
         lastEncoderReading = motorPosition;
@@ -76,7 +83,7 @@ public class bMotor {
 
     //Set the power of the motor while taking account for the new max power
     public void setPower(double power) {
-        assignedPower = power;
+        assignedPower = Math.abs(power);
 
         //Set the corrected power
         motor.setPower(power * powerCoefficent);
