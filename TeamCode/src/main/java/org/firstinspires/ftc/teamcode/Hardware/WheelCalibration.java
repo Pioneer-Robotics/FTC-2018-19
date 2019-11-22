@@ -15,12 +15,16 @@ public class WheelCalibration extends LinearOpMode {
 
     Robot robot = new Robot();
 
+    ElapsedTime deltaTime = new ElapsedTime();
+
     @Override
     public void runOpMode() throws InterruptedException {
         robot.initCalibration(hardwareMap, this);
+        start();
+        waitForStart();
 
         while (opModeIsActive()) {
-            telemetry.addData("Calibration Complete, please press start to exit.", "");
+            telemetry.addData("Calibration completed in " + getRuntime() + " seconds, please press start to exit.", "");
             telemetry.update();
         }
 

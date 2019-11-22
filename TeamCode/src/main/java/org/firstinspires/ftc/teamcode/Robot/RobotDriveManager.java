@@ -56,6 +56,11 @@ public class RobotDriveManager {
         }
         for (int i = 0; i < 100; i++) {
 
+            //Used to update the wheels with the current coefficient to prevent overshooting
+            for (bMotor motor : driveMotors) {
+                motor.setPower(1);
+            }
+
             UpdateCalibration();
 
             opMode.telemetry.addData("Current Target Ratio", targetRatio);
@@ -70,7 +75,7 @@ public class RobotDriveManager {
             try {
                 Thread.sleep((long) bMath.Clamp(100 - caibrationDeltaTime.milliseconds(), 0, 100));
             } catch (InterruptedException ex) {
-                bTelemetry.Print("Wheel calibration failed: InterruptedException :(");
+                bTelemetry.Print("Wheel calibration failed: InterruptedException on el sleep :(");
             }
 
             caibrationDeltaTime.reset();
@@ -80,12 +85,17 @@ public class RobotDriveManager {
             motor.setPower(0);
         }
 
-        bTelemetry.Print("Verifying");
-
+        bTelemetry.Print("Verifying calibration integrity...");
 
         //If the the calibration is not valid rerun the calibration
         if (!VerifyCalibration()) {
+            bTelemetry.Print("Calibration INVALID!");
+            bTelemetry.Print("Rerunning calibration.");
+
+            //Might be good to offset the target values by 250 every time we rerun it
             PreformInitalCalibration();
+        } else {
+            bTelemetry.Print("Calibration VALID!");
         }
 
     }
