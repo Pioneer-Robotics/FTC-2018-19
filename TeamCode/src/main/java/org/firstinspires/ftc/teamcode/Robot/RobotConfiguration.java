@@ -20,8 +20,9 @@ public class RobotConfiguration {
         180
 
 
-    Verified by _______ on the _______ of _______, _________
+    Wheel placement verified by Ben on the 22nd of November
 
+Heading angles require additional trouble shooting.
 
      */
 

@@ -26,33 +26,27 @@ public class TestingOpMode2 extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         robot.init(hardwareMap, this);
-        robot.SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.SetDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
 
         waitForStart();
 
 
-        while (opModeIsActive()) {
-            robot.RotatePID(90, 0.25, 1000);
-//            robot.MoveSimple(new Double2(gamepad1.left_stick_x,gamepad1.left_stick_y), gamepad1.a ? ` `);
-        }
-//        robot.SetPowerDouble4(0, 1, 0, 0, 0.1);
-//        sleep(1000);
-//        robot.SetPowerDouble4(0, 0, 1, 0, 0.1);
-//        sleep(1000);
-//        robot.SetPowerDouble4(0, 0, 0, 1, 0.1);
-//        sleep(1000);
+        robot.MoveSimple(0, 0.1);
+        sleep(2500);
 
 
-//        robot.SetPowerDouble4(1.0, 0, 0, 0, 0.1);
-//        sleep(2500);
-//        robot.SetPowerDouble4(0, 1.0, 0, 0, 0.1);
-//        sleep(2500);
-//        robot.SetPowerDouble4(0, 0, 1.0, 0, 0.1);
-//        sleep(2500);
-//        robot.SetPowerDouble4(0, 0, 0, 1.0, 0.1);
-//        sleep(2500);
+        robot.MoveSimple(90, 0.1);
+        sleep(2500);
+
+
+        robot.MoveSimple(180, 0.1);
+        sleep(2500);
+
+
+        robot.MoveSimple(270, 0.1);
+        sleep(2500);
+
+
+        robot.Stop();
 
     }
 }

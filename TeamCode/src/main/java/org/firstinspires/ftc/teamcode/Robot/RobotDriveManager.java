@@ -80,6 +80,14 @@ public class RobotDriveManager {
             motor.setPower(0);
         }
 
+        bTelemetry.Print("Verifying");
+
+
+        //If the the calibration is not valid rerun the calibration
+        if (!VerifyCalibration()) {
+            PreformInitalCalibration();
+        }
+
     }
 
 
@@ -112,6 +120,12 @@ public class RobotDriveManager {
 
         for (bMotor motor : driveMotors) {
             totalCoefficient += motor.powerCoefficent;
+        }
+
+        for (bMotor motor : driveMotors) {
+            if (motor.powerCoefficent > 1) {
+                return false;
+            }
         }
 
         return totalCoefficient <= 4;

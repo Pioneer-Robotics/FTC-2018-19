@@ -23,8 +23,7 @@ public class TestingOpMode extends LinearOpMode {
         robot.init(hardwareMap, this);
 
         waitForStart();
-
-        robot.RotatePID(90, 0.5f, 100000);
+        robot.RotatePID(-90, 0.5f, 100000);
 
 //        while (opModeIsActive()) {
 //            sleep(5000);

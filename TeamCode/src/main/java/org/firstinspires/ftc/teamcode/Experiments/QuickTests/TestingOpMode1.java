@@ -19,39 +19,32 @@ public class TestingOpMode1 extends LinearOpMode {
 
     public ElapsedTime deltaTime = new ElapsedTime();
 
-    int position;
-    int lastPosition;
-
-    int position2;
-    int lastPosition2;
-
-    double speed;
-    double speed2;
-
     @Override
     public void runOpMode() throws InterruptedException {
         robot.init(hardwareMap, this);
         waitForStart();
-        robot.driveManager.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.driveManager.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         while (opModeIsActive()) {
-            robot.driveManager.backRight.setPower(0.5);
-            position = robot.driveManager.frontRight.motor.getCurrentPosition();
-            position2 = robot.driveManager.backRight.motor.getCurrentPosition();
-
-            speed = (position - lastPosition) / deltaTime.seconds();
-            speed2 = (position2 - lastPosition2) / deltaTime.seconds();
-
-
-            lastPosition = position;
-            lastPosition2 = position2;
-
-            telemetry.addData("Front Right : ", speed);
-            telemetry.addData("Back Right : ", speed2);
-            telemetry.addData("delta Time: ", deltaTime.seconds());
-
+            telemetry.addData("X", "FL");
             telemetry.update();
+            robot.SetPowerDouble4(1, 0, 0, 0, 1);
+            sleep(2500);
+
+            telemetry.addData("Y", "FR");
+            telemetry.update();
+            robot.SetPowerDouble4(0, 1, 0, 0, 1);
+            sleep(2500);
+
+            telemetry.addData("Z", "BL");
+            telemetry.update();
+            robot.SetPowerDouble4(0, 0, 1, 0, 1);
+            sleep(2500);
+
+
+            telemetry.addData("W", "BR");
+            telemetry.update();
+            robot.SetPowerDouble4(0, 0, 0, 1, 1);
+            sleep(2500);
 
             deltaTime.reset();
         }

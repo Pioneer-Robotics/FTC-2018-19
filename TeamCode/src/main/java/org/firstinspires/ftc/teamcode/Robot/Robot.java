@@ -4,6 +4,7 @@ import android.content.Context;
 import android.renderscript.Double2;
 import android.renderscript.Double4;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -54,13 +55,14 @@ public class Robot extends Thread {
 //    //Used for testing
 //    public DcMotor armWintch;
 
-    public OpMode Op;
+    public LinearOpMode Op;
+//    public OpMode LinearOpMode;
 
     //If our thread is running, using atomics to avoid thread conflicts. Might not be completely necessary
     AtomicBoolean threadRunning = new AtomicBoolean();
 
 
-    public void init(HardwareMap hardwareMap, OpMode opmode) {
+    public void init(HardwareMap hardwareMap, LinearOpMode opmode) {
 
         //Start the printer
         bTelemetry.Start(opmode);
@@ -130,7 +132,7 @@ public class Robot extends Thread {
 
 
     //A fancy version of init used for calibrating the robot, not to be used in any offical match as calibration will take anywhere from 10 to 30 seconds
-    public void initCalibration(HardwareMap hardwareMap, OpMode opmode) {
+    public void initCalibration(HardwareMap hardwareMap, LinearOpMode opmode) {
 
         //Start the printer
         bTelemetry.Start(opmode);
@@ -281,9 +283,11 @@ public class Robot extends Thread {
     PID rotationPID_test = new PID();
 
     public void RotatePID(double angle, double rotationSpeed, int cycles) {
+        rotationPID_test.Start(1, 0.075, 0.022);
 
 //        rotationPID_test.Start(3, 0.21, 0.69);
-        rotationPID_test.Start(0.5, 0.075, 0.015);
+//        rotationPID_test.Start(0.5, 0.075, 0.015);
+//        rotationPID_test.Start(1, 0.25, 0.035);
 //        rotationPID_test.Start(0.025, 0.005, 0);
 
         int ticker = 0;
@@ -291,7 +295,7 @@ public class Robot extends Thread {
         int directionChanges = 0;
         boolean lastPositiveState = true;
 
-        while (ticker < cycles) {
+        while (ticker < cycles && Op.opModeIsActive()) {
             ticker++;
             double rotationPower = rotationPID_test.Loop(angle, rotation);
             rotationPower = rotationPower / (360);//rotationSpeed * Math.abs(startAngle - angle));
@@ -306,13 +310,13 @@ public class Robot extends Thread {
             Op.telemetry.addData("Rotation ", rotation);
             Op.telemetry.addData("rotationPower ", rotationPower);
             Op.telemetry.addData("rotationSpeed ", rotationSpeed);
+            Op.telemetry.addData("yeets", directionChanges);
             Op.telemetry.update();
             RotateSimple(rotationPower * rotationSpeed);
 
             if (lastPositiveState != rotationPower > 0) {
                 directionChanges++;
-                lastPositiveState = rotationPower > 0
-                ;
+                lastPositiveState = rotationPower > 0;
             }
 
             if (directionChanges > 5) {
@@ -324,14 +328,16 @@ public class Robot extends Thread {
 
     public void RotatePID(double angle, double rotationSpeed, int cycles, double p, double i, double d) {
 
+//        rotationPID_test.Start(3, 0.21, 0.69);
         rotationPID_test.Start(p, i, d);
-//        rotationPID_test.Start(0.5, 0.25, 0);
 //        rotationPID_test.Start(0.025, 0.005, 0);
 
         int ticker = 0;
         double startAngle = rotation;
+        int directionChanges = 0;
+        boolean lastPositiveState = true;
 
-        while (ticker < cycles) {
+        while (ticker < cycles && Op.opModeIsActive()) {
             ticker++;
             double rotationPower = rotationPID_test.Loop(angle, rotation);
             rotationPower = rotationPower / (360);//rotationSpeed * Math.abs(startAngle - angle));
@@ -346,8 +352,19 @@ public class Robot extends Thread {
             Op.telemetry.addData("Rotation ", rotation);
             Op.telemetry.addData("rotationPower ", rotationPower);
             Op.telemetry.addData("rotationSpeed ", rotationSpeed);
+            Op.telemetry.addData("yeets", directionChanges);
             Op.telemetry.update();
             RotateSimple(rotationPower * rotationSpeed);
+
+            if (lastPositiveState != rotationPower > 0) {
+                directionChanges++;
+                lastPositiveState = rotationPower > 0;
+            }
+
+            if (directionChanges > 5) {
+                ticker += cycles * 2;
+            }
+
         }
     }
 
