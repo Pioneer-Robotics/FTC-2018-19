@@ -47,8 +47,8 @@ public class bIMU {
 
     //Returns the average of both IMU rotations
     public double getRotation(AngleUnit angleUnit) {
-        op.telemetry.addData("IMU 0: ", imu_0.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, angleUnit).firstAngle);
-        op.telemetry.addData("IMU 1: ", imu_1.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, angleUnit).firstAngle);
+//        op.telemetry.addData("IMU 0: ", imu_0.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, angleUnit).firstAngle);
+//        op.telemetry.addData("IMU 1: ", imu_1.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, angleUnit).firstAngle);
 
         double imuRotation_0 = imu_0.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, angleUnit).firstAngle;
         double imuRotation_1 = imu_1.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, angleUnit).firstAngle;
@@ -59,7 +59,7 @@ public class bIMU {
             imuRotation_0 += 360;
         }
 
-        op.telemetry.addData("IMU AVG: ", ((imuRotation_0 + imuRotation_1) / 2) % 360);
+//        op.telemetry.addData("IMU AVG: ", ((imuRotation_0 + imuRotation_1) / 2) % 360);
 
 
         return ((imuRotation_0 + imuRotation_1) / 2) % 360;

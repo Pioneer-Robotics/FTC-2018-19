@@ -2,9 +2,11 @@ package org.firstinspires.ftc.teamcode.Helpers;
 
 import android.renderscript.Double2;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 public class PID {
 
-    public DeltaTime deltaTime = new DeltaTime();
+    public ElapsedTime deltaTime = new ElapsedTime();
     public double integral;
     public double derivative;
     public double lastError;
@@ -18,18 +20,18 @@ public class PID {
         P = p;
         I = i;
         D = d;
+        deltaTime.reset();
     }
 
     //Double spits out the PID'd value
     public double Loop(double targetState, double currentState) {
-        deltaTime.Stop();
 
         error = targetState - currentState;
-        integral += error * deltaTime.deltaTime();
-        derivative = (error - lastError) / deltaTime.deltaTime();
+        integral += error * deltaTime.seconds();
+        derivative = (error - lastError) / deltaTime.seconds();
         lastError = error;
+        deltaTime.reset();
 
-        deltaTime.Start();
         return (P * error) + (I * integral) + (D * derivative);
     }
 

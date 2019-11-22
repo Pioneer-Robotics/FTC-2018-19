@@ -8,13 +8,6 @@ public class RobotConfiguration {
     public static final String imu_1 = "imu1";
 
     /* Our cool robot configuration
-      ________
-    |X|      |Y|
-    | |  ^^  | |
-    | |      | |
-    |Z|______|W|
-
-    Verified by _______ on the _______ of _______, _________
 
 
          0
@@ -43,8 +36,8 @@ public class RobotConfiguration {
     //The amount of encoder ticks per motor rotation
     public static final int wheel_ticksPerRotation = 1440;
 
-    //The max speed our wheel motors will ever rotate (in ticks per second), might be able to up this too 3000 or so
-    public static final int wheel_maxTicksPerSecond = 2400;
+    //The max speed our wheel motors will ever rotate (in ticks per second), 3 rotations per second.
+    public static final int wheel_maxTicksPerSecond = 4320;
 
 
     //Distance sensor 90 names

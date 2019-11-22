@@ -5,9 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.Helpers.DeltaTime;
 import org.firstinspires.ftc.teamcode.Robot.Robot;
 
 @Autonomous(name = "TestingOpMode", group = "Sensor")
@@ -15,7 +15,7 @@ public class TestingOpMode extends LinearOpMode {
     Robot robot = new Robot();
 
 
-    public DeltaTime deltaTime = new DeltaTime();
+    public ElapsedTime deltaTime = new ElapsedTime();
 
 
     @Override
@@ -24,7 +24,7 @@ public class TestingOpMode extends LinearOpMode {
 
         waitForStart();
 
-        robot.RotatePID(90, 0.1f, 1000);
+        robot.RotatePID(90, 0.5f, 100000);
 
 //        while (opModeIsActive()) {
 //            sleep(5000);

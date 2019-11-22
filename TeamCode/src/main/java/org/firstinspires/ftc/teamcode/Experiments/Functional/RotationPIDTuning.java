@@ -5,8 +5,8 @@ import android.renderscript.Double3;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Helpers.DeltaTime;
 import org.firstinspires.ftc.teamcode.Robot.Robot;
 
 @Autonomous(name = "PIDTuning", group = "Sensor")
@@ -17,7 +17,7 @@ RotationPIDTuning extends LinearOpMode {
 
     Double3 PID = new Double3();
 
-    DeltaTime deltaTime = new DeltaTime();
+    ElapsedTime deltaTime = new ElapsedTime();
 
     TuningMode mode = TuningMode.P;
 
@@ -28,10 +28,11 @@ RotationPIDTuning extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         robot.init(hardwareMap, this);
+        deltaTime.reset();
 
         //While not started: Use the controller to tune PID
         while (!opModeIsActive()) {
-            deltaTime.Start();
+
 
             if (gamepad1.y) {
                 mode = TuningMode.P;
@@ -46,15 +47,15 @@ RotationPIDTuning extends LinearOpMode {
 
             if (mode == TuningMode.P) {
                 telemetry.addData("ADJUSTING P ", PID.x);
-                PID.x += gamepad1.right_stick_y * 0.0001 * deltaTime.deltaTime();
+                PID.x += gamepad1.right_stick_y * 1 * deltaTime.seconds();
             }
             if (mode == TuningMode.I) {
                 telemetry.addData("ADJUSTING I ", PID.y);
-                PID.y += gamepad1.right_stick_y * 0.00001 * deltaTime.deltaTime();
+                PID.y += gamepad1.right_stick_y * 1 * deltaTime.seconds();
             }
             if (mode == TuningMode.D) {
                 telemetry.addData("ADJUSTING D ", PID.z);
-                PID.z += gamepad1.right_stick_y * 0.00001 * deltaTime.deltaTime();
+                PID.z += gamepad1.right_stick_y * 1 * deltaTime.seconds();
             }
             telemetry.addData("HOW TO : USE  Y TO TUNE P. USE A TO TUNE I. USE B TO TUNE D. PRESS X TO FINISH", "");
 
@@ -62,9 +63,10 @@ RotationPIDTuning extends LinearOpMode {
             telemetry.addData("P : ", PID.x);
             telemetry.addData("I : ", PID.y);
             telemetry.addData("D : ", PID.z);
-            telemetry.addData("deltaTime : ", deltaTime.deltaTime());
+            telemetry.addData("deltaTime : ", deltaTime.seconds());
             telemetry.update();
-            deltaTime.Stop();
+            deltaTime.reset();
+
         }
 
         while (opModeIsActive()) {

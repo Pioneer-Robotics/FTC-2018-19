@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode.Hardware;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Helpers.DeltaTime;
 import org.firstinspires.ftc.teamcode.Helpers.bMath;
 import org.firstinspires.ftc.teamcode.Robot.RobotConfiguration;
 
@@ -20,7 +20,7 @@ public class bMotor {
 
     public DcMotor motor;
 
-    DeltaTime deltaTime = new DeltaTime();
+    ElapsedTime deltaTime = new ElapsedTime();
 
     double encoderDelta = 0;
 
@@ -38,16 +38,17 @@ public class bMotor {
         motor = op.hardwareMap.get(DcMotor.class, motorName);
         opMode = op;
         name = motorName;
+        deltaTime.reset();
+
     }
 
     public void Calibrate(double targetMaxRatio) {
-        deltaTime.Stop();
 
         //Fetches the motors real world position
         motorPosition = motor.getCurrentPosition();
 
         //Figure out how fast this wheel/motor is moving in encoder units per second
-        encoderDelta = Math.abs(motorPosition - lastEncoderReading) / deltaTime.deltaTime();
+        encoderDelta = Math.abs(motorPosition - lastEncoderReading) / deltaTime.seconds();
 
 
         opMode.telemetry.addData("", "===========|" + name + "|===========");
@@ -55,7 +56,7 @@ public class bMotor {
         opMode.telemetry.addData(name + " delta     :", encoderDelta);
         opMode.telemetry.addData(name + " ratio     :", powerEncoderRatio);
         opMode.telemetry.addData(name + " position  :", motorPosition);
-        opMode.telemetry.addData(name + " dt        :", deltaTime.deltaTime());
+        opMode.telemetry.addData(name + " dt        :", deltaTime.seconds());
         opMode.telemetry.addData("", "==================================");
 
 
@@ -78,7 +79,7 @@ public class bMotor {
         //Set the new last encoder position to the current position for later use
         lastEncoderReading = motorPosition;
 
-        deltaTime.Start();
+        deltaTime.reset();
     }
 
     //Set the power of the motor while taking account for the new max power

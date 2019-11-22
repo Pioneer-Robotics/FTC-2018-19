@@ -2,10 +2,11 @@ package org.firstinspires.ftc.teamcode.Robot;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Hardware.bMotor;
-import org.firstinspires.ftc.teamcode.Helpers.DeltaTime;
 import org.firstinspires.ftc.teamcode.Helpers.bMath;
+import org.firstinspires.ftc.teamcode.Helpers.bTelemetry;
 
 import java.util.HashSet;
 
@@ -13,7 +14,9 @@ import java.util.HashSet;
 //This class takes the weakest motor and sets other motors power relative to that one
 public class RobotDriveManager {
 
-    DeltaTime deltaTime = new DeltaTime();
+    ElapsedTime deltaTime = new ElapsedTime();
+
+    ElapsedTime caibrationDeltaTime = new ElapsedTime();
 
     public double targetRatio = 2;
 
@@ -52,18 +55,25 @@ public class RobotDriveManager {
             motor.setPower(1);
         }
         for (int i = 0; i < 100; i++) {
-            //TODO adda delay here so calibration is more accurate
 
             UpdateCalibration();
 
             opMode.telemetry.addData("Current Target Ratio", targetRatio);
-            opMode.telemetry.addData("Tick ", i);
+            opMode.telemetry.addData("Current Iteration ", i);
 
             for (bMotor motor : driveMotors) {
                 motor.Calibrate(targetRatio);
             }
 
             opMode.telemetry.update();
+
+            try {
+                Thread.sleep((long)bMath.Clamp(100 - caibrationDeltaTime.milliseconds(), 0, 100));
+            } catch (InterruptedException ex) {
+                bTelemetry.Print("Wheel calibration failed: InterruptedException :(");
+            }
+
+            caibrationDeltaTime.reset();
         }
 
         for (bMotor motor : driveMotors) {
@@ -74,7 +84,6 @@ public class RobotDriveManager {
 
 
     public void UpdateCalibration() {
-        deltaTime.Stop();
 
         lowestRatio = 100000000;
         for (bMotor motor : driveMotors) {
@@ -93,7 +102,7 @@ public class RobotDriveManager {
         targetRatio = lowestRatio;
 
 
-        deltaTime.Start();
+        deltaTime.reset();
     }
 
     public void UpdateMotorDrive() {

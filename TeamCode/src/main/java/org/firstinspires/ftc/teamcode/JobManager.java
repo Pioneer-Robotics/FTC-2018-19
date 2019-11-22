@@ -4,8 +4,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Helpers.DeltaTime;
 import org.firstinspires.ftc.teamcode.Robot.Robot;
 
 //A lovely picture of the robot
@@ -47,7 +47,7 @@ class Job {
 
     public LinearOpMode opMode;
 
-    public DeltaTime deltaTime = new DeltaTime();
+    public ElapsedTime deltaTime = new ElapsedTime();
 
     public boolean running = false;
 
@@ -66,16 +66,13 @@ class Job {
     //Used to actually call Loop, don't touch dis
     final void RunLoop() {
         while (running) {
-            deltaTime.Start();
             Loop();
 
             //Stops the loop if the opmode is shut down
             if (!opMode.opModeIsActive()) {
                 running = false;
             }
-
-            deltaTime.Stop();
-
+            deltaTime.reset();
         }
         OnStop();
     }
@@ -99,6 +96,7 @@ class Job {
     //Called when the job is first started, sets opMode
     public void OnStart(LinearOpMode op) {
         opMode = op;
+        deltaTime.reset();
     }
 }
 
@@ -145,7 +143,7 @@ class aJob implements Runnable {
 
     public LinearOpMode opMode;
 
-    public DeltaTime deltaTime = new DeltaTime();
+    public ElapsedTime deltaTime = new ElapsedTime();
 
     public boolean running = false;
 
@@ -169,7 +167,7 @@ class aJob implements Runnable {
     public void run() {
         running = true;
         while (running) {
-            deltaTime.Start();
+
             Loop();
 
             //Stops the loop if the opmode is shut down
@@ -177,7 +175,7 @@ class aJob implements Runnable {
                 running = false;
             }
 
-            deltaTime.Stop();
+            deltaTime.reset();
         }
         OnStop();
     }

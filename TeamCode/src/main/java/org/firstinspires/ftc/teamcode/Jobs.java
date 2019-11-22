@@ -69,7 +69,7 @@ class FindSkystoneJob extends NavigationJob {
             xFactor = tensorFlowaJob.getCurrentXFactor(recognition) < 0 ? -1 : 0;
 
             //Lerp the move speed
-            moveSpeed = bMath.MoveTowards(moveSpeed, bMath.Clamp(Math.abs(tensorFlowaJob.getCurrentXFactor(recognition)), 0.1, 1), deltaTime.deltaTime());
+            moveSpeed = bMath.MoveTowards(moveSpeed, bMath.Clamp(Math.abs(tensorFlowaJob.getCurrentXFactor(recognition)), 0.1, 1), deltaTime.seconds());
 
             opMode.telemetry.addData("XFactor ", xFactor);
             opMode.telemetry.addData("Movement Factor ", tensorFlowaJob.getCurrentXFactor(recognition) > 0 ? 180 : 0);
@@ -81,7 +81,7 @@ class FindSkystoneJob extends NavigationJob {
             if (Math.abs(tensorFlowaJob.getCurrentXFactor(recognition)) < 0.1) {
 
                 if (!settled) {
-                    settledTimer += deltaTime.deltaTime();
+                    settledTimer += deltaTime.seconds();
                     if (settledTimer > 0.25) {
                         settled = true;
                     }
@@ -107,7 +107,7 @@ class FindSkystoneJob extends NavigationJob {
         } else {
 
             //Tick the timer!
-            lostRecognitionTimer += deltaTime.deltaTime();
+            lostRecognitionTimer += deltaTime.seconds();
 
 
             //If we've lost sight of the stone for more than 0.75 seconds stop moving (to avoid issues while testing, ei running over my feets)

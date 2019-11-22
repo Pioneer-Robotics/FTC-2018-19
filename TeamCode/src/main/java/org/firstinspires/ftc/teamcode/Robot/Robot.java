@@ -7,10 +7,10 @@ import android.renderscript.Double4;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Hardware.bMotor;
-import org.firstinspires.ftc.teamcode.Helpers.DeltaTime;
 import org.firstinspires.ftc.teamcode.Helpers.PID;
 import org.firstinspires.ftc.teamcode.Helpers.bDataManger;
 import org.firstinspires.ftc.teamcode.Helpers.bMath;
@@ -29,9 +29,6 @@ public class Robot extends Thread {
     //Our wee little wall tracker
     public RobotWallTrack wallTrack = new RobotWallTrack();
 
-    //This delta time is only for the navigation helper thread
-    public DeltaTime deltaTime = new DeltaTime();
-
     //The current IMU rotation, threaded
     double rotation;
 
@@ -42,7 +39,7 @@ public class Robot extends Thread {
 
     double threadTimer;
 
-    public DeltaTime threadDeltaTime = new DeltaTime();
+    public ElapsedTime threadDeltaTime = new ElapsedTime();
 
     public bDataManger dataManger = new bDataManger();
 
@@ -203,15 +200,14 @@ public class Robot extends Thread {
         threadRunning.set(true);
 
         while (threadRunning.get()) {
-            threadDeltaTime.Start();
 
             //Update our 'rotation' value
             BackgroundRotation();
 
-            threadTimer += threadDeltaTime.deltaTime();
+            threadTimer += threadDeltaTime.seconds();
 //            Op.telemetry.update();
 
-            threadDeltaTime.Stop();
+            threadDeltaTime.reset();
         }
 
 
@@ -279,26 +275,44 @@ public class Robot extends Thread {
 
     public void RotateSimple(double rotationSpeed) {
         Double4 v = bMath.getRotationSimple(rotationSpeed);
-        SetPowerDouble4(v, rotationSpeed);
+        SetPowerDouble4(v, 1);
     }
 
     PID rotationPID_test = new PID();
 
     public void RotatePID(double angle, double rotationSpeed, int cycles) {
 
-        rotationPID_test.Start(0.01, 0, 0);
+        rotationPID_test.Start(3, 0.21, 0.69);
+//        rotationPID_test.Start(0.5, 0.25, 0);
+//        rotationPID_test.Start(0.025, 0.005, 0);
 
 
         int ticker = 0;
+        double startAngle = rotation;
 
         while (ticker < cycles) {
             ticker++;
             double rotationPower = rotationPID_test.Loop(angle, rotation);
-            RotateSimple(rotationPower * rotationSpeed);
+            rotationPower = rotationPower / (360);//rotationSpeed * Math.abs(startAngle - angle));
+            Op.telemetry.addData("Error ", rotationPID_test.error);
+            Op.telemetry.addData("Last Error  ", rotationPID_test.lastError);
+            Op.telemetry.addData("Derivative ", rotationPID_test.derivative);
+            Op.telemetry.addData("Integral ", rotationPID_test.integral);
+
+            Op.telemetry.addData("TD ", rotationPID_test.deltaTime.seconds());
+
             Op.telemetry.addData("Rotation ", rotation);
             Op.telemetry.addData("rotationPower ", rotationPower);
             Op.telemetry.addData("rotationSpeed ", rotationSpeed);
             Op.telemetry.update();
+            RotateSimple(rotationPower * rotationSpeed);
+
+//            //Sleep so the DT doesnt freak out
+//            try {
+//                Thread.sleep(100);
+//            } catch (InterruptedException ex) {
+//                bTelemetry.Print("Wheel calibration failed: InterruptedException :(");
+//            }
         }
 
     }

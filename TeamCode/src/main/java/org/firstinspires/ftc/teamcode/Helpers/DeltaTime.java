@@ -3,14 +3,16 @@ package org.firstinspires.ftc.teamcode.Helpers;
 import android.renderscript.Double2;
 import android.renderscript.Double4;
 
-//Helper class for getting the passage of time, used as deltaTime in time sensitive functions.
-public class DeltaTime {
+//Helper class for getting the change in time, delta-time.
+//DEPREICATED. Use ElapsedTime instead!
+class XDeltaTime {
 
     long startTime;
 
     long deltaTimeLong;
 
-    public DeltaTime() {
+    //Generic Constrictor
+    public XDeltaTime() {
 
     }
 
@@ -20,12 +22,18 @@ public class DeltaTime {
         startTime = System.currentTimeMillis();
     }
 
-    //Sets the start time
+    //Sets the stop time
     public void Stop() {
         deltaTimeLong = System.currentTimeMillis() - startTime;
     }
 
+    //Returns a double deltaTime in seconds
     public Double deltaTime() {
-        return (double) deltaTimeLong / 1000;
+        return bMath.Clamp((double) (deltaTimeLong / 1000), Double.MIN_VALUE, 100);
+    }
+
+    //Returns a long delta time in milliseconds
+    public Long deltaTimeMillis() {
+        return deltaTimeLong;
     }
 }

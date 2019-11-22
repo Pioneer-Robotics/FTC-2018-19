@@ -64,10 +64,10 @@ public class bMath {
         leftRotatePower = speed;
         rightRotatePower = -speed;
 
-        delta.x = (leftRotatePower);
-        delta.y = (rightRotatePower);
-        delta.z = (leftRotatePower);
-        delta.w = (rightRotatePower);
+        delta.x = (rightRotatePower);
+        delta.y = (leftRotatePower);
+        delta.z = (rightRotatePower);
+        delta.w = (leftRotatePower);
 
 
         return delta; //delta is the 4 component variable, Double4 delta (Joe)
@@ -137,6 +137,19 @@ public class bMath {
 
     public static double Clamp(double value, double min, double max) {
         double v = value;
+
+        if (value >= max) {
+            v = max;
+        }
+        if (value <= min) {
+            v = min;
+        }
+
+        return v;
+    }
+
+    public static long Clamp(long value, long min, long max) {
+        long v = value;
 
         if (value >= max) {
             v = max;

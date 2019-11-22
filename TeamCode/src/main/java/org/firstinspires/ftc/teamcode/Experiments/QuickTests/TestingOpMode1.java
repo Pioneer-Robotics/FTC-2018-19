@@ -5,9 +5,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.Helpers.DeltaTime;
+
 import org.firstinspires.ftc.teamcode.Robot.Robot;
 import org.firstinspires.ftc.teamcode.Robot.RobotWallTrack;
 
@@ -16,7 +17,7 @@ public class TestingOpMode1 extends LinearOpMode {
 
     Robot robot = new Robot();
 
-    public DeltaTime deltaTime = new DeltaTime();
+    public ElapsedTime deltaTime = new ElapsedTime();
 
     int position;
     int lastPosition;
@@ -35,14 +36,12 @@ public class TestingOpMode1 extends LinearOpMode {
         robot.driveManager.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         while (opModeIsActive()) {
-            deltaTime.Start();
-
             robot.driveManager.backRight.setPower(0.5);
             position = robot.driveManager.frontRight.motor.getCurrentPosition();
             position2 = robot.driveManager.backRight.motor.getCurrentPosition();
 
-            speed = (position - lastPosition) / deltaTime.deltaTime();
-            speed2 = (position2 - lastPosition2) / deltaTime.deltaTime();
+            speed = (position - lastPosition) / deltaTime.seconds();
+            speed2 = (position2 - lastPosition2) / deltaTime.seconds();
 
 
             lastPosition = position;
@@ -50,11 +49,11 @@ public class TestingOpMode1 extends LinearOpMode {
 
             telemetry.addData("Front Right : ", speed);
             telemetry.addData("Back Right : ", speed2);
-            telemetry.addData("delta Time: ", deltaTime.deltaTime());
+            telemetry.addData("delta Time: ", deltaTime.seconds());
 
             telemetry.update();
 
-            deltaTime.Stop();
+            deltaTime.reset();
         }
     }
 

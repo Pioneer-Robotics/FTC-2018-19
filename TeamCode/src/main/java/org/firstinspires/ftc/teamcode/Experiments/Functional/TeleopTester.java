@@ -6,8 +6,8 @@ import android.renderscript.Double2;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Helpers.DeltaTime;
 import org.firstinspires.ftc.teamcode.Robot.Robot;
 
 import java.nio.ReadOnlyBufferException;
@@ -17,7 +17,7 @@ public class TeleopTester extends LinearOpMode {
 
     Robot robot = new Robot();
 
-    DeltaTime deltaTime = new DeltaTime();
+    ElapsedTime deltaTime = new ElapsedTime();
 
     int last_bl;
 
@@ -38,10 +38,10 @@ public class TeleopTester extends LinearOpMode {
         targetRotation = robot.GetRotation();
 
         while (opModeIsActive()) {
-            deltaTime.Start();
+
 
             //Rotate 180 degrees in one seconds
-            targetRotation = 25 * gamepad1.right_stick_x * deltaTime.deltaTime();
+            targetRotation = 25 * gamepad1.right_stick_x * deltaTime.seconds();
 
             //Move via joystick and maintain target rotation, rotation might not work
             robot.MoveComplex(new Double2(gamepad1.left_stick_x, gamepad1.left_stick_y), gamepad1.a ? 0.1 : 1, 0);
@@ -60,7 +60,8 @@ public class TeleopTester extends LinearOpMode {
 
 
             targetRotation = 0;
-            deltaTime.Stop();
+            deltaTime.reset();
+
         }
         robot.Stop();
     }
