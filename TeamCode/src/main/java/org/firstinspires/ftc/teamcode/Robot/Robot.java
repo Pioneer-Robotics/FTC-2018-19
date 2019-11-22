@@ -282,18 +282,20 @@ public class Robot extends Thread {
 
     public void RotatePID(double angle, double rotationSpeed, int cycles) {
 
-        rotationPID_test.Start(3, 0.21, 0.69);
-//        rotationPID_test.Start(0.5, 0.25, 0);
+//        rotationPID_test.Start(3, 0.21, 0.69);
+        rotationPID_test.Start(0.5, 0.075, 0.015);
 //        rotationPID_test.Start(0.025, 0.005, 0);
-
 
         int ticker = 0;
         double startAngle = rotation;
+        int directionChanges = 0;
+        boolean lastPositiveState = true;
 
         while (ticker < cycles) {
             ticker++;
             double rotationPower = rotationPID_test.Loop(angle, rotation);
             rotationPower = rotationPower / (360);//rotationSpeed * Math.abs(startAngle - angle));
+            rotationPower += 0.25 * (rotationPower > 0 ? 1 : -1);
             Op.telemetry.addData("Error ", rotationPID_test.error);
             Op.telemetry.addData("Last Error  ", rotationPID_test.lastError);
             Op.telemetry.addData("Derivative ", rotationPID_test.derivative);
@@ -307,14 +309,46 @@ public class Robot extends Thread {
             Op.telemetry.update();
             RotateSimple(rotationPower * rotationSpeed);
 
-//            //Sleep so the DT doesnt freak out
-//            try {
-//                Thread.sleep(100);
-//            } catch (InterruptedException ex) {
-//                bTelemetry.Print("Wheel calibration failed: InterruptedException :(");
-//            }
-        }
+            if (lastPositiveState != rotationPower > 0) {
+                directionChanges++;
+                lastPositiveState = rotationPower > 0
+                ;
+            }
 
+            if (directionChanges > 5) {
+                ticker += cycles * 2;
+            }
+
+        }
+    }
+
+    public void RotatePID(double angle, double rotationSpeed, int cycles, double p, double i, double d) {
+
+        rotationPID_test.Start(p, i, d);
+//        rotationPID_test.Start(0.5, 0.25, 0);
+//        rotationPID_test.Start(0.025, 0.005, 0);
+
+        int ticker = 0;
+        double startAngle = rotation;
+
+        while (ticker < cycles) {
+            ticker++;
+            double rotationPower = rotationPID_test.Loop(angle, rotation);
+            rotationPower = rotationPower / (360);//rotationSpeed * Math.abs(startAngle - angle));
+            rotationPower += 0.25 * (rotationPower > 0 ? 1 : -1);
+            Op.telemetry.addData("Error ", rotationPID_test.error);
+            Op.telemetry.addData("Last Error  ", rotationPID_test.lastError);
+            Op.telemetry.addData("Derivative ", rotationPID_test.derivative);
+            Op.telemetry.addData("Integral ", rotationPID_test.integral);
+
+            Op.telemetry.addData("TD ", rotationPID_test.deltaTime.seconds());
+
+            Op.telemetry.addData("Rotation ", rotation);
+            Op.telemetry.addData("rotationPower ", rotationPower);
+            Op.telemetry.addData("rotationSpeed ", rotationSpeed);
+            Op.telemetry.update();
+            RotateSimple(rotationPower * rotationSpeed);
+        }
     }
 
     /**

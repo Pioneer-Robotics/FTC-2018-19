@@ -68,7 +68,7 @@ public class RobotDriveManager {
             opMode.telemetry.update();
 
             try {
-                Thread.sleep((long)bMath.Clamp(100 - caibrationDeltaTime.milliseconds(), 0, 100));
+                Thread.sleep((long) bMath.Clamp(100 - caibrationDeltaTime.milliseconds(), 0, 100));
             } catch (InterruptedException ex) {
                 bTelemetry.Print("Wheel calibration failed: InterruptedException :(");
             }
@@ -103,6 +103,18 @@ public class RobotDriveManager {
 
 
         deltaTime.reset();
+    }
+
+    //Returns true if the wheel calibration is valid
+    public boolean VerifyCalibration() {
+        //The total combined speed coefficients of all of the motors, should be less than 4 at all times
+        double totalCoefficient = 0;
+
+        for (bMotor motor : driveMotors) {
+            totalCoefficient += motor.powerCoefficent;
+        }
+
+        return totalCoefficient <= 4;
     }
 
     public void UpdateMotorDrive() {
