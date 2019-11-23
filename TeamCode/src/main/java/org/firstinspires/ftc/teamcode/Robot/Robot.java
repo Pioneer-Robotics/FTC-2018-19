@@ -234,7 +234,7 @@ public class Robot extends Thread {
     /**
      * Uses
      *
-     * @param movementAngle The angle (relative to the phoneside of the bot) that we want to move along, try to keep its magnitude under 180
+     * @param movementAngle The angle  that we want to move along, try to keep its magnitude under 180
      * @param movementSpeed How fast we want to move to move along 'movementAngle'. 1 is very fast, 0 is anti-fast (brakes).
      */
 
@@ -246,7 +246,7 @@ public class Robot extends Thread {
     /**
      * Uses
      *
-     * @param movementVector The vector (relative to the phoneside of the bot) that we want to move along
+     * @param movementVector The vector that we want to move along
      * @param movementSpeed  How fast we want to move to move along 'movementAngle'. 1 is very fast, 0 is anti-fast (brakes).
      */
 
@@ -254,6 +254,31 @@ public class Robot extends Thread {
         Double4 v = bMath.getMecMovementSimple(movementVector);
         SetPowerDouble4(v, movementSpeed);
     }
+
+    /**
+     * Uses
+     *
+     * @param movementAngle The angle  that we want to move along, try to keep its magnitude under 180
+     * @param movementSpeed How fast we want to move to move along 'movementAngle'. 1 is very fast, 0 is anti-fast (brakes).
+     */
+
+    public void MoveSimple(double movementAngle, double movementSpeed, double rotationPower) {
+        Double4 v = bMath.getMecMovementSimple(movementAngle, rotationPower);
+        SetPowerDouble4(v, movementSpeed);
+    }
+
+    /**
+     * Uses
+     *
+     * @param movementVector The vector that we want to move along
+     * @param movementSpeed  How fast we want to move to move along 'movementAngle'. 1 is very fast, 0 is anti-fast (brakes).
+     */
+
+    public void MoveSimple(Double2 movementVector, double movementSpeed, double rotationPower) {
+        Double4 v = bMath.getMecMovementSimple(movementVector, rotationPower);
+        SetPowerDouble4(v, movementSpeed);
+    }
+
 
     /**
      * @param movementAngle The angle (relative to the phoneside of the bot) that we want to move along, try to keep its magnitude under 180
@@ -445,6 +470,10 @@ public class Robot extends Thread {
             //Wait until we are at our target distance
         }
 
+        //Stop motors
+        SetPowerDouble4(0, 0, 0, 0, 0);
+
+        //Set up for normal driving
         SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         SetDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }

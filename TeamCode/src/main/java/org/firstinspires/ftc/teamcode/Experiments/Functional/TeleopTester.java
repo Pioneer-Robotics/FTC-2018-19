@@ -37,10 +37,16 @@ public class TeleopTester extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            targetRotation += 25 * gamepad1.right_stick_x * deltaTime.seconds();
+            targetRotation = gamepad1.right_stick_x / 10;
 
             //Move via joystick and maintain target rotation, rotation might not work
-            robot.MoveComplex(new Double2(gamepad1.left_stick_x, gamepad1.left_stick_y), gamepad1.a ? 0.1 : 1, targetRotation);
+            robot.MoveSimple(new Double2(gamepad1.left_stick_x, gamepad1.left_stick_y), gamepad1.a ? 0.1 : 1, targetRotation);
+
+            if(gamepad1.x){
+                robot.DriveByDistance(0.2,12);
+
+            }
+
 //            robot.MoveComplex(new Double2(gamepad1.left_stick_x, gamepad1.left_stick_y), gamepad1.a ? 1 : 0.1, Math.toRadians(targetRotation));
 
 
