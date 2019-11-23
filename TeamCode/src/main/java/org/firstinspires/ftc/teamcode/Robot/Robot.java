@@ -155,9 +155,9 @@ public class Robot extends Thread {
         driveManager.backLeft.setDirection(DcMotor.Direction.REVERSE);
 
 
-        //Init the motors for use. NTS: If you don't do this the robot does not like to move with math
+        //Init the motors for use.
         SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        SetDriveMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        SetDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
         bTelemetry.Print("Wheel encoders initialized.");
 
 
@@ -427,6 +427,11 @@ public class Robot extends Thread {
         //returns the threaded rotation values for speeeed
         return rotation;
     }
+
+    //Returns true if any wheels are currently busy
+    public boolean WheelsBusy() {
+        return driveManager.frontRight.isBusy() && driveManager.frontLeft.isBusy() && driveManager.backLeft.isBusy() && driveManager.backRight.isBusy();
+    }
     //</editor-fold>
 
     //Drive forward a set distance at a set speed, distance is measured in CM
@@ -434,7 +439,12 @@ public class Robot extends Thread {
         SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         SetDriveMode(DcMotor.RunMode.RUN_TO_POSITION);
         SetPowerDouble4(1, 1, 1, 1, speed);
-        SetRelitiveEncoderPosition(distance * ((RobotConfiguration.wheel_circumference * RobotConfiguration.wheel_ticksPerRotation) / RobotConfiguration.wheel_GearRatio));
+        SetRelitiveEncoderPosition(distance * ((RobotConfiguration.wheel_circumference * RobotConfiguration.wheel_ticksPerRotation) * RobotConfiguration.wheel_GearCoefficient));
+
+        while (WheelsBusy()) {
+            //Wait until we are at our target distance
+        }
+
         SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         SetDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }

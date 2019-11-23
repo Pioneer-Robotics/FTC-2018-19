@@ -20,7 +20,7 @@ public class RobotConfiguration {
         180
 
 
-    Wheel placement and angles verified by Ben on the 22nd of November
+    Wheel placement and angles verified by Ben on the 21nd of November
 
      */
 
@@ -30,17 +30,6 @@ public class RobotConfiguration {
     public static final String wheel_frontRight = "Front Right";//This wheel should correspond to the Y component of movement
     public static final String wheel_backLeft = "Back Left";//This wheel should correspond to the Z component of movement
     public static final String wheel_backRight = "Back Right";//This wheel should correspond to the Z component of movement
-
-
-    //The amount of encoder ticks per motor rotation
-    public static final int wheel_ticksPerRotation = 1440;
-
-    //The max speed our wheel motors will ever rotate (in ticks per second), 3 rotations per second.
-    public static final int wheel_maxTicksPerSecond = 4320;
-
-    //The ratio between motor spins and wheel spins (motor/wheel)
-    public static final double wheel_GearRatio = 0.05;
-    public static final double wheel_circumference = 6.3;
 
     //Distance sensor 90 names
     public static final String distanceSensor_90A = "sensor 90A";
@@ -56,7 +45,7 @@ public class RobotConfiguration {
 
     //The distance between the two sensors along side 90, used for wall-tracking math. In CM.
     //Verified __________ by ___________
-    public static final double distance_90AB = 32.5;
+    public static final double distance_90AB = -1;
 
     //The distance between the two sensors along side 180, used for wall-tracking math. In CM
     //Verified __________ by ___________
@@ -65,4 +54,17 @@ public class RobotConfiguration {
     //The distance between the two sensors along side 180, used for wall-tracking math. In CM
     //Verified __________ by ___________
     public static final double distance_270AB = -1;
+
+
+    //The amount of encoder ticks per motor rotation
+    public static final int wheel_ticksPerRotation = 1440;
+
+    //The max speed our wheel motors will ever rotate (in ticks per second), 3 rotations per second. Used in calibration.
+    public static final int wheel_maxTicksPerSecond = 4320;
+
+    //How many times we need to spin the motor in order to rotate the wheel once
+    public static final double wheel_GearCoefficient = 20;
+
+    //pi * diameter
+    public static final double wheel_circumference = 6.3;
 }
