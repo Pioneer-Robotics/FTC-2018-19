@@ -15,6 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.Helpers.bMath;
+import org.firstinspires.ftc.teamcode.Helpers.bTelemetry;
 import org.firstinspires.ftc.teamcode.Robot.RobotWallTrack;
 
 import java.util.List;
@@ -31,6 +32,8 @@ import java.util.List;
 
 //The idea here is that we can have a bunch of functions here, like move to sky stone or navigate to center and then call them in a modular fashion in other programs
 class FindSkystoneJob extends NavigationJob {
+
+    public double rotationLockAngle = 0;
 
     //New tensor flow aJOB (wip)
     public TensorFlowaJob tensorFlowaJob = new TensorFlowaJob();
@@ -69,55 +72,21 @@ class FindSkystoneJob extends NavigationJob {
             xFactor = tensorFlowaJob.getCurrentXFactor(recognition) < 0 ? -1 : 0;
 
             //Lerp the move speed
-            moveSpeed = bMath.MoveTowards(moveSpeed, bMath.Clamp(Math.abs(tensorFlowaJob.getCurrentXFactor(recognition)), 0.1, 1), deltaTime.seconds());
+//            moveSpeed = bMath.MoveTowards(moveSpeed, bMath.Clamp(Math.abs(tensorFlowaJob.getCurrentXFactor(recognition)), 0, 0.2), deltaTime.seconds());
+            //Move left or right (positive/negative) relative to the wall that is at angle 180
+            opMode.telemetry.addData("Skystone found, aligning", "");
+            robot.wallTrack.MoveAlongWallSimple(RobotWallTrack.groupID.Group180, 0.2, 15, 1, 25, -xFactor * 90, rotationLockAngle);
 
-            opMode.telemetry.addData("XFactor ", xFactor);
-            opMode.telemetry.addData("Movement Factor ", tensorFlowaJob.getCurrentXFactor(recognition) > 0 ? 180 : 0);
-            opMode.telemetry.addData("cFactor ", tensorFlowaJob.getCurrentXFactor(recognition));
-
-
-            //TODO: After stopping double check that we are lined up after 250ms
-            //If we are lined up nicely stop the job, if not then move to be
-            if (Math.abs(tensorFlowaJob.getCurrentXFactor(recognition)) < 0.1) {
-
-                if (!settled) {
-                    settledTimer += deltaTime.seconds();
-                    if (settledTimer > 0.25) {
-                        settled = true;
-                    }
-                } else {
-//If we've settled then stop this job
-                    Stop();
-
-                }
-//Stop();
-            } else {
-//                bMath.Clamp(tensorFlowThread.getCurrentXFactor(recognition), 0.1, 0.5)
-
-
-                //Move left or right (strafe) until we are lined up with the skystone
-//                robot.MoveSimple(tensorFlowaJob.getCurrentXFactor(recognition) > 0 ? 180 : 0, moveSpeed);
-
-                //Move left or right (positive/negative) relative to the wall that is at angle 180
-                robot.wallTrack.MoveAlongWallSimple(RobotWallTrack.groupID.Group180, moveSpeed * (tensorFlowaJob.getCurrentXFactor(recognition) > 0 ? 1 : -1), 50, 1, 25, 90);
-
-
-            }
 
         } else {
+//            lostRecognitionTimer += deltaTime.seconds();
+//            if (lostRecognitionTimer < 0.2) {
+            opMode.telemetry.addData("Skystone not found", "");
 
-            //Tick the timer!
-            lostRecognitionTimer += deltaTime.seconds();
-
-
-            //If we've lost sight of the stone for more than 0.75 seconds stop moving (to avoid issues while testing, ei running over my feets)
-            if (lostRecognitionTimer >= 0.75) {
-                opMode.telemetry.addData("Lost sight, stopping ", "");
-
-                robot.SetPowerDouble4(new Double4(0, 0, 0, 0), 0);
-            }
+            robot.wallTrack.MoveAlongWallSimple(RobotWallTrack.groupID.Group180, 0.2, 15, 5, 15, -90, rotationLockAngle);
+//            }
         }
-
+        opMode.telemetry.addData("DT ", deltaTime.seconds());
         opMode.telemetry.update();
 
     }
@@ -146,6 +115,8 @@ class FindSkystoneJob extends NavigationJob {
 
     @Override
     public void Init(LinearOpMode op) {
+        super.Init(op);
+
         tensorFlowaJob = JobManager.tensorFlowaJob;
 
         tensorFlowaJob.Start(op);
@@ -199,11 +170,13 @@ class TensorFlowaJob extends aJob implements Runnable {
         super.Init(op);
         //Start up the tensor flow stuffs
         StartTensorFlow(op, "Skystone", 0.85);
+        bTelemetry.Print("Tensor Flow INIT");
     }
 
     @Override
     public void Loop() {
         super.Loop();
+        bTelemetry.Print("Tensor Flow Looop");
 
 
         //Fetch all of TF's current recognitions
@@ -225,6 +198,8 @@ class TensorFlowaJob extends aJob implements Runnable {
     @Override
     public void OnStart(LinearOpMode op) {
         super.OnStart(op);
+        bTelemetry.Print("Tensor Flow Start");
+
         //Make sure TF is started before we boot up the thread
         if (tfod != null) {
 
@@ -235,6 +210,7 @@ class TensorFlowaJob extends aJob implements Runnable {
     @Override
     public void OnStop() {
         super.OnStop();
+        bTelemetry.Print("Tensor Flow Stop");
 
         //Shut down TF once we are stopped
         if (tfod != null) {

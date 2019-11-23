@@ -12,6 +12,8 @@ public class SkystoneAutoTest extends LinearOpMode {
     //This robot is the one used for all jobs!
     Robot robot = new Robot();
 
+    public double rotation;
+
 //    public TensorFlow_bThread tensorFlowThread = new TensorFlow_bThread();
 
     public JobManager jobs = new JobManager();
@@ -31,6 +33,8 @@ public class SkystoneAutoTest extends LinearOpMode {
 
         print("Status: Starting TensorFlow Thread.");
 
+        rotation = robot.GetRotation();
+
         //Start the TF thread after it's init
         jobs.tensorFlowaJob.Start(this);
 
@@ -46,11 +50,15 @@ public class SkystoneAutoTest extends LinearOpMode {
 //        jobs.wallTrackJob.Start(this);
 
         print("Status: Searching for Skystone.");
+        jobs.findSkystoneJob.rotationLockAngle = rotation;
 
         //Start by lining up with the skystones
         jobs.findSkystoneJob.Start(this);
 
         print("Status: Skystone found.");
+
+        robot.RotatePID(-90, 1, 100);
+
     }
 
     //Sends the 'message' to telemetry and updates it, mostly for C#-ness

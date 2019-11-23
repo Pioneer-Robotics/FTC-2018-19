@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Helpers.bTelemetry;
 import org.firstinspires.ftc.teamcode.Robot.Robot;
 
 //A lovely picture of the robot
@@ -69,9 +70,9 @@ class Job {
             Loop();
 
             //Stops the loop if the opmode is shut down
-            if (!opMode.opModeIsActive()) {
-                running = false;
-            }
+//            if (!opMode.isStopRequested()) {
+//                running = false;
+//            }
             deltaTime.reset();
         }
         OnStop();
@@ -149,11 +150,12 @@ class aJob implements Runnable {
 
     //Called when the JobManager is set up, this should have all init stuffs that we don't wanna run durring the automode
     public void Init(LinearOpMode op) {
-
+        bTelemetry.Print("aJob Init");
     }
 
 
     public final void Start(LinearOpMode op) {
+        bTelemetry.Print("aJob start");
 
         //Passes op to OnStart
         OnStart(op);
@@ -165,15 +167,18 @@ class aJob implements Runnable {
     }
 
     public void run() {
+        bTelemetry.Print("aJob thread started");
+
+
         running = true;
         while (running) {
 
             Loop();
 
             //Stops the loop if the opmode is shut down
-            if (!opMode.opModeIsActive()) {
-                running = false;
-            }
+//            if (!opMode.isStopRequested()) {
+//                running = false;
+//            }
 
             deltaTime.reset();
         }

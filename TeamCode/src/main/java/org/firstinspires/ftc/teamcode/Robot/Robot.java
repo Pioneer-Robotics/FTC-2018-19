@@ -21,6 +21,8 @@ import org.firstinspires.ftc.teamcode.R;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.crypto.spec.OAEPParameterSpec;
+
 //TODO: clean up the canmove system
 public class Robot extends Thread {
 
@@ -441,10 +443,10 @@ public class Robot extends Thread {
 
     public void SetRelitiveEncoderPosition(double delta) {
 
-        driveManager.frontLeft.setTargetPosition(driveManager.frontLeft.getCurrentPosition());
-        driveManager.backLeft.setTargetPosition(driveManager.backLeft.getCurrentPosition());
-        driveManager.frontRight.setTargetPosition(driveManager.frontRight.getCurrentPosition());
-        driveManager.backRight.setTargetPosition(driveManager.backRight.getCurrentPosition());
+        driveManager.frontLeft.setTargetPosition(driveManager.frontLeft.getCurrentPosition() + (int) delta);
+        driveManager.backLeft.setTargetPosition(driveManager.backLeft.getCurrentPosition() + (int) delta);
+        driveManager.frontRight.setTargetPosition(driveManager.frontRight.getCurrentPosition() + (int) delta);
+        driveManager.backRight.setTargetPosition(driveManager.backRight.getCurrentPosition() + (int) delta);
     }
 
     //Returns IMU rotation on the zed axies
@@ -455,20 +457,29 @@ public class Robot extends Thread {
 
     //Returns true if any wheels are currently busy
     public boolean WheelsBusy() {
-        return driveManager.frontRight.isBusy() && driveManager.frontLeft.isBusy() && driveManager.backLeft.isBusy() && driveManager.backRight.isBusy();
+        return driveManager.frontRight.isBusy() || driveManager.frontLeft.isBusy() || driveManager.backLeft.isBusy() || driveManager.backRight.isBusy();
     }
     //</editor-fold>
 
     //Drive forward a set distance at a set speed, distance is measured in CM
     public void DriveByDistance(double speed, double distance) {
+
         SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        SetRelitiveEncoderPosition(distance * ((RobotConfiguration.wheel_circumference * RobotConfiguration.wheel_ticksPerRotation)));
         SetDriveMode(DcMotor.RunMode.RUN_TO_POSITION);
         SetPowerDouble4(1, 1, 1, 1, speed);
-        SetRelitiveEncoderPosition(distance * ((RobotConfiguration.wheel_circumference * RobotConfiguration.wheel_ticksPerRotation) * RobotConfiguration.wheel_GearCoefficient));
 
+        Op.telemetry.addData("Driving by distance ", distance * ((RobotConfiguration.wheel_circumference * RobotConfiguration.wheel_ticksPerRotation)));
+        Op.telemetry.update();
         while (WheelsBusy()) {
+            Op.telemetry.addData("Wheel Busy", "");
+            Op.telemetry.update();
+
             //Wait until we are at our target distance
         }
+
+        Op.telemetry.addData("Target Reached", "");
+        Op.telemetry.update();
 
         //Stop motors
         SetPowerDouble4(0, 0, 0, 0, 0);

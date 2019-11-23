@@ -45,15 +45,15 @@ public class RobotConfiguration {
 
     //The distance between the two sensors along side 90, used for wall-tracking math. In CM.
     //Verified __________ by ___________
-    public static final double distance_90AB = -1;
+    public static final double distance_90AB = 33.5;
 
     //The distance between the two sensors along side 180, used for wall-tracking math. In CM
     //Verified __________ by ___________
-    public static final double distance_180AB = -1;
+    public static final double distance_180AB = 26.9;
 
     //The distance between the two sensors along side 180, used for wall-tracking math. In CM
     //Verified __________ by ___________
-    public static final double distance_270AB = -1;
+    public static final double distance_270AB = 33.7;
 
 
     //The amount of encoder ticks per motor rotation
@@ -66,5 +66,5 @@ public class RobotConfiguration {
     public static final double wheel_GearCoefficient = 20;
 
     //pi * diameter
-    public static final double wheel_circumference = 6.3;
+    public static final double wheel_circumference = 32.2;
 }

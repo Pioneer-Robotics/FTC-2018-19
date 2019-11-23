@@ -36,7 +36,7 @@ public class RobotWallTrack {
 
         public DistanceSensor[] distanceSensors = new DistanceSensor[2];
 
-        enum TripletType {
+        public enum TripletType {
             Right,
             Left
         }
@@ -76,9 +76,7 @@ public class RobotWallTrack {
         }
 
         public double getWallAngle() {
-            //5 == the dist between sensors
-            return (Math.atan(getDistance(SensorGroup.TripletType.Right, DistanceUnit.CM) - getDistance(SensorGroup.TripletType.Left, DistanceUnit.CM)) / distance) + Math.toDegrees((bMath.pi() * 3) / 4);
-
+            return Math.toDegrees(Math.atan((getDistance(SensorGroup.TripletType.Right, DistanceUnit.CM) - getDistance(SensorGroup.TripletType.Left, DistanceUnit.CM)) / distance));
         }
 
 //        //Returns true if the three sensors have hit a perfect (with in 5%, see "error") line, this can be used to check if there's another robot or obstacle near us
@@ -93,6 +91,8 @@ public class RobotWallTrack {
     }
 
     public static class AvoidanceConfiguration {
+
+        public double targetAngle;
 
         public double currentDistance;
 
@@ -126,14 +126,16 @@ public class RobotWallTrack {
             factor = bMath.Clamp(factor, 0, 1);
 
             //Multiply by -1 if we need to move away from the wall
-            factor *= currentDistance > range ? 1 : -1;
-
+            factor *= currentDistance > range ? -1 : 1;
+            if (targetAngle < 0) {
+                factor *= currentDistance > range ? -1 : 1;
+            }
             return factor;
         }
 
         //The angle that we wanna move in (additive)
         public Double targetDirection() {
-            return CorrectionCoefficient() * correctionScale;
+            return (CorrectionCoefficient() * correctionScale);
         }
 
         //Called to update the current distance var
@@ -155,7 +157,7 @@ public class RobotWallTrack {
         robot = Robot.instance;
 
         sensorIDGroupPairs.put(groupID.Group90, new SensorGroup(op, RobotConfiguration.distanceSensor_90A, RobotConfiguration.distanceSensor_90B, RobotConfiguration.distance_90AB));
-//        sensorIDGroupPairs.put(groupID.Group180, new SensorGroup(op, RobotConfiguration.distanceSensor_180A, RobotConfiguration.distanceSensor_180B, RobotConfiguration.distance_180AB));
+        sensorIDGroupPairs.put(groupID.Group180, new SensorGroup(op, RobotConfiguration.distanceSensor_180A, RobotConfiguration.distanceSensor_180B, RobotConfiguration.distance_180AB));
         sensorIDGroupPairs.put(groupID.Group270, new SensorGroup(op, RobotConfiguration.distanceSensor_270A, RobotConfiguration.distanceSensor_270B, RobotConfiguration.distance_270AB));
 
     }
@@ -165,12 +167,13 @@ public class RobotWallTrack {
     //distance == how far away from the wall should we be
     //bounds == +-distance how far are we allowed to be before correction (5cm seems reasonable)
     //correctionScale == think of it as how fast we correct our self (its an angle measure: 0 = no correction, 90 == max correction), leave it around 25.
-    public void MoveAlongWallSimple(groupID group, double speed, double distance, double bounds, double correctionScale, double angleOffset) {
+    public void MoveAlongWallSimple(groupID group, double speed, double distance, double bounds, double correctionScale, double angleOffset, double rotationLockAngle) {
 
         //Configure the avoidance config
         avoidanceConfig.range = distance;
         avoidanceConfig.bounds = bounds;
         avoidanceConfig.correctionScale = correctionScale;
+        avoidanceConfig.targetAngle = angleOffset;
 
         //Set up the group
         currentGroup = sensorIDGroupPairs.get(group);
@@ -182,17 +185,11 @@ public class RobotWallTrack {
         avoidanceConfig.SetCurrentDistance(currentGroup.getDistanceAverage(DistanceUnit.CM));
 
         //Add the avoidance offset to our wall angle (to maintain the 'distance' from the wall)
-        curDriveAngle = wallAngle + avoidanceConfig.targetDirection() + 90 + angleOffset;
+        curDriveAngle = angleOffset - wallAngle + avoidanceConfig.CorrectionCoefficient();
 
         //MOVE
-        robot.MoveSimple(curDriveAngle, speed);
-
-
-        Robot.instance.Op.telemetry.addData("Current Measure A", currentGroup.distanceSensors[0].getDistance(DistanceUnit.CM));
-        Robot.instance.Op.telemetry.addData("Current Measure B", currentGroup.distanceSensors[1].getDistance(DistanceUnit.CM));
-        Robot.instance.Op.telemetry.addData("Current Measure Angle", currentGroup.getWallAngle());
-        Robot.instance.Op.telemetry.update();
-
+        robot.MoveSimple(angleOffset - wallAngle, speed);
+//        robot.MoveComplex(angleOffset - wallAngle, speed, rotationLockAngle);
     }
 
 

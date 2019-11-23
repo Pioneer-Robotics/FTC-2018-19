@@ -24,7 +24,7 @@ public class SensorTeleop extends LinearOpMode {
         hwInf.init(hardwareMap, this);
 
         waitForStart();
-        Robot.instance.wallTrack.MoveAlongWallSimple(RobotWallTrack.groupID.Group90, 0, 50, 5, 5, 0);
+        Robot.instance.wallTrack.MoveAlongWallSimple(RobotWallTrack.groupID.Group90, 0, 50, 5, 5, 0, 0);
 
         //Loopy loop loop that loops
         while (opModeIsActive()) {

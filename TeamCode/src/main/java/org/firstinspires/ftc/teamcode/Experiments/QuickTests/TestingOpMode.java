@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Robot.Robot;
+import org.firstinspires.ftc.teamcode.Robot.RobotWallTrack;
 
 @Autonomous(name = "TestingOpMode", group = "Sensor")
 public class TestingOpMode extends LinearOpMode {
@@ -23,8 +24,13 @@ public class TestingOpMode extends LinearOpMode {
         robot.init(hardwareMap, this);
 
         waitForStart();
-        robot.RotatePID(-90, 0.5f, 100000);
-
+        double d = robot.GetRotation();
+        while (opModeIsActive()) {
+            robot.wallTrack.MoveAlongWallSimple(RobotWallTrack.groupID.Group180, 0.4, 20, 0, 25, 90, d);
+            sleep(1000);
+            robot.wallTrack.MoveAlongWallSimple(RobotWallTrack.groupID.Group180, 0.4, 20, 0, 25, -90, d);
+            sleep(1000);
+        }
 //        while (opModeIsActive()) {
 //            sleep(5000);
 //
