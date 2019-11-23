@@ -30,19 +30,19 @@ public class TestingOpMode2 extends LinearOpMode {
         waitForStart();
 
 
-        robot.MoveSimple(0, 0.1);
+        robot.MoveSimple(0, 0.5);
         sleep(2500);
 
 
-        robot.MoveSimple(90, 0.1);
+        robot.MoveSimple(90, 0.5);
         sleep(2500);
 
 
-        robot.MoveSimple(180, 0.1);
+        robot.MoveSimple(180, 0.5);
         sleep(2500);
 
 
-        robot.MoveSimple(270, 0.1);
+        robot.MoveSimple(270, 0.5);
         sleep(2500);
 
 

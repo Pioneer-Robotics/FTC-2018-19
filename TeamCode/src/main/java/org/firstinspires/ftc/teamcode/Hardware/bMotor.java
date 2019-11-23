@@ -98,6 +98,14 @@ public class bMotor {
         motor.setDirection(direction);
     }
 
+    public void setTargetPosition(int position) {
+        motor.setTargetPosition(position);
+    }
+
+    public int getCurrentPosition() {
+        return motor.getCurrentPosition();
+    }
+
     public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior behavior) {
         motor.setZeroPowerBehavior(behavior);
     }

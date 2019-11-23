@@ -8,39 +8,17 @@ public class bMath {
 
     //<editor-fold desc="getMecMovement">
 
-    //Cached variables used in maths to avoid the evil GC monster, doubt this is a concern but what the hell
+    //Cached variables used in maths to avoid the evil GC monster.
     static double leftMovementPower;
     static double rightMovementPower;
     static double leftRotatePower;
     static double rightRotatePower;
 
-
-    //Output: What we think it is
-    //X: Front Left
-    //Y: Front Right
-    //Z: Back Right
-    //W: Back Left
-
-    /*
-    X____Y
-    | ^^ |
-    |    ||
-    |____|
-    Z    W
-
-    //Output: What happened when we tested (front is 0 degrees is phone side)
-    //X: Back left
-    //Y: Front Left
-    //Z: Front right
-    //W: Back right
-    //(Joe)
-     */
-//Used to determine what wheels to move in order to move in movementVector direction and rotate
-    //Check them rotation values?
-    //ROTATION DOES NOT WORK!
+    //Used to determine what wheels to move in order to move in movementVector direction and rotate to [angle] value
     public static Double4 getMecMovement(Double2 movementVector, double angle) {
 
         Double4 delta = new Double4(0, 0, 0, 0);
+        angle = Math.toRadians(angle);
 
         leftMovementPower = ((-movementVector.y - movementVector.x) / sq2() * Math.sin(angle) + ((-movementVector.y + movementVector.x) / sq2()) * Math.cos(angle));
         rightMovementPower = ((-(-movementVector.y + movementVector.x) / sq2()) * Math.sin(angle) + ((-movementVector.y - movementVector.x) / sq2() * Math.cos(angle)));
@@ -53,7 +31,7 @@ public class bMath {
         delta.w = (leftMovementPower + rightRotatePower);
 
 
-        return delta; //delta is the 4 compo'"":"nent variable, Double4 delta (Joe)
+        return delta; //delta is the 4 component variable, Double4 delta (Joe)
     }
 
     public static Double4 getRotationSimple(double speed) {
@@ -76,7 +54,7 @@ public class bMath {
     //Hook for angle based movement
     //Hook means the output from this is the input to another function of the same name (Joe)
     public static Double4 getMecMovement(double movementAngle, double rotation) {
-        Double2 movementVector = degreesToHeadingVector(movementAngle);
+        Double2 movementVector = degreesToHeadingVector(movementAngle - 90);
         //input movementAngle into degreesToHeadingVector and the output is movementVector
         return getMecMovement(movementVector, rotation);
     }
@@ -102,7 +80,7 @@ public class bMath {
 
     //Hook for angle based movement
     public static Double4 getMecMovementSimple(double movementAngle) {
-        Double2 movementVector = degreesToHeadingVector(movementAngle);
+        Double2 movementVector = degreesToHeadingVector(movementAngle - 90);
         return getMecMovementSimple(movementVector);
     }
     //</editor-fold>

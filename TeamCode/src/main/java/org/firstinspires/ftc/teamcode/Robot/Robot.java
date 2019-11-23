@@ -94,7 +94,7 @@ public class Robot extends Thread {
 
         //Init the motors for use. NTS: If you don't do this the robot does not like to move with math
         SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        SetDriveMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        SetDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
         bTelemetry.Print("Wheel encoders initialized.");
 
 
@@ -284,7 +284,8 @@ public class Robot extends Thread {
 
     //
     public void RotatePID(double angle, double rotationSpeed, int cycles) {
-        rotationPID_test.Start(1, 0.075, 0.022);
+        rotationPID_test.Start(3, 0.40, 0.2);
+//        rotationPID_test.Start(1, 0.075, 0.022);
 
 //        rotationPID_test.Start(3, 0.21, 0.69);
 //        rotationPID_test.Start(0.5, 0.075, 0.015);
@@ -300,7 +301,7 @@ public class Robot extends Thread {
             ticker++;
             double rotationPower = rotationPID_test.Loop(angle, rotation);
             rotationPower = rotationPower / (360);//rotationSpeed * Math.abs(startAngle - angle));
-            rotationPower += 0.25 * (rotationPower > 0 ? 1 : -1);
+            rotationPower += (0.5 * (rotationPower > 0 ? 1 : -1));
             Op.telemetry.addData("Error ", rotationPID_test.error);
             Op.telemetry.addData("Last Error  ", rotationPID_test.lastError);
             Op.telemetry.addData("Derivative ", rotationPID_test.derivative);
@@ -413,12 +414,30 @@ public class Robot extends Thread {
         driveManager.backRight.setMode(mode);
     }
 
+    public void SetRelitiveEncoderPosition(double delta) {
+
+        driveManager.frontLeft.setTargetPosition(driveManager.frontLeft.getCurrentPosition());
+        driveManager.backLeft.setTargetPosition(driveManager.backLeft.getCurrentPosition());
+        driveManager.frontRight.setTargetPosition(driveManager.frontRight.getCurrentPosition());
+        driveManager.backRight.setTargetPosition(driveManager.backRight.getCurrentPosition());
+    }
+
     //Returns IMU rotation on the zed axies
     public double GetRotation() {
         //returns the threaded rotation values for speeeed
         return rotation;
     }
     //</editor-fold>
+
+    //Drive forward a set distance at a set speed, distance is measured in CM
+    public void DriveByDistance(double speed, double distance) {
+        SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        SetDriveMode(DcMotor.RunMode.RUN_TO_POSITION);
+        SetPowerDouble4(1, 1, 1, 1, speed);
+        SetRelitiveEncoderPosition(distance * ((RobotConfiguration.wheel_circumference * RobotConfiguration.wheel_ticksPerRotation) / RobotConfiguration.wheel_GearRatio));
+        SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        SetDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
 
 
     //wip

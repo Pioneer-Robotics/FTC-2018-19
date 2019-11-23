@@ -20,9 +20,7 @@ public class RobotConfiguration {
         180
 
 
-    Wheel placement verified by Ben on the 22nd of November
-
-Heading angles require additional trouble shooting.
+    Wheel placement and angles verified by Ben on the 22nd of November
 
      */
 
@@ -40,6 +38,9 @@ Heading angles require additional trouble shooting.
     //The max speed our wheel motors will ever rotate (in ticks per second), 3 rotations per second.
     public static final int wheel_maxTicksPerSecond = 4320;
 
+    //The ratio between motor spins and wheel spins (motor/wheel)
+    public static final double wheel_GearRatio = 0.05;
+    public static final double wheel_circumference = 6.3;
 
     //Distance sensor 90 names
     public static final String distanceSensor_90A = "sensor 90A";
