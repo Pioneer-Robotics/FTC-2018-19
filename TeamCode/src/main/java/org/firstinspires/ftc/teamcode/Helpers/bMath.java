@@ -20,8 +20,10 @@ public class bMath {
         Double4 delta = new Double4(0, 0, 0, 0);
         targetAngle = Math.toRadians(targetAngle);
 
-        leftMovementPower = ((-movementVector.y - movementVector.x) / sq2() * Math.sin(targetAngle) + ((-movementVector.y + movementVector.x) / sq2()) * Math.cos(targetAngle));
-        rightMovementPower = ((-(-movementVector.y + movementVector.x) / sq2()) * Math.sin(targetAngle) + ((-movementVector.y - movementVector.x) / sq2() * Math.cos(targetAngle)));
+//        leftMovementPower = ((-movementVector.y - movementVector.x) / sq2() * Math.sin(targetAngle) + ((-movementVector.y + movementVector.x) / sq2()) * Math.cos(targetAngle));
+        leftMovementPower = (((-movementVector.y - movementVector.x) / sq2()) * Math.sin(targetAngle)) + (((-movementVector.y + movementVector.x) / sq2()) * Math.cos(targetAngle));
+//        rightMovementPower = ((-(-movementVector.y + movementVector.x) / sq2()) * Math.sin(targetAngle) + ((-movementVector.y - movementVector.x) / sq2() * Math.cos(targetAngle)));
+        rightMovementPower = ((-(-movementVector.y + movementVector.x) / sq2()) * Math.sin(targetAngle)) + ((-movementVector.y - movementVector.x) / sq2() * Math.cos(targetAngle));
         leftRotatePower = targetAngle;
         rightRotatePower = -targetAngle;
 
@@ -119,6 +121,11 @@ public class bMath {
 
     public static Double2 radiansToHeadingVector(double angle) {
         return new Double2(Math.cos(angle), Math.sin(angle));
+    }
+
+    public static double headingVectorToDegrees(Double2 vector) {
+        double a = Math.atan(vector.y / vector.x);
+        return Math.toDegrees(a);
     }
     //</editor-fold>
 

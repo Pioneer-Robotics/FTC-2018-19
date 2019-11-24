@@ -34,6 +34,10 @@ public class RobotWallTrack {
 
         public double distance;
 
+
+        //The angle at which the sensors are located on the robot
+        public double sensorAngle;
+
         public DistanceSensor[] distanceSensors = new DistanceSensor[2];
 
         public enum TripletType {
@@ -45,16 +49,18 @@ public class RobotWallTrack {
         //dL = the left most sensor
         //dC = the center sensor
         //dR = the right most sensor
-        public SensorGroup(DistanceSensor dL, DistanceSensor dR, Double dist) {
+        public SensorGroup(DistanceSensor dL, DistanceSensor dR, Double dist, double angle) {
             distanceSensors[0] = dL;
             distanceSensors[1] = dR;
             distance = dist;
+            sensorAngle = angle;
         }
 
-        public SensorGroup(OpMode opMode, String dL, String dR, Double dist) {
+        public SensorGroup(OpMode opMode, String dL, String dR, Double dist, double angle) {
             distanceSensors[0] = opMode.hardwareMap.get(DistanceSensor.class, dL);
             distanceSensors[1] = opMode.hardwareMap.get(DistanceSensor.class, dR);
             distance = dist;
+            sensorAngle = angle;
         }
 
         public SensorGroup() {
@@ -75,8 +81,27 @@ public class RobotWallTrack {
             return (type == SensorGroup.TripletType.Right ? distanceSensors[1] : distanceSensors[0]);
         }
 
+
+        //The angle of the triangle formed by the diffidence in distance sensors
+        //   A     B
+        //   |     |
+        //   |     |
+        //   |     |
+        //   | dist|
+        //   |-----|
+        //   |     /
+        //   |    /
+        //   |   /
+        //   |  /
+        //   |o/
+        //   |/
+        //ASCII's hard, check the journal for better pictures
         public double getWallAngle() {
             return Math.toDegrees(Math.atan((getDistance(SensorGroup.TripletType.Right, DistanceUnit.CM) - getDistance(SensorGroup.TripletType.Left, DistanceUnit.CM)) / distance));
+        }
+
+        public double getWallAngleRelative() {
+            return getWallAngle() - sensorAngle;
         }
 
 //        //Returns true if the three sensors have hit a perfect (with in 5%, see "error") line, this can be used to check if there's another robot or obstacle near us
@@ -112,6 +137,7 @@ public class RobotWallTrack {
             bounds = _bounds;
             correctionScale = _correctionScale;
         }
+
 
         public AvoidanceConfiguration() {
         }
@@ -156,9 +182,9 @@ public class RobotWallTrack {
 
         robot = Robot.instance;
 
-        sensorIDGroupPairs.put(groupID.Group90, new SensorGroup(op, RobotConfiguration.distanceSensor_90A, RobotConfiguration.distanceSensor_90B, RobotConfiguration.distance_90AB));
-        sensorIDGroupPairs.put(groupID.Group180, new SensorGroup(op, RobotConfiguration.distanceSensor_180A, RobotConfiguration.distanceSensor_180B, RobotConfiguration.distance_180AB));
-        sensorIDGroupPairs.put(groupID.Group270, new SensorGroup(op, RobotConfiguration.distanceSensor_270A, RobotConfiguration.distanceSensor_270B, RobotConfiguration.distance_270AB));
+        sensorIDGroupPairs.put(groupID.Group90, new SensorGroup(op, RobotConfiguration.distanceSensor_90A, RobotConfiguration.distanceSensor_90B, RobotConfiguration.distance_90AB, 90));
+        sensorIDGroupPairs.put(groupID.Group180, new SensorGroup(op, RobotConfiguration.distanceSensor_180A, RobotConfiguration.distanceSensor_180B, RobotConfiguration.distance_180AB, 180));
+        sensorIDGroupPairs.put(groupID.Group270, new SensorGroup(op, RobotConfiguration.distanceSensor_270A, RobotConfiguration.distanceSensor_270B, RobotConfiguration.distance_270AB, -90));
 
     }
 
@@ -168,6 +194,10 @@ public class RobotWallTrack {
     //bounds == +-distance how far are we allowed to be before correction (5cm seems reasonable)
     //correctionScale == think of it as how fast we correct our self (its an angle measure: 0 = no correction, 90 == max correction), leave it around 25.
     public void MoveAlongWallSimple(groupID group, double speed, double distance, double bounds, double correctionScale, double angleOffset, double rotationLockAngle) {
+        MoveAlongWallSimple(sensorIDGroupPairs.get(group), speed, distance, bounds, correctionScale, angleOffset, rotationLockAngle);
+    }
+
+    public void MoveAlongWallSimple(SensorGroup group, double speed, double distance, double bounds, double correctionScale, double angleOffset, double rotationLockAngle) {
 
         //Configure the avoidance config
         avoidanceConfig.range = distance;
@@ -190,6 +220,25 @@ public class RobotWallTrack {
         //MOVE
         robot.MoveSimple(angleOffset - wallAngle, speed);
 //        robot.MoveComplex(angleOffset - wallAngle, speed, rotationLockAngle);
+    }
+
+    //Returns the sensor group that has the smallest average reading
+    public SensorGroup closestGroup() {
+
+
+        SensorGroup group = null;
+        double lowestDistance = 1000000;
+
+        //Itterate threw all of our sensor pairs and find the one with the smallest current distance
+        for (SensorGroup currentGroup : sensorIDGroupPairs.values()) {
+            if (lowestDistance < currentGroup.getDistanceAverage(DistanceUnit.CM)) {
+                lowestDistance = currentGroup.getDistanceAverage(DistanceUnit.CM);
+                group = currentGroup;
+            }
+        }
+
+        //return group with smallest reading
+        return group;
     }
 
 
