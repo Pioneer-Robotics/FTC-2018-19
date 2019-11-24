@@ -75,7 +75,7 @@ class FindSkystoneJob extends NavigationJob {
 //            moveSpeed = bMath.MoveTowards(moveSpeed, bMath.Clamp(Math.abs(tensorFlowaJob.getCurrentXFactor(recognition)), 0, 0.2), deltaTime.seconds());
             //Move left or right (positive/negative) relative to the wall that is at angle 180
             opMode.telemetry.addData("Skystone found, aligning", "");
-            robot.wallTrack.MoveAlongWallSimple(RobotWallTrack.groupID.Group180, 0.2, 15, 1, 25, -xFactor * 90, rotationLockAngle);
+            robot.wallTrack.MoveAlongWallSimple(RobotWallTrack.groupID.Group180, 0.2, 15, 1, 25, -xFactor * 90);
 
 
         } else {
@@ -83,7 +83,7 @@ class FindSkystoneJob extends NavigationJob {
 //            if (lostRecognitionTimer < 0.2) {
             opMode.telemetry.addData("Skystone not found", "");
 
-            robot.wallTrack.MoveAlongWallSimple(RobotWallTrack.groupID.Group180, 0.2, 15, 5, 15, -90, rotationLockAngle);
+            robot.wallTrack.MoveAlongWallSimple(RobotWallTrack.groupID.Group180, 0.2, 15, 5, 15, -90);
 //            }
         }
         opMode.telemetry.addData("DT ", deltaTime.seconds());
@@ -169,14 +169,12 @@ class TensorFlowaJob extends aJob implements Runnable {
     public void Init(LinearOpMode op) {
         super.Init(op);
         //Start up the tensor flow stuffs
-        StartTensorFlow(op, "Skystone", 0.85);
-        bTelemetry.Print("Tensor Flow INIT");
+        StartTensorFlow(op, "Skystone", 0.65);
     }
 
     @Override
     public void Loop() {
         super.Loop();
-        bTelemetry.Print("Tensor Flow Looop");
 
 
         //Fetch all of TF's current recognitions
@@ -198,8 +196,6 @@ class TensorFlowaJob extends aJob implements Runnable {
     @Override
     public void OnStart(LinearOpMode op) {
         super.OnStart(op);
-        bTelemetry.Print("Tensor Flow Start");
-
         //Make sure TF is started before we boot up the thread
         if (tfod != null) {
 
@@ -210,8 +206,6 @@ class TensorFlowaJob extends aJob implements Runnable {
     @Override
     public void OnStop() {
         super.OnStop();
-        bTelemetry.Print("Tensor Flow Stop");
-
         //Shut down TF once we are stopped
         if (tfod != null) {
             tfod.shutdown();

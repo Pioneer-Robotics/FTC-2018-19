@@ -150,12 +150,11 @@ class aJob implements Runnable {
 
     //Called when the JobManager is set up, this should have all init stuffs that we don't wanna run durring the automode
     public void Init(LinearOpMode op) {
-        bTelemetry.Print("aJob Init");
+
     }
 
 
     public final void Start(LinearOpMode op) {
-        bTelemetry.Print("aJob start");
 
         //Passes op to OnStart
         OnStart(op);
@@ -167,7 +166,6 @@ class aJob implements Runnable {
     }
 
     public void run() {
-        bTelemetry.Print("aJob thread started");
 
 
         running = true;

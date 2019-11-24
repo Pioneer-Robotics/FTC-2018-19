@@ -326,9 +326,9 @@ public class Robot extends Thread {
 
         while (ticker < cycles && Op.opModeIsActive()) {
             ticker++;
-            double rotationPower = rotationPID_test.Loop(angle, rotation);
+            double rotationPower = rotationPID_test.Loop(angle + 7, rotation);
             rotationPower = rotationPower / (360);//rotationSpeed * Math.abs(startAngle - angle));
-            rotationPower += (0.5 * (rotationPower > 0 ? 1 : -1));
+            rotationPower += (0.25 * (rotationPower > 0 ? 1 : -1));
             Op.telemetry.addData("Error ", rotationPID_test.error);
             Op.telemetry.addData("Last Error  ", rotationPID_test.lastError);
             Op.telemetry.addData("Derivative ", rotationPID_test.derivative);
@@ -473,6 +473,8 @@ public class Robot extends Thread {
         Op.telemetry.update();
         while (WheelsBusy()) {
             Op.telemetry.addData("Wheel Busy", "");
+            Op.telemetry.addData("Wheel Front Right Postion", driveManager.frontRight.getCurrentPosition());
+            Op.telemetry.addData("Wheel Front Right Target", driveManager.frontRight.motor.getTargetPosition());
             Op.telemetry.update();
 
             //Wait until we are at our target distance

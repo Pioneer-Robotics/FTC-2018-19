@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.Robot.Robot;
 import org.firstinspires.ftc.teamcode.Robot.RobotWallTrack;
 
 //10.11.19: Moves towards any skystone it sees!
-@Autonomous(name = "Skystone", group = "Auto Testing")
+@Autonomous(name = "Skystone2", group = "Auto Testing")
 public class SkystoneAutoTest2 extends LinearOpMode {
 
     //This robot is the one used for all jobs!
@@ -49,7 +49,7 @@ public class SkystoneAutoTest2 extends LinearOpMode {
 
         //Look for the skystone
         while (!jobs.tensorFlowaJob.hasRecognition()) {
-            robot.wallTrack.MoveAlongWallSimple(RobotWallTrack.groupID.Group180, 0.25, 25, 1, 25, -90, 0);
+            robot.wallTrack.MoveAlongWallSimple(RobotWallTrack.groupID.Group180, 0.25, 25, 1, 25, -90);
         }
 
         //Start by lining up with the skystones

@@ -31,15 +31,18 @@ public class TestingOpMode2 extends LinearOpMode {
 
         waitForStart();
 
-        while (opModeIsActive()) {
-            telemetry.addData("180 : ", robot.wallTrack.sensorIDGroupPairs.get(RobotWallTrack.groupID.Group180).getWallAngle());
-            telemetry.addData("180 : ", robot.wallTrack.sensorIDGroupPairs.get(RobotWallTrack.groupID.Group180).getDistance(RobotWallTrack.SensorGroup.TripletType.Left, DistanceUnit.CM));
-            telemetry.addData("180 : ", robot.wallTrack.sensorIDGroupPairs.get(RobotWallTrack.groupID.Group180).getDistance(RobotWallTrack.SensorGroup.TripletType.Right, DistanceUnit.CM));
-            telemetry.addData("180 : ", robot.wallTrack.sensorIDGroupPairs.get(RobotWallTrack.groupID.Group180).getWallAngle());
-            telemetry.addData("270 : ", robot.wallTrack.sensorIDGroupPairs.get(RobotWallTrack.groupID.Group270).getWallAngle());
-            telemetry.addData("90 : ", robot.wallTrack.sensorIDGroupPairs.get(RobotWallTrack.groupID.Group180).getWallAngle());
-            telemetry.update();
-        }
+        robot.DriveByDistance(0.2, 1);
+
+
+//        while (opModeIsActive()) {
+//            telemetry.addData("180 : ", robot.wallTrack.sensorIDGroupPairs.get(RobotWallTrack.groupID.Group180).getWallAngle());
+//            telemetry.addData("180 : ", robot.wallTrack.sensorIDGroupPairs.get(RobotWallTrack.groupID.Group180).getDistance(RobotWallTrack.SensorGroup.TripletType.Left, DistanceUnit.CM));
+//            telemetry.addData("180 : ", robot.wallTrack.sensorIDGroupPairs.get(RobotWallTrack.groupID.Group180).getDistance(RobotWallTrack.SensorGroup.TripletType.Right, DistanceUnit.CM));
+//            telemetry.addData("180 : ", robot.wallTrack.sensorIDGroupPairs.get(RobotWallTrack.groupID.Group180).getWallAngle());
+//            telemetry.addData("270 : ", robot.wallTrack.sensorIDGroupPairs.get(RobotWallTrack.groupID.Group270).getWallAngle());
+//            telemetry.addData("90 : ", robot.wallTrack.sensorIDGroupPairs.get(RobotWallTrack.groupID.Group180).getWallAngle());
+//            telemetry.update();
+//        }
 
 
 //        robot.MoveSimple(0, 0.5);

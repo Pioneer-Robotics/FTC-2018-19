@@ -21,11 +21,13 @@ public class TeleopTester2 extends LinearOpMode {
     ElapsedTime deltaTime = new ElapsedTime();
 
     public boolean lockRotation;
+    public boolean lastLockRotation;
 
     double targetRotation;
 
     double moveSpeed;
     double rotateSpeed;
+    double targetRotationOffset;
 
 
     @Override
@@ -46,7 +48,7 @@ public class TeleopTester2 extends LinearOpMode {
 
             if (targetWallTrackGroup == null) {
                 if (lockRotation) {
-                    robot.MoveComplex(new Double2(gamepad1.left_stick_x, gamepad1.left_stick_y), moveSpeed, robot.GetRotation() - targetRotation);
+                    robot.MoveComplex(new Double2(gamepad1.left_stick_x, gamepad1.left_stick_y), moveSpeed, robot.GetRotation() - (targetRotation  /* + targetRotationOffset*/));
                 } else {
                     robot.MoveSimple(new Double2(gamepad1.left_stick_x, gamepad1.left_stick_y), moveSpeed, gamepad1.right_stick_x * rotateSpeed);
                 }
@@ -54,9 +56,13 @@ public class TeleopTester2 extends LinearOpMode {
 //                robot.MoveSimple(new Double2(gamepad1.left_stick_x, gamepad1.left_stick_y) + bMath.degreesToHeadingVector(targetWallTrackGroup.getWallAngle()), moveSpeed, gamepad1.right_stick_x * rotateSpeed);
             }
 
+            if (gamepad1.a) {
+                lockRotation = !lockRotation;
+                sleep(350);
+            }
 
-            if (lockRotation != gamepad1.a) {
-                lockRotation = gamepad1.a;
+            if (lastLockRotation != lockRotation) {
+                lastLockRotation = lockRotation;
                 if (lockRotation) {
                     targetRotation = robot.GetRotation();
                 }
@@ -72,6 +78,15 @@ public class TeleopTester2 extends LinearOpMode {
                 targetWallTrackGroup = null;
             }
 
+            if (lockRotation) {
+//                targetRotationOffset += deltaTime.seconds() * 180 * gamepad1.right_stick_x;
+
+                if (gamepad1.x) {
+                    targetRotationOffset = bMath.MoveTowards(targetRotationOffset, 0, deltaTime.seconds() * 2);
+                }
+            } else {
+                targetRotationOffset = 0;
+            }
             telemetry.addData("Rotation Locked ", lockRotation);
             telemetry.addData("", "");
             telemetry.addData("Current Rotation ", robot.GetRotation());

@@ -20,7 +20,10 @@ public class SkyStoneAlignTest extends LinearOpMode {
     //This robot is the one used for all jobs!
     Robot robot = new Robot();
 
-    public double rotation;
+    public double lockedRotation;
+
+    double speed;
+    Double2 heading;
 
 //    public TensorFlow_bThread tensorFlowThread = new TensorFlow_bThread();
 
@@ -43,27 +46,31 @@ public class SkyStoneAlignTest extends LinearOpMode {
 
         //Start the TF thread after it's init
         jobs.tensorFlowaJob.Start(this);
-
-        print("Status: Awaiting start.");
+        print("Status: Ready");
 
         //Wait for the driver to start the op mode
         waitForStart();
 
-        print("Status: Mission started");
-
-
-        print("Status: Searching for Skystone.");
-
         Recognition recognition = null;
 
-        //Wait until we see a skystone
-        while (recognition == null) {
-            recognition = jobs.tensorFlowaJob.getCurrentRecognition();
-        }
+        lockedRotation = robot.GetRotation();
 
         //Look for the skystone
         while (opModeIsActive()) {
-            robot.MoveSimple(90, jobs.tensorFlowaJob.getCurrentXFactor(recognition) * 0.5);
+
+            recognition = jobs.tensorFlowaJob.getCurrentRecognition();
+
+            if (recognition != null) {
+                telemetry.addData("XFactor ", jobs.tensorFlowaJob.getCurrentXFactor(recognition));
+                heading = new Double2(jobs.tensorFlowaJob.getCurrentXFactor(recognition) * 0.5, 0);
+                robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, jobs.tensorFlowaJob.getCurrentXFactor(recognition) * 0.5, 25, 5, 25, -90, lockedRotation);
+            } else {
+                telemetry.addData("No SkyStone", "");
+                heading = new Double2(0, 0);
+            }
+
+//            robot.MoveComplex(heading, 0.35, robot.GetRotation() - lockedRotation);
+            telemetry.update();
         }
 
         robot.Stop();
