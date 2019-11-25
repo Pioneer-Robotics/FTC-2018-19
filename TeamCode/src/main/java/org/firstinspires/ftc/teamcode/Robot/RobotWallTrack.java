@@ -179,7 +179,8 @@ public class RobotWallTrack {
     public enum groupID {
         Group90,
         Group180,
-        Group270
+        Group270,
+        Group0
     }
 
 
@@ -190,6 +191,9 @@ public class RobotWallTrack {
         sensorIDGroupPairs.put(groupID.Group90, new SensorGroup(op, RobotConfiguration.distanceSensor_90A, RobotConfiguration.distanceSensor_90B, RobotConfiguration.distance_90AB, 90));
         sensorIDGroupPairs.put(groupID.Group180, new SensorGroup(op, RobotConfiguration.distanceSensor_180A, RobotConfiguration.distanceSensor_180B, RobotConfiguration.distance_180AB, 180));
         sensorIDGroupPairs.put(groupID.Group270, new SensorGroup(op, RobotConfiguration.distanceSensor_270A, RobotConfiguration.distanceSensor_270B, RobotConfiguration.distance_270AB, -90));
+
+        //Set up the front sensor here so we can access it through groupID's
+        sensorIDGroupPairs.put(groupID.Group0, new SensorGroup(op, RobotConfiguration.distanceSensor_0A, RobotConfiguration.distanceSensor_0A, 1.0, 0));
 
     }
 
@@ -266,14 +270,11 @@ public class RobotWallTrack {
         robot.MoveComplex(angleOffset - wallAngle + physicalOffset + avoidanceConfig.targetDirection(), speed, robot.GetRotation() - rotationAngle);
     }
 
-    public void MoveAlongWallComplex(groupID group, double speed, double distance, double bounds, double correctionScale, Double2 vectorOffset, double rotationAngle) {
-        MoveAlongWallComplex(sensorIDGroupPairs.get(group), speed, distance, bounds, correctionScale, vectorOffset, rotationAngle);
-    }
+    public void MoveAlongWallComplex(groupID group, double speed, double angleOffset, double rotationAngle) {
 
-    public void MoveAlongWallComplex(SensorGroup group, double speed, double distance, double bounds, double correctionScale, Double2 vectorOffset, double rotationAngle) {
 
-        //Configure the avoidance config
-        avoidanceConfig = new AvoidanceConfiguration(distance, bounds, correctionScale, vectorOffset.y);
+        //get the physical angle these sensors are at to offset from movement
+        double physicalOffset = group == groupID.Group90 ? 90 : (group == groupID.Group180 ? 180 : (group == groupID.Group270 ? -90 : 0));
 
         //Set up the group
         currentGroup = sensorIDGroupPairs.get(group);
@@ -281,13 +282,8 @@ public class RobotWallTrack {
         //Get the current sensors wall angle
         wallAngle = currentGroup.getWallAngle();
 
-        //send our current world distance to the avoidance config
-        avoidanceConfig.SetCurrentDistance(currentGroup.getDistanceAverage(DistanceUnit.CM));
-
-        Double2 movementVector = new Double2(vectorOffset.x - bMath.degreesToHeadingVector(wallAngle).x, vectorOffset.y - bMath.degreesToHeadingVector(wallAngle).y);
-
         //Move while keeping our rotation angle the same
-        robot.MoveComplex(movementVector, speed, robot.GetRotation() - rotationAngle);
+        robot.MoveComplex(angleOffset - wallAngle + physicalOffset, speed, robot.GetRotation() - rotationAngle);
     }
 
 

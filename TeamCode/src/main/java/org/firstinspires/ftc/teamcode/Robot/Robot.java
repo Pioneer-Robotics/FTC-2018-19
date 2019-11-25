@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Hardware.bMotor;
 import org.firstinspires.ftc.teamcode.Helpers.PID;
 import org.firstinspires.ftc.teamcode.Helpers.bDataManger;
@@ -491,107 +492,9 @@ public class Robot extends Thread {
         SetDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-
-    //wip
-//    public void SetRotation(double rotation, double threshold, double speed) {
-//        double difference = GetRotation() - rotation;
-//
-//        //Rotate to 'rotation'
-//        while (Math.abs(difference) > threshold) {
-//            Rotate(GetRotation() + difference, speed);
-//        }
-//
-//        //Let the bot settle for 200ms
-//        try {
-//            Thread.sleep(200);
-//        } catch (InterruptedException e) {
-//
-//        }
-//
-//        //Check the rotation again
-//        difference = rotation - GetRotation();
-//
-//        //Settle again
-//        while (Math.abs(difference) > threshold) {
-//            difference = GetRotation() - rotation;
-//
-//            Rotate(GetRotation() + difference, speed / 3);
-//        }
-//    }
-
-    //Experimental version of set rotation without sleep (PID?)
-//    public void SetRotationExperimental(double rotation, double threshold, double speed) {
-//        double difference = GetRotation() - rotation;
-//        double initialDifference = difference;
-//        double rotationSpeed;
-//
-//
-//        //Rotate to 'rotation'
-//        while (Math.abs(difference) > threshold) {
-//            //Check the rotation again
-//            difference = GetRotation() - rotation;
-//            rotationSpeed = bMath.Lerp(-speed, speed, (difference) / initialDifference);
-//
-//            Op.telemetry.addData("diff ", difference);
-//            Op.telemetry.addData("rotationSpeed ", rotationSpeed * 2);
-//
-//            Op.telemetry.update();
-//
-//            Rotate(-1, rotationSpeed);
-//        }
-//
-//    }
-
-//    //Experimental version of set rotation without sleep (PID?)
-//    public void SetRotationPID(double rotation, double threshold, double P, double I, double D) {
-//
-//        double difference = rotation - GetRotation();
-//        double lastDifference = rotation - GetRotation();
-//        double initialDifference = difference;
-//        double rotationSpeed;
-//
-//        double integral = 0;
-//        double derivative = 0;
-//
-//        DeltaTime dt = new DeltaTime();
-//
-//        //Rotate to 'rotation'
-//        while (Math.abs(difference) > threshold) {
-//            dt.Start();
-//
-//            //Check the rotation again
-//            difference = rotation - GetRotation();
-//
-//            integral += difference * dt.deltaTime();
-//            derivative = (difference - lastDifference) / dt.deltaTime();
-//
-//            rotationSpeed = difference;
-//
-//            Op.telemetry.addData("diff ", difference);
-//            Op.telemetry.addData("rotationSpeed ", rotationSpeed * 2);
-//
-//            Op.telemetry.update();
-//
-//            Rotate(1, rotationSpeed);
-//
-//            lastDifference = (P * difference) + (I * integral) + (D * derivative);
-//
-//            dt.Stop();
-//
-//        }
-//
-//
-//    }
-
-//    public void CalibrateWheels() {
-//        driveManager.calibrating = true;
-//
-//        SetPowerDouble4(1, 1, 1, 1, 1);
-//
-//
-//        driveManager.calibrating = false;
-//
-//    }
-
+    //Returns the distance using a sensor group
+    public double WallDistance(RobotWallTrack.groupID group, DistanceUnit unit) {
+        return wallTrack.sensorIDGroupPairs.get(group).getDistanceAverage(unit);
+    }
 
 }

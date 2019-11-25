@@ -1,9 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.renderscript.Double2;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.Robot.Robot;
+import org.firstinspires.ftc.teamcode.Robot.RobotWallTrack;
 
 //10.11.19: Moves towards any skystone it sees!
 @Autonomous(name = "Skystone", group = "Auto Testing")
@@ -12,11 +17,13 @@ public class SkystoneAutoTest extends LinearOpMode {
     //This robot is the one used for all jobs!
     Robot robot = new Robot();
 
-    public double rotation;
-
-//    public TensorFlow_bThread tensorFlowThread = new TensorFlow_bThread();
+    public double startRotation;
 
     public JobManager jobs = new JobManager();
+
+    boolean locatedSkystone = false;
+    boolean alignedWithSkyStone = false;
+    boolean nearSkystone = false;
 
     @Override
     public void runOpMode() {
@@ -33,8 +40,6 @@ public class SkystoneAutoTest extends LinearOpMode {
 
         print("Status: Starting TensorFlow Thread.");
 
-        rotation = robot.GetRotation();
-
         //Start the TF thread after it's init
         jobs.tensorFlowaJob.Start(this);
 
@@ -43,22 +48,49 @@ public class SkystoneAutoTest extends LinearOpMode {
         //Wait for the driver to start the op mode
         waitForStart();
 
-        print("Status: Mission started");
+        startRotation = robot.GetRotation();
 
+        print("Status: Mission started");
 
 //        jobs.wallTrackJob.StartValues(25,5,25,new WallTrack.SensorGroup());
 //        jobs.wallTrackJob.Start(this);
 
         print("Status: Searching for Skystone.");
-        jobs.findSkystoneJob.rotationLockAngle = rotation;
 
-        //Start by lining up with the skystones
-        jobs.findSkystoneJob.Start(this);
 
-        print("Status: Skystone found.");
+        while (opModeIsActive()) {
+            Recognition skystone = jobs.tensorFlowaJob.currentRecognition;
 
-        robot.RotatePID(-90, 1, 100);
+            if (!alignedWithSkyStone) {
+                if (skystone == null) {
+                    if (locatedSkystone) {
+                        robot.SetPowerDouble4(0, 0, 0, 0, 0);
+                    } else {
+                        robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, 0.5, 15, 5, 45, -90, startRotation);
+                    }
+                } else {
+                    locatedSkystone = true;
+                    robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, 0.25 * jobs.tensorFlowaJob.getCurrentXFactor(skystone), 15, 5, 45, -90, startRotation);
 
+                    if (Math.abs(jobs.tensorFlowaJob.getCurrentXFactor(skystone)) < 0.05) {
+                        alignedWithSkyStone = true;
+                    }
+                }
+            }
+
+            if (alignedWithSkyStone && !nearSkystone) {
+                robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, 0.5, 0, startRotation);
+
+                if (robot.WallDistance(RobotWallTrack.groupID.Group0, DistanceUnit.CM) < 10) {
+                    nearSkystone = true;
+                }
+            }
+
+            if (nearSkystone) {
+
+
+            }
+        }
     }
 
     //Sends the 'message' to telemetry and updates it, mostly for C#-ness

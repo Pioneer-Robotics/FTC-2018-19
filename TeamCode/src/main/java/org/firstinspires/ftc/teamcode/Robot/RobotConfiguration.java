@@ -31,6 +31,9 @@ public class RobotConfiguration {
     public static final String wheel_backLeft = "Back Left";//This wheel should correspond to the Z component of movement
     public static final String wheel_backRight = "Back Right";//This wheel should correspond to the Z component of movement
 
+    //Distance sensor 0 name
+    public static final String distanceSensor_0A = "sensor 0A";
+
     //Distance sensor 90 names
     public static final String distanceSensor_90A = "sensor 90A";
     public static final String distanceSensor_90B = "sensor 90B";
