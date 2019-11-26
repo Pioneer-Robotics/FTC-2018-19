@@ -312,7 +312,12 @@ public class Robot extends Thread {
 
     //
     public void RotatePID(double angle, double rotationSpeed, int cycles) {
-        rotationPID_test.Start(3, 0.40, 0.2);
+
+        //P of 3 and 0 for other gains seems to work really well
+        rotationPID_test.Start(3, 0, 0);
+
+//        rotationPID_test.Start(3, 0.40, 0.2);
+
 //        rotationPID_test.Start(1, 0.075, 0.022);
 
 //        rotationPID_test.Start(3, 0.21, 0.69);
@@ -373,7 +378,7 @@ public class Robot extends Thread {
             ticker++;
             double rotationPower = rotationPID_test.Loop(angle, rotation);
             rotationPower = rotationPower / (360);//rotationSpeed * Math.abs(startAngle - angle));
-            rotationPower += 0.05 * (rotationPower > 0 ? 1 : -1);
+            rotationPower += (0.01 * (rotationPower > 0 ? 1 : -1));
             Op.telemetry.addData("Error ", rotationPID_test.error);
             Op.telemetry.addData("Last Error  ", rotationPID_test.lastError);
             Op.telemetry.addData("Derivative ", rotationPID_test.derivative);
@@ -393,11 +398,13 @@ public class Robot extends Thread {
                 lastPositiveState = rotationPower > 0;
             }
 
-            if (directionChanges > 5) {
+            if (directionChanges > 25) {
                 ticker += cycles * 2;
             }
 
         }
+
+        SetPowerDouble4(0, 0, 0, 0, 0);
     }
 
     /**

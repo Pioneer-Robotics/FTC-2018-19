@@ -59,7 +59,7 @@ public class SkystoneAutoTest extends LinearOpMode {
 //        jobs.wallTrackJob.StartValues(25,5,25,new WallTrack.SensorGroup());
 //        jobs.wallTrackJob.Start(this);
 
-        robot.DriveByDistance(speed_med, 25);
+        robot.DriveByDistance(speed_med, 10);
 
         while (opModeIsActive()) {
             Recognition skystone = jobs.tensorFlowaJob.currentRecognition;
@@ -70,12 +70,13 @@ public class SkystoneAutoTest extends LinearOpMode {
             }
         }
 
+        robot.SetPowerDouble4(0, 0, 0, 0, 0);
+
         while (opModeIsActive()) {
             Recognition skystone = jobs.tensorFlowaJob.currentRecognition;
             robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, speed_low * Math.abs(jobs.tensorFlowaJob.getCurrentXFactor(skystone)), 25, 1, 15, jobs.tensorFlowaJob.getCurrentXFactor(skystone) > 0 ? -90 : 90, startRotation);
             if (Math.abs(jobs.tensorFlowaJob.getCurrentXFactor(skystone)) < 0.1) {
-
-
+                robot.SetPowerDouble4(0, 0, 0, 0, 0);
             }
         }
 

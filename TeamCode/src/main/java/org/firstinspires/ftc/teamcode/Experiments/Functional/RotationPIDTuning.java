@@ -86,7 +86,7 @@ RotationPIDTuning extends LinearOpMode {
 
             double targetRotation = 90 + robot.GetRotation();
             robot.RotatePID(targetRotation, 1, 10000, PID.x, PID.y, PID.z);
-
+            robot.SetPowerDouble4(0, 0, 0, 0, 0);
         }
 
         robot.Stop();
