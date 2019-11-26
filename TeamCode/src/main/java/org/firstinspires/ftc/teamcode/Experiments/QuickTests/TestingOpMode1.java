@@ -17,33 +17,20 @@ public class TestingOpMode1 extends LinearOpMode {
 
 
     public ElapsedTime deltaTime = new ElapsedTime();
-    double timer;
+
+    double targetRotation;
 
     @Override
     public void runOpMode() throws InterruptedException {
         robot.init(hardwareMap, this);
 
         waitForStart();
+        targetRotation = robot.GetRotation();
         while (opModeIsActive()) {
-            while (timer < 3 && opModeIsActive()) {
-                robot.wallTrack.MoveAlongWallSimple(RobotWallTrack.groupID.Group180, 0.2, 20, 0, 25, 90);
-                timer += deltaTime.seconds();
-                deltaTime.reset();
-
-                telemetry.addData("timer ", timer);
-                telemetry.update();
-            }
-            timer = 0;
-            while (timer < 3 && opModeIsActive()) {
-                robot.wallTrack.MoveAlongWallSimple(RobotWallTrack.groupID.Group180, 0.2, 20, 0, 25, -90);
-                timer += deltaTime.seconds();
-                deltaTime.reset();
-
-                telemetry.addData("timer ", timer);
-                telemetry.update();
-            }
-            timer = 0;
+            robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, 0.2, 20, 10, 45, 90, targetRotation);
+              telemetry.update();
         }
+
         robot.Stop();
     }
 

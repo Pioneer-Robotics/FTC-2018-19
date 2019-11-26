@@ -172,23 +172,20 @@ public class bMath {
     //</editor-fold>
 
     public static double MoveTowardsRadian(double current, double target, double maxDelta) {
-        double offset = 0;
-        double distance = target - current;
-        if (distance < pi()) {
-            offset += maxDelta;
-        } else {
-            offset -= maxDelta;
-        }
-
-
-        offset = maxDelta;
-
-        if (Math.abs(target - current) <= maxDelta) {
-            return target;
-        }
-        return current + offset;
+        return MoveTowards(current, current + RadianDistance(current, target), maxDelta);
     }
 
+    public static double Loop(double value, double magnitude) {
+        return value - Math.floor(value / magnitude) * magnitude;
+    }
+
+    public static double RadianDistance(double current, double target) {
+        double a = Loop(target - current, pi2());
+        if (a > pi())
+            a -= pi2();
+        return a;
+
+    }
 
     public static double MoveTowards(double current, double target, double maxDelta) {
         if (Math.abs(target - current) <= maxDelta) {

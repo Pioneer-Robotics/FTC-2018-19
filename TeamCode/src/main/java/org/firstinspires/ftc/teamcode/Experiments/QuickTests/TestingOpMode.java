@@ -28,7 +28,7 @@ public class TestingOpMode extends LinearOpMode {
         double d = robot.GetRotation();
         while (opModeIsActive()) {
             while (timer < 3 && opModeIsActive()) {
-                robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, 0.2, 20, 1, 25, -90, d);
+                robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, 0.2, 20, 1, 45, -90, d);
                 timer += deltaTime.seconds();
                 deltaTime.reset();
 
@@ -37,7 +37,7 @@ public class TestingOpMode extends LinearOpMode {
             }
             timer = 0;
             while (timer < 3 && opModeIsActive()) {
-                robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, 0.2, 20, 5, 25, 90, d);
+                robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, 0.2, 20, 1, 45, 90, d);
                 timer += deltaTime.seconds();
                 deltaTime.reset();
 

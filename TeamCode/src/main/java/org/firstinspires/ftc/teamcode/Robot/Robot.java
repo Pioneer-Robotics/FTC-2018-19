@@ -327,7 +327,7 @@ public class Robot extends Thread {
 
         while (ticker < cycles && Op.opModeIsActive()) {
             ticker++;
-            double rotationPower = rotationPID_test.Loop(angle + 7, rotation);
+            double rotationPower = rotationPID_test.Loop(angle, rotation);
             rotationPower = rotationPower / (360);//rotationSpeed * Math.abs(startAngle - angle));
             rotationPower += (0.25 * (rotationPower > 0 ? 1 : -1));
             Op.telemetry.addData("Error ", rotationPID_test.error);
@@ -354,6 +354,8 @@ public class Robot extends Thread {
             }
 
         }
+
+        SetPowerDouble4(0, 0, 0, 0, 0);
     }
 
     public void RotatePID(double angle, double rotationSpeed, int cycles, double p, double i, double d) {
@@ -466,7 +468,7 @@ public class Robot extends Thread {
     public void DriveByDistance(double speed, double distance) {
 
         SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        SetRelitiveEncoderPosition(distance * ((RobotConfiguration.wheel_circumference * RobotConfiguration.wheel_ticksPerRotation)));
+        SetRelitiveEncoderPosition((RobotConfiguration.wheel_ticksPerRotation / RobotConfiguration.wheel_circumference) * distance);
         SetPowerDouble4(1, 1, 1, 1, speed);
         SetDriveMode(DcMotor.RunMode.RUN_TO_POSITION);
 

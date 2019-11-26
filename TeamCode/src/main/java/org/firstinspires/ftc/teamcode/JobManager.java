@@ -40,6 +40,11 @@ public class JobManager {
         //Setup the skystone job
         findSkystoneJob.Init(op);
     }
+
+    public void stopAll() {
+        tensorFlowaJob.Stop();
+        findSkystoneJob.Stop();
+    }
 }
 
 //Simple sub op mode, needs an LinearOpMode to function

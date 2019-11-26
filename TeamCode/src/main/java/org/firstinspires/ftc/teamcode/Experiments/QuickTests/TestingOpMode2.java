@@ -31,7 +31,7 @@ public class TestingOpMode2 extends LinearOpMode {
 
         waitForStart();
 
-        robot.DriveByDistance(0.2, 1);
+        robot.DriveByDistance(0.2, 25);
 
 
 //        while (opModeIsActive()) {

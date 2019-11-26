@@ -25,6 +25,10 @@ public class SkystoneAutoTest extends LinearOpMode {
     boolean alignedWithSkyStone = false;
     boolean nearSkystone = false;
 
+    public double speed_low = 0.15;
+    public double speed_med = 0.35;
+    public double speed_high = 0.85;
+
     @Override
     public void runOpMode() {
 
@@ -55,42 +59,75 @@ public class SkystoneAutoTest extends LinearOpMode {
 //        jobs.wallTrackJob.StartValues(25,5,25,new WallTrack.SensorGroup());
 //        jobs.wallTrackJob.Start(this);
 
-        print("Status: Searching for Skystone.");
-
+        robot.DriveByDistance(speed_med, 25);
 
         while (opModeIsActive()) {
             Recognition skystone = jobs.tensorFlowaJob.currentRecognition;
-
-            if (!alignedWithSkyStone) {
-                if (skystone == null) {
-                    if (locatedSkystone) {
-                        robot.SetPowerDouble4(0, 0, 0, 0, 0);
-                    } else {
-                        robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, 0.5, 15, 5, 45, -90, startRotation);
-                    }
-                } else {
-                    locatedSkystone = true;
-                    robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, 0.25 * jobs.tensorFlowaJob.getCurrentXFactor(skystone), 15, 5, 45, -90, startRotation);
-
-                    if (Math.abs(jobs.tensorFlowaJob.getCurrentXFactor(skystone)) < 0.05) {
-                        alignedWithSkyStone = true;
-                    }
-                }
+            if (skystone == null) {
+                robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, speed_med, 25, 1, 15, 90, startRotation);
+            } else {
+                break;
             }
+        }
 
-            if (alignedWithSkyStone && !nearSkystone) {
-                robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, 0.5, 0, startRotation);
-
-                if (robot.WallDistance(RobotWallTrack.groupID.Group0, DistanceUnit.CM) < 10) {
-                    nearSkystone = true;
-                }
-            }
-
-            if (nearSkystone) {
+        while (opModeIsActive()) {
+            Recognition skystone = jobs.tensorFlowaJob.currentRecognition;
+            robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, speed_low * Math.abs(jobs.tensorFlowaJob.getCurrentXFactor(skystone)), 25, 1, 15, jobs.tensorFlowaJob.getCurrentXFactor(skystone) > 0 ? -90 : 90, startRotation);
+            if (Math.abs(jobs.tensorFlowaJob.getCurrentXFactor(skystone)) < 0.1) {
 
 
             }
         }
+
+
+//        while (opModeIsActive()) {
+//            Recognition skystone = jobs.tensorFlowaJob.currentRecognition;
+//
+//            if (!alignedWithSkyStone) {
+//                telemetry.addData("Not aligned with skystone", "");
+//
+//                if (skystone == null) {
+//                    telemetry.addData("No skystone", "");
+//
+//                    if (locatedSkystone) {
+//                        telemetry.addData("No skystone and Stopping", "");
+//                        robot.SetPowerDouble4(0, 0, 0, 0, 0);
+//                    } else {
+//                        telemetry.addData("No skystone and Seeking", "");
+//                        robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, 0.25, 15, 1, 15, 90, startRotation);
+//                    }
+//                } else {
+//                    telemetry.addData("Skystone and aligning", jobs.tensorFlowaJob.getCurrentXFactor(skystone));
+//                    locatedSkystone = true;
+//                    robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, 0.25 * jobs.tensorFlowaJob.getCurrentXFactor(skystone), 15, 1, 15, -90, startRotation);
+//
+//                    if (Math.abs(jobs.tensorFlowaJob.getCurrentXFactor(skystone)) < 0.05) {
+//                        alignedWithSkyStone = true;
+//                    }
+//                }
+//            }
+//
+//            if (alignedWithSkyStone && !nearSkystone) {
+//                telemetry.addData("Aligned with skystone but not near", "");
+//                robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, 0.5, 0, startRotation);
+//
+//                if (robot.WallDistance(RobotWallTrack.groupID.Group180, DistanceUnit.CM) > 50) {
+//                    nearSkystone = true;
+//                }
+//            }
+//
+//            if (nearSkystone) {
+//                telemetry.addData("Near skysonte", "");
+//                robot.SetPowerDouble4(0, 0, 0, 0, 0);
+//
+//            }
+//            telemetry.update();
+//        }
+
+        jobs.stopAll();
+
+        robot.Stop();
+
     }
 
     //Sends the 'message' to telemetry and updates it, mostly for C#-ness
