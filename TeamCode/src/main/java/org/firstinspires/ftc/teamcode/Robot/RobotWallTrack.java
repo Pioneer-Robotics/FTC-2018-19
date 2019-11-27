@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Helpers.PID;
 import org.firstinspires.ftc.teamcode.Helpers.bMath;
 
 import java.util.Dictionary;
@@ -265,7 +266,7 @@ public class RobotWallTrack {
         //Add the avoidance offset to our wall angle (to maintain the 'distance' from the wall)
         double driveAngle = angleOffset - wallAngle + physicalOffset;
 
-  //correctionAngle > 0 ? (avoidanceConfig.CorrectionCoefficient() > 0 ? Math.toRadians(physicalOffset - 180) : Math.toRadians(physicalOffset)) : (avoidanceConfig.CorrectionCoefficient() > 0 ? Math.toRadians(physicalOffset) : Math.toRadians(physicalOffset - 180))
+        //correctionAngle > 0 ? (avoidanceConfig.CorrectionCoefficient() > 0 ? Math.toRadians(physicalOffset - 180) : Math.toRadians(physicalOffset)) : (avoidanceConfig.CorrectionCoefficient() > 0 ? Math.toRadians(physicalOffset) : Math.toRadians(physicalOffset - 180))
         double correctionAngle = 0;
         if (angleOffset > 0) {
             if (avoidanceConfig.CorrectionCoefficient() > 0) {
@@ -290,6 +291,62 @@ public class RobotWallTrack {
         Robot.instance.Op.telemetry.addData("Current Distnace ", robot.WallDistance(groupID.Group180, DistanceUnit.CM));
         Robot.instance.Op.telemetry.addData("Current Angle ", wallAngle);
         Robot.instance.Op.telemetry.addData("Current Distnace Goal ", distance);
+
+        //Move while keeping our rotation angle the same
+        // 0 - 0 - 180 + 0
+        // 0 - 0 - 90 + 0
+        // 90 - 0 + 180 + 0
+        // 0 - 0 + 90 + 0
+        // -90 - 0 + 180
+        // 90 - 0 + 180
+        robot.MoveComplex(correctedDriveAngle, speed, robot.GetRotation() - rotationAngle);
+    }
+
+    public void MoveAlongWallComplexPID(groupID group, double speed, double distance, PID controller, double maxCorrectionMagnitude, double angleOffset, double rotationAngle) {
+
+
+        //get the physical angle these sensors are at to offset from movement
+        double physicalOffset = group == groupID.Group90 ? 90 : (group == groupID.Group180 ? 180 : (group == groupID.Group270 ? -90 : 0));
+
+        //Set up the group
+        currentGroup = sensorIDGroupPairs.get(group);
+
+        //Get the current sensors wall angle
+        wallAngle = currentGroup.getWallAngle();
+
+        //Configure the avoidance config
+        avoidanceConfig = new AvoidanceConfiguration(distance, maxCorrectionMagnitude, angleOffset - wallAngle + physicalOffset);
+
+        //send our current world distance to the avoidance config
+        avoidanceConfig.SetCurrentDistance(currentGroup.getDistanceAverage(DistanceUnit.CM));
+
+
+        Robot.instance.Op.telemetry.addData("Move offset ", angleOffset);
+        Robot.instance.Op.telemetry.addData("Real offset ", physicalOffset);
+
+        //Add the avoidance offset to our wall angle (to maintain the 'distance' from the wall)
+        double driveAngle = angleOffset - wallAngle + physicalOffset;
+
+        //correctionAngle > 0 ? (avoidanceConfig.CorrectionCoefficient() > 0 ? Math.toRadians(physicalOffset - 180) : Math.toRadians(physicalOffset)) : (avoidanceConfig.CorrectionCoefficient() > 0 ? Math.toRadians(physicalOffset) : Math.toRadians(physicalOffset - 180))
+        double correctionAngle = 0;
+        if (angleOffset > 0) {
+            if (avoidanceConfig.CorrectionCoefficient() > 0) {
+                correctionAngle = Math.toRadians(physicalOffset);
+            } else {
+                correctionAngle = Math.toRadians(physicalOffset - 180);
+            }
+        } else {
+            if (avoidanceConfig.CorrectionCoefficient() > 0) {
+                correctionAngle = Math.toRadians(physicalOffset);
+            } else {
+                correctionAngle = Math.toRadians(physicalOffset - 180);
+            }
+        }
+        double correctedDriveAngle = Math.toDegrees(bMath.MoveTowardsRadian(Math.toRadians(driveAngle), correctionAngle, Math.toRadians(bMath.Clamp(Math.abs(controller.Loop(distance, currentGroup.getDistanceAverage(DistanceUnit.CM))), 0, maxCorrectionMagnitude))));
+
+        Robot.instance.Op.telemetry.addData("Current Distnace ", currentGroup.getDistanceAverage(DistanceUnit.CM));
+        Robot.instance.Op.telemetry.addData("Current Error", distance - currentGroup.getDistanceAverage(DistanceUnit.CM));
+        Robot.instance.Op.telemetry.addData("PID value", controller.State());
 
         //Move while keeping our rotation angle the same
         // 0 - 0 - 180 + 0

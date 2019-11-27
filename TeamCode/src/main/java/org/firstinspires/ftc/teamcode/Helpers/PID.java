@@ -16,10 +16,19 @@ public class PID {
     public double I;
     public double D;
 
+    double lastReturnValue;
+
     public void Start(double p, double i, double d) {
         P = p;
         I = i;
         D = d;
+        lastReturnValue = -1;
+
+        error = 0;
+        lastError = 0;
+        derivative = 0;
+        integral = 0;
+
         deltaTime.reset();
     }
 
@@ -31,8 +40,12 @@ public class PID {
         derivative = (error - lastError) / deltaTime.seconds();
         lastError = error;
         deltaTime.reset();
-
+        lastReturnValue = (P * error) + (I * integral) + (D * derivative);
         return (P * error) + (I * integral) + (D * derivative);
+    }
+
+    public double State() {
+        return lastReturnValue;
     }
 
 }

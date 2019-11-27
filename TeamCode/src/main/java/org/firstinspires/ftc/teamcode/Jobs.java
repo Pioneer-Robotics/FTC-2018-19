@@ -181,7 +181,7 @@ class TensorFlowaJob extends aJob implements Runnable {
         recognitions = tfod.getRecognitions();
 
         //Clear our last recognition
-        currentRecognition = null;
+//        currentRecognition = null;
 
         //Iterate through all recognitions and tag the TARGET_LABEL
         for (Recognition recognition : recognitions) {
@@ -198,7 +198,6 @@ class TensorFlowaJob extends aJob implements Runnable {
         super.OnStart(op);
         //Make sure TF is started before we boot up the thread
         if (tfod != null) {
-
             tfod.activate();
         }
     }

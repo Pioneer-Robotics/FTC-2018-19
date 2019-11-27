@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.teamcode.Helpers.PID;
 import org.firstinspires.ftc.teamcode.Helpers.bMath;
 import org.firstinspires.ftc.teamcode.Robot.Robot;
 import org.firstinspires.ftc.teamcode.Robot.RobotWallTrack;
@@ -30,6 +31,8 @@ public class SkystoneAutoTest extends LinearOpMode {
     public double speed_med = 0.35;
     public double speed_high = 0.85;
 
+    public PID walltrackingController = new PID();
+
     @Override
     public void runOpMode() {
 
@@ -50,6 +53,8 @@ public class SkystoneAutoTest extends LinearOpMode {
 
         print("Status: Awaiting start. You are cleared for release.");
 
+        walltrackingController.Start(4.95, 0.06, 0.05);
+
         //Wait for the driver to start the op mode
         waitForStart();
 
@@ -60,12 +65,12 @@ public class SkystoneAutoTest extends LinearOpMode {
 //        jobs.wallTrackJob.StartValues(25,5,25,new WallTrack.SensorGroup());
 //        jobs.wallTrackJob.Start(this);
 
-        robot.DriveByDistance(speed_med, 10);
+        robot.DriveByDistance(speed_med, 20);
 
         while (opModeIsActive()) {
             Recognition skystone = jobs.tensorFlowaJob.currentRecognition;
             if (skystone == null) {
-                robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, speed_med, 25, 25, 90, 90, startRotation);
+                robot.wallTrack.MoveAlongWallComplexPID(RobotWallTrack.groupID.Group180, speed_med, 45, walltrackingController, 45, 90, startRotation);
             } else {
                 break;
             }
@@ -84,7 +89,7 @@ public class SkystoneAutoTest extends LinearOpMode {
                     //Hold still while maintaining our start rotation
                     robot.MoveComplex(new Double2(0, 0), speed_med, robot.GetRotation() - startRotation);
                 } else {
-                    robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, bMath.Clamp(Math.abs(jobs.tensorFlowaJob.getCurrentXFactor(skystone)) * 5, -speed_low, speed_low), 10, 25, 90, jobs.tensorFlowaJob.getCurrentXFactor(skystone) > 0 ? -90 : 90, startRotation);
+                    robot.wallTrack.MoveAlongWallComplexPID(RobotWallTrack.groupID.Group180, bMath.Clamp(Math.abs(jobs.tensorFlowaJob.getCurrentXFactor(skystone)) * 5 + 0.1, -speed_low, speed_low), 45, walltrackingController, 45, jobs.tensorFlowaJob.getCurrentXFactor(skystone) > 0 ? -90 : 90, startRotation);
                 }
 
 
