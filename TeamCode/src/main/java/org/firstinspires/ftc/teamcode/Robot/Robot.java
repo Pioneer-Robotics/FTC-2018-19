@@ -314,9 +314,9 @@ public class Robot extends Thread {
     public void RotatePID(double angle, double rotationSpeed, int cycles) {
 
         //P of 3 and 0 for other gains seems to work really well
-        rotationPID_test.Start(3, 0, 0);
+//        rotationPID_test.Start(3, 0, 0);
 
-//        rotationPID_test.Start(3, 0.40, 0.2);
+        rotationPID_test.Start(3, 0.40, 0.2);
 
 //        rotationPID_test.Start(1, 0.075, 0.022);
 
@@ -398,7 +398,7 @@ public class Robot extends Thread {
                 lastPositiveState = rotationPower > 0;
             }
 
-            if (directionChanges > 25) {
+            if (directionChanges > 5) {
                 ticker += cycles * 2;
             }
 

@@ -142,7 +142,17 @@ class TensorFlowaJob extends aJob implements Runnable {
 
     //<editor-fold desc="External Calls?">
     public Recognition getCurrentRecognition() {
-        return currentRecognition;
+
+
+        //Iterate through all recognitions and tag the TARGET_LABEL
+        for (Recognition recognition : recognitions) {
+
+            //Only set the one that we want
+            if (recognition.getLabel() == TARGET_LABEL) {
+                return recognition;
+            }
+        }
+        return null;
     }
 
     public Boolean hasRecognition() {
@@ -175,13 +185,10 @@ class TensorFlowaJob extends aJob implements Runnable {
     @Override
     public void Loop() {
         super.Loop();
-
+        deltaTime.reset();
 
         //Fetch all of TF's current recognitions
         recognitions = tfod.getRecognitions();
-
-        //Clear our last recognition
-//        currentRecognition = null;
 
         //Iterate through all recognitions and tag the TARGET_LABEL
         for (Recognition recognition : recognitions) {
@@ -191,6 +198,8 @@ class TensorFlowaJob extends aJob implements Runnable {
                 currentRecognition = recognition;
             }
         }
+
+//        opMode.telemetry.addData("Tensor Flow Time : ", deltaTime.seconds());
     }
 
     @Override

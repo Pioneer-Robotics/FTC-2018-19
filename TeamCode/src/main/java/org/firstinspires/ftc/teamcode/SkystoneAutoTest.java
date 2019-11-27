@@ -67,56 +67,80 @@ public class SkystoneAutoTest extends LinearOpMode {
 
 
         while (opModeIsActive()) {
-            Recognition skystone = jobs.tensorFlowaJob.currentRecognition;
+            Recognition skystone = jobs.tensorFlowaJob.getCurrentRecognition();
             if (skystone == null) {
-                robot.MoveComplex(new Double2(0, 0), speed_med, startRotation);
+                robot.wallTrack.MoveAlongWallComplexPID(RobotWallTrack.groupID.Group180, 0.1, 30, walltrackingController, 45, 90, startRotation);
             } else {
-                robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, speed_med, bMath.Lerp(-90, 90, jobs.tensorFlowaJob.getCurrentXFactor(skystone) - 1), startRotation);
+                break;
             }
+
+            telemetry.addData("Looking for skystones", skystone != null ? "Found it!" : "Where is it!");
+            telemetry.update();
         }
 
+        robot.SetPowerDouble4(0, 0, 0, 0, 0);
+        sleep(1000);
+
+        telemetry.addData("Found skystone", "");
+        telemetry.update();
+
+        walltrackingController.Start(4.95, 0.0, 0.1);
+        while (opModeIsActive()) {
+            Recognition skystone = jobs.tensorFlowaJob.getCurrentRecognition();
+
+            if (skystone != null) {
+                if (Math.abs(jobs.tensorFlowaJob.getCurrentXFactor(skystone)) < 0.1) {
+                    //Hold still while maintaining our start rotation
+                    robot.MoveComplex(new Double2(0, 0), speed_med, robot.GetRotation() - startRotation);
+                    break;
+                } else {
+                    robot.wallTrack.MoveAlongWallComplexPID(RobotWallTrack.groupID.Group180, bMath.Clamp(Math.abs(jobs.tensorFlowaJob.getCurrentXFactor(skystone)) * 5, -speed_low, speed_low), 30, walltrackingController, 45, jobs.tensorFlowaJob.getCurrentXFactor(skystone) > 0 ? -90 : 90, startRotation);
+                }
+
+
+                telemetry.addData("Skystones distance ", Math.abs(jobs.tensorFlowaJob.getCurrentXFactor(skystone)));
+                telemetry.addData("Rotation Goal ", startRotation);
+                telemetry.addData("Current Rotation     ", robot.GetRotation());
+                telemetry.addData("Rotation Factor ", robot.GetRotation() - startRotation);
+            } else {
+                telemetry.addData("Lost Stone! ", "");
+                robot.MoveComplex(new Double2(0, 0), speed_med, robot.GetRotation() - startRotation);
+            }
+            telemetry.update();
+        }
+
+        sleep(1000);
 
 //        robot.DriveByDistance(speed_med, 20);
-//
-//        while (opModeIsActive()) {
-//            Recognition skystone = jobs.tensorFlowaJob.currentRecognition;
-//            if (skystone == null) {
-//                robot.wallTrack.MoveAlongWallComplexPID(RobotWallTrack.groupID.Group180, speed_med, 45, walltrackingController, 45, 90, startRotation);
-//            } else {
-//                break;
-//            }
-//
-//            telemetry.addData("Looking for skystones", skystone != null ? "Found it!" : "Where is it!");
-//            telemetry.update();
-//        }
-//
-//        robot.SetPowerDouble4(0, 0, 0, 0, 0);
-//        sleep(250);
-//        walltrackingController.Start(4.95, 0.06, 0.05);
-//
-//        while (opModeIsActive()) {
-//            Recognition skystone = jobs.tensorFlowaJob.currentRecognition;
-//
-//            if (skystone != null) {
-//                if (Math.abs(jobs.tensorFlowaJob.getCurrentXFactor(skystone)) < 0.1) {
-//                    //Hold still while maintaining our start rotation
-//                    robot.MoveComplex(new Double2(0, 0), speed_med, robot.GetRotation() - startRotation);
-//                } else {
-//                    robot.wallTrack.MoveAlongWallComplexPID(RobotWallTrack.groupID.Group180, bMath.Clamp(Math.abs(jobs.tensorFlowaJob.getCurrentXFactor(skystone)) * 5 + 0.1, -speed_low, speed_low), 45, walltrackingController, 45, jobs.tensorFlowaJob.getCurrentXFactor(skystone) > 0 ? -90 : 90, startRotation);
-//                }
-//
-//
-//                telemetry.addData("Skystones distance ", Math.abs(jobs.tensorFlowaJob.getCurrentXFactor(skystone)));
-//                telemetry.addData("Rotation Goal ", startRotation);
-//                telemetry.addData("Current Rotation     ", robot.GetRotation());
-//                telemetry.addData("Rotation Factor ", robot.GetRotation() - startRotation);
-//            } else {
-//                telemetry.addData("Lost Stone! ", "");
-//                robot.MoveComplex(new Double2(0, 0), speed_med, robot.GetRotation() - startRotation);
-//            }
-//            telemetry.update();
-//        }
 
+        //Drive at the skystone
+        while (opModeIsActive()) {
+            Recognition skystone = jobs.tensorFlowaJob.getCurrentRecognition();
+            if (skystone == null) {
+                robot.MoveComplex(new Double2(0, 0), speed_med, robot.GetRotation() - startRotation);
+            } else {
+                robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, speed_low, 180 + bMath.Lerp(-90, 90, (jobs.tensorFlowaJob.getCurrentXFactor(skystone) + 1) / 2), startRotation);
+                if (robot.WallDistance(RobotWallTrack.groupID.Group180, DistanceUnit.CM) > 36) {
+                    break;
+                }
+            }
+//
+        }
+        sleep(1000);
+
+//        while (robot.WallDistance(RobotWallTrack.groupID.Group180, DistanceUnit.CM) <= 36) {
+//            robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, speed_med, bMath.Lerp(-90, 90, (jobs.tensorFlowaJob.getCurrentXFactor(skystone) + 1) / 2), startRotation);
+//            robot.MoveComplex(new Double2(0, 0), speed_med, robot.GetRotation() - startRotation);
+//        }
+//        robot.MoveComplex(new Double2(0, 0), speed_med, robot.GetRotation() - startRotation);
+
+//        robot.RotatePID(90, 1, 1000);
+
+
+//        while (robot.WallDistance(RobotWallTrack.groupID.Group0, DistanceUnit.CM)) {
+//
+//
+//        }
 
 //        while (opModeIsActive()) {
 //            Recognition skystone = jobs.tensorFlowaJob.currentRecognition;
