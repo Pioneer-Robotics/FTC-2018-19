@@ -29,7 +29,7 @@ public class TestingOpMode3 extends LinearOpMode {
         waitForStart();
         targetRotation = robot.GetRotation();
         while (opModeIsActive()) {
-            robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, 0.2, 20, 10, 45, -90, targetRotation);
+            robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, 0.2, 20, 10, 89, -90, targetRotation);
             telemetry.update();
         }
 

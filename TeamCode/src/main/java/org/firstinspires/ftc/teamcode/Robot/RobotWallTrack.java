@@ -124,19 +124,14 @@ public class RobotWallTrack {
         public double currentDistance;
 
         //Target distance to track too
-        public double range;
-
-        //Bounds around the range
-        //-b+[range]+b
-        public double bounds;
+        public double targetDistance;
 
         //The amount of degrees to move in order to correct movement, 45 = fast, 0 = no correction, 25 recommended
         public double correctionScale;
 
         //Init the config with range bounds and scale
-        public AvoidanceConfiguration(double _range, double _bounds, double _correctionScale, double _targetAngle) {
-            range = _range;
-            bounds = _bounds;
+        public AvoidanceConfiguration(double _targetDistance, double _correctionScale, double _targetAngle) {
+            targetDistance = _targetDistance;
             correctionScale = _correctionScale;
             targetAngle = _targetAngle;
 
@@ -151,7 +146,7 @@ public class RobotWallTrack {
 
             double factor = 0;
 
-            factor = ((Math.abs(currentDistance)) / range) - 1;
+            factor = ((Math.abs(currentDistance)) / targetDistance) - 1;
 
             return factor;
         }
@@ -207,14 +202,17 @@ public class RobotWallTrack {
     //distance == how far away from the wall should we be
     //bounds == +-distance how far are we allowed to be before correction (5cm seems reasonable)
     //correctionScale == think of it as how fast we correct our self (its an angle measure: 0 = no correction, 90 == max correction), leave it around 25.
+    @Deprecated
+
     public void MoveAlongWallSimple(groupID group, double speed, double distance, double bounds, double correctionScale, double angleOffset) {
         MoveAlongWallSimple(sensorIDGroupPairs.get(group), speed, distance, bounds, correctionScale, angleOffset);
     }
 
+    @Deprecated
     public void MoveAlongWallSimple(SensorGroup group, double speed, double distance, double bounds, double correctionScale, double angleOffset) {
 
         //Configure the avoidance config
-        avoidanceConfig = new AvoidanceConfiguration(distance, bounds, correctionScale, angleOffset);
+        avoidanceConfig = new AvoidanceConfiguration(distance, correctionScale, angleOffset);
 
         //Set up the group
         currentGroup = group;
@@ -232,7 +230,17 @@ public class RobotWallTrack {
         robot.MoveSimple(angleOffset - wallAngle - avoidanceConfig.targetDirection(), speed);
     }
 
-    public void MoveAlongWallComplex(groupID group, double speed, double distance, double bounds, double correctionScale, double angleOffset, double rotationAngle) {
+
+    /**
+     * @param group                  What group of sensor the bot will use for wall tracking, these are labeled based on their angle to the robot
+     * @param speed                  How fast are robot going to be moving along the wall (effects all movement)
+     * @param distance               How far away the robot is going to try to stay away from the wall
+     * @param correctionFactor       How fast the bot is going to correct our mistakes (distance) (1 == slow correction, not sensitive enough. 10 == speedy correction, needs testing but probs okay to use)
+     * @param maxCorrectionMagnitude The max amount the bot can correct by (in degrees).
+     * @param angleOffset            The angle the bot will be moving along the wall. If you need help finding this number ask Ben
+     * @param rotationAngle          The angle that the bot will try to stay at.
+     */
+    public void MoveAlongWallComplex(groupID group, double speed, double distance, double correctionFactor, double maxCorrectionMagnitude, double angleOffset, double rotationAngle) {
 
 
         //get the physical angle these sensors are at to offset from movement
@@ -245,7 +253,7 @@ public class RobotWallTrack {
         wallAngle = currentGroup.getWallAngle();
 
         //Configure the avoidance config
-        avoidanceConfig = new AvoidanceConfiguration(distance, bounds, correctionScale, angleOffset - wallAngle + physicalOffset);
+        avoidanceConfig = new AvoidanceConfiguration(distance, maxCorrectionMagnitude, angleOffset - wallAngle + physicalOffset);
 
         //send our current world distance to the avoidance config
         avoidanceConfig.SetCurrentDistance(currentGroup.getDistanceAverage(DistanceUnit.CM));
@@ -260,11 +268,6 @@ public class RobotWallTrack {
 
         //correctionAngle > 0 ? (avoidanceConfig.CorrectionCoefficient() > 0 ? Math.toRadians(physicalOffset - 180) : Math.toRadians(physicalOffset)) : (avoidanceConfig.CorrectionCoefficient() > 0 ? Math.toRadians(physicalOffset) : Math.toRadians(physicalOffset - 180))
         double correctionAngle = 0;
-//        if (avoidanceConfig.CorrectionCoefficient() > 0) {
-//                correctionAngle = Math.toRadians(physicalOffset - 180);
-//            } else {
-//                correctionAngle = Math.toRadians(physicalOffset);
-//            }
         if (angleOffset > 0) {
             if (avoidanceConfig.CorrectionCoefficient() > 0) {
                 correctionAngle = Math.toRadians(physicalOffset);
@@ -278,7 +281,7 @@ public class RobotWallTrack {
                 correctionAngle = Math.toRadians(physicalOffset - 180);
             }
         }
-        double correctedDriveAngle = Math.toDegrees(bMath.MoveTowardsRadian(Math.toRadians(driveAngle), correctionAngle, Math.toRadians(correctionScale)));
+        double correctedDriveAngle = Math.toDegrees(bMath.MoveTowardsRadian(Math.toRadians(driveAngle), correctionAngle, Math.toRadians(bMath.Clamp(90 * Math.abs(avoidanceConfig.CorrectionCoefficient() * correctionFactor), 0, maxCorrectionMagnitude))));
 
 
         Robot.instance.Op.telemetry.addData("Drive Pre Correction", driveAngle);

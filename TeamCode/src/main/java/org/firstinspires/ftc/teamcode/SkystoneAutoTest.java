@@ -64,20 +64,38 @@ public class SkystoneAutoTest extends LinearOpMode {
         while (opModeIsActive()) {
             Recognition skystone = jobs.tensorFlowaJob.currentRecognition;
             if (skystone == null) {
-                robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, speed_med, 25, 1, 15, 90, startRotation);
+                robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, speed_med, 25, 1, 89, 90, startRotation);
             } else {
                 break;
             }
+
+            telemetry.addData("Looking for skystones", skystone != null ? "Found it!" : "Where is it!");
+            telemetry.update();
         }
 
         robot.SetPowerDouble4(0, 0, 0, 0, 0);
 
         while (opModeIsActive()) {
             Recognition skystone = jobs.tensorFlowaJob.currentRecognition;
-            robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, speed_low * Math.abs(jobs.tensorFlowaJob.getCurrentXFactor(skystone)), 25, 1, 15, jobs.tensorFlowaJob.getCurrentXFactor(skystone) > 0 ? -90 : 90, startRotation);
-            if (Math.abs(jobs.tensorFlowaJob.getCurrentXFactor(skystone)) < 0.1) {
-                robot.SetPowerDouble4(0, 0, 0, 0, 0);
+
+            if (skystone != null) {
+                if (Math.abs(jobs.tensorFlowaJob.getCurrentXFactor(skystone)) < 0.1) {
+                    //Hold still while maintaining our start rotation
+                    robot.MoveComplex(new Double2(0, 0), speed_med, robot.GetRotation() - startRotation);
+                } else {
+                    robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, speed_low * Math.abs(jobs.tensorFlowaJob.getCurrentXFactor(skystone)), 25, 1, 89, jobs.tensorFlowaJob.getCurrentXFactor(skystone) > 0 ? -90 : 90, startRotation);
+                }
+
+
+                telemetry.addData("Skystones distance ", Math.abs(jobs.tensorFlowaJob.getCurrentXFactor(skystone)));
+                telemetry.addData("Rotation Goal ", startRotation);
+                telemetry.addData("Current Rotation     ", robot.GetRotation());
+                telemetry.addData("Rotation Factor ", robot.GetRotation() - startRotation);
+            } else {
+                telemetry.addData("Lost Stone! ", "");
+                robot.MoveComplex(new Double2(0, 0), speed_med, robot.GetRotation() - startRotation);
             }
+            telemetry.update();
         }
 
 
