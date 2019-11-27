@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.teamcode.Helpers.bMath;
 import org.firstinspires.ftc.teamcode.Robot.Robot;
 import org.firstinspires.ftc.teamcode.Robot.RobotWallTrack;
 
@@ -64,7 +65,7 @@ public class SkystoneAutoTest extends LinearOpMode {
         while (opModeIsActive()) {
             Recognition skystone = jobs.tensorFlowaJob.currentRecognition;
             if (skystone == null) {
-                robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, speed_med, 25, 1, 89, 90, startRotation);
+                robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, speed_med, 25, 25, 90, 90, startRotation);
             } else {
                 break;
             }
@@ -83,7 +84,7 @@ public class SkystoneAutoTest extends LinearOpMode {
                     //Hold still while maintaining our start rotation
                     robot.MoveComplex(new Double2(0, 0), speed_med, robot.GetRotation() - startRotation);
                 } else {
-                    robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, speed_low * Math.abs(jobs.tensorFlowaJob.getCurrentXFactor(skystone)), 25, 1, 89, jobs.tensorFlowaJob.getCurrentXFactor(skystone) > 0 ? -90 : 90, startRotation);
+                    robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, bMath.Clamp(Math.abs(jobs.tensorFlowaJob.getCurrentXFactor(skystone)) * 5, -speed_low, speed_low), 10, 25, 90, jobs.tensorFlowaJob.getCurrentXFactor(skystone) > 0 ? -90 : 90, startRotation);
                 }
 
 
