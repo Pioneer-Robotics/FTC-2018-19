@@ -265,6 +265,7 @@ public class RobotWallTrack {
         //Add the avoidance offset to our wall angle (to maintain the 'distance' from the wall)
         double driveAngle = angleOffset - wallAngle + physicalOffset;
 
+  //correctionAngle > 0 ? (avoidanceConfig.CorrectionCoefficient() > 0 ? Math.toRadians(physicalOffset - 180) : Math.toRadians(physicalOffset)) : (avoidanceConfig.CorrectionCoefficient() > 0 ? Math.toRadians(physicalOffset) : Math.toRadians(physicalOffset - 180))
         double correctionAngle = 0;
         if (angleOffset > 0) {
             if (avoidanceConfig.CorrectionCoefficient() > 0) {
