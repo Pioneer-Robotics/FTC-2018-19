@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorREVColorDistance;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Hardware.bMotor;
@@ -64,11 +65,13 @@ public class Robot extends Thread {
     //If our thread is running, using atomics to avoid thread conflicts. Might not be completely necessary
     AtomicBoolean threadRunning = new AtomicBoolean();
 
+    public SensorREVColorDistance colorDistanceFront;
 
     public void init(HardwareMap hardwareMap, LinearOpMode opmode) {
 
         //Start the printer
         bTelemetry.Start(opmode);
+
 
         //Set up the instance (safety checks might be a good idea at some point)
         instance = this;
@@ -502,7 +505,7 @@ public class Robot extends Thread {
     }
 
     //Returns the distance using a sensor group
-    public double WallDistance(RobotWallTrack.groupID group, DistanceUnit unit) {
+    public double GetDistance(RobotWallTrack.groupID group, DistanceUnit unit) {
         return wallTrack.sensorIDGroupPairs.get(group).getDistanceAverage(unit);
     }
 

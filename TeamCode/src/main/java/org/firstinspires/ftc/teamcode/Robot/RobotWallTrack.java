@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Robot;
 
-import android.renderscript.Double2;
-
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
@@ -9,8 +7,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Helpers.PID;
 import org.firstinspires.ftc.teamcode.Helpers.bMath;
 
-import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.HashMap;
 
 
@@ -288,7 +284,7 @@ public class RobotWallTrack {
         Robot.instance.Op.telemetry.addData("Correction Number", correctionAngle);
         Robot.instance.Op.telemetry.addData("Corrected to ", correctedDriveAngle);
         Robot.instance.Op.telemetry.addData("Corrected by ", driveAngle - correctedDriveAngle);
-        Robot.instance.Op.telemetry.addData("Current Distnace ", robot.WallDistance(groupID.Group180, DistanceUnit.CM));
+        Robot.instance.Op.telemetry.addData("Current Distnace ", robot.GetDistance(groupID.Group180, DistanceUnit.CM));
         Robot.instance.Op.telemetry.addData("Current Angle ", wallAngle);
         Robot.instance.Op.telemetry.addData("Current Distnace Goal ", distance);
 
@@ -355,6 +351,8 @@ public class RobotWallTrack {
         // 0 - 0 + 90 + 0
         // -90 - 0 + 180
         // 90 - 0 + 180
+        //0 - 0 - 90
+        //-90 - 0 + 90
         robot.MoveComplex(correctedDriveAngle, speed, robot.GetRotation() - rotationAngle);
     }
 
