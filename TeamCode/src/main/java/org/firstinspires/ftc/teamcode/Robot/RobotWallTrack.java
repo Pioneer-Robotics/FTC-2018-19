@@ -33,6 +33,8 @@ public class RobotWallTrack {
 
         public double distance;
 
+        //The last real distance used, this is used if the sensors are not giving valid readings
+        double lastDistance;
 
         //The angle at which the sensors are located on the robot
         public double sensorAngle;
@@ -68,7 +70,10 @@ public class RobotWallTrack {
 
         //<editor-fold desc="External return groups">
         public double getDistance(SensorGroup.TripletType type, DistanceUnit unit) {
-            return sensor(type).getDistance(unit);
+            if (isValid(type)) {
+                lastDistance = sensor(type).getDistance(unit);
+            }
+            return lastDistance;
         }
 
         public double getDistanceAverage(DistanceUnit unit) {
@@ -78,6 +83,11 @@ public class RobotWallTrack {
         //Return a distance sensor from type
         public DistanceSensor sensor(SensorGroup.TripletType type) {
             return (type == SensorGroup.TripletType.Right ? distanceSensors[1] : distanceSensors[0]);
+        }
+
+        //Returns true if our input is valid, meaning that we hit something and have accurate data
+        public boolean isValid(SensorGroup.TripletType type) {
+            return sensor(type).getDistance(DistanceUnit.CM) < 500;
         }
 
 

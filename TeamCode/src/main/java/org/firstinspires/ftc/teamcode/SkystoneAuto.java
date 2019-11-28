@@ -19,7 +19,8 @@ public class SkystoneAuto extends Auto {
         waitForStart();
 
         //Line up with a skystone
-        SkystoneAlign(speed_low, 30, 2, 0.5, 0.15, startRotation);
+        //A lockThreshold of .25 will get is within 19.5 degrees of the stone
+        SkystoneAlign(speed_low, 30, 2, 0.5, 0.25, startRotation);
 
         //Drive forward while adjusting heading to line up with the skystone
         DriveAtSkystone(speed_med, 45, 38, startRotation);

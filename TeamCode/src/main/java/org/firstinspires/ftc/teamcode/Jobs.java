@@ -207,6 +207,7 @@ class TensorFlowaJob extends aJob implements Runnable {
         super.OnStart(op);
         //Make sure TF is started before we boot up the thread
         if (tfod != null) {
+//            tfod.setClippingMargins();
             tfod.activate();
         }
     }

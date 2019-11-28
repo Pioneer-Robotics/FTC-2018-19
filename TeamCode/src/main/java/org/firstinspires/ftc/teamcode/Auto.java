@@ -92,7 +92,7 @@ public class Auto extends LinearOpMode {
 
             if (skystone != null) {
                 if (Math.abs(jobs.tensorFlowaJob.getCurrentXFactor(skystone)) < lockThreshold) {
-                    robot.MoveComplex(new Double2(0, 0), speed_med, robot.GetRotation() - startRotation);
+                    StopAndMaintainRotation(startRotation);
                     onSkystoneTime += deltaTime.seconds();
                 } else {
                     robot.wallTrack.MoveAlongWallComplexPID(RobotWallTrack.groupID.Group180, bMath.Clamp(Math.abs(jobs.tensorFlowaJob.getCurrentXFactor(skystone)) * correctionCoefficient, -moveSpeed, moveSpeed), wallDistance, walltrackingController, 45, jobs.tensorFlowaJob.getCurrentXFactor(skystone) > 0 ? -90 : 90, startRotation);
@@ -126,7 +126,7 @@ public class Auto extends LinearOpMode {
         while (opModeIsActive()) {
             Recognition skystone = jobs.tensorFlowaJob.getCurrentRecognition();
             if (skystone == null) {
-                robot.MoveComplex(new Double2(0, 0), speed_med, robot.GetRotation() - startRotation);
+                StopAndMaintainRotation(startRotation);
             } else {
                 robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, moveSpeed, 180 + bMath.Lerp(-maxCorrectionAngle, maxCorrectionAngle, (jobs.tensorFlowaJob.getCurrentXFactor(skystone) + 1) / 2), startRotation);
                 if (robot.GetDistance(RobotWallTrack.groupID.Group180, DistanceUnit.CM) > wallStopDistance) {
@@ -134,6 +134,15 @@ public class Auto extends LinearOpMode {
                 }
             }
         }
+    }
+
+    //Freezes the robots movement but continues to seek its correct rotation
+    public void StopAndMaintainRotation(double rotation) {
+        robot.MoveComplex(new Double2(0, 0), 1, robot.GetRotation() - rotation);
+    }
+
+    public void LostRecognition() {
+
     }
 
     public void ActuateArm() {
