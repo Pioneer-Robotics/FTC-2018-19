@@ -212,7 +212,7 @@ public class Robot extends Thread {
             //Update our 'rotation' value
             BackgroundRotation();
 
-            threadTimer += threadDeltaTime.seconds();
+//            threadTimer += threadDeltaTime.seconds();
 //            Op.telemetry.update();
 
             threadDeltaTime.reset();

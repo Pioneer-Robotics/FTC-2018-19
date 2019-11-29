@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.app.backup.RestoreObserver;
 import android.renderscript.Double2;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -26,9 +27,9 @@ public class Auto extends LinearOpMode {
 
     //What side we are playing on, based on the bridge colors
 
-    public feildSide side;
+    public FieldSide side;
 
-    public enum feildSide {
+    public enum FieldSide {
         SIDE_BLUE,
         SIDE_RED
     }
@@ -57,9 +58,9 @@ public class Auto extends LinearOpMode {
 
         //If we are closest to the 90 degree side we know were playing on the BLUE side
         if (robot.GetDistance(RobotWallTrack.groupID.Group90, DistanceUnit.CM) < robot.GetDistance(RobotWallTrack.groupID.Group270, DistanceUnit.CM)) {
-            side = feildSide.SIDE_BLUE;
+            side = FieldSide.SIDE_BLUE;
         } else {
-            side = feildSide.SIDE_RED;
+            side = FieldSide.SIDE_RED;
         }
 
 
@@ -81,8 +82,7 @@ public class Auto extends LinearOpMode {
      */
     //This loop uses the rear sensors to line up with a skystone
     public void SkystoneAlign(double moveSpeed, double wallDistance, double correctionCoefficient, double lockTime, double lockThreshold, double startRotation) {
-        walltrackingController.Start(4.95, 0.0, 0.1);
-
+        ResetWallPID();
         ElapsedTime deltaTime = new ElapsedTime();
 
         double onSkystoneTime = 0;
@@ -123,6 +123,7 @@ public class Auto extends LinearOpMode {
      */
     //This drives at a skystone while correcting itself
     public void DriveAtSkystone(double moveSpeed, double maxCorrectionAngle, double wallStopDistance, double startRotation) {
+        ResetWallPID();
         while (opModeIsActive()) {
             Recognition skystone = jobs.tensorFlowaJob.getCurrentRecognition();
             if (skystone == null) {
@@ -141,12 +142,24 @@ public class Auto extends LinearOpMode {
         robot.MoveComplex(new Double2(0, 0), 1, robot.GetRotation() - rotation);
     }
 
+    public void ResetWallPID() {
+        walltrackingController.Start(4.95, 0.0, 0.1);
+    }
+
     public void LostRecognition() {
 
     }
 
     public void ActuateArm() {
     }
+
+    public void DriveToMidField(double moveSpeed, double distanceToWall) {
+        ResetWallPID();
+        if (side == FieldSide.SIDE_BLUE) {
+            robot.wallTrack.MoveAlongWallComplexPID(RobotWallTrack.groupID.Group270, moveSpeed, distanceToWall, walltrackingController, 45, 90, -90);
+        }
+    }
+
 
     //Sends the 'message' to telemetry and updates it, mostly for C#-ness
     void print(String message) {

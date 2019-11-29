@@ -1,33 +1,29 @@
 package org.firstinspires.ftc.teamcode.Robot;
 
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 //WIP WIP WIP
 //Going to be used when placing the robot on the field to ensure consistent placement
 public class RobotSetUpHelper {
 
-    public Verification sensors90;
-    public Verification sensors180;
+
+    public Rev2mDistanceSensor sensor90A;
+    public Rev2mDistanceSensor sensor90B;
+
+    public Rev2mDistanceSensor sensor180A;
+    public Rev2mDistanceSensor sensor180B;
 
 
-    public class Verification {
-        public double target;
-
-        public double current;
-
-        public double tolerance;
-
-        public boolean Valid() {
-            return Math.abs(target - current) < tolerance;
-        }
-
-    }
+    public Rev2mDistanceSensor sensor270A;
+    public Rev2mDistanceSensor sensor270B;
 
 
-    public RobotSetUpHelper(double angleGoal90, double angleGoal180) {
+    public void Update(Robot robot, Telemetry telemetry) {
+        double wallAngle = robot.wallTrack.sensorIDGroupPairs.get(RobotWallTrack.groupID.Group90).getWallAngle();
 
-    }
-
-    public void Update() {
-
-
+        telemetry.addData("Lined up with wall ", wallAngle < 5);
     }
 }

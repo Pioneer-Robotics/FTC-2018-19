@@ -32,7 +32,7 @@ public class SkystoneAuto extends Auto {
         robot.DriveByDistance(speed_med, -10);
 
         //Rotate based on our side to face the foundation
-        if (side == feildSide.SIDE_BLUE) {
+        if (side == FieldSide.SIDE_BLUE) {
             robot.RotatePID(-90, speed_high, 100);
         } else {
             robot.RotatePID(90, speed_high, 100);
@@ -40,7 +40,7 @@ public class SkystoneAuto extends Auto {
 
         //Move towards the foundation by wall tracking along the wall
         while (robot.GetDistance(RobotWallTrack.groupID.Group0, DistanceUnit.CM) < 36) {
-            if (side == feildSide.SIDE_BLUE) {
+            if (side == FieldSide.SIDE_BLUE) {
                 robot.wallTrack.MoveAlongWallComplexPID(RobotWallTrack.groupID.Group270, speed_high, 36, walltrackingController, 35, 90, startRotation);
             } else {
                 robot.wallTrack.MoveAlongWallComplexPID(RobotWallTrack.groupID.Group90, speed_high, 36, walltrackingController, 35, -90, startRotation);
