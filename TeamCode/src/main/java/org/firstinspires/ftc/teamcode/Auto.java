@@ -140,8 +140,7 @@ public class Auto extends LinearOpMode {
 
     //Freezes the robots movement but continues to seek its correct rotation
     public void StopAndMaintainRotation(double rotation) {
-        robot.SetPowerDouble4(0, 0, 0, 0, 0);
-//        robot.MoveComplex(new Double2(0, 0), 1, robot.GetRotation() - rotation);
+        robot.MoveComplex(new Double2(0, 0), 1, robot.GetRotation() - rotation);
     }
 
     public void ResetWallPID() {

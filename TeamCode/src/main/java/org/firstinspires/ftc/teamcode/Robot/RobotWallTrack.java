@@ -27,6 +27,12 @@ public class RobotWallTrack {
 
     double curDriveAngle = 0;
     double wallAngle = 0;
+
+
+    double physicalOffset = 0;
+    double driveAngle = 0;
+    double correctionAngle = 0;
+    double correctedDriveAngle = 0;
     //</editor-fold>
 
     public static class SensorGroup {
@@ -251,7 +257,7 @@ public class RobotWallTrack {
 
 
         //get the physical angle these sensors are at to offset from movement
-        double physicalOffset = group == groupID.Group90 ? 90 : (group == groupID.Group180 ? 180 : (group == groupID.Group270 ? -90 : 0));
+        physicalOffset = group == groupID.Group90 ? 90 : (group == groupID.Group180 ? 180 : (group == groupID.Group270 ? -90 : 0));
 
         //Set up the group
         currentGroup = sensorIDGroupPairs.get(group);
@@ -299,12 +305,6 @@ public class RobotWallTrack {
         Robot.instance.Op.telemetry.addData("Current Distnace Goal ", distance);
 
         //Move while keeping our rotation angle the same
-        // 0 - 0 - 180 + 0
-        // 0 - 0 - 90 + 0
-        // 90 - 0 + 180 + 0
-        // 0 - 0 + 90 + 0
-        // -90 - 0 + 180
-        // 90 - 0 + 180
         robot.MoveComplex(correctedDriveAngle, speed, robot.GetRotation() - rotationAngle);
     }
 
@@ -312,7 +312,7 @@ public class RobotWallTrack {
 
 
         //get the physical angle these sensors are at to offset from movement
-        double physicalOffset = group == groupID.Group90 ? 90 : (group == groupID.Group180 ? 180 : (group == groupID.Group270 ? -90 : 0));
+        physicalOffset = group == groupID.Group90 ? 90 : (group == groupID.Group180 ? 180 : (group == groupID.Group270 ? -90 : 0));
 
         //Set up the group
         currentGroup = sensorIDGroupPairs.get(group);
@@ -331,10 +331,10 @@ public class RobotWallTrack {
         Robot.instance.Op.telemetry.addData("Real offset ", physicalOffset);
 
         //Add the avoidance offset to our wall angle (to maintain the 'distance' from the wall)
-        double driveAngle = angleOffset - wallAngle + physicalOffset;
+        driveAngle = angleOffset - wallAngle + physicalOffset;
 
         //correctionAngle > 0 ? (avoidanceConfig.CorrectionCoefficient() > 0 ? Math.toRadians(physicalOffset - 180) : Math.toRadians(physicalOffset)) : (avoidanceConfig.CorrectionCoefficient() > 0 ? Math.toRadians(physicalOffset) : Math.toRadians(physicalOffset - 180))
-        double correctionAngle = 0;
+        correctionAngle = 0;
         if (angleOffset > 0) {
             if (avoidanceConfig.CorrectionCoefficient() > 0) {
                 correctionAngle = Math.toRadians(physicalOffset);
@@ -348,7 +348,7 @@ public class RobotWallTrack {
                 correctionAngle = Math.toRadians(physicalOffset - 180);
             }
         }
-        double correctedDriveAngle = Math.toDegrees(bMath.MoveTowardsRadian(Math.toRadians(driveAngle), correctionAngle, Math.toRadians(bMath.Clamp(Math.abs(controller.Loop(distance, currentGroup.getDistanceAverage(DistanceUnit.CM))), 0, maxCorrectionMagnitude))));
+        correctedDriveAngle = Math.toDegrees(bMath.MoveTowardsRadian(Math.toRadians(driveAngle), correctionAngle, Math.toRadians(bMath.Clamp(Math.abs(controller.Loop(distance, currentGroup.getDistanceAverage(DistanceUnit.CM))), 0, maxCorrectionMagnitude))));
 
         Robot.instance.Op.telemetry.addData("Current Distnace ", currentGroup.getDistanceAverage(DistanceUnit.CM));
         Robot.instance.Op.telemetry.addData("Current Error", distance - currentGroup.getDistanceAverage(DistanceUnit.CM));

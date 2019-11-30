@@ -138,6 +138,7 @@ class TensorFlowaJob extends aJob implements Runnable {
 
     Recognition currentRecognition;
 
+    //This class is static because
     List<Recognition> recognitions;
 
     //<editor-fold desc="External Calls?">
@@ -153,10 +154,6 @@ class TensorFlowaJob extends aJob implements Runnable {
             }
         }
         return null;
-    }
-
-    public Boolean hasRecognition() {
-        return currentRecognition != null;
     }
 
     //The a number between -1 and 1 representing how close the recognition is to the center of the camera
@@ -190,16 +187,15 @@ class TensorFlowaJob extends aJob implements Runnable {
         //Fetch all of TF's current recognitions
         recognitions = tfod.getRecognitions();
 
-        //Iterate through all recognitions and tag the TARGET_LABEL
-        for (Recognition recognition : recognitions) {
+//        //Iterate through all recognitions and tag the TARGET_LABEL
+//        for (Recognition recognition : recognitions) {
+//
+//            //Only set the one that we want
+//            if (recognition.getLabel() == TARGET_LABEL) {
+//                currentRecognition = recognition;
+//            }
+//        }
 
-            //Only set the one that we want
-            if (recognition.getLabel() == TARGET_LABEL) {
-                currentRecognition = recognition;
-            }
-        }
-
-//        opMode.telemetry.addData("Tensor Flow Time : ", deltaTime.seconds());
     }
 
     @Override

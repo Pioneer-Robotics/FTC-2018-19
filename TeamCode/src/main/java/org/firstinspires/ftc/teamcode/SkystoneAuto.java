@@ -22,31 +22,14 @@ public class SkystoneAuto extends Auto {
         //A lockThreshold of .25 will get is within 19.5 degrees of the stone
         SkystoneAlign(speed_low, 45, 2, 0.5, 0.25, startRotation);
 
-        StopAndMaintainRotation(startRotation);
-
-        sleep(1500);
-
         //Drive forward while adjusting heading to line up with the skystone
         DriveAtSkystone(speed_med, 25, 35, startRotation);
-
-        StopAndMaintainRotation(startRotation);
-
-        sleep(1500);
-
 
         //Deploy the arm and grab dat stone
         ActuateArm();
 
-        StopAndMaintainRotation(startRotation);
-
-        sleep(1500);
-
         //Roll back a wee bit
         robot.DriveByDistance(speed_med, -5);
-
-        StopAndMaintainRotation(startRotation);
-
-        sleep(1500);
 
         //Rotate based on our side to face the foundation
         if (side == FieldSide.SIDE_BLUE) {
@@ -54,12 +37,6 @@ public class SkystoneAuto extends Auto {
         } else {
             robot.RotatePID(startRotation + 90, speed_med, 10000);
         }
-
-//        StopAndMaintainRotation(startRotation);
-
-//        startRotation = robot.GetRotation();
-
-        sleep(1500);
 
 
         //Move towards the foundation by wall tracking along the wall
@@ -75,14 +52,8 @@ public class SkystoneAuto extends Auto {
                 robot.wallTrack.MoveAlongWallComplexPID(RobotWallTrack.groupID.Group90, speed_med, 36, walltrackingController, 35, -90, robot.GetRotation());
 
             }
-//                robot.wallTrack.MoveAlongWallComplexPID(RobotWallTrack.groupID.Group90, speed_med, 36, walltrackingController, 35, 90, -90);
-//            } else {
-//                robot.wallTrack.MoveAlongWallComplexPID(RobotWallTrack.groupID.Group270, speed_med, 36, walltrackingController, 35, -90, startRotation);
-//            }
         }
 
-//        StopAndMaintainRotation(startRotation);
-        robot.SetPowerDouble4(0, 0, 0, 0, 0);
 
         //Rotate to face the foundation
         robot.RotatePID(0, speed_high, 10000);

@@ -33,6 +33,8 @@ public class Robot extends Thread {
     //Static instance. Only have one robot at a time and access it from here (THERE CAN BE ONLY ONE)
     public static Robot instance;
 
+    public Arm arm;
+
     //Our wee little wall tracker
     public RobotWallTrack wallTrack = new RobotWallTrack();
 
@@ -50,14 +52,23 @@ public class Robot extends Thread {
 
     public bDataManger dataManger = new bDataManger();
 
-    public class LiftArm {
+    public class Arm {
 
+        //Arm height motor
         public TetrixMotor rotation;
 
-        public TetrixMotor spool;
+        //Controls arm length (spool)
+        public TetrixMotor length;
 
         public Servo gripRotation;
         public Servo grip;
+
+        public Arm(OpMode opMode, String armRotationMotor, String armSpoolMotor, String gripServo, String gripRotationServo) {
+            grip = opMode.hardwareMap.get(Servo.class, gripServo);
+            gripRotation = opMode.hardwareMap.get(Servo.class, gripRotationServo);
+            rotation = opMode.hardwareMap.get(TetrixMotor.class, armRotationMotor);
+            length = opMode.hardwareMap.get(TetrixMotor.class, armSpoolMotor);
+        }
 
 
         public double ThetaDegrees(Double k, Double H, double L, double d) {
@@ -66,7 +77,6 @@ public class Robot extends Thread {
 
             return Math.toDegrees(Math.atan((Math.sqrt((k * k) - (x * x)) - H) / (d - x)));
         }
-
     }
 
 
@@ -82,7 +92,6 @@ public class Robot extends Thread {
 
         //Start the printer
         bTelemetry.Start(opmode);
-
 
         //Set up the instance (safety checks might be a good idea at some point)
         instance = this;
@@ -100,6 +109,8 @@ public class Robot extends Thread {
 //        backRight = hardwareMap.get(DcMotor.class, RobotConfiguration.wheel_backRight);
         bTelemetry.Print("Robot wheels assigned.");
         bTelemetry.Print("Robot motors configured in the DriveManager.");
+
+        arm = new Arm(opmode, RobotConfiguration.arm_rotationMotor, RobotConfiguration.arm_lengthMotor, RobotConfiguration.arm_gripServo, RobotConfiguration.arm_gripRotationServo);
 
 //        gripServo = hardwareMap.get(Servo.class, "Grip");
 //        armWintch = hardwareMap.get(DcMotor.class, "Arm");
