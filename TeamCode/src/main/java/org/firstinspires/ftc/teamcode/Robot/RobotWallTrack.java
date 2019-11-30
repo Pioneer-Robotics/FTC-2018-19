@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Robot;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Helpers.PID;
@@ -308,7 +309,11 @@ public class RobotWallTrack {
         robot.MoveComplex(correctedDriveAngle, speed, robot.GetRotation() - rotationAngle);
     }
 
+    ElapsedTime debuggingDeltaTime = new ElapsedTime();
+
     public void MoveAlongWallComplexPID(groupID group, double speed, double distance, PID controller, double maxCorrectionMagnitude, double angleOffset, double rotationAngle) {
+
+        debuggingDeltaTime.reset();
 
 
         //get the physical angle these sensors are at to offset from movement
@@ -321,7 +326,11 @@ public class RobotWallTrack {
         wallAngle = currentGroup.getWallAngle();
 
         //Configure the avoidance config
-        avoidanceConfig = new AvoidanceConfiguration(distance, maxCorrectionMagnitude, angleOffset - wallAngle + physicalOffset);
+//        avoidanceConfig = new AvoidanceConfiguration(distance, maxCorrectionMagnitude, angleOffset - wallAngle + physicalOffset);
+
+        avoidanceConfig.targetAngle = distance;
+        avoidanceConfig.correctionScale = maxCorrectionMagnitude;
+        avoidanceConfig.targetAngle = angleOffset - wallAngle + physicalOffset;
 
         //send our current world distance to the avoidance config
         avoidanceConfig.SetCurrentDistance(currentGroup.getDistanceAverage(DistanceUnit.CM));
@@ -350,9 +359,9 @@ public class RobotWallTrack {
         }
         correctedDriveAngle = Math.toDegrees(bMath.MoveTowardsRadian(Math.toRadians(driveAngle), correctionAngle, Math.toRadians(bMath.Clamp(Math.abs(controller.Loop(distance, currentGroup.getDistanceAverage(DistanceUnit.CM))), 0, maxCorrectionMagnitude))));
 
-        Robot.instance.Op.telemetry.addData("Current Distnace ", currentGroup.getDistanceAverage(DistanceUnit.CM));
-        Robot.instance.Op.telemetry.addData("Current Error", distance - currentGroup.getDistanceAverage(DistanceUnit.CM));
-        Robot.instance.Op.telemetry.addData("PID value", controller.State());
+//        Robot.instance.Op.telemetry.addData("Current Distnace ", currentGroup.getDistanceAverage(DistanceUnit.CM));
+//        Robot.instance.Op.telemetry.addData("Current Error", distance - currentGroup.getDistanceAverage(DistanceUnit.CM));
+//        Robot.instance.Op.telemetry.addData("PID value", controller.State());
 
         //Move while keeping our rotation angle the same
         // 0 - 0 - 180 + 0
@@ -365,13 +374,14 @@ public class RobotWallTrack {
         //-90 - 0 + 90
         //-90 -
         robot.MoveComplex(correctedDriveAngle, speed, robot.GetRotation() - rotationAngle);
+        Robot.instance.Op.telemetry.addData("Wall track time", debuggingDeltaTime.seconds());
     }
 
     public void MoveAlongWallComplex(groupID group, double speed, double angleOffset, double rotationAngle) {
 
 
         //get the physical angle these sensors are at to offset from movement
-        double physicalOffset = group == groupID.Group90 ? 90 : (group == groupID.Group180 ? 180 : (group == groupID.Group270 ? -90 : 0));
+        physicalOffset = group == groupID.Group90 ? 90 : (group == groupID.Group180 ? 180 : (group == groupID.Group270 ? -90 : 0));
 
         //Set up the group
         currentGroup = sensorIDGroupPairs.get(group);

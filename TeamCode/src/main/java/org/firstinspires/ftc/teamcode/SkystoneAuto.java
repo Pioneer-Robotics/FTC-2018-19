@@ -42,9 +42,7 @@ public class SkystoneAuto extends Auto {
         //Move towards the foundation by wall tracking along the wall
         ResetWallPID();
         while (opModeIsActive() && robot.GetDistance(RobotWallTrack.groupID.Group180, DistanceUnit.CM) < 150) {
-            telemetry.addData("Attempting to wall track", "");
-            telemetry.addData("Stop distance", robot.GetDistance(RobotWallTrack.groupID.Group180, DistanceUnit.CM));
-            telemetry.update();
+
             if (side == FieldSide.SIDE_BLUE) {
 
                 robot.wallTrack.MoveAlongWallComplexPID(RobotWallTrack.groupID.Group270, speed_med, 36, walltrackingController, 35, 90, robot.GetRotation());

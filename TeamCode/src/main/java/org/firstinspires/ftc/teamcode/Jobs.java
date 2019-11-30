@@ -7,6 +7,7 @@ import android.renderscript.Double4;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -138,12 +139,13 @@ class TensorFlowaJob extends aJob implements Runnable {
 
     Recognition currentRecognition;
 
-    //This class is static because
     List<Recognition> recognitions;
+
+    ElapsedTime debuggingDeltaTime = new ElapsedTime();
 
     //<editor-fold desc="External Calls?">
     public Recognition getCurrentRecognition() {
-
+        debuggingDeltaTime.reset();
 
         //Iterate through all recognitions and tag the TARGET_LABEL
         for (Recognition recognition : recognitions) {
@@ -153,6 +155,8 @@ class TensorFlowaJob extends aJob implements Runnable {
                 return recognition;
             }
         }
+        opMode.telemetry.addData("Get Recognition Time", debuggingDeltaTime.seconds());
+
         return null;
     }
 
