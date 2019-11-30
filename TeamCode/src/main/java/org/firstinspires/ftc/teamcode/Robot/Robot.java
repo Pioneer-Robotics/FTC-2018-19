@@ -4,10 +4,12 @@ import android.content.Context;
 import android.renderscript.Double2;
 import android.renderscript.Double4;
 
+import com.qualcomm.hardware.motors.TetrixMotor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.SensorREVColorDistance;
@@ -48,16 +50,25 @@ public class Robot extends Thread {
 
     public bDataManger dataManger = new bDataManger();
 
-//    public DcMotor frontLeft;
-//    public DcMotor frontRight;
-//    public DcMotor backLeft;
-//    public DcMotor backRight;
+    public class LiftArm {
 
-//    //Used for testing
-//    public Servo gripServo;
-//
-//    //Used for testing
-//    public DcMotor armWintch;
+        public TetrixMotor rotation;
+
+        public TetrixMotor spool;
+
+        public Servo gripRotation;
+        public Servo grip;
+
+
+        public double ThetaDegrees(Double k, Double H, double L, double d) {
+            Double c = ((k * k) - (H * H) - (L * L) - (d * d)) / 2;
+            Double x = (((d * c) - (H * Math.sqrt((((L * L) * (d * d)) + ((L * L) * (H * H))) - (c * c)))) / ((d * d) + (H * H))) + d;
+
+            return Math.toDegrees(Math.atan((Math.sqrt((k * k) - (x * x)) - H) / (d - x)));
+        }
+
+    }
+
 
     public LinearOpMode Op;
 //    public OpMode LinearOpMode;
@@ -317,9 +328,10 @@ public class Robot extends Thread {
     public void RotatePID(double angle, double rotationSpeed, int cycles) {
 
         //P of 3 and 0 for other gains seems to work really well
-//        rotationPID_test.Start(3, 0, 0);
+//        rotationPID_test.Start(3, 0, 0.1);
 
         rotationPID_test.Start(3, 0.40, 0.2);
+//        rotationPID_test.Start(4.01, 0.003, 0.0876);
 
 //        rotationPID_test.Start(1, 0.075, 0.022);
 
@@ -332,12 +344,16 @@ public class Robot extends Thread {
         double startAngle = rotation;
         int directionChanges = 0;
         boolean lastPositiveState = true;
+        double rotationPower = 0;
+        ElapsedTime dt = new ElapsedTime();
+
+        double correctTime = 0;
 
         while (ticker < cycles && Op.opModeIsActive()) {
             ticker++;
-            double rotationPower = rotationPID_test.Loop(angle, rotation);
+            rotationPower = rotationPID_test.Loop(angle, rotation);
             rotationPower = rotationPower / (360);//rotationSpeed * Math.abs(startAngle - angle));
-            rotationPower += (0.05 * (rotationPower > 0 ? 1 : -1));
+            rotationPower += (0.15 * (rotationPower > 0 ? 1 : -1));
             Op.telemetry.addData("Error ", rotationPID_test.error);
             Op.telemetry.addData("Last Error  ", rotationPID_test.lastError);
             Op.telemetry.addData("Derivative ", rotationPID_test.derivative);
@@ -357,10 +373,20 @@ public class Robot extends Thread {
                 lastPositiveState = rotationPower > 0;
             }
 
-            if (directionChanges > 5) {
-                ticker += cycles * 2;
-            }
+//            if (rotationPID_test.error < 5) {
+//                correctTime += dt.seconds();
+//            }
+//
+//            if (correctTime > 0.25) {
+//                break;
+//            }
 
+            if (directionChanges > 2) {
+                ticker += cycles * 2;
+                Op.telemetry.addData("Rotation ended", directionChanges);
+                Op.telemetry.update();
+            }
+            dt.reset();
         }
 
         SetPowerDouble4(0, 0, 0, 0, 0);

@@ -20,35 +20,72 @@ public class SkystoneAuto extends Auto {
 
         //Line up with a skystone
         //A lockThreshold of .25 will get is within 19.5 degrees of the stone
-        SkystoneAlign(speed_low, 30, 2, 0.5, 0.25, startRotation);
+        SkystoneAlign(speed_low, 45, 2, 0.5, 0.25, startRotation);
+
+        StopAndMaintainRotation(startRotation);
+
+        sleep(1500);
 
         //Drive forward while adjusting heading to line up with the skystone
-        DriveAtSkystone(speed_med, 45, 38, startRotation);
+        DriveAtSkystone(speed_med, 25, 35, startRotation);
+
+        StopAndMaintainRotation(startRotation);
+
+        sleep(1500);
+
 
         //Deploy the arm and grab dat stone
         ActuateArm();
 
+        StopAndMaintainRotation(startRotation);
+
+        sleep(1500);
+
         //Roll back a wee bit
-        robot.DriveByDistance(speed_med, -10);
+        robot.DriveByDistance(speed_med, -5);
+
+        StopAndMaintainRotation(startRotation);
+
+        sleep(1500);
 
         //Rotate based on our side to face the foundation
         if (side == FieldSide.SIDE_BLUE) {
-            robot.RotatePID(-90, speed_high, 100);
+            robot.RotatePID(startRotation - 90, speed_med, 100000);
         } else {
-            robot.RotatePID(90, speed_high, 100);
+            robot.RotatePID(startRotation + 90, speed_med, 10000);
         }
+
+//        StopAndMaintainRotation(startRotation);
+
+//        startRotation = robot.GetRotation();
+
+        sleep(1500);
+
 
         //Move towards the foundation by wall tracking along the wall
-        while (robot.GetDistance(RobotWallTrack.groupID.Group0, DistanceUnit.CM) < 36) {
+        ResetWallPID();
+        while (opModeIsActive() && robot.GetDistance(RobotWallTrack.groupID.Group180, DistanceUnit.CM) < 150) {
+            telemetry.addData("Attempting to wall track", "");
+            telemetry.addData("Stop distance", robot.GetDistance(RobotWallTrack.groupID.Group180, DistanceUnit.CM));
+            telemetry.update();
             if (side == FieldSide.SIDE_BLUE) {
-                robot.wallTrack.MoveAlongWallComplexPID(RobotWallTrack.groupID.Group270, speed_high, 36, walltrackingController, 35, 90, startRotation);
+
+                robot.wallTrack.MoveAlongWallComplexPID(RobotWallTrack.groupID.Group270, speed_med, 36, walltrackingController, 35, 90, robot.GetRotation());
             } else {
-                robot.wallTrack.MoveAlongWallComplexPID(RobotWallTrack.groupID.Group90, speed_high, 36, walltrackingController, 35, -90, startRotation);
+                robot.wallTrack.MoveAlongWallComplexPID(RobotWallTrack.groupID.Group90, speed_med, 36, walltrackingController, 35, -90, robot.GetRotation());
+
             }
+//                robot.wallTrack.MoveAlongWallComplexPID(RobotWallTrack.groupID.Group90, speed_med, 36, walltrackingController, 35, 90, -90);
+//            } else {
+//                robot.wallTrack.MoveAlongWallComplexPID(RobotWallTrack.groupID.Group270, speed_med, 36, walltrackingController, 35, -90, startRotation);
+//            }
         }
 
+//        StopAndMaintainRotation(startRotation);
+        robot.SetPowerDouble4(0, 0, 0, 0, 0);
+
         //Rotate to face the foundation
-        robot.RotatePID(startRotation, speed_high, 100);
+        robot.RotatePID(0, speed_high, 10000);
 
         //Deploy the arm to latch to the foundation
         ActuateArm();

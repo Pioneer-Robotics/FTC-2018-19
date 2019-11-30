@@ -131,6 +131,7 @@ public class Auto extends LinearOpMode {
             } else {
                 robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, moveSpeed, 180 + bMath.Lerp(-maxCorrectionAngle, maxCorrectionAngle, (jobs.tensorFlowaJob.getCurrentXFactor(skystone) + 1) / 2), startRotation);
                 if (robot.GetDistance(RobotWallTrack.groupID.Group180, DistanceUnit.CM) > wallStopDistance) {
+                    StopAndMaintainRotation(startRotation);
                     break;
                 }
             }
@@ -139,7 +140,8 @@ public class Auto extends LinearOpMode {
 
     //Freezes the robots movement but continues to seek its correct rotation
     public void StopAndMaintainRotation(double rotation) {
-        robot.MoveComplex(new Double2(0, 0), 1, robot.GetRotation() - rotation);
+        robot.SetPowerDouble4(0, 0, 0, 0, 0);
+//        robot.MoveComplex(new Double2(0, 0), 1, robot.GetRotation() - rotation);
     }
 
     public void ResetWallPID() {

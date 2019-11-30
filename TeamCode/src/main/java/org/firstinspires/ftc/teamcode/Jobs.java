@@ -179,7 +179,7 @@ class TensorFlowaJob extends aJob implements Runnable {
     public void Init(LinearOpMode op) {
         super.Init(op);
         //Start up the tensor flow stuffs
-        StartTensorFlow(op, "Skystone", 0.65);
+        StartTensorFlow(op, "Skystone", 0.75);
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Helpers.PID;
 import org.firstinspires.ftc.teamcode.Robot.Robot;
 import org.firstinspires.ftc.teamcode.Robot.RobotWallTrack;
 
@@ -17,6 +18,7 @@ public class TestingOpMode extends LinearOpMode {
 
 
     public ElapsedTime deltaTime = new ElapsedTime();
+    public PID walltrackingController = new PID();
 
     double timer = 0;
 
@@ -27,8 +29,10 @@ public class TestingOpMode extends LinearOpMode {
         waitForStart();
         double d = robot.GetRotation();
         while (opModeIsActive()) {
-            while (timer < 3 && opModeIsActive()) {
-                robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, 0.2, 20, 1, 45, -90, d);
+            walltrackingController.Start(4.95, 0.0, 0.1);
+            while (timer < 6 && opModeIsActive()) {
+                robot.wallTrack.MoveAlongWallComplexPID(RobotWallTrack.groupID.Group270, 0.2, 36, walltrackingController, 35, -90, d);
+//                robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group270, 0.2, 20, 1, 45, -90, d);
                 timer += deltaTime.seconds();
                 deltaTime.reset();
 
@@ -36,8 +40,10 @@ public class TestingOpMode extends LinearOpMode {
                 telemetry.update();
             }
             timer = 0;
-            while (timer < 3 && opModeIsActive()) {
-                robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, 0.2, 20, 1, 45, 90, d);
+            walltrackingController.Start(4.95, 0.0, 0.1);
+            while (timer < 6 && opModeIsActive()) {
+                robot.wallTrack.MoveAlongWallComplexPID(RobotWallTrack.groupID.Group270, 0.2, 36, walltrackingController, 35, -90, d);
+//                robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group270, 0.2, 20, 1, 45, 90, d);
                 timer += deltaTime.seconds();
                 deltaTime.reset();
 
