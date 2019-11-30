@@ -29,9 +29,19 @@ public class TestingOpMode2 extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         robot.init(hardwareMap, this);
 
+        robot.arm.length.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.arm.rotation.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         waitForStart();
 
-        robot.DriveByDistance(0.2, 25);
+        while (opModeIsActive()) {
+            //-2623
+            telemetry.addData("Spool Position : ", robot.arm.length.getCurrentPosition());
+            //-5679
+            telemetry.addData("Lift Position : ", robot.arm.rotation.getCurrentPosition());
+
+            telemetry.update();
+        }
 
 
 //        while (opModeIsActive()) {

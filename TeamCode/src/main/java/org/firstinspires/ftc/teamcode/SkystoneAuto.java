@@ -16,7 +16,18 @@ public class SkystoneAuto extends Auto {
 
         startRotation = robot.GetRotation();
 
+
         waitForStart();
+
+        //If we can't see the skystone, move foward a tad to get a better reading
+        if (jobs.tensorFlowaJob.getCurrentRecognition() == null) {
+            robot.DriveByDistance(speed_low, 2.5);
+
+        }
+
+        StopMovement();
+        sleep(500);
+
 
         //Line up with a skystone
         //A lockThreshold of .25 will get is within 19.5 degrees of the stone
@@ -25,6 +36,9 @@ public class SkystoneAuto extends Auto {
         //Drive forward while adjusting heading to line up with the skystone
         DriveAtSkystone(speed_med, 25, 35, startRotation);
 
+        jobs.tensorFlowaJob.Stop();
+
+        sleep(2500);
         //Deploy the arm and grab dat stone
         ActuateArm();
 
@@ -41,20 +55,26 @@ public class SkystoneAuto extends Auto {
 
         //Move towards the foundation by wall tracking along the wall
         ResetWallPID();
-        while (opModeIsActive() && robot.GetDistance(RobotWallTrack.groupID.Group180, DistanceUnit.CM) < 150) {
-
+        while (opModeIsActive() && robot.GetDistance(RobotWallTrack.groupID.Group180, DistanceUnit.CM) < 100) {
             if (side == FieldSide.SIDE_BLUE) {
-
                 robot.wallTrack.MoveAlongWallComplexPID(RobotWallTrack.groupID.Group270, speed_med, 36, walltrackingController, 35, 90, robot.GetRotation());
             } else {
                 robot.wallTrack.MoveAlongWallComplexPID(RobotWallTrack.groupID.Group90, speed_med, 36, walltrackingController, 35, -90, robot.GetRotation());
 
             }
+
+            if (!opModeIsActive()) {
+                break;
+            }
         }
 
+        StopMovement();
 
-        //Rotate to face the foundation
-        robot.RotatePID(0, speed_high, 10000);
+        if (!opModeIsActive()) {
+            //Rotate to face the foundation
+//            robot.RotatePID(0, speed_high, 10000);
+        }
+
 
         //Deploy the arm to latch to the foundation
         ActuateArm();

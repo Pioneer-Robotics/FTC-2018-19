@@ -55,19 +55,34 @@ public class Robot extends Thread {
     public class Arm {
 
         //Arm height motor
-        public TetrixMotor rotation;
+        public DcMotor rotation;
 
         //Controls arm length (spool)
-        public TetrixMotor length;
+        public DcMotor length;
 
         public Servo gripRotation;
         public Servo grip;
 
+        public double targetLength;
+        public double targetLengthSpeed;
+
+        ElapsedTime deltaTime = new ElapsedTime();
+
         public Arm(OpMode opMode, String armRotationMotor, String armSpoolMotor, String gripServo, String gripRotationServo) {
-            grip = opMode.hardwareMap.get(Servo.class, gripServo);
-            gripRotation = opMode.hardwareMap.get(Servo.class, gripRotationServo);
-            rotation = opMode.hardwareMap.get(TetrixMotor.class, armRotationMotor);
-            length = opMode.hardwareMap.get(TetrixMotor.class, armSpoolMotor);
+//            grip = opMode.hardwareMap.get(Servo.class, gripServo);
+//            gripRotation = opMode.hardwareMap.get(Servo.class, gripRotationServo);
+
+
+            rotation = opMode.hardwareMap.get(DcMotor.class, armRotationMotor);
+            length = opMode.hardwareMap.get(DcMotor.class, armSpoolMotor);
+
+            rotation.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            length.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//            rotation.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            length.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rotation.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            length.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         }
 
 
@@ -76,6 +91,38 @@ public class Robot extends Thread {
             Double x = (((d * c) - (H * Math.sqrt((((L * L) * (d * d)) + ((L * L) * (H * H))) - (c * c)))) / ((d * d) + (H * H))) + d;
 
             return Math.toDegrees(Math.atan((Math.sqrt((k * k) - (x * x)) - H) / (d - x)));
+        }
+
+
+        public void SetState(double targetAngle, double _targetLength, double angleSpeed, double lengthSpeed) {
+
+            targetLengthSpeed = lengthSpeed;
+            targetLength = _targetLength;
+            rotation.setTargetPosition((int) ((double) -5679 * targetAngle));
+            length.setTargetPosition((int) ((double) -2623 * targetLength));
+
+            rotation.setPower(angleSpeed);
+            length.setPower(lengthSpeed / 10);
+
+            rotation.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            length.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            deltaTime.reset();
+
+            while (Op.opModeIsActive() && rotation.isBusy()) {
+                Op.telemetry.addData("Length Power", length.getPower());
+                Op.telemetry.addData("Length DT", deltaTime.seconds());
+
+
+                Op.telemetry.update();
+
+                deltaTime.reset();
+            }
+
+            rotation.setPower(0);
+//            length.setPower(0);
+
+
         }
     }
 
@@ -237,6 +284,10 @@ public class Robot extends Thread {
 //            threadTimer += threadDeltaTime.seconds();
 //            Op.telemetry.update();
 
+            if (!Op.gamepad1.b) {
+                arm.length.setPower(bMath.MoveTowards(arm.length.getPower(), arm.targetLengthSpeed, arm.deltaTime.seconds() * 0.5));
+                arm.length.setTargetPosition((int) ((double) -2623 * arm.targetLength));
+            }
             threadDeltaTime.reset();
         }
 
@@ -341,7 +392,7 @@ public class Robot extends Thread {
         //P of 3 and 0 for other gains seems to work really well
 //        rotationPID_test.Start(3, 0, 0.1);
 
-        rotationPID_test.Start(3, 0.40, 0.2);
+        rotationPID_test.Start(4.02, 0.0032, 0.0876);
 //        rotationPID_test.Start(4.01, 0.003, 0.0876);
 
 //        rotationPID_test.Start(1, 0.075, 0.022);
@@ -392,7 +443,7 @@ public class Robot extends Thread {
 //                break;
 //            }
 
-            if (directionChanges > 2) {
+            if (directionChanges > 3) {
                 ticker += cycles * 2;
                 Op.telemetry.addData("Rotation ended", directionChanges);
                 Op.telemetry.update();
@@ -521,12 +572,15 @@ public class Robot extends Thread {
 
         Op.telemetry.addData("Driving by distance ", distance * ((RobotConfiguration.wheel_circumference * RobotConfiguration.wheel_ticksPerRotation)));
         Op.telemetry.update();
-        while (WheelsBusy()) {
+        while (Op.opModeIsActive() && WheelsBusy()) {
             Op.telemetry.addData("Wheel Busy", "");
             Op.telemetry.addData("Wheel Front Right Postion", driveManager.frontRight.getCurrentPosition());
             Op.telemetry.addData("Wheel Front Right Target", driveManager.frontRight.motor.getTargetPosition());
             Op.telemetry.update();
 
+            if (!Op.opModeIsActive()) {
+                break;
+            }
             //Wait until we are at our target distance
         }
 
