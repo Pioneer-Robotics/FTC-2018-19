@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Helpers.bDataManager;
+import org.firstinspires.ftc.teamcode.Helpers.bMath;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -27,26 +28,27 @@ public class RobotArm extends Thread {
     public Servo grip;
 
     public double targetLength;
+    public double currentLengthSpeed;
     public double targetLengthSpeed;
-
-    public HashMap<double, double> calibrationData = new HashMap<double, double>();
 
     ElapsedTime deltaTime = new ElapsedTime();
 
     public RobotArm(LinearOpMode opMode, String armRotationMotor, String armSpoolMotor, String gripServo, String gripRotationServo) {
-//            grip = opMode.hardwareMap.get(Servo.class, gripServo);
-//            gripRotation = opMode.hardwareMap.get(Servo.class, gripRotationServo);
+        grip = opMode.hardwareMap.get(Servo.class, gripServo);
+        gripRotation = opMode.hardwareMap.get(Servo.class, gripRotationServo);
         Op = opMode;
         rotation = opMode.hardwareMap.get(DcMotor.class, armRotationMotor);
         length = opMode.hardwareMap.get(DcMotor.class, armSpoolMotor);
 
         rotation.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         length.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rotation.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        length.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        rotation.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        length.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        rotation.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        length.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        length.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        start();
     }
 
 
@@ -58,21 +60,19 @@ public class RobotArm extends Thread {
     }
 
 
-    public void SetState(double targetAngle, double _targetLength, double angleSpeed, double lengthSpeed) {
+    public void SetState(double targetAngle, double _targetLength, double angleSpeed, double _lengthSpeed) {
 
-        targetLengthSpeed = lengthSpeed;
+        targetLengthSpeed = _lengthSpeed;
         targetLength = _targetLength;
+
         rotation.setTargetPosition((int) ((double) -5679 * targetAngle));
-//        length.setTargetPosition((int) ((double) -2623 * targetLength));
+        length.setTargetPosition((int) ((double) -2623 * targetLength));
 
         rotation.setPower(angleSpeed);
-        length.setPower(lengthSpeed / 10);
-
         rotation.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        length.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        length.setDirection(DcMotorSimple.Direction.REVERSE);
-        deltaTime.reset();
+        currentLengthSpeed = 0;
+
 
         while (Op.opModeIsActive() && rotation.isBusy()) {
             Op.telemetry.addData("Length Power", length.getPower());
@@ -80,48 +80,16 @@ public class RobotArm extends Thread {
 
 
             Op.telemetry.update();
-
-            deltaTime.reset();
         }
 
         rotation.setPower(0);
-//            length.setPower(0);
     }
 
-    public void PreformInitalCalibration(bDataManager dataManager) {
+    public void run() {
+        currentLengthSpeed = bMath.MoveTowards(currentLengthSpeed, targetLengthSpeed, deltaTime.seconds() * 0.5);
 
-
-        //Face the arm all the way up and then test the speeds required to maintain a constant length
-        SetState(1, 0.85, 1, 0);
-
-        double encoderDelta = 1000;
-
-        double lastPower = 0;
-
-        int initialEncoderReading = 0;
-
-        ElapsedTime calibrationDeltaTime = new ElapsedTime();
-
-        calibrationDeltaTime.reset();
-
-        for (int i = 0; i < 1000; i++) {
-
-            //If the arm is moving then adjust then ramp up the power until it is not
-            if (encoderDelta > 1) {
-                lastPower = (double) i / (double) 1000;
-                length.setPower(lastPower);
-
-            }
-
-
-            encoderDelta = (initialEncoderReading - length.getCurrentPosition()) / calibrationDeltaTime.seconds();
-
-            initialEncoderReading = length.getCurrentPosition();
-
-            calibrationDeltaTime.reset();
-        }
-
-        dataManager.writeData("arm calibration data", );
-
+        length.setPower(currentLengthSpeed);
+        length.setTargetPosition((int) ((double) -2623 * targetLength));
     }
+
 }

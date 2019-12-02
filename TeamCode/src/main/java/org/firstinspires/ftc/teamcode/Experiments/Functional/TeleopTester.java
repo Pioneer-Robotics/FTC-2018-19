@@ -52,11 +52,11 @@ public class TeleopTester extends LinearOpMode {
 //                robot.gripServo.setPosition(1);
             }
             if (gamepad1.x) {
-                robot.arm.SetState(0.5, 1, 0.5, 0.5);
+                robot.arm.SetState(0.5, 1, 0.5, 1);
             }
 
             if (gamepad1.a) {
-                robot.arm.SetState(0, 0, 0.5, 0.5);
+                robot.arm.SetState(0, 0, 0.5, 1);
             }
 //            telemetry.addData("encoder value", robot.armWintch.getCurrentPosition());
 //            telemetry.update();

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import android.app.backup.RestoreObserver;
+import android.media.MediaPlayer;
 import android.renderscript.Double2;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -40,6 +41,7 @@ public class Auto extends LinearOpMode {
     }
 
     public void StartRobot() {
+
         print("Status: Initiating robot.");
 
         //init the bot hardware! This sets up the static references for the bot as well so make sure to run this before any other code
