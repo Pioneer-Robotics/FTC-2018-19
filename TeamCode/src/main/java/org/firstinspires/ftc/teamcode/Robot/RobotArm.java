@@ -1,11 +1,15 @@
 package org.firstinspires.ftc.teamcode.Robot;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.teamcode.Helpers.bDataManager;
+
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import java.util.HashMap;
 
 import static java.lang.Thread.sleep;
 
@@ -24,6 +28,8 @@ public class RobotArm extends Thread {
 
     public double targetLength;
     public double targetLengthSpeed;
+
+    public HashMap<double, double> calibrationData = new HashMap<double, double>();
 
     ElapsedTime deltaTime = new ElapsedTime();
 
@@ -82,7 +88,8 @@ public class RobotArm extends Thread {
 //            length.setPower(0);
     }
 
-    public void PreformInitalCalibration() {
+    public void PreformInitalCalibration(bDataManager dataManager) {
+
 
         //Face the arm all the way up and then test the speeds required to maintain a constant length
         SetState(1, 0.85, 1, 0);
@@ -113,6 +120,8 @@ public class RobotArm extends Thread {
 
             calibrationDeltaTime.reset();
         }
+
+        dataManager.writeData("arm calibration data", );
 
     }
 }

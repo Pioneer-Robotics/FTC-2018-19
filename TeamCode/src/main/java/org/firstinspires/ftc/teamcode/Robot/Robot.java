@@ -1,31 +1,23 @@
 package org.firstinspires.ftc.teamcode.Robot;
 
-import android.content.Context;
 import android.renderscript.Double2;
 import android.renderscript.Double4;
 
-import com.qualcomm.hardware.motors.TetrixMotor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.SensorREVColorDistance;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.Hardware.bMotor;
 import org.firstinspires.ftc.teamcode.Helpers.PID;
-import org.firstinspires.ftc.teamcode.Helpers.bDataManger;
+import org.firstinspires.ftc.teamcode.Helpers.bDataManager;
 import org.firstinspires.ftc.teamcode.Helpers.bMath;
 import org.firstinspires.ftc.teamcode.Helpers.bTelemetry;
 import org.firstinspires.ftc.teamcode.Hardware.bIMU;
-import org.firstinspires.ftc.teamcode.R;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.crypto.spec.OAEPParameterSpec;
 
 //TODO: clean up the canmove system
 public class Robot extends Thread {
@@ -50,7 +42,7 @@ public class Robot extends Thread {
 
     public ElapsedTime threadDeltaTime = new ElapsedTime();
 
-    public bDataManger dataManger = new bDataManger();
+    public bDataManager dataManger = new bDataManager();
 
 
     public LinearOpMode Op;

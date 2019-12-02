@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Helpers.PID;
-import org.firstinspires.ftc.teamcode.Helpers.bDataManger;
+import org.firstinspires.ftc.teamcode.Helpers.bDataManager;
 import org.firstinspires.ftc.teamcode.Robot.Robot;
 import org.firstinspires.ftc.teamcode.Robot.RobotWallTrack;
 
@@ -28,7 +28,7 @@ WalltrackPIDTuning extends LinearOpMode {
 
     double timer;
 
-    public bDataManger dataManger = new bDataManger();
+    public bDataManager dataManger = new bDataManager();
 
 
     TuningMode mode = TuningMode.P;

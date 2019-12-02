@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Helpers.bDataManger;
+import org.firstinspires.ftc.teamcode.Helpers.bDataManager;
 import org.firstinspires.ftc.teamcode.Robot.Robot;
 
 @Autonomous(name = "PIDTuning", group = "Sensor")
@@ -20,7 +20,7 @@ RotationPIDTuning extends LinearOpMode {
 
     ElapsedTime deltaTime = new ElapsedTime();
 
-    public bDataManger dataManger = new bDataManger();
+    public bDataManager dataManger = new bDataManager();
 
 
     TuningMode mode = TuningMode.P;
