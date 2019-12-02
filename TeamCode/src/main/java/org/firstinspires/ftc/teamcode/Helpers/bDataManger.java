@@ -25,4 +25,14 @@ public class bDataManger {
     public double readData(String key, double defaultValue) {
         return (double) preferencesHelper.readFloat(id + key, (float) defaultValue);
     }
+
+    //Writes data via the sharedPrefs manager, the key is its name and value is its value!
+    public void writeData(String key, Object value) {
+        preferencesHelper.writePrefIfDifferent(id + key, value);
+    }
+
+
+    public Object readData(String key) {
+        return preferencesHelper.readPref(id + key);
+    }
 }

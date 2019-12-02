@@ -33,7 +33,7 @@ public class Robot extends Thread {
     //Static instance. Only have one robot at a time and access it from here (THERE CAN BE ONLY ONE)
     public static Robot instance;
 
-    public Arm arm;
+    public RobotArm arm;
 
     //Our wee little wall tracker
     public RobotWallTrack wallTrack = new RobotWallTrack();
@@ -51,80 +51,6 @@ public class Robot extends Thread {
     public ElapsedTime threadDeltaTime = new ElapsedTime();
 
     public bDataManger dataManger = new bDataManger();
-
-    public class Arm {
-
-        //Arm height motor
-        public DcMotor rotation;
-
-        //Controls arm length (spool)
-        public DcMotor length;
-
-        public Servo gripRotation;
-        public Servo grip;
-
-        public double targetLength;
-        public double targetLengthSpeed;
-
-        ElapsedTime deltaTime = new ElapsedTime();
-
-        public Arm(OpMode opMode, String armRotationMotor, String armSpoolMotor, String gripServo, String gripRotationServo) {
-//            grip = opMode.hardwareMap.get(Servo.class, gripServo);
-//            gripRotation = opMode.hardwareMap.get(Servo.class, gripRotationServo);
-
-
-            rotation = opMode.hardwareMap.get(DcMotor.class, armRotationMotor);
-            length = opMode.hardwareMap.get(DcMotor.class, armSpoolMotor);
-
-            rotation.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            length.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//            rotation.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//            length.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rotation.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            length.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        }
-
-
-        public double ThetaDegrees(Double k, Double H, double L, double d) {
-            Double c = ((k * k) - (H * H) - (L * L) - (d * d)) / 2;
-            Double x = (((d * c) - (H * Math.sqrt((((L * L) * (d * d)) + ((L * L) * (H * H))) - (c * c)))) / ((d * d) + (H * H))) + d;
-
-            return Math.toDegrees(Math.atan((Math.sqrt((k * k) - (x * x)) - H) / (d - x)));
-        }
-
-
-        public void SetState(double targetAngle, double _targetLength, double angleSpeed, double lengthSpeed) {
-
-            targetLengthSpeed = lengthSpeed;
-            targetLength = _targetLength;
-            rotation.setTargetPosition((int) ((double) -5679 * targetAngle));
-            length.setTargetPosition((int) ((double) -2623 * targetLength));
-
-            rotation.setPower(angleSpeed);
-            length.setPower(lengthSpeed / 10);
-
-            rotation.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            length.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            deltaTime.reset();
-
-            while (Op.opModeIsActive() && rotation.isBusy()) {
-                Op.telemetry.addData("Length Power", length.getPower());
-                Op.telemetry.addData("Length DT", deltaTime.seconds());
-
-
-                Op.telemetry.update();
-
-                deltaTime.reset();
-            }
-
-            rotation.setPower(0);
-//            length.setPower(0);
-
-
-        }
-    }
 
 
     public LinearOpMode Op;
@@ -157,7 +83,7 @@ public class Robot extends Thread {
         bTelemetry.Print("Robot wheels assigned.");
         bTelemetry.Print("Robot motors configured in the DriveManager.");
 
-        arm = new Arm(opmode, RobotConfiguration.arm_rotationMotor, RobotConfiguration.arm_lengthMotor, RobotConfiguration.arm_gripServo, RobotConfiguration.arm_gripRotationServo);
+        arm = new RobotArm(opmode, RobotConfiguration.arm_rotationMotor, RobotConfiguration.arm_lengthMotor, RobotConfiguration.arm_gripServo, RobotConfiguration.arm_gripRotationServo);
 
 //        gripServo = hardwareMap.get(Servo.class, "Grip");
 //        armWintch = hardwareMap.get(DcMotor.class, "Arm");
