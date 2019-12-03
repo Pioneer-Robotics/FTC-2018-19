@@ -60,7 +60,7 @@ public class RobotArm extends Thread {
     }
 
 
-    public void SetState(double targetAngle, double _targetLength, double angleSpeed, double _lengthSpeed) {
+    public void SetArmState(double targetAngle, double _targetLength, double angleSpeed, double _lengthSpeed) {
 
         targetLengthSpeed = _lengthSpeed;
         targetLength = _targetLength;
@@ -83,6 +83,11 @@ public class RobotArm extends Thread {
         }
 
         rotation.setPower(0);
+    }
+
+    public void SetGripState(double strength, double rotation) {
+        grip.setPosition(strength);
+        gripRotation.setPosition(rotation);
     }
 
     public void run() {

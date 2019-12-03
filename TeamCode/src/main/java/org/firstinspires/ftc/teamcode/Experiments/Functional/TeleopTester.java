@@ -1,16 +1,11 @@
 package org.firstinspires.ftc.teamcode.Experiments.Functional;
 
 
-import android.renderscript.Double2;
-
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Robot.Robot;
-
-import java.nio.ReadOnlyBufferException;
 
 @TeleOp(name = "Teleop", group = "Sensor")
 public class TeleopTester extends LinearOpMode {
@@ -52,11 +47,11 @@ public class TeleopTester extends LinearOpMode {
 //                robot.gripServo.setPosition(1);
             }
             if (gamepad1.x) {
-                robot.arm.SetState(0.5, 1, 0.5, 1);
+                robot.arm.SetArmState(0.5, 1, 0.5, 1);
             }
 
             if (gamepad1.a) {
-                robot.arm.SetState(0, 0, 0.5, 1);
+                robot.arm.SetArmState(0, 0, 0.5, 1);
             }
 //            telemetry.addData("encoder value", robot.armWintch.getCurrentPosition());
 //            telemetry.update();

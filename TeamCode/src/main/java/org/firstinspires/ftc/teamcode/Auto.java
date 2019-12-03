@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.app.backup.RestoreObserver;
-import android.media.MediaPlayer;
 import android.renderscript.Double2;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -155,7 +153,13 @@ public class Auto extends LinearOpMode {
         walltrackingController.Start(4.95, 0.0, 0.1);
     }
 
+
     public void LostRecognition() {
+
+    }
+
+    public void InitArm() {
+        robot.arm.SetArmState(0.2, 0, 1, 1);
 
     }
 
