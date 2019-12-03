@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.ThreadPool;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Helpers.bMath;
@@ -14,6 +15,7 @@ import org.firstinspires.ftc.teamcode.Robot.Robot;
 import org.firstinspires.ftc.teamcode.Robot.RobotWallTrack;
 
 import java.util.concurrent.Delayed;
+import java.util.concurrent.ThreadPoolExecutor;
 
 //As of 12.3.19 0708 this serves to test the timing of input methods
 //As of 9.15.19.0706 this serves only to test sensor input
@@ -68,6 +70,8 @@ public class SensorTesting extends LinearOpMode {
             telemetry.addData("Time (MS) ", deltaTime.milliseconds());
             deltaTime.reset();
 
+            telemetry.addData("Active threads", Thread.activeCount());
+            ;
 
 
             telemetry.update();

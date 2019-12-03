@@ -65,39 +65,47 @@ public class Robot extends Thread {
 
     public void init(HardwareMap hardwareMap, LinearOpMode opmode) {
 
-        //Start the printer
+        //Start the printer service
         bTelemetry.Start(opmode);
 
-        //Set up the instance (safety checks might be a good idea at some point)
+        //Fail safe to make sure there is only one Robot.java running.
+        if (instance != null) {
+            bTelemetry.Print("FATAL ERROR: THERE CAN ONLY BE ONE INSTANCE OF ROBOT.JAVA");
+            return;
+        }
+
+
+        //Set up the instance
         instance = this;
         bTelemetry.Print("Robot instance assigned.");
 
         //Set the opmode
         Op = opmode;
 
-        //Find the motors
+        //Sets up the drive train hardware
         driveManager = new RobotDriveManager(opmode, RobotConfiguration.wheel_frontLeft, RobotConfiguration.wheel_frontRight, RobotConfiguration.wheel_backLeft, RobotConfiguration.wheel_backRight);
 
         bTelemetry.Print("Robot wheels assigned.");
         bTelemetry.Print("Robot motors configured in the DriveManager.");
 
-        arm = new RobotArm(opmode, RobotConfiguration.arm_rotationMotor, RobotConfiguration.arm_lengthMotor, RobotConfiguration.arm_gripServo, RobotConfiguration.arm_gripRotationServo);
+        //Define the arm values for motors and servos (also includes ranges)
+        arm = new RobotArm(opmode, RobotConfiguration.arm_rotationMotor, RobotConfiguration.arm_lengthMotor, RobotConfiguration.arm_gripServo, RobotConfiguration.arm_gripRotationServo, RobotConfiguration.arm_gripServo_range, RobotConfiguration.arm_gripRotationServo_range);
 
-//        gripServo = hardwareMap.get(Servo.class, "Grip");
-//        armWintch = hardwareMap.get(DcMotor.class, "Arm");
+        //Start the thread that is responsible for fighting gravity and keeping arm position level.
+        arm.start();
 
-        //Left wheels are reversed so power 1,1,1,1 moves us forward
+        //Reverse the left side wheels to ensure forward drive works when all power is set to 1
         driveManager.frontLeft.setDirection(DcMotor.Direction.REVERSE);
         driveManager.backLeft.setDirection(DcMotor.Direction.REVERSE);
 
 
-        //Init the motors for use. NTS: If you don't do this the robot does not like to move with math
+        //Start encoders for the drive train
         SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         SetDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
         bTelemetry.Print("Wheel encoders initialized.");
 
 
-        //Set up the IMU(s)
+        //Set up the bIMU, this class is responsible for taking the values of both of our IMU's and averaging them
         imu.Start(opmode, RobotConfiguration.imu_0, RobotConfiguration.imu_1);
         bTelemetry.Print("IMU's initialized.");
 
@@ -111,11 +119,13 @@ public class Robot extends Thread {
 
         bTelemetry.Print("Robot start up successful. Preparing to read wheel calibration data...");
 
+        //Starts the dataManager to read calibration data
         dataManger.Start();
 
         bTelemetry.Print("bDataManager started.");
 
 
+        //Assign and display calibration data for debugging purposes
         driveManager.frontLeft.powerCoefficent = dataManger.readData("wheel_front_left_powerCo", -1);
         bTelemetry.Print("      Front Left  : " + driveManager.frontLeft.powerCoefficent);
         driveManager.frontRight.powerCoefficent = dataManger.readData("wheel_front_right_powerCo", -1);
@@ -125,9 +135,9 @@ public class Robot extends Thread {
         driveManager.backRight.powerCoefficent = dataManger.readData("wheel_back_right_powerCo", -1);
         bTelemetry.Print("      Back Right  : " + driveManager.backRight.powerCoefficent);
 
+
+        //Adds the motors and distance sensors to the expInput manager to allow for faster reads
         bTelemetry.Print("Initializing Experimental Input...");
-
-
         for (bMotor motor : driveManager.driveMotors) {
             experimentalInput.AddMotor(motor);
         }

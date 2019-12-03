@@ -11,8 +11,7 @@ import org.firstinspires.ftc.teamcode.Robot.RobotWallTrack;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-//WIP WIP WIP, this class will store sensor and encoder data for speedy reads
-//Separate threads for each sensor type to avoid hang ups
+//This class will read all sensor and motor data and then cache it for low latency reads. Each group of input has its own thread(Untested WIP)
 public class RobotInputThread extends Thread {
 
     public DistanceSensorInputThread distanceSensorInputThread = new DistanceSensorInputThread();
@@ -63,8 +62,6 @@ class DistanceSensorInputThread extends Thread {
             }
         }
     }
-
-
 
 
     public void Stop() {

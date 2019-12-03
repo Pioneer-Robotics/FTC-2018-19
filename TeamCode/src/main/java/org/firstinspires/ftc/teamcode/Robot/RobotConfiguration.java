@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Robot;
 
+import android.renderscript.Double2;
+
 //This class has all of the names and data for all of the things in one place for easy of access / sanity!
 public class RobotConfiguration {
 
@@ -35,7 +37,9 @@ public class RobotConfiguration {
     public static final String arm_lengthMotor = "Arm Spool";
     public static final String arm_rotationMotor = "Arm Rotation";
     public static final String arm_gripServo = "Grip";
+    public static final Double2 arm_gripServo_range = new Double2(-1, 1);
     public static final String arm_gripRotationServo = "Grip Rotation";
+    public static final Double2 arm_gripRotationServo_range = new Double2(-1, 1);
 
 
     //Distance sensor 0 name

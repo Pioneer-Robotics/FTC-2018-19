@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Robot;
 
+import android.renderscript.Double2;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -33,12 +35,18 @@ public class RobotArm extends Thread {
 
     ElapsedTime deltaTime = new ElapsedTime();
 
-    public RobotArm(LinearOpMode opMode, String armRotationMotor, String armSpoolMotor, String gripServo, String gripRotationServo) {
+    //The scale range Double2's are interpreted as X = min and Y = max.
+    public RobotArm(LinearOpMode opMode, String armRotationMotor, String armSpoolMotor, String gripServo, String gripRotationServo, Double2 gripRange, Double2 gripRotationRange) {
+        Op = opMode;
+
         grip = opMode.hardwareMap.get(Servo.class, gripServo);
         gripRotation = opMode.hardwareMap.get(Servo.class, gripRotationServo);
-        Op = opMode;
         rotation = opMode.hardwareMap.get(DcMotor.class, armRotationMotor);
         length = opMode.hardwareMap.get(DcMotor.class, armSpoolMotor);
+
+        grip.scaleRange(gripRange.x, gripRange.y);
+        gripRotation.scaleRange(gripRotationRange.x, gripRotationRange.y);
+
 
         rotation.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         length.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -47,11 +55,10 @@ public class RobotArm extends Thread {
         length.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         length.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        start();
     }
 
 
+    //Returns the angle that the arm is at. Please verify this math typing.
     public double ThetaDegrees(Double k, Double H, double L, double d) {
         Double c = ((k * k) - (H * H) - (L * L) - (d * d)) / 2;
         Double x = (((d * c) - (H * Math.sqrt((((L * L) * (d * d)) + ((L * L) * (H * H))) - (c * c)))) / ((d * d) + (H * H))) + d;
@@ -85,9 +92,9 @@ public class RobotArm extends Thread {
         rotation.setPower(0);
     }
 
-    public void SetGripState(double strength, double rotation) {
-        grip.setPosition(strength);
-        gripRotation.setPosition(rotation);
+    public void SetGripState(double gripPosition, double rotationPosition) {
+        grip.setPosition(gripPosition);
+        gripRotation.setPosition(rotationPosition);
     }
 
     public void run() {
@@ -95,6 +102,8 @@ public class RobotArm extends Thread {
 
         length.setPower(currentLengthSpeed);
         length.setTargetPosition((int) ((double) -2623 * targetLength));
+
+        deltaTime.reset();
     }
 
 }
