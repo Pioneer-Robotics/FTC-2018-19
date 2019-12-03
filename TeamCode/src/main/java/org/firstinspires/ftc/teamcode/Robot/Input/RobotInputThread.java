@@ -35,6 +35,15 @@ public class RobotInputThread extends Thread {
     public void AddSensor(DistanceSensor sensor) {
         distanceSensorInputThread.sensorDistancePairs.put(sensor, (double) 0);
     }
+
+    public int getMotorPosition(bMotor motor) {
+        return motorEncoderInputThread.bMotorPositionPairs.get(motor);
+    }
+
+    //Returns distance in CM
+    public double getDistance(DistanceSensor distanceSensor) {
+        return distanceSensorInputThread.sensorDistancePairs.get(distanceSensor);
+    }
 }
 
 
@@ -57,10 +66,6 @@ class DistanceSensorInputThread extends Thread {
 
 
 
-    //Returns distance in CM
-    public double getDistance(DistanceSensor distanceSensor) {
-        return sensorDistancePairs.get(distanceSensor);
-    }
 
     public void Stop() {
         threadRunning.set(false);
@@ -84,10 +89,6 @@ class MotorEncoderInputThread extends Thread {
         }
     }
 
-    //Returns distance in CM
-    public double getDistance(Rev2mDistanceSensor distanceSensor) {
-        return bMotorPositionPairs.get(distanceSensor);
-    }
 
     public void Stop() {
         threadRunning.set(false);

@@ -45,6 +45,9 @@ public class RobotWallTrack {
         //The last real distance used, this is used if the sensors are not giving valid readings
         double lastDistance;
 
+        //Once we have more than 3 failed readings (returning the last known value) return the true value (value.Infinity)
+        int failedReadings;
+
         //The angle at which the sensors are located on the robot
         public double sensorAngle;
 
@@ -57,7 +60,6 @@ public class RobotWallTrack {
 
         //<editor-fold desc="Init setups">
         //dL = the left most sensor
-        //dC = the center sensor
         //dR = the right most sensor
         public SensorGroup(DistanceSensor dL, DistanceSensor dR, Double dist, double angle) {
             distanceSensors[0] = dL;
@@ -78,9 +80,13 @@ public class RobotWallTrack {
         //</editor-fold>
 
         //<editor-fold desc="External return groups">
+        //Returns the last valid input with a buffer of 3 inputs, this is because of the unreliable target surface (transparent plastic)
         public double getDistance(SensorGroup.TripletType type, DistanceUnit unit) {
-            if (isValid(type)) {
+            if (isValid(type) || failedReadings >= 3) {
                 lastDistance = sensor(type).getDistance(unit);
+                failedReadings = 0;
+            } else {
+                failedReadings++;
             }
             return lastDistance;
         }
@@ -94,7 +100,7 @@ public class RobotWallTrack {
             return (type == SensorGroup.TripletType.Right ? distanceSensors[1] : distanceSensors[0]);
         }
 
-        //Returns true if our input is valid, meaning that we hit something and have accurate data
+        //Returns true if our input is valid, meaning that we hit something and have accurate data.
         public boolean isValid(SensorGroup.TripletType type) {
             return sensor(type).getDistance(DistanceUnit.CM) < 500;
         }
