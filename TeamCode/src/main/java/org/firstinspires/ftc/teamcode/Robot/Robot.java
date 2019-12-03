@@ -5,17 +5,21 @@ import android.renderscript.Double4;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorREV2mDistance;
 import org.firstinspires.ftc.robotcontroller.external.samples.SensorREVColorDistance;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Hardware.bMotor;
 import org.firstinspires.ftc.teamcode.Helpers.PID;
 import org.firstinspires.ftc.teamcode.Helpers.bDataManager;
 import org.firstinspires.ftc.teamcode.Helpers.bMath;
 import org.firstinspires.ftc.teamcode.Helpers.bTelemetry;
 import org.firstinspires.ftc.teamcode.Hardware.bIMU;
+import org.firstinspires.ftc.teamcode.Robot.Input.RobotInputThread;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -25,23 +29,29 @@ public class Robot extends Thread {
     //Static instance. Only have one robot at a time and access it from here (THERE CAN BE ONLY ONE)
     public static Robot instance;
 
+    //The linear slide arm, controls length and angle
     public RobotArm arm;
 
-    //Our wee little wall tracker
+    //WIP WIP WIP, should let us have really responsive sensor data (right now IMU and distance)
+    public RobotInputThread experimentalInput = new RobotInputThread();
+
+    //The wall tracker, lets you track along a wall using a sensor group and other data
     public RobotWallTrack wallTrack = new RobotWallTrack();
 
-    //The current IMU rotation, threaded
+    //The current IMU rotation, assigned by a thread
     double rotation;
 
+    //The IMU reader, takes the average of 2 IMU's to give a fancy (and likely less preferment) reading!
     public bIMU imu = new bIMU();
 
-    //Hardware!
+    //The wheel drive manager, makes sure all wheels are moving at the same speed at all times
     public RobotDriveManager driveManager;
 
-    double threadTimer;
-
+    //Delta time, used in the thread for timing
     public ElapsedTime threadDeltaTime = new ElapsedTime();
 
+
+    //The data manager serves to store data locally on the phone, used in calibration and PID tuning.
     public bDataManager dataManger = new bDataManager();
 
 
@@ -68,10 +78,6 @@ public class Robot extends Thread {
         //Find the motors
         driveManager = new RobotDriveManager(opmode, RobotConfiguration.wheel_frontLeft, RobotConfiguration.wheel_frontRight, RobotConfiguration.wheel_backLeft, RobotConfiguration.wheel_backRight);
 
-//        frontLeft = hardwareMap.get(DcMotor.class, RobotConfiguration.wheel_frontLeft);
-//        frontRight = hardwareMap.get(DcMotor.class, RobotConfiguration.wheel_frontRight);
-//        backLeft = hardwareMap.get(DcMotor.class, RobotConfiguration.wheel_backLeft);
-//        backRight = hardwareMap.get(DcMotor.class, RobotConfiguration.wheel_backRight);
         bTelemetry.Print("Robot wheels assigned.");
         bTelemetry.Print("Robot motors configured in the DriveManager.");
 
@@ -118,6 +124,18 @@ public class Robot extends Thread {
         bTelemetry.Print("      Back Left   : " + driveManager.backLeft.powerCoefficent);
         driveManager.backRight.powerCoefficent = dataManger.readData("wheel_back_right_powerCo", -1);
         bTelemetry.Print("      Back Right  : " + driveManager.backRight.powerCoefficent);
+
+        bTelemetry.Print("Initializing Experimental Input...");
+
+
+        for (bMotor motor : driveManager.driveMotors) {
+            experimentalInput.AddMotor(motor);
+        }
+
+        for (DistanceSensor sensor : wallTrack.sensors) {
+            experimentalInput.AddSensor(sensor);
+        }
+
 
         bTelemetry.Print("Wheel boot successful. Ready to operate!");
 
@@ -190,7 +208,7 @@ public class Robot extends Thread {
 
     }
 
-    //Threaded run method, right now this is just for IMU stuff, at some point we might put some avoidance stuff in here (background wall tracking?) (average out 2IMU's for extra strain of the thread?)
+    //Threaded run method, right now this is just for IMU stuff, at some point we might put some avoidance stuff in here (background wall tracking?)
     public void run() {
         threadRunning.set(true);
 
@@ -202,11 +220,12 @@ public class Robot extends Thread {
 //            threadTimer += threadDeltaTime.seconds();
 //            Op.telemetry.update();
 
-            if (!Op.gamepad1.b) {
-                arm.length.setPower(bMath.MoveTowards(arm.length.getPower(), arm.targetLengthSpeed, arm.deltaTime.seconds() * 0.5));
-                arm.length.setTargetPosition((int) ((double) -2623 * arm.targetLength));
+            //Make sure that the robot stops once we request a stop
+            if (Op.isStopRequested()) {
+                SetPowerDouble4(0, 0, 0, 0, 0);
             }
-            threadDeltaTime.reset();
+
+//            threadDeltaTime.reset();
         }
 
 

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Robot;
 
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -9,6 +10,7 @@ import org.firstinspires.ftc.teamcode.Helpers.PID;
 import org.firstinspires.ftc.teamcode.Helpers.bMath;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 
 //Called by the Robot.java to track along a flat surface. This surface is identified by inputting an angle value which correlates to the sensor group that will be used for tracking (look at the tape on the robot for anglez)
@@ -184,6 +186,8 @@ public class RobotWallTrack {
         Group0
     }
 
+    public HashSet<Rev2mDistanceSensor> sensors = new HashSet<Rev2mDistanceSensor>();
+
 
     public void Start(OpMode op) {
 
@@ -192,6 +196,15 @@ public class RobotWallTrack {
         sensorIDGroupPairs.put(groupID.Group90, new SensorGroup(op, RobotConfiguration.distanceSensor_90A, RobotConfiguration.distanceSensor_90B, RobotConfiguration.distance_90AB, 90));
         sensorIDGroupPairs.put(groupID.Group180, new SensorGroup(op, RobotConfiguration.distanceSensor_180A, RobotConfiguration.distanceSensor_180B, RobotConfiguration.distance_180AB, 180));
         sensorIDGroupPairs.put(groupID.Group270, new SensorGroup(op, RobotConfiguration.distanceSensor_270A, RobotConfiguration.distanceSensor_270B, RobotConfiguration.distance_270AB, -90));
+
+
+        //Add all of the sensors to the map for easy access later
+        sensors.add(op.hardwareMap.get(Rev2mDistanceSensor.class, RobotConfiguration.distanceSensor_90A));
+        sensors.add(op.hardwareMap.get(Rev2mDistanceSensor.class, RobotConfiguration.distanceSensor_90B));
+        sensors.add(op.hardwareMap.get(Rev2mDistanceSensor.class, RobotConfiguration.distanceSensor_180A));
+        sensors.add(op.hardwareMap.get(Rev2mDistanceSensor.class, RobotConfiguration.distanceSensor_180B));
+        sensors.add(op.hardwareMap.get(Rev2mDistanceSensor.class, RobotConfiguration.distanceSensor_270A));
+        sensors.add(op.hardwareMap.get(Rev2mDistanceSensor.class, RobotConfiguration.distanceSensor_270B));
 
         //Set up the front sensor here so we can access it through groupID's
 //        sensorIDGroupPairs.put(groupID.Group0, new SensorGroup(op, RobotConfiguration.distanceSensor_0A, RobotConfiguration.distanceSensor_0A, 1.0, 0));

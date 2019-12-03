@@ -20,7 +20,7 @@ public class SkystoneAuto extends Auto {
         waitForStart();
 
         //If we can't see the skystone, move foward a tad to get a better reading
-        while (true) {
+        while (opModeIsActive()) {
             if (jobs.tensorFlowaJob.getCurrentRecognition() == null) {
                 robot.DriveByDistance(speed_low, 2.5);
                 sleep(500);
@@ -72,10 +72,8 @@ public class SkystoneAuto extends Auto {
 
         StopMovement();
 
-        if (!opModeIsActive()) {
             //Rotate to face the foundation
 //            robot.RotatePID(0, speed_high, 10000);
-        }
 
 
         //Deploy the arm to latch to the foundation
