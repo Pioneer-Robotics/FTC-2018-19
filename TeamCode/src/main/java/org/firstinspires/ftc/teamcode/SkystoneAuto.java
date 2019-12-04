@@ -21,7 +21,7 @@ public class SkystoneAuto extends Auto {
 
         robot.arm.SetArmState(0.1, 0, 1, 1);
 
-        //If we can't see the skystone, move foward a tad to get a better reading
+        //If we can't see the skystone, move forward a tad to get a better reading
         while (opModeIsActive()) {
             if (jobs.tensorFlowaJob.getCurrentRecognition() == null) {
                 robot.DriveByDistance(speed_low, 2.5);
@@ -46,18 +46,21 @@ public class SkystoneAuto extends Auto {
         //Extend the arm 35% of the way
         robot.arm.SetArmState(0.1, 0.35, 1, 1);
         sleep(100);
+
         //Deploy the claw and open it all the way
         robot.arm.SetGripState(1, 1);
         sleep(250);
+
         //Drop the arm, hopefully, on a sky stone
         robot.arm.SetArmState(0, 0.35, 1, 1);
         sleep(250);
+
         //Close the gripper!
         robot.arm.SetGripState(1, 0.45);
         sleep(250);
+
         //Raise the arm again to avoid dragging the stone on the ground
         robot.arm.SetArmState(0.1, 0.35, 1, 1);
-
 
         //Roll back a wee bit
         robot.DriveByDistance(speed_med, -5);

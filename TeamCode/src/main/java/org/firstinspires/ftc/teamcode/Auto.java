@@ -57,16 +57,46 @@ public class Auto extends LinearOpMode {
         print("Status: Determining current play side");
 
         //If we are closest to the 90 degree side we know were playing on the BLUE side
-        if (robot.GetDistance(RobotWallTrack.groupID.Group90, DistanceUnit.CM) < robot.GetDistance(RobotWallTrack.groupID.Group270, DistanceUnit.CM)) {
-            side = FieldSide.SIDE_BLUE;
-        } else {
-            side = FieldSide.SIDE_RED;
-        }
-
+//        if (robot.GetDistance(RobotWallTrack.groupID.Group90, DistanceUnit.CM) < robot.GetDistance(RobotWallTrack.groupID.Group270, DistanceUnit.CM)) {
+//            side = FieldSide.SIDE_BLUE;
+//        } else {
+//            side = FieldSide.SIDE_RED;
+//        }
         robot.arm.SetGripState(0.25, 0.9);
 
+        print("Status: Waiting for play side input. Please press the button thats color corresponds to the side your robot is on (see bridge). Press A to continue");
 
-        print("Status: Awaiting start.");
+
+        //Manually set the side based on gamepad input
+        boolean waitingForInput = true;
+
+        while (waitingForInput) {
+            //blu
+            if (gamepad1.x) {
+                side = FieldSide.SIDE_BLUE;
+            }
+            //red
+            if (gamepad1.b) {
+                side = FieldSide.SIDE_RED;
+            }
+
+            //confirm
+            if (gamepad1.a) {
+                waitingForInput = false;
+            }
+
+            if (side == FieldSide.SIDE_BLUE) {
+                print("Status: INIT ON SIDE BLUE. Press A to continue");
+            }
+
+            if (side == FieldSide.SIDE_RED) {
+                print("Status: INIT ON SIDE RED. Press A to continue");
+            }
+
+
+        }
+
+        print("Status: Awaiting start. Running on side ");
     }
 
     public void StopRobot() {

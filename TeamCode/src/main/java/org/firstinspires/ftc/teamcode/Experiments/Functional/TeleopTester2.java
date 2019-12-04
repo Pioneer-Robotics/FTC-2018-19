@@ -46,7 +46,8 @@ public class TeleopTester2 extends LinearOpMode {
             moveSpeed = bMath.Clamp(gamepad1.right_trigger + 0.35, 0, 1);
             rotateSpeed = bMath.Clamp(gamepad1.left_trigger + 0.35, 0, 1);
 
-            targetRotation += gamepad1.right_stick_x;
+            targetRotation += gamepad1.left_stick_x;
+//            targetRotation = bMath.Loop(targetRotation, 360);
 
             if (lockRotation) {
                 robot.MoveComplex(new Double2(gamepad1.right_stick_x, gamepad1.right_stick_y), moveSpeed, robot.GetRotation() - (targetRotation));
@@ -77,7 +78,7 @@ public class TeleopTester2 extends LinearOpMode {
 
             //Hitting X will place the arm in its active idle position
             if (gamepad2.x) {
-                robot.arm.SetArmState(0.25,0.25,1,1);
+                robot.arm.SetArmState(0.25, 0.25, 1, 1);
             }
 
 

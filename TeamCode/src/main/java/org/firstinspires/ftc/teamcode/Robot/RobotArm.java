@@ -78,7 +78,7 @@ public class RobotArm extends Thread {
 
         targetLengthSpeed = _lengthSpeed;
         targetLength = _targetLength;
-        rotation.setPower(1);
+        rotation.setPower(angleSpeed);
 
         rotation.setTargetPosition((int) ((double) -5679 * targetAngle));
 //        length.setTargetPosition((int) ((double) -2623 * _targetLength));

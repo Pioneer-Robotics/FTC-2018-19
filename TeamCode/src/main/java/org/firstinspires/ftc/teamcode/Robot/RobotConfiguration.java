@@ -34,16 +34,17 @@ public class RobotConfiguration {
     public static final String wheel_backRight = "Back Right";//This wheel should correspond to the Z component of movement
 
     //Configuration for all of the parts of the big arm
+
+    //The motor that rotates the spool of string that controls the length of the arm
     public static final String arm_lengthMotor = "Arm Spool";
+
+    //The motor that is responsible
     public static final String arm_rotationMotor = "Arm Rotation";
+
+    //The servo responsible for
     public static final String arm_gripServo = "Grip";
-    public static final Double2 arm_gripServo_range = new Double2(-1, 1);
     public static final String arm_gripRotationServo = "Grip Rotation";
-    public static final Double2 arm_gripRotationServo_range = new Double2(-1, 1);
 
-
-    //Distance sensor 0 name
-    public static final String distanceSensor_0A = "sensor 0A";
 
     //Distance sensor 90 names
     public static final String distanceSensor_90A = "sensor 90A";
@@ -77,7 +78,7 @@ public class RobotConfiguration {
     public static final int wheel_maxTicksPerSecond = 4320;
 
     //How many times we need to spin the motor in order to rotate the wheel once
-    public static final double wheel_GearCoefficient = 20;
+    public static final double wheel_GearCoefficient = 2;
 
     //pi * diameter
     public static final double wheel_circumference = 32.2;
