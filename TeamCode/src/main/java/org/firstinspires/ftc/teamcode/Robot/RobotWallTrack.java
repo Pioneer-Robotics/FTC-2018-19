@@ -156,8 +156,7 @@ public class RobotWallTrack {
             targetDistance = _targetDistance;
             correctionScale = _correctionScale;
             targetAngle = _targetAngle;
-
-        }
+         }
 
 
         public AvoidanceConfiguration() {

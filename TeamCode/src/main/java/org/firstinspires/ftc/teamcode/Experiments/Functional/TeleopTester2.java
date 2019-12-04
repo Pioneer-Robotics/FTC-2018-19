@@ -42,19 +42,18 @@ public class TeleopTester2 extends LinearOpMode {
 
         while (opModeIsActive()) {
 
+            ///DRIVER CONTROLS
             moveSpeed = bMath.Clamp(gamepad1.right_trigger + 0.35, 0, 1);
             rotateSpeed = bMath.Clamp(gamepad1.left_trigger + 0.35, 0, 1);
 
+            targetRotation += gamepad1.right_stick_x;
 
-            if (targetWallTrackGroup == null) {
-                if (lockRotation) {
-                    robot.MoveComplex(new Double2(gamepad1.left_stick_x, gamepad1.left_stick_y), moveSpeed, robot.GetRotation() - (targetRotation  /* + targetRotationOffset*/));
-                } else {
-                    robot.MoveSimple(new Double2(gamepad1.left_stick_x, gamepad1.left_stick_y), moveSpeed, gamepad1.right_stick_x * rotateSpeed);
-                }
+            if (lockRotation) {
+                robot.MoveComplex(new Double2(gamepad1.right_stick_x, gamepad1.right_stick_y), moveSpeed, robot.GetRotation() - (targetRotation));
             } else {
-//                robot.MoveSimple(new Double2(gamepad1.left_stick_x, gamepad1.left_stick_y) + bMath.degreesToHeadingVector(targetWallTrackGroup.getWallAngle()), moveSpeed, gamepad1.right_stick_x * rotateSpeed);
+                robot.MoveSimple(new Double2(gamepad1.right_stick_x, gamepad1.right_stick_y), moveSpeed, gamepad1.left_stick_x * rotateSpeed);
             }
+
 
             if (gamepad1.a) {
                 lockRotation = !lockRotation;
@@ -68,25 +67,20 @@ public class TeleopTester2 extends LinearOpMode {
                 }
             }
 
-            //Move relative to a sensor group
-            if (gamepad1.left_stick_button) {
-                targetWallTrackGroup = robot.wallTrack.closestGroup();
+            //ARM CONTROLS
+
+
+            //Hitting A will lower the arm with the gripper open
+            if (gamepad2.a) {
+//                robot.arm.SetArmState(0,);
             }
 
-            //Clear the current sensor group
-            if (gamepad1.right_stick_button) {
-                targetWallTrackGroup = null;
+            //Hitting X will place the arm in its active idle position
+            if (gamepad2.x) {
+                robot.arm.SetArmState(0.25,0.25,1,1);
             }
 
-            if (lockRotation) {
-//                targetRotationOffset += deltaTime.seconds() * 180 * gamepad1.right_stick_x;
 
-                if (gamepad1.x) {
-                    targetRotationOffset = bMath.MoveTowards(targetRotationOffset, 0, deltaTime.seconds() * 2);
-                }
-            } else {
-                targetRotationOffset = 0;
-            }
             telemetry.addData("Rotation Locked ", lockRotation);
             telemetry.addData("", "");
             telemetry.addData("Current Rotation ", robot.GetRotation());

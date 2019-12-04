@@ -1,9 +1,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
-
 import android.renderscript.Double4;
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -19,6 +17,9 @@ import org.firstinspires.ftc.teamcode.Helpers.bMath;
 import org.firstinspires.ftc.teamcode.Helpers.bTelemetry;
 import org.firstinspires.ftc.teamcode.Robot.RobotWallTrack;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 //A lovely picture of the robot
@@ -96,6 +97,7 @@ class FindSkystoneJob extends NavigationJob {
     public void OnStop() {
         super.OnStop();
 
+
         //Disposes of the thread
         tensorFlowaJob.Stop();
         robot.Stop();
@@ -141,7 +143,7 @@ class TensorFlowaJob extends aJob implements Runnable {
 
     Recognition currentRecognition;
 
-    List<Recognition> recognitions;
+    static List<Recognition> recognitions;
 
     ElapsedTime debuggingDeltaTime = new ElapsedTime();
 
@@ -159,7 +161,7 @@ class TensorFlowaJob extends aJob implements Runnable {
         }
         opMode.telemetry.addData("Get Recognition Time", debuggingDeltaTime.seconds());
 
-        return currentRecognition;
+        return null;
     }
 
     //The a number between -1 and 1 representing how close the recognition is to the center of the camera
@@ -193,14 +195,14 @@ class TensorFlowaJob extends aJob implements Runnable {
         //Fetch all of TF's current recognitions
         recognitions = tfod.getRecognitions();
 
-        //Iterate through all recognitions and tag the TARGET_LABEL
-        for (Recognition recognition : recognitions) {
-
-            //Only set the one that we want
-            if (recognition.getLabel() == TARGET_LABEL) {
-                currentRecognition = recognition;
-            }
-        }
+//        //Iterate through all recognitions and tag the TARGET_LABEL
+//        for (Recognition recognition : recognitions) {
+//
+//            //Only set the one that we want
+//            if (recognition.getLabel() == TARGET_LABEL) {
+//                currentRecognition = recognition;
+//            }
+//        }
 
     }
 
