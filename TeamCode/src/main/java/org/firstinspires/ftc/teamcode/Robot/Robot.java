@@ -69,10 +69,10 @@ public class Robot extends Thread {
         bTelemetry.Start(opmode);
 
         //Fail safe to make sure there is only one Robot.java running.
-        if (instance != null) {
-            bTelemetry.Print("FATAL ERROR: THERE CAN ONLY BE ONE INSTANCE OF ROBOT.JAVA");
-            return;
-        }
+//        if (instance != null) {
+//            bTelemetry.Print("FATAL ERROR: THERE CAN ONLY BE ONE INSTANCE OF ROBOT.JAVA");
+//            return;
+//        }
 
 
         //Set up the instance
@@ -249,6 +249,8 @@ public class Robot extends Thread {
 
 
     public void Stop() {
+        arm.Stop();
+        experimentalInput.Stop();
         threadRunning.set(false);
         SetPowerDouble4(0, 0, 0, 0, 0);
         SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

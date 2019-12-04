@@ -39,20 +39,18 @@ public class TeleopTester extends LinearOpMode {
 
 
 //            robot.MoveComplex(new Double2(gamepad1.left_stick_x, gamepad1.left_stick_y), gamepad1.a ? 1 : 0.1, Math.toRadians(targetRotation));
-            robot.arm.rotation.setPower(gamepad1.right_stick_y);
-            robot.arm.length.setPower(gamepad1.right_stick_x);
+            robot.arm.SetArmState(0.1, gamepad1.left_stick_x, 1, 1);
+            telemetry.addData("Grip Postion", gamepad1.left_stick_x);
+            telemetry.addData("Grip Rotaiton Position", gamepad1.left_stick_y);
+            telemetry.update();
 
-
-            if (gamepad1.dpad_right) {
-//                robot.gripServo.setPosition(1);
-            }
-            if (gamepad1.x) {
-                robot.arm.SetArmState(0.5, 1, 0.5, 1);
-            }
-
-            if (gamepad1.a) {
-                robot.arm.SetArmState(0, 0, 0.5, 1);
-            }
+//            if (gamepad1.x) {
+//                robot.arm.SetArmState(0.5, 1, 0.5, 1);
+//            }
+//
+//            if (gamepad1.a) {
+//                robot.arm.SetArmState(0, 0, 0.5, 1);
+//            }
 //            telemetry.addData("encoder value", robot.armWintch.getCurrentPosition());
 //            telemetry.update();
 //            robot.armWintch.setPower(-gamepad1.left_trigger + gamepad1.right_trigger);

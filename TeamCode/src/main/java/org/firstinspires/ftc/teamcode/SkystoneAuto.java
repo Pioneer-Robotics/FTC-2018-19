@@ -19,6 +19,8 @@ public class SkystoneAuto extends Auto {
 
         waitForStart();
 
+        robot.arm.SetArmState(0.1, 0, 1, 1);
+
         //If we can't see the skystone, move foward a tad to get a better reading
         while (opModeIsActive()) {
             if (jobs.tensorFlowaJob.getCurrentRecognition() == null) {
@@ -31,6 +33,7 @@ public class SkystoneAuto extends Auto {
             }
         }
 
+
         //Line up with a skystone
         //A lockThreshold of .25 will get is within 19.5 degrees of the stone
         SkystoneAlign(speed_low, 45, 2, 0.5, 0.25, startRotation);
@@ -40,7 +43,16 @@ public class SkystoneAuto extends Auto {
 
         jobs.tensorFlowaJob.Stop();
 
+        robot.arm.SetArmState(0, 0.35, 1, 1);
+        robot.arm.SetGripState(1, 0.5);
+
+
         sleep(2500);
+
+
+        robot.arm.SetGripState(0.35, 0.5);
+
+
         //Deploy the arm and grab dat stone
         ActuateArm();
 
@@ -72,7 +84,7 @@ public class SkystoneAuto extends Auto {
 
         StopMovement();
 
-            //Rotate to face the foundation
+        //Rotate to face the foundation
 //            robot.RotatePID(0, speed_high, 10000);
 
 

@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.Helpers.bMath;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.lang.Thread.sleep;
 
@@ -32,6 +33,8 @@ public class RobotArm extends Thread {
     public double targetLength;
     public double currentLengthSpeed;
     public double targetLengthSpeed;
+
+    AtomicBoolean runningThread = new AtomicBoolean();
 
     ElapsedTime deltaTime = new ElapsedTime();
 
@@ -54,6 +57,10 @@ public class RobotArm extends Thread {
         rotation.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         length.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        length.setTargetPosition(0);
+        rotation.setTargetPosition(0);
+
+        rotation.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         length.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
@@ -71,14 +78,15 @@ public class RobotArm extends Thread {
 
         targetLengthSpeed = _lengthSpeed;
         targetLength = _targetLength;
+        rotation.setPower(1);
 
         rotation.setTargetPosition((int) ((double) -5679 * targetAngle));
-        length.setTargetPosition((int) ((double) -2623 * targetLength));
+//        length.setTargetPosition((int) ((double) -2623 * _targetLength));
 
-        rotation.setPower(angleSpeed);
-        rotation.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        rotation.setPower(angleSpeed);
+//        rotation.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        currentLengthSpeed = 0;
+//        currentLengthSpeed = 0;
 
 
         while (Op.opModeIsActive() && rotation.isBusy()) {
@@ -98,12 +106,23 @@ public class RobotArm extends Thread {
     }
 
     public void run() {
-        currentLengthSpeed = bMath.MoveTowards(currentLengthSpeed, targetLengthSpeed, deltaTime.seconds() * 0.5);
+        runningThread.set(true);
+        while (runningThread.get()) {
+//            currentLengthSpeed = bMath.MoveTowards(currentLengthSpeed, targetLengthSpeed, deltaTime.seconds() * 0.5);
 
-        length.setPower(currentLengthSpeed);
-        length.setTargetPosition((int) ((double) -2623 * targetLength));
+            length.setPower(targetLengthSpeed);
+            length.setTargetPosition((int) ((double) -2613 * targetLength) - 10);
+            rotation.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        deltaTime.reset();
+            Op.telemetry.addData("length Speed", currentLengthSpeed);
+            Op.telemetry.update();
+
+
+            deltaTime.reset();
+        }
     }
 
+    public void Stop() {
+        runningThread.set(false);
+    }
 }

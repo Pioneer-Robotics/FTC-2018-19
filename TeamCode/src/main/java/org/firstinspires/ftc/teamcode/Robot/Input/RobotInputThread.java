@@ -12,8 +12,9 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 //This class will read all sensor and motor data and then cache it for low latency reads. Each group of input has its own thread(Untested WIP)
-public class RobotInputThread extends Thread {
+public class RobotInputThread {
 
+    //This thread group is responsible for the less than 20HZ
     public DistanceSensorInputThread distanceSensorInputThread = new DistanceSensorInputThread();
     public MotorEncoderInputThread motorEncoderInputThread = new MotorEncoderInputThread();
 
