@@ -96,7 +96,7 @@ public class Auto extends LinearOpMode {
 
         }
 
-        print("Status: Awaiting start. Running on side ");
+        print("Status: Awaiting start. Running on side " + (side == FieldSide.SIDE_BLUE ? "BLU" : "RED"));
     }
 
     public void StopRobot() {
