@@ -139,6 +139,7 @@ public class Auto extends LinearOpMode {
             }
             telemetry.update();
         }
+        StopMovement();
     }
 
     //Freezes the robots movement but continues to seek its correct rotation

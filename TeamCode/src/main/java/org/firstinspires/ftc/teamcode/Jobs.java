@@ -130,6 +130,8 @@ class TensorFlowaJob extends aJob implements Runnable {
 
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static String TARGET_LABEL = "";
+    private static final String SKYSTONE_LABEL = "Skystone";
+    private static final String STONE_LABEL = "Stone";
 
     private static final String VUFORIA_KEY = "AQMfl/L/////AAABmTblKFiFfUXdnoB7Ocz4UQNgHjSNJaBwlaDm9EpX0UI5ISx2EH+5IoEmxxd/FG8c31He17kM5vtS0jyAoD2ev5mXBiITmx4N8AduU/iAw/XMC5MiEB1YBgw5oSO1qd4jvCOgbzy/HcOpN3KoVVnYqKhTLc8n6/IIFGy+qyF7b8WkzscJpybOSAT5wtaZumdBu0K3lHV6n+fqGJDMvkQ5xrCS6HiBtpZScAoekd7iP3IxUik2rMFq5hqMsOYW+qlxKp0cj+x4K9CIOYEP4xZsCBt66UxtDSiNqaiC1DyONtFz4oHJf/4J5aYRjMNwC2BpsVJ/R91WIcC0H0dpP9gtL/09J0bIMjm3plo+ac+OM0H3";
 
@@ -147,17 +149,17 @@ class TensorFlowaJob extends aJob implements Runnable {
     public Recognition getCurrentRecognition() {
         debuggingDeltaTime.reset();
 
-        //Iterate through all recognitions and tag the TARGET_LABEL
+        //Iterate through all recognitions and return the TARGET_LABEL
         for (Recognition recognition : recognitions) {
 
             //Only set the one that we want
-            if (recognition.getLabel() == TARGET_LABEL) {
+            if (recognition.getLabel() == SKYSTONE_LABEL) {
                 return recognition;
             }
         }
         opMode.telemetry.addData("Get Recognition Time", debuggingDeltaTime.seconds());
 
-        return null;
+        return currentRecognition;
     }
 
     //The a number between -1 and 1 representing how close the recognition is to the center of the camera
@@ -180,7 +182,7 @@ class TensorFlowaJob extends aJob implements Runnable {
     public void Init(LinearOpMode op) {
         super.Init(op);
         //Start up the tensor flow stuffs
-        StartTensorFlow(op, "Skystone", 0.75);
+        StartTensorFlow(op, "Skystone", 0.80);
     }
 
     @Override
@@ -191,25 +193,21 @@ class TensorFlowaJob extends aJob implements Runnable {
         //Fetch all of TF's current recognitions
         recognitions = tfod.getRecognitions();
 
-//        //Iterate through all recognitions and tag the TARGET_LABEL
-//        for (Recognition recognition : recognitions) {
-//
-//            //Only set the one that we want
-//            if (recognition.getLabel() == TARGET_LABEL) {
-//                currentRecognition = recognition;
-//            }
-//        }
+        //Iterate through all recognitions and tag the TARGET_LABEL
+        for (Recognition recognition : recognitions) {
+
+            //Only set the one that we want
+            if (recognition.getLabel() == TARGET_LABEL) {
+                currentRecognition = recognition;
+            }
+        }
 
     }
 
     @Override
     public void OnStart(LinearOpMode op) {
         super.OnStart(op);
-        //Make sure TF is started before we boot up the thread
-        if (tfod != null) {
-//            tfod.setClippingMargins();
-            tfod.activate();
-        }
+
     }
 
     @Override
@@ -230,6 +228,12 @@ class TensorFlowaJob extends aJob implements Runnable {
 
 
         initAll(camera, moniterID, minConfidence);
+
+        //Make sure TF is started before we boot up the thread
+        if (tfod != null) {
+//            tfod.setClippingMargins();
+            tfod.activate();
+        }
     }
 
     private void initAll(WebcamName camera, int tfodMonitorViewId, double minConfidence) {
@@ -254,7 +258,7 @@ class TensorFlowaJob extends aJob implements Runnable {
         tfodParameters.minimumConfidence = minConfidence;
 
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, "Stone", "Skystone");
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, STONE_LABEL, SKYSTONE_LABEL);
     }
     //</editor-fold>
 
