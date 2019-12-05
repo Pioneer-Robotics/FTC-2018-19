@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Helpers.bMath;
 import org.firstinspires.ftc.teamcode.Robot.Robot;
+import org.firstinspires.ftc.teamcode.Robot.RobotArm;
 import org.firstinspires.ftc.teamcode.Robot.RobotWallTrack;
 
 @TeleOp(name = "Teleop2", group = "Sensor")
@@ -28,6 +29,10 @@ public class TeleopTester2 extends LinearOpMode {
     double moveSpeed;
     double rotateSpeed;
     double targetRotationOffset;
+
+    boolean grab = false;
+    double extension = 0;
+    double armAngle = 0;
 
 
     @Override
@@ -70,16 +75,38 @@ public class TeleopTester2 extends LinearOpMode {
 
             //ARM CONTROLS
 
+            //press the B button to change if the grabber is open or closed
+           if (gamepad2.b){
+               if (!grab){
+                   grab = true;
+                   sleep (200);
+               }
+               else {
+                   grab = false;
+                   sleep (200);
+               }
+           }
 
-            //Hitting A will lower the arm with the gripper open
-            if (gamepad2.a) {
-//                robot.arm.SetArmState(0,);
+            if (grab){
+                robot.arm.SetGripState(RobotArm.GripState.CLOSED,0.5);
             }
 
-            //Hitting X will place the arm in its active idle position
-            if (gamepad2.x) {
-                robot.arm.SetArmState(0.25, 0.25, 1, 1);
+            if (!grab){
+                robot.arm.SetGripState(RobotArm.GripState.OPEN,0.5);
             }
+            //press the B button to change if the grabber is open or closed
+
+
+            //extend arm by tapping right trigger
+            extension += gamepad2.right_trigger/10;
+            //retract arm by tapping left trigger
+            extension -= gamepad2.left_trigger/10;
+            //rotate arm up and down with the left joystick
+            armAngle += gamepad2.left_stick_y/5;
+
+            extension = bMath.Clamp(extension, 0, 1);
+            armAngle = bMath.Clamp (armAngle, 0, 1);
+            robot.arm.SetArmState(armAngle, extension, 1, 1);
 
 
             telemetry.addData("Rotation Locked ", lockRotation);
