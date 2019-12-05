@@ -103,11 +103,11 @@ public class TeleopTester2 extends LinearOpMode {
             //retract arm by tapping left trigger
             extension -= gamepad2.left_trigger * deltaTime.seconds();
             //rotate arm up and down with the left joystick
-            armAngle += gamepad2.left_stick_y * deltaTime.seconds() * 0.5;
+            //armAngle += gamepad2.left_stick_y * deltaTime.seconds() * 0.5;
 
             extension = bMath.Clamp(extension, 0, 1);
             armAngle = bMath.Clamp(armAngle, 0, 1);
-            robot.arm.SetArmState(armAngle, extension, 1, 1);
+            robot.arm.SetArmState(-1, extension, gamepad2.left_stick_y, 1);
 
 
             telemetry.addData("Rotation Locked ", lockRotation);
