@@ -163,7 +163,7 @@ public class Auto extends LinearOpMode {
             if (skystone == null) {
                 StopAndMaintainRotation(startRotation);
             } else {
-                robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, moveSpeed, 180 + bMath.Lerp(-maxCorrectionAngle, maxCorrectionAngle, (jobs.tensorFlowaJob.getCurrentXFactor(skystone) + 1) / 2), startRotation);
+                robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, moveSpeed, 180 + bMath.Lerp(maxCorrectionAngle, -maxCorrectionAngle, (jobs.tensorFlowaJob.getCurrentXFactor(skystone) + 1) / 2), startRotation);
                 if (robot.GetDistance(RobotWallTrack.groupID.Group180, DistanceUnit.CM) > wallStopDistance) {
                     StopMovement();
                     break;
