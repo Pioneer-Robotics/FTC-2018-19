@@ -34,6 +34,12 @@ public class RobotArm extends Thread {
     public double currentLengthSpeed;
     public double targetLengthSpeed;
 
+    public enum GripState {
+        OPEN,
+        IDLE,
+        CLOSED
+    }
+
     AtomicBoolean runningThread = new AtomicBoolean();
 
     ElapsedTime deltaTime = new ElapsedTime();
@@ -84,7 +90,8 @@ public class RobotArm extends Thread {
 //        length.setTargetPosition((int) ((double) -2623 * _targetLength));
 
 //        rotation.setPower(angleSpeed);
-//        rotation.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rotation.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        length.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 //        currentLengthSpeed = 0;
 
@@ -100,8 +107,8 @@ public class RobotArm extends Thread {
         rotation.setPower(0);
     }
 
-    public void SetGripState(double gripPosition, double rotationPosition) {
-        grip.setPosition(gripPosition);
+    public void SetGripState(GripState gripState, double rotationPosition) {
+        grip.setPosition(gripState == GripState.CLOSED ? 0 : (gripState == GripState.IDLE ? 0.23 : 0.64));
         gripRotation.setPosition(rotationPosition);
     }
 

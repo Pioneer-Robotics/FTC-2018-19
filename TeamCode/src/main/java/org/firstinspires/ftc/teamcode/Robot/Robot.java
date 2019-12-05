@@ -89,7 +89,7 @@ public class Robot extends Thread {
         bTelemetry.Print("Robot motors configured in the DriveManager.");
 
         //Define the arm values for motors and servos (also includes ranges)
-        arm = new RobotArm(opmode, RobotConfiguration.arm_rotationMotor, RobotConfiguration.arm_lengthMotor, RobotConfiguration.arm_gripServo, RobotConfiguration.arm_gripRotationServo, RobotConfiguration.arm_gripServo_range, RobotConfiguration.arm_gripRotationServo_range);
+        arm = new RobotArm(opmode, RobotConfiguration.arm_rotationMotor, RobotConfiguration.arm_lengthMotor, RobotConfiguration.arm_gripServo, RobotConfiguration.arm_gripRotationServo, new Double2(0, 1), new Double2(0, 1));
 
         //Start the thread that is responsible for fighting gravity and keeping arm position level.
         arm.start();
