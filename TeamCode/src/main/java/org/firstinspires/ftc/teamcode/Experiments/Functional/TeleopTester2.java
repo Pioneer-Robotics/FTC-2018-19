@@ -33,7 +33,7 @@ public class TeleopTester2 extends LinearOpMode {
     boolean grab = false;
     double extension = 0;
     double armAngle = 0;
-    boolean test = true;
+    double wrist = 0.5;
 
 
     @Override
@@ -48,10 +48,6 @@ public class TeleopTester2 extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            if(test){
-                robot.arm.SetArmState(0,0,1,1);
-                test = false;
-            }
             //I need to "change something"
 
             ///DRIVER CONTROLS
@@ -82,6 +78,16 @@ public class TeleopTester2 extends LinearOpMode {
 
             //ARM CONTROLS
 
+            if(gamepad2.dpad_up){
+                wrist+=0.1;
+                sleep (100);
+            }
+
+            if(gamepad2.dpad_down){
+                wrist -=0.1;
+                sleep (100);
+            }
+
             //press the B button to change if the grabber is open or closed
            if (gamepad2.b){
                if (!grab){
@@ -95,11 +101,11 @@ public class TeleopTester2 extends LinearOpMode {
            }
 
             if (grab){
-                robot.arm.SetGripState(RobotArm.GripState.CLOSED,0.5);
+                robot.arm.SetGripState(RobotArm.GripState.CLOSED, wrist);
             }
 
             if (!grab){
-                robot.arm.SetGripState(RobotArm.GripState.OPEN,0.5);
+                robot.arm.SetGripState(RobotArm.GripState.OPEN, wrist);
             }
             //press the B button to change if the grabber is open or closed
 
@@ -109,7 +115,7 @@ public class TeleopTester2 extends LinearOpMode {
             //retract arm by tapping left trigger
             extension -= gamepad2.left_trigger/10;
             //rotate arm up and down with the left joystick
-            armAngle += gamepad2.left_stick_y/5;
+            armAngle -= gamepad2.left_stick_y/3;
 
             extension = bMath.Clamp(extension, 0, 1);
             armAngle = bMath.Clamp (armAngle, 0, 1);
