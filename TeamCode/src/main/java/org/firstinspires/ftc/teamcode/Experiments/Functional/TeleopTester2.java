@@ -21,8 +21,8 @@ public class TeleopTester2 extends LinearOpMode {
 
     ElapsedTime deltaTime = new ElapsedTime();
 
-    public boolean lockRotation;
-    public boolean lastLockRotation;
+    public boolean lockRotation = false;
+    public boolean lastLockRotation = false;
 
     double targetRotation;
 
@@ -34,7 +34,6 @@ public class TeleopTester2 extends LinearOpMode {
     boolean lastGrab = false;
     double extension = 0;
     double armAngle = 0;
-    boolean test = true;
 
 
     @Override
@@ -48,12 +47,6 @@ public class TeleopTester2 extends LinearOpMode {
         targetRotation = robot.GetRotation();
 
         while (opModeIsActive()) {
-
-            if (test) {
-                robot.arm.SetArmState(0, 0, 1, 1);
-                test = false;
-            }
-            //I need to "change something"
 
             ///DRIVER CONTROLS
             moveSpeed = bMath.Clamp(gamepad1.right_trigger + 0.35, 0, 1);
@@ -69,9 +62,15 @@ public class TeleopTester2 extends LinearOpMode {
             }
 
 
+            if (gamepad1.a != lastLockRotation){
+                lockRotation = !lockRotation;
+                lastLockRotation = lockRotation;
+            }
+
+/*
             if (gamepad1.a) {
                 lockRotation = !lockRotation;
-                sleep(350);
+                sleep(100);
             }
 
             if (lastLockRotation != lockRotation) {
@@ -80,7 +79,7 @@ public class TeleopTester2 extends LinearOpMode {
                     targetRotation = robot.GetRotation();
                 }
             }
-
+*/
             //ARM CONTROLS
 
             //press the B button to change if the grabber is open or closed
@@ -93,7 +92,7 @@ public class TeleopTester2 extends LinearOpMode {
                 robot.arm.SetGripState( grab ? RobotArm.GripState.CLOSED : RobotArm.GripState.OPEN, 0.5);
             }
 
-            if (!grab) {
+          else{
                 robot.arm.SetGripState(RobotArm.GripState.OPEN, 0.5);
             }
             //press the B button to change if the grabber is open or closed
