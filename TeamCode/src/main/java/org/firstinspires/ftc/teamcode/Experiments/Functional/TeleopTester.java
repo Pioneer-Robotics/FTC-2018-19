@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Robot.Robot;
+import org.firstinspires.ftc.teamcode.Robot.RobotArm;
 
 @TeleOp(name = "Teleop", group = "Sensor")
 public class TeleopTester extends LinearOpMode {
@@ -39,8 +40,9 @@ public class TeleopTester extends LinearOpMode {
 
 
 //            robot.MoveComplex(new Double2(gamepad1.left_stick_x, gamepad1.left_stick_y), gamepad1.a ? 1 : 0.1, Math.toRadians(targetRotation));
-//            robot.arm.SetArmState(0.1, gamepad1.left_stick_x, 1, 1);
+            robot.arm.SetArmState(0.1, gamepad1.left_stick_x, 1, 1);
 //            robot.arm.SetGripState(gamepad1.left_stick_x, gamepad1.left_stick_y);
+            robot.arm.SetGripState(RobotArm.GripState.CLOSED,0);
             telemetry.addData("Grip Postion", gamepad1.left_stick_x);
             telemetry.addData("Grip Rotaiton Position", gamepad1.left_stick_y);
             telemetry.update();

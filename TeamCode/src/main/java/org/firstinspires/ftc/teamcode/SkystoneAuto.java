@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Robot.RobotArm;
 import org.firstinspires.ftc.teamcode.Robot.RobotWallTrack;
 
 @Autonomous(name = "Skystone", group = "ftcPio")
@@ -36,10 +37,10 @@ public class SkystoneAuto extends Auto {
 
         //Line up with a skystone
         //A lockThreshold of .25 will get is within 19.5 degrees of the stone
-        SkystoneAlign(speed_low, 45, 2, 0.5, 0.25, startRotation);
+        SkystoneAlign(speed_low, 20, 2, 0.5, 0.25, startRotation);
 
         //Drive forward while adjusting heading to line up with the skystone
-        DriveAtSkystone(speed_med, 25, 35, startRotation);
+        DriveAtSkystone(speed_med, 25, 15, startRotation);
 
         jobs.tensorFlowaJob.Stop();
 
@@ -48,7 +49,7 @@ public class SkystoneAuto extends Auto {
         sleep(100);
 
         //Deploy the claw and open it all the way
-        robot.arm.SetGripState(1, 1);
+        robot.arm.SetGripState(RobotArm.GripState.OPEN, 0.5);
         sleep(250);
 
         //Drop the arm, hopefully, on a sky stone
@@ -56,7 +57,7 @@ public class SkystoneAuto extends Auto {
         sleep(250);
 
         //Close the gripper!
-        robot.arm.SetGripState(1, 0.45);
+        robot.arm.SetGripState(RobotArm.GripState.CLOSED, 0.5);
         sleep(250);
 
         //Raise the arm again to avoid dragging the stone on the ground

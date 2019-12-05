@@ -233,6 +233,7 @@ public class Robot extends Thread {
             //Make sure that the robot stops once we request a stop
             if (Op.isStopRequested()) {
                 SetPowerDouble4(0, 0, 0, 0, 0);
+                threadRunning.set(false);
             }
 
 //            threadDeltaTime.reset();

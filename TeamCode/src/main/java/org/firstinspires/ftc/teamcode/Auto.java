@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.Helpers.PID;
 import org.firstinspires.ftc.teamcode.Helpers.bMath;
 import org.firstinspires.ftc.teamcode.Robot.Robot;
+import org.firstinspires.ftc.teamcode.Robot.RobotArm;
 import org.firstinspires.ftc.teamcode.Robot.RobotWallTrack;
 
 public class Auto extends LinearOpMode {
@@ -62,7 +63,7 @@ public class Auto extends LinearOpMode {
 //        } else {
 //            side = FieldSide.SIDE_RED;
 //        }
-        robot.arm.SetGripState(0.25, 0.9);
+        robot.arm.SetGripState(RobotArm.GripState.IDLE, 1);
 
         print("Status: Waiting for play side input. Please press the button thats color corresponds to the side your robot is on (see bridge). Press A to continue");
 
@@ -146,6 +147,7 @@ public class Auto extends LinearOpMode {
             telemetry.update();
             deltaTime.reset();
         }
+        StopMovement();
     }
 
     /**
