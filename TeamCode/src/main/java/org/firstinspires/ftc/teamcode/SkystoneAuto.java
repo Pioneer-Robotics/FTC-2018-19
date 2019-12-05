@@ -37,10 +37,10 @@ public class SkystoneAuto extends Auto {
 
         //Line up with a skystone
         //A lockThreshold of .25 will get is within 19.5 degrees of the stone
-        SkystoneAlign(speed_low, 20, 2, 0.5, 0.25, startRotation);
+        SkystoneAlign(speed_low, 50, 2, 0.5, 0.075, startRotation);
 
         //Drive forward while adjusting heading to line up with the skystone
-        DriveAtSkystone(speed_med, 25, 15, startRotation);
+        DriveAtSkystone(speed_med, 35, 15, startRotation);
 
         jobs.tensorFlowaJob.Stop();
 
@@ -61,16 +61,16 @@ public class SkystoneAuto extends Auto {
         sleep(250);
 
         //Raise the arm again to avoid dragging the stone on the ground
-        robot.arm.SetArmState(0.1, 0.35, 1, 1);
+        robot.arm.SetArmState(0, 0.15, 1, 1);
 
         //Roll back a wee bit
         robot.DriveByDistance(speed_med, -5);
 
         //Rotate based on our side to face the back sensors towards the foundation
         if (side == FieldSide.SIDE_BLUE) {
-            robot.RotatePID(startRotation + 90, speed_med, 100000);
+            robot.RotatePID(90, speed_med, 100000);
         } else {
-            robot.RotatePID(startRotation - 90, speed_med, 10000);
+            robot.RotatePID(-90, speed_med, 10000);
         }
 
 
