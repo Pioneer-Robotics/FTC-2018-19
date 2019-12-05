@@ -33,6 +33,7 @@ public class TeleopTester2 extends LinearOpMode {
     boolean grab = false;
     double extension = 0;
     double armAngle = 0;
+    boolean test = true;
 
 
     @Override
@@ -46,6 +47,11 @@ public class TeleopTester2 extends LinearOpMode {
         targetRotation = robot.GetRotation();
 
         while (opModeIsActive()) {
+
+            if(test){
+                robot.arm.SetArmState(0,0,1,1);
+                test = false;
+            }
 
             ///DRIVER CONTROLS
             moveSpeed = bMath.Clamp(gamepad1.right_trigger + 0.35, 0, 1);
