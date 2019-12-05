@@ -52,6 +52,7 @@ public class TeleopTester2 extends LinearOpMode {
                 robot.arm.SetArmState(0,0,1,1);
                 test = false;
             }
+            //I need to "change something"
 
             ///DRIVER CONTROLS
             moveSpeed = bMath.Clamp(gamepad1.right_trigger + 0.35, 0, 1);
