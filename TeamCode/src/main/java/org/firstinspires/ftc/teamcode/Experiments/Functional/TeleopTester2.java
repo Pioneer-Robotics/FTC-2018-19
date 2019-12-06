@@ -34,13 +34,13 @@ public class TeleopTester2 extends LinearOpMode {
     boolean lastGrab = false;
     double extension = 0;
     double armAngle = 0;
+    double gripAngle = 180;
 
 
     @Override
     public void runOpMode() throws InterruptedException {
         robot.init(hardwareMap, this);
-//        robot.armWintch.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        robot.armWintch.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
         waitForStart();
 
@@ -51,6 +51,7 @@ public class TeleopTester2 extends LinearOpMode {
             ///DRIVER CONTROLS
             moveSpeed = bMath.Clamp(gamepad1.right_trigger + 0.35, 0, 1);
             rotateSpeed = bMath.Clamp(gamepad1.left_trigger + 0.35, 0, 1);
+            //This looks like not not the bMath.Clamp is supposed to be used
 
             targetRotation += gamepad1.left_stick_x;
 //            targetRotation = bMath.Loop(targetRotation, 360);
@@ -82,28 +83,31 @@ public class TeleopTester2 extends LinearOpMode {
 */
             //ARM CONTROLS
 
-            //press the B button to change if the grabber is open or closed
-            if (gamepad2.b != lastGrab) {
-                grab = !grab;
-                lastGrab = grab;
+            //press the B button to change the state of grab if it's state is different to it's previous state
+            if (gamepad2.b == true && gamepad2.b !=lastGrab) {
+                grab =!grab;
             }
+            lastGrab = gamepad2.b;
 
             if (grab) {
-                robot.arm.SetGripState( grab ? RobotArm.GripState.CLOSED : RobotArm.GripState.OPEN, 0.5);
+                robot.arm.SetGripState(RobotArm.GripState.CLOSED, (90-gripAngle)/180);
+            } else{
+                robot.arm.SetGripState(RobotArm.GripState.OPEN, (90-gripAngle)/180);
             }
 
-          else{
-                robot.arm.SetGripState(RobotArm.GripState.OPEN, 0.5);
-            }
-            //press the B button to change if the grabber is open or closed
+
+
+
 
 
             //extend arm by tapping right trigger
             extension += gamepad2.right_trigger * deltaTime.seconds();
             //retract arm by tapping left trigger
             extension -= gamepad2.left_trigger * deltaTime.seconds();
-            //rotate arm up and down with the left joystick
-            //armAngle += gamepad2.left_stick_y * deltaTime.seconds() * 0.5;
+            //rotate gripRotator up with the up dpad
+            gripAngle -= gamepad2.dpad_up ? deltaTime.seconds() *90 : gripAngle;
+            //rotate down with the down dpad
+            gripAngle += gamepad2.dpad_down ? deltaTime.seconds() *90 : gripAngle;
 
             extension = bMath.Clamp(extension, 0, 1);
             armAngle = bMath.Clamp(armAngle, 0, 1);

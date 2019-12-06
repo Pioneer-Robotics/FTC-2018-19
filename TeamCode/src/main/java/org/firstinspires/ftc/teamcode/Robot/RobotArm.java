@@ -123,6 +123,25 @@ public class RobotArm extends Thread {
 
     }
 
+    public void SetArmRadial(double targetAngle, double _targetLength, double angleSpeed, double _lengthSpeed) {
+
+        targetLengthSpeed = _lengthSpeed;
+        targetLength = ((double)480 * _targetLength)/17.8 ; //convert target length in cm to # of encoder ticks
+        rotation.setPower(angleSpeed);
+
+
+
+        rotation.setTargetPosition((int) ((double) -5679 * targetAngle));
+        rotation.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        length.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+
+        rotation.setPower(0);
+
+    }
+
     public void SetGripState(GripState gripState, double rotationPosition) {
         grip.setPosition(gripState == GripState.CLOSED ? 0 : (gripState == GripState.IDLE ? 0.23 : 0.64));
         gripRotation.setPosition(rotationPosition);
