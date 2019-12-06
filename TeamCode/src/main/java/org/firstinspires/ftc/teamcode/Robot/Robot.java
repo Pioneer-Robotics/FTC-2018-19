@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.SensorREV2mDistance;
@@ -61,7 +62,8 @@ public class Robot extends Thread {
     //If our thread is running, using atomics to avoid thread conflicts. Might not be completely necessary
     AtomicBoolean threadRunning = new AtomicBoolean();
 
-    public SensorREVColorDistance colorDistanceFront;
+    //lunchbox
+    public Servo lunchbox;
 
     public void init(HardwareMap hardwareMap, LinearOpMode opmode) {
 
@@ -146,6 +148,9 @@ public class Robot extends Thread {
             experimentalInput.AddSensor(sensor);
         }
 
+
+        //Initialize lunchbox
+        lunchbox.setPosition(1);
 
         bTelemetry.Print("Wheel boot successful. Ready to operate!");
 
