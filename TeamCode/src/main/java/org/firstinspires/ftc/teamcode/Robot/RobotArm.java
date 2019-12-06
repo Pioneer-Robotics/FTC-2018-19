@@ -83,19 +83,15 @@ public class RobotArm extends Thread {
     public void SetArmState(double targetAngle, double _targetLength, double angleSpeed, double _lengthSpeed) {
 
         targetLengthSpeed = _lengthSpeed;
-        targetLength = _targetLength;
+        targetLength = ((double) -2613 * _targetLength) - 10;
         rotation.setPower(angleSpeed);
 
 
 //        length.setTargetPosition((int) ((double) -2623 * _targetLength));
 
-//        rotation.setPower(angleSpeed);
-        if(targetAngle>=0) {
             rotation.setTargetPosition((int) ((double) -5679 * targetAngle));
             rotation.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        } else {
-            rotation.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
+
         length.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 //        currentLengthSpeed = 0;
@@ -112,6 +108,21 @@ public class RobotArm extends Thread {
         rotation.setPower(0);
     }
 
+
+    //Set Arm Target Length and Power
+    public void SetArmState(double _targetLength, double angleSpeed, double _lengthSpeed) {
+
+        targetLengthSpeed = _lengthSpeed;
+        targetLength = ((double) -2613 * _targetLength) - 10;
+
+
+        rotation.setPower(angleSpeed);
+        rotation.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        length.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+    }
+
     public void SetGripState(GripState gripState, double rotationPosition) {
         grip.setPosition(gripState == GripState.CLOSED ? 0 : (gripState == GripState.IDLE ? 0.23 : 0.64));
         gripRotation.setPosition(rotationPosition);
@@ -123,8 +134,7 @@ public class RobotArm extends Thread {
 //            currentLengthSpeed = bMath.MoveTowards(currentLengthSpeed, targetLengthSpeed, deltaTime.seconds() * 0.5);
 
             length.setPower(targetLengthSpeed);
-            length.setTargetPosition((int) ((double) -2613 * targetLength) - 10);
-            rotation.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            length.setTargetPosition( (int)targetLength);
 
             Op.telemetry.addData("length Speed", currentLengthSpeed);
             Op.telemetry.update();
