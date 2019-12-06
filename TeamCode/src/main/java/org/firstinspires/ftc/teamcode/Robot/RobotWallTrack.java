@@ -82,13 +82,13 @@ public class RobotWallTrack {
         //<editor-fold desc="External return groups">
         //Returns the last valid input with a buffer of 3 inputs, this is because of the unreliable target surface (transparent plastic)
         public double getDistance(SensorGroup.TripletType type, DistanceUnit unit) {
-            if (isValid(type) || failedReadings >= 3) {
-                lastDistance = sensor(type).getDistance(unit);
-                failedReadings = 0;
-            } else {
-                failedReadings++;
-            }
-            return lastDistance;
+//            if (isValid(type) || failedReadings >= 3) {
+//                lastDistance = ;
+//                failedReadings = 0;
+//            } else {
+//                failedReadings++;
+//            }
+            return sensor(type).getDistance(unit);
         }
 
         public double getDistanceAverage(DistanceUnit unit) {

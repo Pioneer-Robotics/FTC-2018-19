@@ -185,7 +185,8 @@ public class Auto extends LinearOpMode {
     }
 
     public void ResetWallPID() {
-        walltrackingController.Start(4.95, 0.0, 0.1);
+        walltrackingController.Start(15, 0.0, 0);
+//        walltrackingController.Start(4.95, 0.0, 0.1);
     }
 
 
