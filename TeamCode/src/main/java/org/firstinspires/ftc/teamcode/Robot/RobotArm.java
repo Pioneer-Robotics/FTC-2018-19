@@ -40,6 +40,7 @@ public class RobotArm extends Thread {
         CLOSED
     }
 
+    // lets make some real changes
     AtomicBoolean runningThread = new AtomicBoolean();
 
     ElapsedTime deltaTime = new ElapsedTime();
