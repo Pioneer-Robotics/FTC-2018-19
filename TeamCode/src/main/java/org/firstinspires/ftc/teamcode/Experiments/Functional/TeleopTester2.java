@@ -107,7 +107,7 @@ public class TeleopTester2 extends LinearOpMode {
 
             extension = bMath.Clamp(extension, 0, 1);
             armAngle = bMath.Clamp(armAngle, 0, 1);
-            robot.arm.SetArmState(-1, extension, gamepad2.left_stick_y, 1);
+            robot.arm.SetArmState(extension, gamepad2.left_stick_y, 1);
 
 
             telemetry.addData("Rotation Locked ", lockRotation);
