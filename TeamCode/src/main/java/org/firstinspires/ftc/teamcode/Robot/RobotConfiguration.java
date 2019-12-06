@@ -41,9 +41,20 @@ public class RobotConfiguration {
     //The motor that is responsible
     public static final String arm_rotationMotor = "Arm Rotation";
 
-    //The servo responsible for
+    //The servo responsible for controlling the grip state of the arm
     public static final String arm_gripServo = "Grip";
+
+    //The servo responsible for rotating the gripper of the arm
     public static final String arm_gripRotationServo = "Grip Rotation";
+
+    //The Lunch.
+
+    //The servo responsible for holding the capstone during TeleOp
+    public static final String lunchboxServo = "Lunchbox";
+
+    //The servo responsible for holding the capstone during TeleOp
+    public static final double lunchboxClosed = 0;
+    public static final double lunchboxOpen = 1;
 
 
     //Distance sensor 90 names
