@@ -35,6 +35,7 @@ public class TeleopTester2 extends LinearOpMode {
     double extension = 0;
     double armAngle = 0;
 
+    double lunchboxState;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -62,7 +63,7 @@ public class TeleopTester2 extends LinearOpMode {
             }
 
 
-            if (gamepad1.a != lastLockRotation){
+            if (gamepad1.a != lastLockRotation) {
                 lockRotation = !lockRotation;
                 lastLockRotation = lockRotation;
             }
@@ -84,17 +85,29 @@ public class TeleopTester2 extends LinearOpMode {
 
             //press the B button to change if the grabber is open or closed
             if (gamepad2.b != lastGrab) {
-                grab = !grab;
+
+                //Only toggle the grip if we tapped B
+                if (gamepad2.b) {
+                    grab = !grab;
+                }
                 lastGrab = grab;
             }
 
             if (grab) {
-                robot.arm.SetGripState( grab ? RobotArm.GripState.CLOSED : RobotArm.GripState.OPEN, 0.5);
-            }
-
-          else{
+                robot.arm.SetGripState(grab ? RobotArm.GripState.CLOSED : RobotArm.GripState.OPEN, 0.5);
+            } else {
                 robot.arm.SetGripState(RobotArm.GripState.OPEN, 0.5);
             }
+
+            if (gamepad2.dpad_up) {
+                lunchboxState = 1;
+            }
+            if (gamepad2.dpad_down) {
+                lunchboxState = 0;
+            }
+
+            robot.lunchbox.setPosition(lunchboxState);
+
             //press the B button to change if the grabber is open or closed
 
 
@@ -110,10 +123,21 @@ public class TeleopTester2 extends LinearOpMode {
             robot.arm.SetArmState(extension, gamepad2.left_stick_y, 1);
 
 
+            telemetry.addData("======================", "");
+            telemetry.addData("===Movement==========", "");
+            telemetry.addData("======================", "");
             telemetry.addData("Rotation Locked ", lockRotation);
-            telemetry.addData("", "");
-            telemetry.addData("Current Rotation ", robot.GetRotation());
-            telemetry.addData("Current Target Rotation", targetRotation);
+            telemetry.addData("----------------------", "");
+            telemetry.addData("Current Rotation Error ", robot.GetRotation() - targetRotation);
+            telemetry.addData("======================", "");
+            telemetry.addData("======================", "");
+            telemetry.addData("===Servos==========", "");
+            telemetry.addData("======================", "");
+            telemetry.addData("Grip State ", grab ? "CLOSED" : "OPEN");
+            telemetry.addData("----------------------", "");
+            telemetry.addData("Lunchbox State ", lunchboxState);
+            telemetry.addData("======================", "");
+
             telemetry.update();
 
             deltaTime.reset();

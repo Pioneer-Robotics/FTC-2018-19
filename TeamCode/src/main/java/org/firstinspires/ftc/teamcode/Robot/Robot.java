@@ -96,6 +96,9 @@ public class Robot extends Thread {
         //Start the thread that is responsible for fighting gravity and keeping arm position level.
         arm.start();
 
+        //Find the lunchbox servo
+        lunchbox = hardwareMap.get(Servo.class, RobotConfiguration.lunchboxServo);
+
         //Reverse the left side wheels to ensure forward drive works when all power is set to 1
         driveManager.frontLeft.setDirection(DcMotor.Direction.REVERSE);
         driveManager.backLeft.setDirection(DcMotor.Direction.REVERSE);
