@@ -156,7 +156,7 @@ public class RobotWallTrack {
             targetDistance = _targetDistance;
             correctionScale = _correctionScale;
             targetAngle = _targetAngle;
-         }
+        }
 
 
         public AvoidanceConfiguration() {
@@ -346,7 +346,7 @@ public class RobotWallTrack {
         //Configure the avoidance config
 //        avoidanceConfig = new AvoidanceConfiguration(distance, maxCorrectionMagnitude, angleOffset - wallAngle + physicalOffset);
 
-        avoidanceConfig.targetAngle = distance;
+        avoidanceConfig.targetDistance = distance;
         avoidanceConfig.correctionScale = maxCorrectionMagnitude;
         avoidanceConfig.targetAngle = angleOffset - wallAngle + physicalOffset;
 

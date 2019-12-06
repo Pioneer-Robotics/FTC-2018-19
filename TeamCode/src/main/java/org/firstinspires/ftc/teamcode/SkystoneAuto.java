@@ -20,7 +20,7 @@ public class SkystoneAuto extends Auto {
 
         waitForStart();
 
-        robot.arm.SetArmState(0.1, 0, 1, 1);
+        robot.arm.SetArmState(0.1, 0, 1);
 
         //If we can't see the skystone, move forward a tad to get a better reading
         while (opModeIsActive()) {
@@ -45,7 +45,7 @@ public class SkystoneAuto extends Auto {
         jobs.tensorFlowaJob.Stop();
 
         //Extend the arm 35% of the way
-        robot.arm.SetArmState(0.1, 0.35, 1, 1);
+        robot.arm.SetArmState(0.1, 0.35, 1);
         sleep(100);
 
         //Deploy the claw and open it all the way
@@ -53,7 +53,7 @@ public class SkystoneAuto extends Auto {
         sleep(250);
 
         //Drop the arm, hopefully, on a sky stone
-        robot.arm.SetArmState(0, 0.35, 1, 1);
+        robot.arm.SetArmState(0, 0.35, 1);
         sleep(250);
 
         //Close the gripper!
@@ -61,7 +61,7 @@ public class SkystoneAuto extends Auto {
         sleep(250);
 
         //Raise the arm again to avoid dragging the stone on the ground
-        robot.arm.SetArmState(0, 0.15, 1, 1);
+        robot.arm.SetArmState(0, 0.15, 1);
 
         //Roll back a wee bit
         robot.DriveByDistance(speed_med, -5);
@@ -95,7 +95,7 @@ public class SkystoneAuto extends Auto {
         robot.RotatePID(0, speed_high, 10000);
 
         //Lower the arm to latch to the foundation
-        robot.arm.SetArmState(0, 0.35, 1, 1);
+        robot.arm.SetArmState(0, 0.35, 1);
 
         //Rotate based on our side to face the back sensors towards the foundation
         if (side == FieldSide.SIDE_BLUE) {

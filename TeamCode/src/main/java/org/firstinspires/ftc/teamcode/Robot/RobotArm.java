@@ -34,6 +34,9 @@ public class RobotArm extends Thread {
     public double currentLengthSpeed;
     public double targetLengthSpeed;
 
+    //The last target value for the arm spool, used with ramping
+    double lastTargetPosition;
+
     public enum GripState {
         OPEN,
         IDLE,
@@ -80,9 +83,14 @@ public class RobotArm extends Thread {
     }
 
 
-    public void SetArmState(double targetAngle, double _targetLength, double angleSpeed, double _lengthSpeed) {
+    public void SetArmState(double targetAngle, double _targetLength, double angleSpeed) {
+//
+//        if (lastTargetPosition == _targetLength && targetLengthSpeed ) {
+//
+//        }
 
-        targetLengthSpeed = _lengthSpeed;
+
+        targetLengthSpeed = 1;
         targetLength = _targetLength;
         rotation.setPower(angleSpeed);
 
@@ -90,7 +98,7 @@ public class RobotArm extends Thread {
 //        length.setTargetPosition((int) ((double) -2623 * _targetLength));
 
 //        rotation.setPower(angleSpeed);
-        if(targetAngle>=0) {
+        if (targetAngle >= 0) {
             rotation.setTargetPosition((int) ((double) -5679 * targetAngle));
             rotation.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         } else {
@@ -109,8 +117,9 @@ public class RobotArm extends Thread {
 //            Op.telemetry.update();
 //        }
 
-        rotation.setPower(0);
+        lastTargetPosition = _targetLength;
     }
+
 
     public void SetGripState(GripState gripState, double rotationPosition) {
         grip.setPosition(gripState == GripState.CLOSED ? 0 : (gripState == GripState.IDLE ? 0.23 : 0.64));
@@ -120,7 +129,7 @@ public class RobotArm extends Thread {
     public void run() {
         runningThread.set(true);
         while (runningThread.get()) {
-//            currentLengthSpeed = bMath.MoveTowards(currentLengthSpeed, targetLengthSpeed, deltaTime.seconds() * 0.5);
+            currentLengthSpeed = bMath.MoveTowards(currentLengthSpeed, targetLengthSpeed, deltaTime.seconds() * 0.5);
 
             length.setPower(targetLengthSpeed);
             length.setTargetPosition((int) ((double) -2613 * targetLength) - 10);
