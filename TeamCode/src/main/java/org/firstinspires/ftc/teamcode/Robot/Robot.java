@@ -94,7 +94,7 @@ public class Robot extends Thread {
         arm = new RobotArm(opmode, RobotConfiguration.arm_rotationMotor, RobotConfiguration.arm_lengthMotor, RobotConfiguration.arm_gripServo, RobotConfiguration.arm_gripRotationServo, new Double2(0, 1), new Double2(0, 1));
 
         //Start the thread that is responsible for fighting gravity and keeping arm position level.
-        arm.start();
+//        arm.start();
 
         //Find the lunchbox servo
         lunchbox = hardwareMap.get(Servo.class, RobotConfiguration.lunchboxServo);
@@ -246,7 +246,8 @@ public class Robot extends Thread {
                 threadRunning.set(false);
             }
 
-//            threadDeltaTime.reset();
+            arm.length.setPower(1);
+            arm.length.setTargetPosition((int) arm.targetLength);
         }
 
 
@@ -375,7 +376,7 @@ public class Robot extends Thread {
             ticker++;
             rotationPower = rotationPID_test.Loop(angle, rotation);
             rotationPower = rotationPower / (360);//rotationSpeed * Math.abs(startAngle - angle));
-            rotationPower += (0.15 * (rotationPower > 0 ? 1 : -1));
+            rotationPower += (0.1 * (rotationPower > 0 ? 1 : -1));
             Op.telemetry.addData("Error ", rotationPID_test.error);
             Op.telemetry.addData("Last Error  ", rotationPID_test.lastError);
             Op.telemetry.addData("Derivative ", rotationPID_test.derivative);
@@ -395,13 +396,13 @@ public class Robot extends Thread {
                 lastPositiveState = rotationPower > 0;
             }
 
-//            if (rotationPID_test.error < 5) {
-//                correctTime += dt.seconds();
-//            }
-//
-//            if (correctTime > 0.25) {
-//                break;
-//            }
+            if (rotationPID_test.error < 2) {
+                correctTime += dt.seconds();
+            }
+
+            if (correctTime > 0.25) {
+                break;
+            }
 
             if (directionChanges > 3) {
                 ticker += cycles * 2;
@@ -526,7 +527,7 @@ public class Robot extends Thread {
     public void DriveByDistance(double speed, double distance) {
 
         SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        SetRelitiveEncoderPosition((RobotConfiguration.wheel_ticksPerRotation / RobotConfiguration.wheel_circumference) * distance);
+        SetRelitiveEncoderPosition((480 / RobotConfiguration.wheel_circumference) * distance);
         SetPowerDouble4(1, 1, 1, 1, speed);
         SetDriveMode(DcMotor.RunMode.RUN_TO_POSITION);
 

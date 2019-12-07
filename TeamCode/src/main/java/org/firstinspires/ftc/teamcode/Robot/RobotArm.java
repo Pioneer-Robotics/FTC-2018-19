@@ -98,13 +98,13 @@ public class RobotArm extends Thread {
 //        currentLengthSpeed = 0;
 
 
-//        while (Op.opModeIsActive() && rotation.isBusy()) {
-//            Op.telemetry.addData("Length Power", length.getPower());
-//            Op.telemetry.addData("Length DT", deltaTime.seconds());
-//
-//
-//            Op.telemetry.update();
-//        }
+        while (Op.opModeIsActive() && rotation.isBusy()) {
+            Op.telemetry.addData("Length Power", length.getPower());
+            Op.telemetry.addData("Length DT", deltaTime.seconds());
+
+
+            Op.telemetry.update();
+        }
 
 //        rotation.setPower(0);
     }
@@ -127,16 +127,15 @@ public class RobotArm extends Thread {
     public void SetArmRadial(double targetAngle, double _targetLength, double angleSpeed, double _lengthSpeed) {
 
         targetLengthSpeed = _lengthSpeed;
-        targetLength = ((double)480 * _targetLength)/17.8 ; //convert target length in cm to # of encoder ticks
+        targetLength = ((double) 480 * _targetLength) / 17.8; //convert target length in cm to # of encoder ticks
         rotation.setPower(angleSpeed);
 
 
-
         //rotation.setTargetPosition((int));
+        rotation.setPower(1);
         rotation.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         length.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
 
 
         rotation.setPower(0);
@@ -146,22 +145,6 @@ public class RobotArm extends Thread {
     public void SetGripState(GripState gripState, double rotationPosition) {
         grip.setPosition(gripState == GripState.CLOSED ? 0 : (gripState == GripState.IDLE ? 0.23 : 0.64));
         gripRotation.setPosition(rotationPosition);
-    }
-
-    public void run() {
-        runningThread.set(true);
-        while (runningThread.get()) {
-//            currentLengthSpeed = bMath.MoveTowards(currentLengthSpeed, targetLengthSpeed, deltaTime.seconds() * 0.5);
-
-            length.setPower(1);
-            length.setTargetPosition((int) targetLength);
-
-            if (!rotation.isBusy()) {
-                rotation.setPower(0);
-            }
-
-            deltaTime.reset();
-        }
     }
 
     public void Stop() {
