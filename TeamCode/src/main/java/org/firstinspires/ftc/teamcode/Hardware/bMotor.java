@@ -84,6 +84,7 @@ public class bMotor {
 
     //Set the power of the motor while taking account for the new max power
     public void setPower(double power) {
+
         assignedPower = Math.abs(power);
 
         //Set the corrected power

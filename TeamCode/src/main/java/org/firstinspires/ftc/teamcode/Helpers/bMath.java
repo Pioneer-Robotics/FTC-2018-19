@@ -199,4 +199,12 @@ public class bMath {
         return result;
     }
 
+    public static double toRadians(double value) {
+        return value * 0.0174;
+    }
+
+    public static double toDegrees(double value) {
+        return value * 57.2957;
+    }
+
 }

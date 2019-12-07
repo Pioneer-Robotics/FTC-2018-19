@@ -122,13 +122,18 @@ public class Auto extends LinearOpMode {
 
         while (opModeIsActive()) {
             Recognition skystone = jobs.tensorFlowaJob.getCurrentRecognition();
+            telemetry.addData("Get current recognition", deltaTime.seconds());
 
             if (skystone != null) {
                 if (Math.abs(jobs.tensorFlowaJob.getCurrentXFactor(skystone)) < lockThreshold) {
-                    StopAndMaintainRotation(startRotation);
+                    telemetry.addData("Get X factor", deltaTime.seconds());
+                    StopMovement();
+//                    StopAndMaintainRotation(startRotation);
                     onSkystoneTime += deltaTime.seconds();
                 } else {
-                    robot.wallTrack.MoveAlongWallComplexPID(RobotWallTrack.groupID.Group180, bMath.Clamp(Math.abs(jobs.tensorFlowaJob.getCurrentXFactor(skystone)) * correctionCoefficient, -moveSpeed, moveSpeed), wallDistance, walltrackingController, 45, jobs.tensorFlowaJob.getCurrentXFactor(skystone) > 0 ? -90 : 90, startRotation);
+                    telemetry.addData("Get X factor", deltaTime.seconds());
+                    robot.wallTrack.MoveAlongWallComplexPID(RobotWallTrack.groupID.Group180, 0.2, wallDistance, walltrackingController, 45, jobs.tensorFlowaJob.getCurrentXFactor(skystone) > 0 ? 90 : -90, startRotation);
+                    telemetry.addData("Move complex", deltaTime.seconds());
                 }
 
 
@@ -136,8 +141,11 @@ public class Auto extends LinearOpMode {
                 telemetry.addData("Rotation Goal ", startRotation);
                 telemetry.addData("Current Rotation     ", robot.GetRotation());
                 telemetry.addData("Rotation Factor ", robot.GetRotation() - startRotation);
+                telemetry.addData("DT ", deltaTime.seconds());
             } else {
-                robot.MoveComplex(new Double2(0, 0), speed_med, robot.GetRotation() - startRotation);
+//                robot.MoveComplex(new Double2(0, 0), speed_med, robot.GetRotation() - startRotation);
+                StopMovement();
+                telemetry.addData("Move complex", deltaTime.seconds());
             }
 
             if (onSkystoneTime > lockTime) {
@@ -185,8 +193,8 @@ public class Auto extends LinearOpMode {
     }
 
     public void ResetWallPID() {
-        walltrackingController.Start(15, 0.0, 0);
-//        walltrackingController.Start(4.95, 0.0, 0.1);
+//        walltrackingController.Start(15, 0.0, 0);
+        walltrackingController.Start(4.95, 0.0, 0.1);
     }
 
 

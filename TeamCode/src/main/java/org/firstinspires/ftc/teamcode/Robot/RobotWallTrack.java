@@ -53,6 +53,13 @@ public class RobotWallTrack {
 
         public DistanceSensor[] distanceSensors = new DistanceSensor[2];
 
+        public double cache_avgDistance;
+        public double cache_wallAngle;
+
+        public double cache_distanceA;
+        public double cache_distanceB;
+
+
         public enum TripletType {
             Right,
             Left
@@ -95,6 +102,10 @@ public class RobotWallTrack {
             return (getDistance(SensorGroup.TripletType.Right, unit) + getDistance(SensorGroup.TripletType.Left, unit)) / 2;
         }
 
+        public double getDistanceAverage(double distanceA, double distanceB) {
+            return (distanceA + distanceB) / 2;
+        }
+
         //Return a distance sensor from type
         public DistanceSensor sensor(SensorGroup.TripletType type) {
             return (type == SensorGroup.TripletType.Right ? distanceSensors[1] : distanceSensors[0]);
@@ -103,6 +114,14 @@ public class RobotWallTrack {
         //Returns true if our input is valid, meaning that we hit something and have accurate data.
         public boolean isValid(SensorGroup.TripletType type) {
             return sensor(type).getDistance(DistanceUnit.CM) < 500;
+        }
+
+        //Gets all of the data and stores in cache_
+        public void CacheAll(DistanceUnit unit) {
+            cache_distanceA = getDistance(TripletType.Left, unit);
+            cache_distanceB = getDistance(TripletType.Right, unit);
+            cache_avgDistance = getDistanceAverage(cache_distanceA, cache_distanceB);
+            cache_wallAngle = getWallAngle(cache_distanceA, cache_distanceB);
         }
 
 
@@ -121,7 +140,11 @@ public class RobotWallTrack {
         //   |/
         //ASCII's hard, check the journal for better pictures
         public double getWallAngle() {
-            return Math.toDegrees(Math.atan((getDistance(SensorGroup.TripletType.Right, DistanceUnit.CM) - getDistance(SensorGroup.TripletType.Left, DistanceUnit.CM)) / distance));
+            return bMath.toDegrees(Math.atan((getDistance(SensorGroup.TripletType.Right, DistanceUnit.CM) - getDistance(SensorGroup.TripletType.Left, DistanceUnit.CM)) / distance));
+        }
+
+        public double getWallAngle(double distanceA, double distanceB) {
+            return bMath.toDegrees(Math.atan(distanceA - distanceB) / distance);
         }
 
         public double getWallAngleRelative() {
@@ -332,16 +355,29 @@ public class RobotWallTrack {
     public void MoveAlongWallComplexPID(groupID group, double speed, double distance, PID controller, double maxCorrectionMagnitude, double angleOffset, double rotationAngle) {
 
         debuggingDeltaTime.reset();
-
+//Store the 2 distances used this cycle to avoid 300ms delays on wall tracking
 
         //get the physical angle these sensors are at to offset from movement
         physicalOffset = group == groupID.Group90 ? 90 : (group == groupID.Group180 ? 180 : (group == groupID.Group270 ? -90 : 0));
 
+        Robot.instance.Op.telemetry.addData("Set physical offset", debuggingDeltaTime.seconds());
+        debuggingDeltaTime.reset();
+
+
         //Set up the group
         currentGroup = sensorIDGroupPairs.get(group);
+        currentGroup.CacheAll(DistanceUnit.CM);
+
+
+        Robot.instance.Op.telemetry.addData("Set current group", debuggingDeltaTime.seconds());
+        debuggingDeltaTime.reset();
 
         //Get the current sensors wall angle
-        wallAngle = currentGroup.getWallAngle();
+        wallAngle = currentGroup.cache_wallAngle;
+
+
+        Robot.instance.Op.telemetry.addData("Got current angle", debuggingDeltaTime.seconds());
+        debuggingDeltaTime.reset();
 
         //Configure the avoidance config
 //        avoidanceConfig = new AvoidanceConfiguration(distance, maxCorrectionMagnitude, angleOffset - wallAngle + physicalOffset);
@@ -350,12 +386,21 @@ public class RobotWallTrack {
         avoidanceConfig.correctionScale = maxCorrectionMagnitude;
         avoidanceConfig.targetAngle = angleOffset - wallAngle + physicalOffset;
 
+        Robot.instance.Op.telemetry.addData("Assigned config", debuggingDeltaTime.seconds());
+        debuggingDeltaTime.reset();
+
+
         //send our current world distance to the avoidance config
-        avoidanceConfig.SetCurrentDistance(currentGroup.getDistanceAverage(DistanceUnit.CM));
+        avoidanceConfig.SetCurrentDistance(currentGroup.cache_avgDistance);
 
 
-        Robot.instance.Op.telemetry.addData("Move offset ", angleOffset);
-        Robot.instance.Op.telemetry.addData("Real offset ", physicalOffset);
+        Robot.instance.Op.telemetry.addData("Updated config", debuggingDeltaTime.seconds());
+
+        debuggingDeltaTime.reset();
+
+
+//        Robot.instance.Op.telemetry.addData("Move offset ", angleOffset);
+//        Robot.instance.Op.telemetry.addData("Real offset ", physicalOffset);
 
         //Add the avoidance offset to our wall angle (to maintain the 'distance' from the wall)
         driveAngle = angleOffset - wallAngle + physicalOffset;
@@ -363,19 +408,21 @@ public class RobotWallTrack {
         //correctionAngle > 0 ? (avoidanceConfig.CorrectionCoefficient() > 0 ? Math.toRadians(physicalOffset - 180) : Math.toRadians(physicalOffset)) : (avoidanceConfig.CorrectionCoefficient() > 0 ? Math.toRadians(physicalOffset) : Math.toRadians(physicalOffset - 180))
         correctionAngle = 0;
         if (angleOffset > 0) {
-            if (avoidanceConfig.CorrectionCoefficient() > 0) {
-                correctionAngle = Math.toRadians(physicalOffset);
+            if (avoidanceConfig.CorrectionCoefficient() < 0) {
+                correctionAngle = bMath.toRadians(physicalOffset);
             } else {
-                correctionAngle = Math.toRadians(physicalOffset - 180);
+                correctionAngle = bMath.toRadians(physicalOffset - 180);
             }
         } else {
-            if (avoidanceConfig.CorrectionCoefficient() > 0) {
-                correctionAngle = Math.toRadians(physicalOffset);
+            if (avoidanceConfig.CorrectionCoefficient() < 0) {
+                correctionAngle = bMath.toRadians(physicalOffset);
             } else {
-                correctionAngle = Math.toRadians(physicalOffset - 180);
+                correctionAngle = bMath.toRadians(physicalOffset - 180);
             }
         }
-        correctedDriveAngle = Math.toDegrees(bMath.MoveTowardsRadian(Math.toRadians(driveAngle), correctionAngle, Math.toRadians(bMath.Clamp(Math.abs(controller.Loop(distance, currentGroup.getDistanceAverage(DistanceUnit.CM))), 0, maxCorrectionMagnitude))));
+        correctedDriveAngle = Math.toDegrees(bMath.MoveTowardsRadian(bMath.toRadians(driveAngle), correctionAngle, bMath.toRadians(bMath.Clamp(Math.abs(controller.Loop(distance, currentGroup.cache_avgDistance)), 0, maxCorrectionMagnitude))));
+        Robot.instance.Op.telemetry.addData("Angle correction", debuggingDeltaTime.seconds());
+        Robot.instance.Op.telemetry.addData("Angle ", debuggingDeltaTime.seconds());
 
 //        Robot.instance.Op.telemetry.addData("Current Distnace ", currentGroup.getDistanceAverage(DistanceUnit.CM));
 //        Robot.instance.Op.telemetry.addData("Current Error", distance - currentGroup.getDistanceAverage(DistanceUnit.CM));
@@ -392,7 +439,7 @@ public class RobotWallTrack {
         //-90 - 0 + 90
         //-90 -
         robot.MoveComplex(correctedDriveAngle, speed, robot.GetRotation() - rotationAngle);
-        Robot.instance.Op.telemetry.addData("Wall track time", debuggingDeltaTime.seconds());
+
     }
 
     public void MoveAlongWallComplex(groupID group, double speed, double angleOffset, double rotationAngle) {
