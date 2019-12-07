@@ -42,6 +42,9 @@ public class TeleopTester2 extends LinearOpMode {
     boolean idle = false;
     boolean aButton2Check = false;
     boolean pointDown = false;
+    double vertExtensionConst = 0;
+    double vertDMove = 0;
+    boolean lastDpress = false;
 
 
     double lunchboxRot = 0.5;
@@ -146,18 +149,34 @@ public class TeleopTester2 extends LinearOpMode {
                 gripAngle=90-robot.arm.thetaAngle(177,76.9,135,((double)robot.arm.rotation.getCurrentPosition()*0.5)/480);
             }
 
-            //rotate gripper down with the down dpad
-            if (gamepad2.dpad_down){
+            //rotate gripper down with the left dpad
+            if (gamepad2.dpad_left){
                 gripAngle += deltaTime.seconds() * 135;
                 pointDown = false;
             }
 
-            //rotate gripper up with the up dpad
-            if (gamepad2.dpad_up){
+            //rotate gripper up with the right dpad
+            if (gamepad2.dpad_right){
                 gripAngle -=deltaTime.seconds() * 135;
                 pointDown = false;
             }
 
+            if ((gamepad2.dpad_up || gamepad2.dpad_down) && !lastDpress){
+                vertExtensionConst = robot.arm.calcVertExtensionConst();
+            }
+            lastDpress = gamepad2.dpad_up || gamepad2.dpad_down;
+
+            if (gamepad2.dpad_down || gamepad2.dpad_up) {
+                if (gamepad2.dpad_up) {
+                    vertDMove = 0.25;
+
+                } else if (gamepad2.dpad_down) {
+                    vertDMove = -0.25;
+                } else {
+                    vertDMove = 0;
+                }
+                extension = (robot.arm.calcVertExtensionTicks(vertExtensionConst)+10)/-2613;
+            }
 
             //extend arm by tapping right trigger
             extension += gamepad2.right_trigger * deltaTime.seconds();
@@ -169,7 +188,7 @@ public class TeleopTester2 extends LinearOpMode {
             extension = bMath.Clamp(extension, 0, 1);
             armAngle = bMath.Clamp(armAngle, 0, 1);
             gripAngle= bMath.Clamp(gripAngle,0,180);
-            raiseSpeed = bMath.Clamp(gamepad2.left_stick_y + aTad, 0, 1);
+            raiseSpeed = bMath.Clamp((gamepad2.dpad_up || gamepad2.dpad_down)? vertDMove : gamepad2.left_stick_y + aTad, -1, 1);
             robot.arm.SetArmState(extension, raiseSpeed, 1);
 
 
