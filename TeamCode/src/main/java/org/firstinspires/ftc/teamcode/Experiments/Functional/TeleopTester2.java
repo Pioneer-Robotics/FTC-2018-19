@@ -28,6 +28,7 @@ public class TeleopTester2 extends LinearOpMode {
 
     double moveSpeed;
     double rotateSpeed;
+    double raiseSpeed = 0;
     double targetRotationOffset;
 
     boolean grab = false;
@@ -36,6 +37,15 @@ public class TeleopTester2 extends LinearOpMode {
     double extension = 0;
     double armAngle = 0;
     double gripAngle = 180;
+    double aTad = 0;
+    boolean xButton2Check = false;
+    boolean idle = false;
+    boolean aButton2Check = false;
+    boolean pointDown = false;
+
+
+    double lunchboxRot = 0.5;
+
 
 
     @Override
@@ -53,12 +63,11 @@ public class TeleopTester2 extends LinearOpMode {
             moveSpeed = bMath.Clamp(gamepad1.right_trigger + 0.35, 0, 1);
             rotateSpeed = bMath.Clamp(gamepad1.left_trigger + 0.35, 0, 1);
 
-            targetRotation += gamepad1.left_stick_x;
-//            targetRotation = bMath.Loop(targetRotation, 360);
+            targetRotation += gamepad1.left_stick_x * deltaTime.seconds() * 90;
+            //targetRotation = bMath.Loop(targetRotation, 360);
             //shouldn't we use deltatime?
 
-
-            if (gamepad1.a && !aButton1Check){
+            if (gamepad1.a && !aButton1Check) {
                 lockRotation = !lockRotation;
                 rotationLockValue = robot.GetRotation();
             }
@@ -85,44 +94,90 @@ public class TeleopTester2 extends LinearOpMode {
                 }
             }
 */
+
+
+            //rotate lunchbox up with the up dpad
+            lunchboxRot -= gamepad1.dpad_up ? deltaTime.seconds() * 0.5 : 0;
+            //rotate lunchbox down with the down dpad
+            lunchboxRot += gamepad1.dpad_down ? deltaTime.seconds() * 0.5 : 0;
+            lunchboxRot = bMath.Clamp(lunchboxRot, 0, 1);
+            robot.lunchbox.setPosition(lunchboxRot);
+
+
             //ARM CONTROLS
 
-            //press the B button to change the state of grab if it's state is different to it's previous state
-            if (gamepad2.b && !bButton2Check) {
-                grab =!grab;
+            //press the X button to put the grabber in "idle" position
+            if (gamepad2.x && !xButton2Check) {
+                idle = true;
             }
+            xButton2Check = gamepad2.x;
 
+            //press the B button to open or close grabber
+            if (gamepad2.b && !bButton2Check) {
+                if (idle){
+                    grab = false; //if it's in idle, pressing "B" should open it
+                }
+                else {
+                    grab = !grab;
+                }
+                idle = false;
+            }
             bButton2Check = gamepad2.b;
 
-            if (grab) {
-                robot.arm.SetGripState(RobotArm.GripState.CLOSED, (90-gripAngle)/180);
-            } else{
-                robot.arm.SetGripState(RobotArm.GripState.OPEN, (90-gripAngle)/180);
+
+            if (idle) {
+                robot.arm.SetGripState(RobotArm.GripState.IDLE, gripAngle/180);
+            } else {
+                if (grab) {
+                    robot.arm.SetGripState(RobotArm.GripState.CLOSED, gripAngle/180);
+                } else {
+                    robot.arm.SetGripState(RobotArm.GripState.OPEN, gripAngle/180);
+                }
+
             }
 
+            //press a button to make the gripper point down
+            if (gamepad2.a && !aButton2Check){
+                pointDown = true;
+            }
+            aButton2Check = gamepad2.a;
 
+            if (pointDown){
+                gripAngle=90-robot.arm.thetaAngle(177,76.9,135,((double)robot.arm.rotation.getCurrentPosition()*0.5)/480);
+            }
 
+            //rotate gripper down with the down dpad
+            if (gamepad2.dpad_down){
+                gripAngle += deltaTime.seconds() * 135;
+                pointDown = false;
+            }
 
+            //rotate gripper up with the up dpad
+            if (gamepad2.dpad_up){
+                gripAngle -=deltaTime.seconds() * 135;
+                pointDown = false;
+            }
 
 
             //extend arm by tapping right trigger
             extension += gamepad2.right_trigger * deltaTime.seconds();
             //retract arm by tapping left trigger
             extension -= gamepad2.left_trigger * deltaTime.seconds();
-            //rotate gripRotator up with the up dpad
-            gripAngle -= gamepad2.dpad_up ? deltaTime.seconds() *90 : 0;
-            //rotate down with the down dpad
-            gripAngle += gamepad2.dpad_down ? deltaTime.seconds() *90 : 0;
 
+
+            aTad = gamepad2.y ? 1 : 0;
             extension = bMath.Clamp(extension, 0, 1);
             armAngle = bMath.Clamp(armAngle, 0, 1);
-            robot.arm.SetArmState(extension, gamepad2.left_stick_y, 1);
+            gripAngle= bMath.Clamp(gripAngle,0,180);
+            raiseSpeed = bMath.Clamp(gamepad2.left_stick_y + aTad, 0, 1);
+            robot.arm.SetArmState(extension, raiseSpeed, 1);
 
 
             telemetry.addData("Rotation Locked ", lockRotation);
             telemetry.addData("", "");
             telemetry.addData("Current Rotation ", robot.GetRotation());
             telemetry.addData("Current Target Rotation", targetRotation);
+            telemetry.addData("Current Lunchbox", lunchboxRot);
             telemetry.update();
 
             deltaTime.reset();
