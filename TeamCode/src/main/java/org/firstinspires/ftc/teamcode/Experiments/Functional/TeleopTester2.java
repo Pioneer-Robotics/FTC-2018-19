@@ -135,6 +135,7 @@ public class TeleopTester2 extends LinearOpMode {
             }
 
 
+
             //extend arm by tapping right trigger
             extension += gamepad2.right_trigger * deltaTime.seconds();
             //retract arm by tapping left trigger
