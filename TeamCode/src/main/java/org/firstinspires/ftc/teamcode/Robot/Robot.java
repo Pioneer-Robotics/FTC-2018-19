@@ -40,7 +40,7 @@ public class Robot extends Thread {
     public RobotWallTrack wallTrack = new RobotWallTrack();
 
     //The current IMU rotation, assigned by a thread
-    double rotation;
+    static double rotation;
 
     //The IMU reader, takes the average of 2 IMU's to give a fancy (and likely less preferment) reading!
     public bIMU imu = new bIMU();
@@ -241,6 +241,8 @@ public class Robot extends Thread {
             //Make sure that the robot stops once we request a stop
             if (Op.isStopRequested()) {
                 SetPowerDouble4(0, 0, 0, 0, 0);
+
+
                 threadRunning.set(false);
             }
 
