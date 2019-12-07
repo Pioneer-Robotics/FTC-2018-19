@@ -132,7 +132,7 @@ public class RobotArm extends Thread {
 
 
 
-        rotation.setTargetPosition((int) ((double) -5679 * targetAngle));
+        //rotation.setTargetPosition((int));
         rotation.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         length.setMode(DcMotor.RunMode.RUN_TO_POSITION);
