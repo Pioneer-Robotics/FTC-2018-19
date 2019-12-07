@@ -40,7 +40,9 @@ public class TeleopTester2 extends LinearOpMode {
     double aTad = 0;
     boolean xButton2Check = false;
     boolean idle = false;
-    boolean killIdle = false;
+    boolean aButton2Check = false;
+    boolean pointDown = false;
+
 
     double lunchboxRot = 0.5;
 
@@ -134,16 +136,33 @@ public class TeleopTester2 extends LinearOpMode {
 
             }
 
+            //press a button to make the gripper point down
+            if (gamepad2.a && !aButton2Check){
+                pointDown = true;
+            }
+            aButton2Check = gamepad2.a;
+
+            if (pointDown){
+                gripAngle=90-robot.arm.thetaAngle(177,76.9,135,((double)robot.arm.rotation.getCurrentPosition()*0.5)/480);
+            }
+
+            //rotate gripper down with the down dpad
+            if (gamepad2.dpad_down){
+                gripAngle += deltaTime.seconds() * 135;
+                pointDown = false;
+            }
+
+            //rotate gripper up with the up dpad
+            if (gamepad2.dpad_up){
+                gripAngle -=deltaTime.seconds() * 135;
+                pointDown = false;
+            }
 
 
             //extend arm by tapping right trigger
             extension += gamepad2.right_trigger * deltaTime.seconds();
             //retract arm by tapping left trigger
             extension -= gamepad2.left_trigger * deltaTime.seconds();
-            //rotate gripRotator up with the up dpad
-            gripAngle -= gamepad2.dpad_up ? deltaTime.seconds() * 135: 0;
-            //rotate down with the down dpad
-            gripAngle += gamepad2.dpad_down ? deltaTime.seconds() * 135 : 0;
 
 
             aTad = gamepad2.y ? 1 : 0;
