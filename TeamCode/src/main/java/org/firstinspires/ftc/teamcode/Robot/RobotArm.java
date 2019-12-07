@@ -73,11 +73,11 @@ public class RobotArm extends Thread {
 
 
     //Returns the angle that the arm is at. Please verify this math typing.
-    public double ThetaDegrees(Double k, Double H, double L, double d) {
+    public double thetaAngle(double k, double H, double L, double d) {
         Double c = ((k * k) - (H * H) - (L * L) - (d * d)) / 2;
         Double x = (((d * c) - (H * Math.sqrt((((L * L) * (d * d)) + ((L * L) * (H * H))) - (c * c)))) / ((d * d) + (H * H))) + d;
 
-        return Math.toDegrees(Math.atan((Math.sqrt((k * k) - (x * x)) - H) / (d - x)));
+        return Math.atan((Math.sqrt((k * k) - (x * x)) - H) / (d - x));
     }
 
 
@@ -124,21 +124,13 @@ public class RobotArm extends Thread {
 
     }
 
-    public void SetArmRadial(double targetAngle, double _targetLength, double angleSpeed, double _lengthSpeed) {
+    public double calcVertExtensionConst() {
+        return ((17.8*(double)length.getCurrentPosition())/480 * Math.cos(thetaAngle(177,76.9,135,((double)rotation.getCurrentPosition()*0.5)/480)));
+    }
 
-        targetLengthSpeed = _lengthSpeed;
-        targetLength = ((double) 480 * _targetLength) / 17.8; //convert target length in cm to # of encoder ticks
-        rotation.setPower(angleSpeed);
-
-
-        //rotation.setTargetPosition((int));
-        rotation.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        length.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-
-        rotation.setPower(0);
-
+    public double calcVertExtensionTicks(double k) {
+        //Make sure to convert from encoder ticks when calling
+        return 480*(k / Math.cos(thetaAngle(177,76.9,135,((double)rotation.getCurrentPosition()*0.5)/480)))/17.8 ;
     }
 
     public void SetGripState(GripState gripState, double rotationPosition) {
