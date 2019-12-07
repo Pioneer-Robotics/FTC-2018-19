@@ -104,29 +104,36 @@ public class TeleopTester2 extends LinearOpMode {
 
             //ARM CONTROLS
 
-            //press the B button to change the state of grab if it's state is different to it's previous state
-            if (gamepad2.b && !bButton2Check) {
-                grab = !grab;
-                killIdle = true;
-            }
-            bButton2Check = gamepad2.b;
-
+            //press the X button to put the grabber in "idle" position
             if (gamepad2.x && !xButton2Check) {
                 idle = true;
-                killIdle = false;
             }
             xButton2Check = gamepad2.x;
 
-            if (idle && !killIdle) {
-                robot.arm.SetGripState(RobotArm.GripState.IDLE);
+            //press the B button to open or close grabber
+            if (gamepad2.b && !bButton2Check) {
+                if (idle){
+                    grab = false; //if it's in idle, pressing "B" should open it
+                }
+                else {
+                    grab = !grab;
+                }
+                idle = false;
+            }
+            bButton2Check = gamepad2.b;
+
+
+            if (idle) {
+                robot.arm.SetGripState(RobotArm.GripState.IDLE, gripAngle/180);
             } else {
                 if (grab) {
-                    robot.arm.SetGripState(RobotArm.GripState.CLOSED, (gripAngle) / 180);
+                    robot.arm.SetGripState(RobotArm.GripState.CLOSED, gripAngle/180);
                 } else {
-                    robot.arm.SetGripState(RobotArm.GripState.OPEN, (gripAngle) / 180);
+                    robot.arm.SetGripState(RobotArm.GripState.OPEN, gripAngle/180);
                 }
 
             }
+
 
             //extend arm by tapping right trigger
             extension += gamepad2.right_trigger * deltaTime.seconds();
