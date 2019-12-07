@@ -136,7 +136,7 @@ public class TeleopTester2 extends LinearOpMode {
 
             }
 
-            //press a button to make the gripper point down
+            //Press a button to make the gripper point down
             if (gamepad2.a && !aButton2Check){
                 pointDown = true;
             }
