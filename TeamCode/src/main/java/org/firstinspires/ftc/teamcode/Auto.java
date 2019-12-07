@@ -48,12 +48,12 @@ public class Auto extends LinearOpMode {
 
         print("Status: Initiating all jobs.");
 
-        //Init's all of jobs we can use in the OpMode. Right now the job system isnt super useful so just use Tfod jobs
-        jobs.initAll(this);
-
-        print("Status: Starting TensorFlow Thread.");
-        //Start the TF thread after it's init
-        jobs.tensorFlowaJob.Start(this);
+//        //Init's all of jobs we can use in the OpMode. Right now the job system isnt super useful so just use Tfod jobs
+//        jobs.initAll(this);
+//
+//        print("Status: Starting TensorFlow Thread.");
+//        //Start the TF thread after it's init
+//        jobs.tensorFlowaJob.Start(this);
 
         print("Status: Determining current play side");
 
@@ -132,16 +132,15 @@ public class Auto extends LinearOpMode {
                     onSkystoneTime += deltaTime.seconds();
                 } else {
                     telemetry.addData("Get X factor", deltaTime.seconds());
-                    robot.wallTrack.MoveAlongWallComplexPID(RobotWallTrack.groupID.Group180, 0.2, wallDistance, walltrackingController, 45, jobs.tensorFlowaJob.getCurrentXFactor(skystone) > 0 ? 90 : -90, startRotation);
+                    robot.MoveComplex(jobs.tensorFlowaJob.getCurrentXFactor(skystone) > 0 ? 90 : -90, 0.15, robot.GetRotation() - startRotation);
                     telemetry.addData("Move complex", deltaTime.seconds());
                 }
 
 
-                telemetry.addData("Skystones distance ", Math.abs(jobs.tensorFlowaJob.getCurrentXFactor(skystone)));
-                telemetry.addData("Rotation Goal ", startRotation);
-                telemetry.addData("Current Rotation     ", robot.GetRotation());
-                telemetry.addData("Rotation Factor ", robot.GetRotation() - startRotation);
-                telemetry.addData("DT ", deltaTime.seconds());
+//                telemetry.addData("Skystones distance ", Math.abs(jobs.tensorFlowaJob.getCurrentXFactor(skystone)));
+//                telemetry.addData("Rotation Goal ", startRotation);
+//                telemetry.addData("Current Rotation     ", robot.GetRotation());
+//                telemetry.addData("Rotation Factor ", robot.GetRotation() - startRotation);
             } else {
 //                robot.MoveComplex(new Double2(0, 0), speed_med, robot.GetRotation() - startRotation);
                 StopMovement();
@@ -151,8 +150,10 @@ public class Auto extends LinearOpMode {
             if (onSkystoneTime > lockTime) {
                 break;
             }
+            telemetry.addData("DT ", deltaTime.seconds());
 
             telemetry.update();
+
             deltaTime.reset();
         }
         StopMovement();
@@ -171,7 +172,8 @@ public class Auto extends LinearOpMode {
             if (skystone == null) {
                 StopAndMaintainRotation(startRotation);
             } else {
-                robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, moveSpeed, 180 + bMath.Lerp(maxCorrectionAngle, -maxCorrectionAngle, (jobs.tensorFlowaJob.getCurrentXFactor(skystone) + 1) / 2), startRotation);
+                robot.MoveComplex(bMath.Lerp(maxCorrectionAngle, -maxCorrectionAngle, (jobs.tensorFlowaJob.getCurrentXFactor(skystone) + 1) / 2), moveSpeed, robot.GetRotation() - startRotation);
+//                robot.wallTrack.MoveAlongWallComplex(RobotWallTrack.groupID.Group180, moveSpeed, 180 + bMath.Lerp(maxCorrectionAngle, -maxCorrectionAngle, (jobs.tensorFlowaJob.getCurrentXFactor(skystone) + 1) / 2), startRotation);
                 if (robot.GetDistance(RobotWallTrack.groupID.Group180, DistanceUnit.CM) > wallStopDistance) {
                     StopMovement();
                     break;

@@ -2,6 +2,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import android.renderscript.Double4;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -184,13 +185,13 @@ class TensorFlowaJob extends aJob implements Runnable {
     public void Init(LinearOpMode op) {
         super.Init(op);
         //Start up the tensor flow stuffs
-        StartTensorFlow(op, "Skystone", 0.80);
+        StartTensorFlow(op, "Skystone", 0.65);
     }
 
     @Override
     public void Loop() {
         super.Loop();
-        deltaTime.reset();
+//        deltaTime.reset();
 
         //Fetch all of TF's current recognitions
         recognitions = tfod.getRecognitions();

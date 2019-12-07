@@ -138,22 +138,6 @@ public class RobotArm extends Thread {
         gripRotation.setPosition(rotationPosition);
     }
 
-    public void run() {
-        runningThread.set(true);
-        while (runningThread.get()) {
-//            currentLengthSpeed = bMath.MoveTowards(currentLengthSpeed, targetLengthSpeed, deltaTime.seconds() * 0.5);
-
-            length.setPower(1);
-            length.setTargetPosition((int) targetLength);
-
-            if (rotation.getMode() == DcMotor.RunMode.RUN_TO_POSITION && !rotation.isBusy()) {
-                rotation.setPower(0);
-            }
-
-            deltaTime.reset();
-        }
-    }
-
     public void Stop() {
         runningThread.set(false);
     }
