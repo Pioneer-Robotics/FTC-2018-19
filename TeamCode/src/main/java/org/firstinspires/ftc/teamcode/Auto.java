@@ -48,12 +48,12 @@ public class Auto extends LinearOpMode {
 
         print("Status: Initiating all jobs.");
 
-        //Init's all of jobs we can use in the OpMode. Right now the job system isnt super useful so just use Tfod jobs
-        jobs.initAll(this);
-
-        print("Status: Starting TensorFlow Thread.");
-        //Start the TF thread after it's init
-        jobs.tensorFlowaJob.Start(this);
+//        //Init's all of jobs we can use in the OpMode. Right now the job system isnt super useful so just use Tfod jobs
+//        jobs.initAll(this);
+//
+//        print("Status: Starting TensorFlow Thread.");
+//        //Start the TF thread after it's init
+//        jobs.tensorFlowaJob.Start(this);
 
         print("Status: Determining current play side");
 
