@@ -40,6 +40,7 @@ public class RobotArm extends Thread {
         CLOSED
     }
 
+    // lets make some real changes
     AtomicBoolean runningThread = new AtomicBoolean();
 
     ElapsedTime deltaTime = new ElapsedTime();
@@ -120,6 +121,25 @@ public class RobotArm extends Thread {
         rotation.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         length.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+    }
+
+    public void SetArmRadial(double targetAngle, double _targetLength, double angleSpeed, double _lengthSpeed) {
+
+        targetLengthSpeed = _lengthSpeed;
+        targetLength = ((double)480 * _targetLength)/17.8 ; //convert target length in cm to # of encoder ticks
+        rotation.setPower(angleSpeed);
+
+
+
+        //rotation.setTargetPosition((int));
+        rotation.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        length.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+
+        rotation.setPower(0);
 
     }
 
