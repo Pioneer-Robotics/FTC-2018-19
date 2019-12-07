@@ -18,7 +18,7 @@ public class bMath {
     public static Double4 getMecMovement(Double2 movementVector, double targetAngle) {
 
         Double4 delta = new Double4(0, 0, 0, 0);
-        targetAngle = Math.toRadians(targetAngle);
+        targetAngle = bMath.toRadians(targetAngle);
 
 //        leftMovementPower = ((-movementVector.y - movementVector.x) / sq2() * Math.sin(targetAngle) + ((-movementVector.y + movementVector.x) / sq2()) * Math.cos(targetAngle));
         leftMovementPower = (((-movementVector.y - movementVector.x) / sq2()) * Math.sin(targetAngle)) + (((-movementVector.y + movementVector.x) / sq2()) * Math.cos(targetAngle));

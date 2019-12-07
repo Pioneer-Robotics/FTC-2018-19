@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Robot.RobotArm;
@@ -11,15 +12,29 @@ public class SkystoneSideSimple extends Auto {
 
     public double startRotation;
 
+    ElapsedTime deltaTime = new ElapsedTime();
+
+    double startDelay = 5;
+
+    double startDistance = 25;
+
     @Override
     public void runOpMode() {
         StartRobot();
 
+        while (!opModeIsActive()) {
+            startDelay += gamepad1.left_stick_x * deltaTime.seconds() * 5;
+            startDistance += gamepad1.right_stick_x * deltaTime.seconds() * 10;
+            telemetry.addData("Start Delay (seconds) ", startDelay);
+            telemetry.addData("Drive Distance (CM) ", startDistance);
+            telemetry.update();
+            deltaTime.reset();
+        }
         waitForStart();
 
-        sleep(1000);
+        sleep((long) startDelay * 1000);
 
-        robot.DriveByDistance(0.25, 25);
+        robot.DriveByDistance(0.25, startDistance);
 
         if (side == FieldSide.SIDE_BLUE) {
             robot.MoveComplex(-90, 0.75, robot.GetRotation() - startRotation);

@@ -46,9 +46,9 @@ public class TeleopTester2 extends LinearOpMode {
     double vertDMove = 0;
     boolean lastDpress = false;
 
+    double rotationLockValue = 0;
 
     double lunchboxRot = 0.5;
-
 
 
     @Override
@@ -57,7 +57,6 @@ public class TeleopTester2 extends LinearOpMode {
 
 
         waitForStart();
-        double rotationLockValue = 0;
         targetRotation = robot.GetRotation();
 
         while (opModeIsActive()) {
@@ -70,20 +69,46 @@ public class TeleopTester2 extends LinearOpMode {
             //targetRotation = bMath.Loop(targetRotation, 360);
             //shouldn't we use deltatime?
 
-            if (gamepad1.a && !aButton1Check) {
+            if (gamepad1.x && !aButton1Check) {
                 lockRotation = !lockRotation;
                 rotationLockValue = robot.GetRotation();
+                targetRotationOffset = 0;
             }
             aButton1Check = gamepad1.a;
 
-            if (lockRotation) {
-                targetRotation = rotationLockValue;
-                //Ensures that other code cannot change targetRotation while rotationLock is on
-                robot.MoveComplex(new Double2(gamepad1.right_stick_x, gamepad1.right_stick_y), moveSpeed, robot.GetRotation() - (targetRotation));
-            } else {
-                robot.MoveSimple(new Double2(gamepad1.right_stick_x, gamepad1.right_stick_y), moveSpeed, gamepad1.left_stick_x * rotateSpeed);
-            }
 
+            if (gamepad1.y) {
+                telemetry.addData("Using OLD method of drive", "");
+                if (lockRotation) {
+                    targetRotation = rotationLockValue;
+
+                    //Ensures that other code cannot change targetRotation while rotationLock is on
+                    robot.MoveComplex(new Double2(gamepad1.right_stick_x, gamepad1.right_stick_y), moveSpeed, robot.GetRotation() - (targetRotation));
+                } else {
+
+//                robot.MoveComplex(bMath.toRadians() new Double2(gamepad1.right_stick_x, gamepad1.right_stick_y), moveSpeed, robot.GetRotation() - (targetRotation));
+                    robot.MoveSimple(new Double2(gamepad1.right_stick_x, gamepad1.right_stick_y), moveSpeed, -gamepad1.left_stick_x * rotateSpeed);
+                }
+
+            } else {
+                telemetry.addData("Using NEW method of drive", "");
+
+                if (lockRotation) {
+                    targetRotation = rotationLockValue;
+                    targetRotationOffset += -gamepad1.left_stick_x * rotateSpeed;
+
+                    //Ensures that other code cannot change targetRotation while rotationLock is on
+                    robot.MoveComplex(new Double2(gamepad1.right_stick_x, gamepad1.right_stick_y), moveSpeed, robot.GetRotation() - (targetRotation + targetRotationOffset));
+                } else {
+
+                    robot.MoveComplex(new Double2(gamepad1.right_stick_x, gamepad1.right_stick_y), moveSpeed, robot.GetRotation() - (targetRotation));
+
+//                robot.MoveComplex(bMath.toRadians() new Double2(gamepad1.right_stick_x, gamepad1.right_stick_y), moveSpeed, robot.GetRotation() - (targetRotation));
+
+//                robot.MoveSimple(new Double2(gamepad1.right_stick_x, gamepad1.right_stick_y), moveSpeed, -gamepad1.left_stick_x * rotateSpeed);
+                }
+
+            }
 /*
             if (gamepad1.a) {
                 lockRotation = !lockRotation;
@@ -100,9 +125,9 @@ public class TeleopTester2 extends LinearOpMode {
 
 
             //rotate lunchbox up with the up dpad
-            lunchboxRot -= gamepad1.dpad_up ? deltaTime.seconds() * 0.5 : 0;
+            lunchboxRot -= gamepad1.dpad_up ? deltaTime.seconds() * 1 : 0;
             //rotate lunchbox down with the down dpad
-            lunchboxRot += gamepad1.dpad_down ? deltaTime.seconds() * 0.5 : 0;
+            lunchboxRot += gamepad1.dpad_down ? deltaTime.seconds() * 1 : 0;
             lunchboxRot = bMath.Clamp(lunchboxRot, 0, 1);
             robot.lunchbox.setPosition(lunchboxRot);
 
@@ -117,10 +142,9 @@ public class TeleopTester2 extends LinearOpMode {
 
             //press the B button to open or close grabber
             if (gamepad2.b && !bButton2Check) {
-                if (idle){
+                if (idle) {
                     grab = false; //if it's in idle, pressing "B" should open it
-                }
-                else {
+                } else {
                     grab = !grab;
                 }
                 idle = false;
@@ -129,39 +153,39 @@ public class TeleopTester2 extends LinearOpMode {
 
 
             if (idle) {
-                robot.arm.SetGripState(RobotArm.GripState.IDLE, gripAngle/180);
+                robot.arm.SetGripState(RobotArm.GripState.IDLE, gripAngle / 180);
             } else {
                 if (grab) {
-                    robot.arm.SetGripState(RobotArm.GripState.CLOSED, gripAngle/180);
+                    robot.arm.SetGripState(RobotArm.GripState.CLOSED, gripAngle / 180);
                 } else {
-                    robot.arm.SetGripState(RobotArm.GripState.OPEN, gripAngle/180);
+                    robot.arm.SetGripState(RobotArm.GripState.OPEN, gripAngle / 180);
                 }
 
             }
 
             //press a button to make the gripper point down
-            if (gamepad2.a && !aButton2Check){
+            if (gamepad2.a && !aButton2Check) {
                 pointDown = true;
             }
             aButton2Check = gamepad2.a;
 
-            if (pointDown){
-                gripAngle=90-robot.arm.thetaAngle(177,76.9,135,((double)robot.arm.rotation.getCurrentPosition()*0.5)/480);
+            if (pointDown) {
+                gripAngle = 90 - robot.arm.thetaAngle(177, 76.9, 135, ((double) robot.arm.rotation.getCurrentPosition() * 0.5) / 480);
             }
 
             //rotate gripper down with the left dpad
-            if (gamepad2.dpad_left){
+            if (gamepad2.dpad_left) {
                 gripAngle += deltaTime.seconds() * 135;
                 pointDown = false;
             }
 
             //rotate gripper up with the right dpad
-            if (gamepad2.dpad_right){
-                gripAngle -=deltaTime.seconds() * 135;
+            if (gamepad2.dpad_right) {
+                gripAngle -= deltaTime.seconds() * 135;
                 pointDown = false;
             }
 
-            if ((gamepad2.dpad_up || gamepad2.dpad_down) && !lastDpress){
+            if ((gamepad2.dpad_up || gamepad2.dpad_down) && !lastDpress) {
                 vertExtensionConst = robot.arm.calcVertExtensionConst();
             }
             lastDpress = gamepad2.dpad_up || gamepad2.dpad_down;
@@ -175,7 +199,7 @@ public class TeleopTester2 extends LinearOpMode {
                 } else {
                     vertDMove = 0;
                 }
-                extension = (robot.arm.calcVertExtensionTicks(vertExtensionConst)+10)/-2613;
+                extension = (robot.arm.calcVertExtensionTicks(vertExtensionConst) + 10) / -2613;
             }
 
             //extend arm by tapping right trigger
@@ -187,8 +211,8 @@ public class TeleopTester2 extends LinearOpMode {
             aTad = gamepad2.y ? 1 : 0;
             extension = bMath.Clamp(extension, 0, 1);
             armAngle = bMath.Clamp(armAngle, 0, 1);
-            gripAngle= bMath.Clamp(gripAngle,0,180);
-            raiseSpeed = bMath.Clamp((gamepad2.dpad_up || gamepad2.dpad_down)? vertDMove : gamepad2.left_stick_y + aTad, -1, 1);
+            gripAngle = bMath.Clamp(gripAngle, 0, 180);
+            raiseSpeed = bMath.Clamp((gamepad2.dpad_up || gamepad2.dpad_down) ? vertDMove : gamepad2.left_stick_y + aTad, -1, 1);
             robot.arm.SetArmState(extension, raiseSpeed, 1);
 
 

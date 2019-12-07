@@ -482,6 +482,10 @@ public class Robot extends Thread {
     }
 
 
+    //Front left power is the X value
+    //Front right power is the Y value
+    //Back left power is the Z value
+    //Back right power is the W value
     public void SetPowerDouble4(double x, double y, double z, double w, double multiplier) {
         Double4 v = new Double4(x, y, z, w);
 
@@ -555,6 +559,39 @@ public class Robot extends Thread {
         SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         SetDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
+
+
+    //This version of drive by distance doesnt use Drive To Position and keeps the oriantation the same
+    //WIP
+
+    //3666 X
+    //11577
+    //16884
+//    public void DriveByDistance(double speed, double distance, double targetRotation) {
+//
+//        double distances = (480 / RobotConfiguration.wheel_circumference) * distance;
+//        Double4 targetDistances = new Double4(distances, distances, distances, distances);
+//
+//        SetPowerDouble4(1, 1, 1, 1, speed);
+//        while (Op.opModeIsActive() && driveManager.backRight > targetDistances.x) {
+//            SetPowerDouble4();
+//
+//
+//            if (!Op.opModeIsActive()) {
+//                break;
+//            }
+//        }
+//
+//        Op.telemetry.addData("Target Reached", "");
+//        Op.telemetry.update();
+//
+//        //Stop motors
+//        SetPowerDouble4(0, 0, 0, 0, 0);
+//
+//        //Set up for normal driving
+//        SetDriveMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        SetDriveMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//    }
 
     //Returns the distance using a sensor group
     public double GetDistance(RobotWallTrack.groupID group, DistanceUnit unit) {
