@@ -46,26 +46,44 @@ public class TeleopTester2 extends LinearOpMode {
     double vertDMove = 0;
     boolean lastDpress = false;
 
+    boolean movementModeCheck;
+    boolean movementModeNew;
+
+
     double rotationLockValue = 0;
 
     double lunchboxRot = 0.5;
 
+    boolean servoLastToggle = false;
+    boolean fineServoControl = true;
+
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot.init(hardwareMap, this);
+        robot.initFast(hardwareMap, this);
+        fineServoControl = true;
 
 
         waitForStart();
-        targetRotation = robot.GetRotation();
 
+        robot.lunchbox.setPosition(1);
+        lunchboxRot = 1;
+        targetRotation = robot.GetRotation();
+        gripAngle = 90;
         while (opModeIsActive()) {
 
             ///DRIVER CONTROLS
-            moveSpeed = bMath.Clamp(gamepad1.right_trigger + 0.35, 0, 1);
+
+            //let right bumper put robot in really slow mode for fine control
+            if (gamepad1.right_bumper) {
+                moveSpeed = 0.15;
+            } else {
+                moveSpeed = bMath.Clamp(gamepad1.right_trigger + 0.35, 0, 1);
+            }
+
             rotateSpeed = bMath.Clamp(gamepad1.left_trigger + 0.35, 0, 1);
 
-            targetRotation += gamepad1.left_stick_x * deltaTime.seconds() * 90;
+
             //targetRotation = bMath.Loop(targetRotation, 360);
             //shouldn't we use deltatime?
 
@@ -76,8 +94,14 @@ public class TeleopTester2 extends LinearOpMode {
             }
             aButton1Check = gamepad1.a;
 
+            if (gamepad1.y != movementModeCheck) {
+                if (gamepad1.y) {
+                    movementModeNew = !movementModeNew;
+                }
+                movementModeCheck = gamepad1.y;
+            }
 
-            if (gamepad1.y) {
+            if (movementModeNew) {
                 telemetry.addData("Using OLD method of drive", "");
                 if (lockRotation) {
                     targetRotation = rotationLockValue;
@@ -85,17 +109,15 @@ public class TeleopTester2 extends LinearOpMode {
                     //Ensures that other code cannot change targetRotation while rotationLock is on
                     robot.MoveComplex(new Double2(gamepad1.right_stick_x, gamepad1.right_stick_y), moveSpeed, robot.GetRotation() - (targetRotation));
                 } else {
-
-//                robot.MoveComplex(bMath.toRadians() new Double2(gamepad1.right_stick_x, gamepad1.right_stick_y), moveSpeed, robot.GetRotation() - (targetRotation));
                     robot.MoveSimple(new Double2(gamepad1.right_stick_x, gamepad1.right_stick_y), moveSpeed, -gamepad1.left_stick_x * rotateSpeed);
                 }
 
             } else {
                 telemetry.addData("Using NEW method of drive", "");
+                targetRotation = rotationLockValue;
 
                 if (lockRotation) {
-                    targetRotation = rotationLockValue;
-                    targetRotationOffset += -gamepad1.left_stick_x * rotateSpeed;
+                    targetRotationOffset += -gamepad1.left_stick_x * rotateSpeed * 180;
 
                     //Ensures that other code cannot change targetRotation while rotationLock is on
                     robot.MoveComplex(new Double2(gamepad1.right_stick_x, gamepad1.right_stick_y), moveSpeed, robot.GetRotation() - (targetRotation + targetRotationOffset));
@@ -109,7 +131,38 @@ public class TeleopTester2 extends LinearOpMode {
                 }
 
             }
-/*
+
+            if (gamepad1.y != movementModeCheck) {
+                if (gamepad1.y) {
+                    movementModeNew = !movementModeNew;
+                }
+                movementModeCheck = gamepad1.y;
+            }
+
+//            if (gamepad1.x != servoLastToggle) {
+//                if (gamepad1.x) {
+//                    fineServoControl = !fineServoControl;
+//                }
+//                servoLastToggle = gamepad1.x;
+//            }
+//
+//            if (fineServoControl) {
+
+            //rotate lunchbox up with the up dpad
+            lunchboxRot -= gamepad1.dpad_up ? deltaTime.seconds() * 1 : 0;
+            //rotate lunchbox down with the down dpad
+            lunchboxRot += gamepad1.dpad_down ? deltaTime.seconds() * 1 : 0;
+            lunchboxRot = bMath.Clamp(lunchboxRot, 0, 1);
+            telemetry.addData("LunchboxRot Position", lunchboxRot);
+            robot.lunchbox.setPosition(lunchboxRot);
+
+//            } else {
+//                robot.lunchbox.setPosition(0.4333);
+//                telemetry.addData("LunchboxRot Position Yeeted", lunchboxRot);
+//
+//            }
+
+            /*
             if (gamepad1.a) {
                 lockRotation = !lockRotation;
                 sleep(100);
@@ -122,14 +175,6 @@ public class TeleopTester2 extends LinearOpMode {
                 }
             }
 */
-
-
-            //rotate lunchbox up with the up dpad
-            lunchboxRot -= gamepad1.dpad_up ? deltaTime.seconds() * 1 : 0;
-            //rotate lunchbox down with the down dpad
-            lunchboxRot += gamepad1.dpad_down ? deltaTime.seconds() * 1 : 0;
-            lunchboxRot = bMath.Clamp(lunchboxRot, 0, 1);
-            robot.lunchbox.setPosition(lunchboxRot);
 
 
             //ARM CONTROLS
@@ -224,7 +269,6 @@ public class TeleopTester2 extends LinearOpMode {
             telemetry.update();
 
             deltaTime.reset();
-
         }
         robot.Stop();
     }

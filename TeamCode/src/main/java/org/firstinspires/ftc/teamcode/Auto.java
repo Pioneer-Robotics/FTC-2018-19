@@ -63,7 +63,7 @@ public class Auto extends LinearOpMode {
 //        } else {
 //            side = FieldSide.SIDE_RED;
 //        }
-        robot.arm.SetGripState(RobotArm.GripState.IDLE, 1);
+        robot.arm.SetGripState(RobotArm.GripState.IDLE, 0.5);
 
         print("Status: Waiting for play side input. Please press the button thats color corresponds to the side your robot is on (see bridge). Press A to continue");
 
@@ -97,6 +97,7 @@ public class Auto extends LinearOpMode {
 
         }
 
+        robot.arm.SetGripState(RobotArm.GripState.IDLE, 0.5);
         print("Status: Awaiting start. Running on side " + (side == FieldSide.SIDE_BLUE ? "BLU" : "RED"));
     }
 

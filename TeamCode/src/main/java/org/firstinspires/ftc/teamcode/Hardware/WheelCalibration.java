@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Robot.Robot;
 
-@Autonomous(name = "Wheel Calibration", group = "Calibration")
+@Autonomous(name = "Wheel Calibration yay", group = "Calibration")
 public class WheelCalibration extends LinearOpMode {
 
     Robot robot = new Robot();
