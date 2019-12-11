@@ -123,6 +123,7 @@ public class RobotArm extends Thread {
         length.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
     }
+    
 
     public double calcVertExtensionConst() {
         return ((17.8*(double)length.getCurrentPosition())/480 * Math.cos(thetaAngle(177,76.9,135,((double)rotation.getCurrentPosition()*0.5)/480)));

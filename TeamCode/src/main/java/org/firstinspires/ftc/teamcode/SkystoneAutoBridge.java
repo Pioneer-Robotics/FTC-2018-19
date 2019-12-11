@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.Robot.RobotArm;
 import org.firstinspires.ftc.teamcode.Robot.RobotWallTrack;
 
 @Autonomous(name = "Skystone2", group = "ftcPio")
-public class SkystoneSideSimple extends Auto {
+public class SkystoneAutoBridge extends Auto {
 
     public double startRotation;
 
