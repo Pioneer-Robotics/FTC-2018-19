@@ -558,6 +558,29 @@ public class Robot extends Thread {
         SetPowerDouble4(0, 0, 0, 0, 0);
     }
 
+
+    public void RotateSimple(double angle, double rotationSpeed, double tolerance, double exitTime) {
+        double exitTimer = 0;
+        ElapsedTime deltaTime = new ElapsedTime();
+
+
+        while (Op.opModeIsActive()) {
+            deltaTime.reset();
+
+            MoveComplex(new Double2(0, 0), rotationSpeed, GetRotation() - angle);
+
+            if (Math.abs(GetRotation() - angle) < tolerance) {
+                exitTimer += deltaTime.seconds();
+            }
+
+            if (exitTimer < exitTime) {
+                break;
+            }
+        }
+
+        SetPowerDouble4(0, 0, 0, 0, 0);
+    }
+
     /**
      * @param v          this is the vector that represents our wheels power! Create a new Double4 like so:
      *                   new Double4(x,y,z,w)

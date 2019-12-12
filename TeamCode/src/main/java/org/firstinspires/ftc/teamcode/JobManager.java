@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.Robot.Robot;
 //         270
 
 //The idea here is that we can have a bunch of functions here, like move to sky stone or navigate to center and then call them in a modular fashion in other programs
-//These are all of the base classes that are used in Jobs, feel free to right your own!
+//These are all of the base classes that are used in Jobs!
 //TODO: Async Jobs
 
 
