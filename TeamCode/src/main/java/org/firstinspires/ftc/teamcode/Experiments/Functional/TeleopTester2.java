@@ -44,7 +44,13 @@ public class TeleopTester2 extends LinearOpMode {
     boolean pointDown = false;
     double vertExtensionConst = 0;
     double vertDMove = 0;
-    boolean lastDpress = false;
+    boolean lastD2press = false;
+
+    //this section relates to moving the arm (not rotating the gripper)
+    boolean rectControls_wanted = true;
+    boolean leftBumper2Check = false;
+    double targetGripperPositionY = 0;
+    double targetGripperPositionX = 0;
 
     boolean movementModeCheck;
     boolean movementModeNew;
@@ -179,6 +185,19 @@ public class TeleopTester2 extends LinearOpMode {
 
             //ARM CONTROLS
 
+            //use the left bumper to make the toggle the arm controls (rectangular or polar)
+            if (gamepad2.left_bumper && !leftBumper2Check){
+                rectControls_wanted = !rectControls_wanted;
+            }
+            leftBumper2Check = gamepad2.left_bumper;
+
+            //get rectangular controls to work, not ready for testing
+            if (rectControls_wanted){
+                RobotArm.SetArmState ( Math.atan(targetGripperPositionX / targetGripperPositionY), Math.sqrt (targetGripperPositionX * targetGripperPositionX + targetGripperPositionY * targetGripperPositionY), 1, 1);
+                targetGripperPositionX;
+                targetGripperPositionY;
+            }
+
             //press the X button to put the grabber in "idle" position
             if (gamepad2.x && !xButton2Check) {
                 idle = true;
@@ -197,16 +216,17 @@ public class TeleopTester2 extends LinearOpMode {
             bButton2Check = gamepad2.b;
 
 
+
             if (idle) {
                 robot.arm.SetGripState(RobotArm.GripState.IDLE, gripAngle / 180);
-            } else {
-                if (grab) {
-                    robot.arm.SetGripState(RobotArm.GripState.CLOSED, gripAngle / 180);
-                } else {
-                    robot.arm.SetGripState(RobotArm.GripState.OPEN, gripAngle / 180);
-                }
-
             }
+            else
+                if (grab) {
+                robot.arm.SetGripState(RobotArm.GripState.CLOSED, gripAngle / 180);
+            }   else {
+                robot.arm.SetGripState(RobotArm.GripState.OPEN, gripAngle / 180);
+            }
+
 
             //press a button to make the gripper point down
             if (gamepad2.a && !aButton2Check) {
@@ -215,7 +235,7 @@ public class TeleopTester2 extends LinearOpMode {
             aButton2Check = gamepad2.a;
 
             if (pointDown) {
-                gripAngle = 90 - robot.arm.thetaAngle(177, 76.9, 135, ((double) robot.arm.rotation.getCurrentPosition() * 0.5) / 480);
+                gripAngle = 90 - robot.arm.thetaAngle();
             }
 
             //rotate gripper down with the left dpad
@@ -230,22 +250,23 @@ public class TeleopTester2 extends LinearOpMode {
                 pointDown = false;
             }
 
-            if ((gamepad2.dpad_up || gamepad2.dpad_down) && !lastDpress) {
+            if ((gamepad2.dpad_up || gamepad2.dpad_down) && !lastD2press) {
                 vertExtensionConst = robot.arm.calcVertExtensionConst();
             }
-            lastDpress = gamepad2.dpad_up || gamepad2.dpad_down;
+            lastD2press = gamepad2.dpad_up || gamepad2.dpad_down;
 
-            if (gamepad2.dpad_down || gamepad2.dpad_up) {
-                if (gamepad2.dpad_up) {
-                    vertDMove = 0.25;
-
-                } else if (gamepad2.dpad_down) {
-                    vertDMove = -0.25;
-                } else {
-                    vertDMove = 0;
-                }
+            if (gamepad2.dpad_up) {
+                vertDMove = 0.25;
+                extension = (robot.arm.calcVertExtensionTicks(vertExtensionConst) + 10) / -2613;
+            } else
+                if (gamepad2.dpad_down) {
+                vertDMove = -0.25;
                 extension = (robot.arm.calcVertExtensionTicks(vertExtensionConst) + 10) / -2613;
             }
+                else {
+                vertDMove = 0;
+            }
+
 
             //extend arm by tapping right trigger
             extension += gamepad2.right_trigger * deltaTime.seconds();
@@ -262,7 +283,7 @@ public class TeleopTester2 extends LinearOpMode {
 
 
             telemetry.addData("Rotation Locked ", lockRotation);
-            telemetry.addData("", "");
+            telemetry.addData("Current Arm Angle", robot.arm.thetaAngle());
             telemetry.addData("Current Rotation ", robot.GetRotation());
             telemetry.addData("Current Target Rotation", targetRotation);
             telemetry.addData("Current Lunchbox", lunchboxRot);

@@ -34,6 +34,7 @@ public class RobotArm extends Thread {
     public double currentLengthSpeed;
     public double targetLengthSpeed;
 
+
     public enum GripState {
         OPEN,
         IDLE,
@@ -71,18 +72,29 @@ public class RobotArm extends Thread {
         length.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
-
     //Returns the angle that the arm is at. Please verify this math typing.
-    public double thetaAngle(double k, double H, double L, double d) {
+    public double thetaAngle() {
+        double k = 177;
+        double H = 76.9;
+        double L = 135;
+        double d = (rotation.getCurrentPosition() * 0.5) / 480;
         Double c = ((k * k) - (H * H) - (L * L) - (d * d)) / 2;
         Double x = (((d * c) - (H * Math.sqrt((((L * L) * (d * d)) + ((L * L) * (H * H))) - (c * c)))) / ((d * d) + (H * H))) + d;
 
         return Math.atan((Math.sqrt((k * k) - (x * x)) - H) / (d - x));
     }
 
+    public double armRectExtension(double horiz, double vert) {
+        return Math.sqrt(horiz * horiz + vert * vert);
+    }
+    
+    public double armRectAngle(double horiz, double vert) {
+        return Math.atan(vert / horiz);
+    }
+
 
     public void SetArmState(double targetAngle, double _targetLength, double angleSpeed, double _lengthSpeed) {
-
+    // angleSpeed really means the angle you want the arm to be
         targetLengthSpeed = _lengthSpeed;
         targetLength = ((double) -2613 * _targetLength) - 10;
         rotation.setPower(angleSpeed);
@@ -126,12 +138,12 @@ public class RobotArm extends Thread {
     
 
     public double calcVertExtensionConst() {
-        return ((17.8*(double)length.getCurrentPosition())/480 * Math.cos(thetaAngle(177,76.9,135,((double)rotation.getCurrentPosition()*0.5)/480)));
+        return ((17.8*(double)length.getCurrentPosition())/480 * Math.cos(thetaAngle()));
     }
 
     public double calcVertExtensionTicks(double k) {
         //Make sure to convert from encoder ticks when calling
-        return 480*(k / Math.cos(thetaAngle(177,76.9,135,((double)rotation.getCurrentPosition()*0.5)/480)))/17.8 ;
+        return 480 * (k / Math.cos(thetaAngle())/17.8);
     }
 
     public void SetGripState(GripState gripState, double rotationPosition) {
