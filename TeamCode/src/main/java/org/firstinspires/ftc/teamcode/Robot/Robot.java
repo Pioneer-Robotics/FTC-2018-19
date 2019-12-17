@@ -560,7 +560,7 @@ public class Robot extends Thread {
             }
 
             if (directionChanges > 5) {
-                ticker += cycles * 2;
+                break;
             }
 
         }
