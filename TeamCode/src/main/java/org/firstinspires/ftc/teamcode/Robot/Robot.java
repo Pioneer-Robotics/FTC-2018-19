@@ -4,6 +4,7 @@ import android.renderscript.Double2;
 import android.renderscript.Double4;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -156,6 +157,15 @@ public class Robot extends Thread {
         lunchbox.setPosition(1);
 
         bTelemetry.Print("Wheel boot successful. Ready to operate!");
+
+    }
+
+    public void GetHardware(LinearOpMode opmode){
+        //Sets up the drive train hardware
+        driveManager = new RobotDriveManager(opmode, RobotConfiguration.wheel_frontLeft, RobotConfiguration.wheel_frontRight, RobotConfiguration.wheel_backLeft, RobotConfiguration.wheel_backRight);
+        arm = new RobotArm(opmode, RobotConfiguration.arm_rotationMotor, RobotConfiguration.arm_lengthMotor, RobotConfiguration.arm_gripServo, RobotConfiguration.arm_gripRotationServo, new Double2(0, 1), new Double2(0, 1));
+        imu.Start(opmode, RobotConfiguration.imu_0, RobotConfiguration.imu_1);
+        wallTrack.Start(opmode);
 
     }
 
